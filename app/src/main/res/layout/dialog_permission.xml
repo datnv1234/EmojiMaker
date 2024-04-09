@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/custom_bg_dialog"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="22dp">
+
+        <TextView
+            android:id="@+id/tvTitlePermission"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Request permission"
+            android:textColor="@color/black"
+            android:textSize="17sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_content_request_permission"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:text="Permission to access storage"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvTitlePermission" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/btnCancelSetting"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/bg_button_gray"
+            android:gravity="center"
+            android:paddingVertical="10dp"
+            android:text="Cancel"
+            android:visibility="gone"
+            android:textAllCaps="true"
+            android:textColor="#828282"
+            app:layout_constraintEnd_toStartOf="@id/btnOkPermission"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_content_request_permission" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/btnOkPermission"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/bg_button_blue"
+            android:gravity="center"
+            android:paddingVertical="10dp"
+            android:text="Settings"
+            android:textAllCaps="true"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/btnCancelSetting"
+            app:layout_constraintTop_toBottomOf="@id/tv_content_request_permission"  />
+<!--        <androidx.appcompat.widget.AppCompatTextView-->
+<!--            android:id="@+id/btnOkPermission"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginStart="8dp"-->
+<!--            android:layout_marginTop="20dp"-->
+<!--            android:layout_marginEnd="20dp"-->
+<!--            android:background="@drawable/bg_button_blue"-->
+<!--            android:fontFamily="@font/sf_pro_display_bold"-->
+<!--            android:gravity="center"-->
+<!--            android:paddingVertical="10dp"-->
+<!--            android:text="@string/setting"-->
+<!--            android:textAllCaps="true"-->
+<!--            android:textColor="@color/white"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toEndOf="@id/btnCancelSetting"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/tv_content_request_permission" />-->
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
