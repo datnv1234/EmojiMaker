@@ -39,26 +39,30 @@ class MultiLangAdapter : BaseBindingAdapterDiff<LanguageUI, ItemMultiLangBinding
         with(getItem(holder.adapterPosition)) {
             holder.binding.apply {
                 tvLanguage.text = name
-                tvLanguage.strokeColor = "#4E545F"
-                tvLanguage.strokeWidth = 2f.dpToPx()
+                //tvLanguage.strokeColor = "#4E545F"
+                //tvLanguage.strokeWidth = 2f.dpToPx()
                 if (holder.adapterPosition == newPosition) {
                     avatar?.let {
-                        tvLanguage.setDrawableTv(
-                            it,
-                            0,
-                            R.drawable.ic_language_selected,
-                            0
-                        )
+//                        tvLanguage.setDrawableTv(
+//                            it,
+//                            0,
+//                            R.drawable.ic_language_selected,
+//                            0
+//                        )
+                        radioBtn.setImageResource(R.drawable.ic_language_selected)
+                        imgLanguage.setImageResource(it)
                     }
 
                 } else {
                     avatar?.let {
-                        tvLanguage.setDrawableTv(
-                            it,
-                            0,
-                            R.drawable.ic_langugae_unselected,
-                            0
-                        )
+//                        tvLanguage.setDrawableTv(
+//                            it,
+//                            0,
+//                            R.drawable.ic_language_unselected,
+//                            0
+//                        )
+                        radioBtn.setImageResource(R.drawable.ic_language_unselected)
+                        imgLanguage.setImageResource(it)
                     }
                 }
                 root.setOnSafeClick {
@@ -66,7 +70,7 @@ class MultiLangAdapter : BaseBindingAdapterDiff<LanguageUI, ItemMultiLangBinding
                     newPosition = holder.adapterPosition
                 }
             }
-            //setAnimation(holder.itemView, holder.bindingAdapterPosition, holder.itemView.context)
+            setAnimation(holder.itemView, holder.adapterPosition, holder.itemView.context)
 
         }
     }

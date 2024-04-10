@@ -24,7 +24,7 @@ class RippleCornerTextView : AppCompatTextView {
             invalidate()
         }
 
-    var strokeColor: String = "#00000000"
+    var strokeColor: String = "#00FFFFFF"
         set(value) {
             field = value
             invalidate()
@@ -191,7 +191,7 @@ class RippleCornerTextView : AppCompatTextView {
             it.color = Color.parseColor(strokeColor)
             it.style = Paint.Style.STROKE
             it.strokeWidth = strokeWidth
-            canvas?.drawPath(path, it)
+            canvas.drawPath(path, it)
         }
         super.onDraw(canvas)
     }
