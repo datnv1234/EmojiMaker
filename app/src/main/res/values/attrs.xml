@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="RippleCornerTextView">
+        <attr name="cornerRadius" format="dimension" />
+        <attr name="startGradientColor" format="string" />
+        <attr name="endGradientColor" format="string" />
+        <attr name="strokeWidthT" format="float" />
+        <attr name="strokeColorT" format="string" />
+        <attr name="backgroundColorView" format="string" />
+
+    </declare-styleable>
+</resources>

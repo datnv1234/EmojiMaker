@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">AI emoji maker</string>
     <string name="unable_to_access_the_internet_please_visit_connection_wifi_settings">Unable to access the internet please visit connection wifi settings</string>
+    <string name="content_intro_1">This is intro!</string>
+    <string name="content_intro_2">This is intro!</string>
+    <string name="content_intro_3">This is intro!</string>
+    <string name="start">Start</string>
+    <string name="next">Next</string>
+    <string name="language">Language</string>
+    <string name="install">Install</string>
 </resources>

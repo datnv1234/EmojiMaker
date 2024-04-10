@@ -8,6 +8,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("kotlin-android")
     id("kotlin-kapt")
+    id("com.google.devtools.ksp")
     id("dagger.hilt.android.plugin")
     id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
@@ -16,6 +17,10 @@ plugins {
 jacoco {
     toolVersion = "0.8.1"
 }
+
+val apikeyPropertiesFile = rootProject.file("apikey.properties")
+val apikeyProperties = Properties()
+apikeyProperties.load(FileInputStream(apikeyPropertiesFile))
 
 android {
     namespace = "com.wa.ai.emojimaker"
@@ -28,6 +33,10 @@ android {
         versionCode = 1
         versionName = "1.0"
 
+        val formattedDate = SimpleDateFormat("MM.dd.yyyy").format(Date())
+        base.archivesBaseName = "App_ReflectTV_v${versionName}(${versionCode})_${formattedDate}"
+
+        multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -45,6 +54,13 @@ android {
                 "proguard-rules.pro"
             )
         }
+        debug {
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -54,8 +70,18 @@ android {
         jvmTarget = "17"
     }
 
+    bundle {
+        language {
+            enableSplit = false
+        }
+    }
+
     kapt {
         correctErrorTypes = true
+    }
+
+    packagingOptions {
+        resources.excludes.add("META-INF/*")
     }
 }
 
@@ -68,7 +94,11 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
     implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
     implementation ("androidx.lifecycle:lifecycle-extensions:2.2.0")
-    kapt ("androidx.lifecycle:lifecycle-compiler:2.7.0")
+
+    //noinspection LifecycleAnnotationProcessorWithJava8
+    kapt("androidx.lifecycle:lifecycle-compiler:2.7.0")
+
+    implementation("com.tbuonomo:dotsindicator:5.0")
 
     //Hilt
     implementation("com.google.dagger:hilt-android:2.51.1")
@@ -88,7 +118,9 @@ dependencies {
     implementation("com.google.firebase:firebase-config-ktx:21.6.3")
     implementation("com.google.android.ump:user-messaging-platform:2.2.0")
     implementation("androidx.window:window:1.2.0")
-    implementation("com.google.android.gms:play-services-measurement-api:21.6.1")
+
+    //noinspection GradleDependency
+    implementation("com.google.android.gms:play-services-measurement-api:21.5.1")
     implementation(platform("com.google.firebase:firebase-bom:32.7.4"))
     implementation("com.google.firebase:firebase-analytics")
 
@@ -109,6 +141,8 @@ dependencies {
     implementation("androidx.room:room-common:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
     implementation("androidx.room:room-runtime:2.6.1")
+
+    //noinspection KaptUsageInsteadOfKsp
     kapt("androidx.room:room-compiler:2.6.1")
     androidTestImplementation("androidx.room:room-testing:2.6.1")
 

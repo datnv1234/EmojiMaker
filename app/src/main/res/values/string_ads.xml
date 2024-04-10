@@ -6,7 +6,7 @@
     <string name="app_id" translatable="false">ca-app-pub-3940256099942544~3347511713</string>
 
 <!--    open app-->
-    <string name="inter_open_app" translatable="false">ca-app-pub-3940256099942544/9257395921</string>
+    <string name="open_app" translatable="false">ca-app-pub-3940256099942544/9257395921</string>
 
 <!--    inter-->
     <string name="inter_connect_to_tv" translatable="false">ca-app-pub-3940256099942544/1033173712</string>

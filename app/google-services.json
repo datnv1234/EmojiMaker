@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "693443744605",
+    "project_id": "ai-emoji-maker-84cd4",
+    "storage_bucket": "ai-emoji-maker-84cd4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:693443744605:android:13eb85ba6ce08325944eb4",
+        "android_client_info": {
+          "package_name": "com.wa.ai.emojimaker"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBoz_Xj7bUcKWreRjEuc6XDK5J3td7UTwM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

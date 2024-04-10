@@ -4,10 +4,18 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import com.google.android.gms.ads.nativead.NativeAdView
+import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.common.Constant
+import com.wa.ai.emojimaker.databinding.ActivityMultiLangBinding
+import com.wa.ai.emojimaker.databinding.AdNativeVideoBinding
+import com.wa.ai.emojimaker.ui.adapter.MultiLangAdapter
 import com.wa.ai.emojimaker.ui.base.BaseBindingActivity
+import com.wa.ai.emojimaker.ui.intro.IntroActivity
 import com.wa.ai.emojimaker.utils.DeviceUtils
 import com.wa.ai.emojimaker.utils.SystemUtil
+import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils
+import com.wa.ai.emojimaker.utils.extention.invisible
+import com.wa.ai.emojimaker.utils.extention.visible
 
 
 class MultiLangActivity : BaseBindingActivity<ActivityMultiLangBinding, MultiLangViewModel>() {
@@ -68,7 +76,7 @@ class MultiLangActivity : BaseBindingActivity<ActivityMultiLangBinding, MultiLan
 					viewModel.saveFirstKeyIntro()
 					SystemUtil.changeLang(code.ifEmpty { oldCode }, this)
 					startActivity(Intent(this, IntroActivity::class.java))
-					finish()
+					//finish()
 				}
 			}
 
@@ -78,11 +86,11 @@ class MultiLangActivity : BaseBindingActivity<ActivityMultiLangBinding, MultiLan
 				binding.imgBack.setOnClickListener {
 					if (oldCode != code) {
 						SystemUtil.changeLang(if (code.isNotEmpty()) code else oldCode, this)
-						val i = Intent(this, MainActivity::class.java)
-						i.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-						startActivity(i)
+//						val i = Intent(this, MainActivity::class.java)
+//						i.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+//						startActivity(i)
 					}
-					finish()
+					//finish()
 				}
 			}
 		}

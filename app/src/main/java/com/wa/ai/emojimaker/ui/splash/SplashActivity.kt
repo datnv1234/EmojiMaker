@@ -11,6 +11,8 @@ import com.wa.ai.emojimaker.common.Constant
 import com.wa.ai.emojimaker.data.local.SharedPreferenceHelper
 import com.wa.ai.emojimaker.databinding.ActivitySplashBinding
 import com.wa.ai.emojimaker.ui.base.BaseBindingActivity
+import com.wa.ai.emojimaker.ui.intro.IntroActivity
+import com.wa.ai.emojimaker.ui.multilang.MultiLangActivity
 import com.wa.ai.emojimaker.utils.extention.isGrantNotificationPermission
 import com.wa.ai.emojimaker.utils.extention.setStatusBarColor
 import kotlinx.coroutines.Dispatchers
@@ -68,36 +70,36 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
 
                                 withContext(Dispatchers.Main) {
                                     if (isNextScreen) {
-                                        startActivity(
-                                            Intent(
-                                                this@SplashActivity,
-                                                MainActivity::class.java
-                                            )
-                                        )
+//                                        startActivity(
+//                                            Intent(
+//                                                this@SplashActivity,
+//                                                MainActivity::class.java
+//                                            )
+//                                        )
                                     } else {
-                                        startActivity(
-                                            Intent(
-                                                this@SplashActivity,
-                                                PermissionActivity::class.java
-                                            )
-                                        )
+//                                        startActivity(
+//                                            Intent(
+//                                                this@SplashActivity,
+//                                                PermissionActivity::class.java
+//                                            )
+//                                        )
                                     }
                                 }
                             }
                         } else {
                             if (isNextScreen) {
-                                startActivity(Intent(this@SplashActivity, MainActivity::class.java)
-                                )
+                                //startActivity(Intent(this@SplashActivity, MainActivity::class.java)
+                                //)
                             } else {
-                                startActivity(Intent(this@SplashActivity, PermissionActivity::class.java))
+                               // startActivity(Intent(this@SplashActivity, PermissionActivity::class.java))
                             }
                         }
                     }
 
                     else -> {
-                        startActivity(
-                            Intent(this@SplashActivity, MainActivity::class.java)
-                        )
+//                        startActivity(
+//                            Intent(this@SplashActivity, MainActivity::class.java)
+//                        )
                     }
                 }
                 finish()
