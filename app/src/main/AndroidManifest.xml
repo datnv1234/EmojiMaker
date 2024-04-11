@@ -42,7 +42,11 @@
             android:name=".ui.multilang.MultiLangActivity"
             android:exported="true" />
         <activity
-            android:name="com.wa.ai.emojimaker.ui.intro.IntroActivity"
+            android:name=".ui.intro.IntroActivity"
+            android:exported="true" />
+
+        <activity
+            android:name=".ui.main.MainActivity"
             android:exported="true" />
 
         <meta-data

@@ -24,7 +24,7 @@ import com.wa.ai.emojimaker.utils.extention.isWifiConnect
 abstract class BaseBindingActivity<B : ViewDataBinding, VM : BaseViewModel> : BaseActivity() {
     lateinit var binding: B
     lateinit var viewModel: VM
-    private var permissionDialog: PermissionDialog? = null
+    var permissionDialog: PermissionDialog? = null
     private var isDispatchTouchEvent = true
 
     abstract val layoutId: Int

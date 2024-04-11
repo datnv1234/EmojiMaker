@@ -14,6 +14,7 @@ import com.wa.ai.emojimaker.databinding.ActivityIntroBinding
 import com.wa.ai.emojimaker.databinding.AdNativeVideoBinding
 import com.wa.ai.emojimaker.ui.adapter.IntroAdapter
 import com.wa.ai.emojimaker.ui.base.BaseBindingActivity
+import com.wa.ai.emojimaker.ui.main.MainActivity
 import com.wa.ai.emojimaker.utils.DeviceUtils
 import com.wa.ai.emojimaker.utils.RemoteConfigKey
 import com.wa.ai.emojimaker.utils.ads.BannerUtils
@@ -62,6 +63,13 @@ class IntroActivity : BaseBindingActivity<ActivityIntroBinding, IntroViewModel>(
         }
 
     }
+    private fun startMainActivity() {
+        Intent(this@IntroActivity, MainActivity::class.java).apply {
+            startActivity(this)
+            finish()
+        }
+    }
+
     private fun initListener() {
         binding.tvNext.setOnSafeClick(1200) {
             viewModel.introMutableLiveData.value?.size?.let { size ->
@@ -76,10 +84,8 @@ class IntroActivity : BaseBindingActivity<ActivityIntroBinding, IntroViewModel>(
                             )
 
                             withContext(Dispatchers.Main) {
-//                                Intent(this@IntroActivity, PermissionActivity::class.java).apply {
-//                                    startActivity(this)
-//                                }
-                                //finish()
+                                startMainActivity()
+                                finish()
                             }
                         }
 

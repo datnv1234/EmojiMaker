@@ -11,6 +11,7 @@ import com.wa.ai.emojimaker.databinding.AdNativeVideoBinding
 import com.wa.ai.emojimaker.ui.adapter.MultiLangAdapter
 import com.wa.ai.emojimaker.ui.base.BaseBindingActivity
 import com.wa.ai.emojimaker.ui.intro.IntroActivity
+import com.wa.ai.emojimaker.ui.main.MainActivity
 import com.wa.ai.emojimaker.utils.DeviceUtils
 import com.wa.ai.emojimaker.utils.SystemUtil
 import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils
@@ -76,7 +77,7 @@ class MultiLangActivity : BaseBindingActivity<ActivityMultiLangBinding, MultiLan
 					viewModel.saveFirstKeyIntro()
 					SystemUtil.changeLang(code.ifEmpty { oldCode }, this)
 					startActivity(Intent(this, IntroActivity::class.java))
-					//finish()
+					finish()
 				}
 			}
 
@@ -86,11 +87,11 @@ class MultiLangActivity : BaseBindingActivity<ActivityMultiLangBinding, MultiLan
 				binding.imgBack.setOnClickListener {
 					if (oldCode != code) {
 						SystemUtil.changeLang(if (code.isNotEmpty()) code else oldCode, this)
-//						val i = Intent(this, MainActivity::class.java)
-//						i.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-//						startActivity(i)
+						val i = Intent(this, MainActivity::class.java)
+						i.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+						startActivity(i)
 					}
-					//finish()
+					finish()
 				}
 			}
 		}
