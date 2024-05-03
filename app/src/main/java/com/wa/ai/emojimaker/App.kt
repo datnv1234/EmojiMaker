@@ -37,12 +37,6 @@ import javax.inject.Inject
 @HiltAndroidApp
 class App : Application() {
 
-
-//    lateinit var soundCurrent: ItemSound
-//    lateinit var videoCurrent: ItemVideo
-//    lateinit var imageCurrent: ItemImage
-//    var listDataSound: List<ItemSound> = mutableListOf()
-//    var listDataVideo: List<ItemVideo> = mutableListOf()
     private var mNetworkReceiver: NetworkChangeReceiver? = null
     private var appOpenAdManager: AppOpenAdManager = AppOpenAdManager()
 
@@ -191,14 +185,6 @@ class App : Application() {
                     isShowingAd = false
                     onShowAdCompleteListener.onAdShown()
                     appOpenAd = null
-                }
-
-                override fun onAdImpression() {
-                    super.onAdImpression()
-                }
-
-                override fun onAdShowedFullScreenContent() {
-                    super.onAdShowedFullScreenContent()
                 }
             }
 
