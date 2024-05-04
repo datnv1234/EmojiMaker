@@ -27,7 +27,12 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:supportsRtl"
         tools:targetApi="31">
-
+        <activity
+            android:name=".ui.emojimaker.EmojiMakerActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:exported="false"
+            android:label="@string/title_activity_emoji_maker"
+            android:theme="@style/Theme.AIEmojiMaker.Fullscreen" />
         <activity
             android:name=".ui.splash.SplashActivity"
             android:exported="true">
@@ -37,14 +42,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".ui.multilang.MultiLangActivity"
             android:exported="true" />
         <activity
             android:name=".ui.intro.IntroActivity"
             android:exported="true" />
-
         <activity
             android:name=".ui.main.MainActivity"
             android:exported="true" />
@@ -52,10 +55,9 @@
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="@string/app_id" />
-
-        <meta-data android:name="com.google.android.gms.ads.flag.NATIVE_AD_DEBUGGER_ENABLED" android:value="false" />
-
+        <meta-data
+            android:name="com.google.android.gms.ads.flag.NATIVE_AD_DEBUGGER_ENABLED"
+            android:value="false" />
     </application>
-
 
 </manifest>

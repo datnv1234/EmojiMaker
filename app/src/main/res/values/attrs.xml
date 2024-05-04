@@ -8,6 +8,18 @@
         <attr name="strokeWidthT" format="float" />
         <attr name="strokeColorT" format="string" />
         <attr name="backgroundColorView" format="string" />
+    </declare-styleable>
 
+    <declare-styleable name="StickerView">
+        <attr name="borderAlpha" format="integer"/>
+        <attr name="borderColor" format="color"/>
+        <attr name="bringToFrontCurrentSticker" format="boolean" />
+        <attr name="showBorder" format="string" />
+        <attr name="showIcons" format="boolean" />
+
+    </declare-styleable>
+    <declare-styleable name="FullscreenAttrs">
+        <attr name="fullscreenBackgroundColor" format="color" />
+        <attr name="fullscreenTextColor" format="color" />
     </declare-styleable>
 </resources>

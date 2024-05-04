@@ -20,6 +20,7 @@ import com.wa.ai.emojimaker.utils.DeviceUtils
 import com.wa.ai.emojimaker.utils.RemoteConfigKey
 import com.wa.ai.emojimaker.utils.ads.BannerUtils
 import com.wa.ai.emojimaker.utils.extention.gone
+import com.wa.ai.emojimaker.utils.extention.setFullScreen
 import timber.log.Timber
 
 class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
@@ -34,7 +35,7 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
         mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
 
         setUpDialogPermission()
-
+        setFullScreen()
         val toolbar: Toolbar = binding.toolbar
         toolbar.title = ""
         setSupportActionBar(toolbar)

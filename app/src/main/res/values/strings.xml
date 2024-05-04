@@ -13,4 +13,13 @@
     <string name="my_creative">My Creative</string>
     <string name="settings">Settings</string>
     <string name="search">Search</string>
+    <string name="create_your_emblem">Create Your Emblem</string>
+    <string name="unleash_your_individuality">Unleash Your Individuality</string>
+    <string name="create">Create</string>
+    <string name="title_activity_emoji_maker">EmojiMakerActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="recent">Recent</string>
+    <string name="Create_Emoji">Create Emoji</string>
+    <string name="back">Back</string>
 </resources>
