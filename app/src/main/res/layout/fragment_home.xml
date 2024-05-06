@@ -65,6 +65,7 @@
                 android:fontFamily="@font/poppins_medium"
                 android:textSize="@dimen/_11ssp"/>
             <LinearLayout
+                android:id="@+id/btnCreateSticker"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="16dp"
