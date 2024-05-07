@@ -8,20 +8,8 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
-import androidx.recyclerview.widget.AsyncDifferConfig
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import java.util.concurrent.Executors
-
-abstract class BaseBindingAdapterDiff<T, B : ViewDataBinding>(
-    itemCallback: DiffUtil.ItemCallback<T>
-) : ListAdapter<T, BaseBindingAdapterDiff.BaseHolder<B>>(
-    AsyncDifferConfig.Builder(itemCallback)
-        .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
-        .build()
-) {
-
+abstract class BaseBindingAdapter<B : ViewDataBinding> : RecyclerView.Adapter<BaseBindingAdapter.BaseHolder<B>>() {
 
     protected abstract fun onBindViewHolderBase(holder: BaseHolder<B>, position: Int)
 
@@ -54,4 +42,6 @@ abstract class BaseBindingAdapterDiff<T, B : ViewDataBinding>(
             lastPosition = position
         }
     }
+
+
 }

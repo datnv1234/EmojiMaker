@@ -33,7 +33,7 @@
                 android:translationZ="@dimen/_14sdp"
                 android:contentDescription="@string/back"/>
             <TextView
-                android:id="@+id/tv_create"
+                android:id="@+id/btnCreate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
@@ -59,7 +59,7 @@
                 android:gravity="center"
                 android:fontFamily="@font/poppins_semibold"
                 android:layout_marginHorizontal="16dp"
-                android:layout_toStartOf="@+id/tv_create"
+                android:layout_toStartOf="@+id/btnCreate"
                 android:layout_toEndOf="@+id/iv_back"/>
         </RelativeLayout>
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -329,8 +329,10 @@
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_options"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="50dp"
+                        android:paddingHorizontal="8dp"
                         android:layout_toEndOf="@+id/rl_recent"
+                        android:elevation="@dimen/_6sdp"
                         android:orientation="horizontal"
                         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"/>
                 </RelativeLayout>

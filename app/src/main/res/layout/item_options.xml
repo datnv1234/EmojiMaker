@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+
+    </data>
+
+    <LinearLayout
+        android:id="@+id/item"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:paddingHorizontal="4dp"
+        android:paddingVertical="4dp"
+        android:layout_marginHorizontal="8dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:background="@drawable/bg_item_option">
+            <ImageView
+                android:id="@+id/imgOption"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_marginEnd="6dp"
+                android:src="@drawable/ic_face"
+                android:contentDescription="@string/option_preview" />
+            <TextView
+                android:id="@+id/tvOption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/face"
+                android:textSize="12sp"
+                android:textColor="#797D87"
+                android:fontFamily="@font/poppins_medium"/>
+    </LinearLayout>
+</layout>

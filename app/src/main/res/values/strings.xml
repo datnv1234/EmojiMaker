@@ -23,4 +23,16 @@
     <string name="Create_Emoji">Create Emoji</string>
     <string name="back">Back</string>
     <string name="todo">TODO</string>
+    <string name="option_preview">Option preview</string>
+    <string name="face">Face</string>
+    <string name="accessories">Accessories</string>
+    <string name="beard">Beard</string>
+    <string name="brow">Brow</string>
+    <string name="eyes">Eyes</string>
+    <string name="glass">Glass</string>
+    <string name="hair">Hair</string>
+    <string name="hand">Hand</string>
+    <string name="hat">Hat</string>
+    <string name="mouth">Mouth</string>
+    <string name="nose">Nose</string>
 </resources>

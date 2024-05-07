@@ -2,6 +2,7 @@ package com.wa.ai.emojimaker.common
 
 object Constant {
 
+    const val TAG = "datnv"
     const val BUFSIZE = 8192
     var DEFAULT_SERVER_PORT = 54613
     //Intent

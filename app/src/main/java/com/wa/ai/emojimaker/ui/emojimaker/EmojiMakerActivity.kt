@@ -17,21 +17,28 @@ import android.os.Environment
 import android.os.Parcelable
 import android.provider.OpenableColumns
 import android.text.InputType
+import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.databinding.DataBindingUtil
+import androidx.core.view.doOnAttach
 import androidx.lifecycle.ViewModelProvider
+import androidx.viewpager2.widget.ViewPager2
 import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.Headers
 import com.wa.ai.emojimaker.R
+import com.wa.ai.emojimaker.common.Constant.TAG
+import com.wa.ai.emojimaker.data.model.ItemOptionUI
 import com.wa.ai.emojimaker.databinding.ActivityEmojiMakerBinding
+import com.wa.ai.emojimaker.ui.adapter.IntroAdapter
+import com.wa.ai.emojimaker.ui.adapter.OptionAdapter
+import com.wa.ai.emojimaker.ui.adapter.PagerIconAdapter
 import com.wa.ai.emojimaker.ui.base.BaseBindingActivity
+import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 import com.wa.ai.emojimaker.utils.sticker.BitmapStickerIcon
 import com.wa.ai.emojimaker.utils.sticker.DrawableSticker
 import com.wa.ai.emojimaker.utils.sticker.Sticker
@@ -49,30 +56,61 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-class EmojiMakerActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: StickerViewModel
-    private lateinit var binding: ActivityEmojiMakerBinding
+class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, StickerViewModel>() {
+
     private var rotateToastShowed = false;
+    private val optionList = ArrayList<ItemOptionUI>()
+    private lateinit var emojiViewModel: EmojiViewModel
+    private val pagerIconAdapter: PagerIconAdapter by lazy { PagerIconAdapter() }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override val layoutId: Int
+        get() = R.layout.activity_emoji_maker
+
+    override fun getViewModel(): Class<StickerViewModel> = StickerViewModel::class.java
+    override fun setupView(savedInstanceState: Bundle?) {
+
         Timber.plant(Timber.DebugTree())
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_emoji_maker)
-
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_emoji_maker)
-
-        viewModel = ViewModelProvider(this)[StickerViewModel::class.java]
         viewModel.stickerOperationListener = MyStickerOperationListener(binding)
         binding.viewModel = viewModel
-        binding.executePendingBindings()
         binding.lifecycleOwner = this
-
+        binding.executePendingBindings()
         setupIcons()
         setupButtons()
 
         handleIntent(intent)
         intent.type = null // Don't run again if rotated/etc.
+        setUpViewPager()
+
+        binding.btnCreate.setOnSafeClick {
+
+        }
+    }
+
+    private fun setUpViewPager() {
+        binding.vpIcon.apply {
+            adapter = pagerIconAdapter
+            registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
+
+                }
+            })
+        }
+    }
+
+    override fun setupData() {
+        getOptions()
+        emojiViewModel = ViewModelProvider(this)[EmojiViewModel::class.java]
+        emojiViewModel.getItemOption(this)
+        emojiViewModel.introMutableLiveData.observe(this) {
+            pagerIconAdapter.submitList(it.toMutableList())
+        }
+        val optionAdapter = OptionAdapter(this, optionList, itemClick = {
+            binding.vpIcon.setCurrentItem(it, true)
+        })
+
+        binding.rvOptions.adapter = optionAdapter
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -463,6 +501,20 @@ class EmojiMakerActivity : AppCompatActivity() {
                 PERM_RQST_CODE
             )
         }
+    }
+
+    private fun getOptions() {
+        optionList.add(ItemOptionUI("accessories", R.drawable.ic_accessory))
+        optionList.add(ItemOptionUI("beard", R.drawable.ic_beard))
+        optionList.add(ItemOptionUI("brow", R.drawable.ic_brow))
+        optionList.add(ItemOptionUI("eyes", R.drawable.ic_eyes))
+        optionList.add(ItemOptionUI("face", R.drawable.ic_face))
+        optionList.add(ItemOptionUI("glass", R.drawable.ic_glass))
+        optionList.add(ItemOptionUI("hair", R.drawable.ic_hair))
+        optionList.add(ItemOptionUI("hand", R.drawable.ic_hand))
+        optionList.add(ItemOptionUI("hat", R.drawable.ic_hat))
+        optionList.add(ItemOptionUI("mouth", R.drawable.ic_mouth))
+        optionList.add(ItemOptionUI("nose", R.drawable.ic_nose))
     }
 
     internal class FetchImageFromLinkTask(val text: String, val context: EmojiMakerActivity) :
