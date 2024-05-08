@@ -504,17 +504,17 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     }
 
     private fun getOptions() {
-        optionList.add(ItemOptionUI("accessories", R.drawable.ic_accessory))
-        optionList.add(ItemOptionUI("beard", R.drawable.ic_beard))
-        optionList.add(ItemOptionUI("brow", R.drawable.ic_brow))
-        optionList.add(ItemOptionUI("eyes", R.drawable.ic_eyes))
         optionList.add(ItemOptionUI("face", R.drawable.ic_face))
+        optionList.add(ItemOptionUI("eyes", R.drawable.ic_eyes))
+        optionList.add(ItemOptionUI("nose", R.drawable.ic_nose))
+        optionList.add(ItemOptionUI("mouth", R.drawable.ic_mouth))
+        optionList.add(ItemOptionUI("brow", R.drawable.ic_brow))
+        optionList.add(ItemOptionUI("beard", R.drawable.ic_beard))
         optionList.add(ItemOptionUI("glass", R.drawable.ic_glass))
         optionList.add(ItemOptionUI("hair", R.drawable.ic_hair))
-        optionList.add(ItemOptionUI("hand", R.drawable.ic_hand))
         optionList.add(ItemOptionUI("hat", R.drawable.ic_hat))
-        optionList.add(ItemOptionUI("mouth", R.drawable.ic_mouth))
-        optionList.add(ItemOptionUI("nose", R.drawable.ic_nose))
+        optionList.add(ItemOptionUI("hand", R.drawable.ic_hand))
+        optionList.add(ItemOptionUI("accessories", R.drawable.ic_accessory))
     }
 
     internal class FetchImageFromLinkTask(val text: String, val context: EmojiMakerActivity) :

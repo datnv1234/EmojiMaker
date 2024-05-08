@@ -1,12 +1,10 @@
 package com.wa.ai.emojimaker.ui.adapter
 
-import android.content.Context
 import androidx.recyclerview.widget.DiffUtil
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.data.model.PagerIconUI
 import com.wa.ai.emojimaker.databinding.ItemPaperIconBinding
 import com.wa.ai.emojimaker.ui.base.BaseBindingAdapterDiff
-import timber.log.Timber
 
 class PagerIconAdapter: BaseBindingAdapterDiff<PagerIconUI, ItemPaperIconBinding>(object : DiffUtil.ItemCallback<PagerIconUI>() {
     override fun areItemsTheSame(oldItem: PagerIconUI, newItem: PagerIconUI): Boolean {
@@ -20,8 +18,9 @@ class PagerIconAdapter: BaseBindingAdapterDiff<PagerIconUI, ItemPaperIconBinding
 }) {
     override fun onBindViewHolderBase(holder: BaseHolder<ItemPaperIconBinding>, position: Int) {
         with(getItem(holder.adapterPosition)) {
-            holder.binding.tv.text = holder.adapterPosition.toString()
-            holder.binding.rvIcon.adapter = this.stickerAdapter
+            val stickerAdapter = StickerAdapter()
+            stickerAdapter.submitList(this.listPieces)
+            holder.binding.rvIcon.adapter = stickerAdapter
         }
 
     }
