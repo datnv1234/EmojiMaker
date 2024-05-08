@@ -34,7 +34,7 @@ android {
         versionName = "1.0"
 
         val formattedDate = SimpleDateFormat("MM.dd.yyyy").format(Date())
-        base.archivesBaseName = "App_ReflectTV_v${versionName}(${versionCode})_${formattedDate}"
+        base.archivesBaseName = "AI_Emoji_Maker_v${versionName}(${versionCode})_${formattedDate}"
 
         multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

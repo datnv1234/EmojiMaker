@@ -103,7 +103,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         getOptions()
         emojiViewModel = ViewModelProvider(this)[EmojiViewModel::class.java]
         emojiViewModel.getItemOption(this)
-        emojiViewModel.introMutableLiveData.observe(this) {
+        emojiViewModel.optionMutableLiveData.observe(this) {
             pagerIconAdapter.submitList(it.toMutableList())
         }
         val optionAdapter = OptionAdapter(this, optionList, itemClick = {

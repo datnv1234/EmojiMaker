@@ -1,5 +1,5 @@
 package com.wa.ai.emojimaker.data.model
 
-import android.graphics.drawable.Drawable
+import android.graphics.Bitmap
 
-data class PieceSticker(val drawable: Drawable)
+data class PieceSticker(val bitmap: Bitmap)

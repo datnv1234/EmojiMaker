@@ -21,7 +21,7 @@ class PagerIconAdapter: BaseBindingAdapterDiff<PagerIconUI, ItemPaperIconBinding
     override fun onBindViewHolderBase(holder: BaseHolder<ItemPaperIconBinding>, position: Int) {
         with(getItem(holder.adapterPosition)) {
             holder.binding.tv.text = holder.adapterPosition.toString()
-
+            holder.binding.rvIcon.adapter = this.stickerAdapter
         }
 
     }
