@@ -7,8 +7,9 @@ import com.wa.ai.emojimaker.common.Constant
 import com.wa.ai.emojimaker.data.model.PieceSticker
 import com.wa.ai.emojimaker.databinding.ItemPieceStickerBinding
 import com.wa.ai.emojimaker.ui.base.BaseBindingAdapterDiff
+import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 
-class StickerAdapter : BaseBindingAdapterDiff<PieceSticker, ItemPieceStickerBinding>(object : DiffUtil.ItemCallback<PieceSticker>() {
+class StickerAdapter(val itemClick:(pos: Int)->Unit) : BaseBindingAdapterDiff<PieceSticker, ItemPieceStickerBinding>(object : DiffUtil.ItemCallback<PieceSticker>() {
     override fun areItemsTheSame(oldItem: PieceSticker, newItem: PieceSticker): Boolean {
         return oldItem.bitmap == newItem.bitmap
     }
@@ -20,6 +21,9 @@ class StickerAdapter : BaseBindingAdapterDiff<PieceSticker, ItemPieceStickerBind
 }) {
     override fun onBindViewHolderBase(holder: BaseHolder<ItemPieceStickerBinding>, position: Int) {
         holder.binding.piece.setImageBitmap(getItem(holder.adapterPosition).bitmap)
+        holder.binding.piece.setOnSafeClick {
+            itemClick(holder.adapterPosition)
+        }
         Log.d(Constant.TAG, "StickerAdapter: " + getItem(holder.adapterPosition).bitmap)
     }
 

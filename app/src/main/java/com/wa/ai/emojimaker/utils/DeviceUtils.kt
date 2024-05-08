@@ -2,10 +2,17 @@ package com.wa.ai.emojimaker.utils
 
 import android.content.ActivityNotFoundException
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.ConnectivityManager
 import android.net.Uri
+import android.os.Environment
 import android.widget.Toast
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import kotlin.coroutines.coroutineContext
 
 
 object DeviceUtils {
@@ -76,5 +83,37 @@ object DeviceUtils {
             // Nếu không tìm thấy Google Play Store, hiển thị thông báo hoặc hướng dẫn cài đặt
             Toast.makeText(this, "Không thể mở Google Play Store", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    fun getPublicDirectoryPath(directoryType: String): String? {
+        return Environment.getExternalStoragePublicDirectory(directoryType)?.absolutePath
+    }
+
+    fun savePNGToInternalStorage(
+        context: Context,
+        folder: String,
+        bitmapImage: Bitmap,
+        fileName: String = "${System.currentTimeMillis()}.png"
+    ): String {
+        val cw = ContextWrapper(context)
+        // Path to /data/data/your_app/app_data/imageDir
+        val directory: File = cw.getDir(folder, Context.MODE_PRIVATE)
+        // Tạo tệp lưu trữ ảnh
+        val path = File(directory, fileName)
+        var fos: FileOutputStream? = null
+        try {
+            fos = FileOutputStream(path)
+            // Lưu ảnh vào FileOutputStream
+            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            try {
+                fos!!.close()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }
+        return directory.absolutePath
     }
 }

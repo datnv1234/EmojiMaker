@@ -79,8 +79,8 @@ class StickerViewSerializer {
                 drawableSticker.isFlippedVertically
             )
             dedup.getOrPut(
-                it.sha256!!,
-                { StickerMetadata(drawableSticker.bitmapCache, mutableListOf()) }).instances.add(entry)
+                it.sha256!!
+            ) { StickerMetadata(drawableSticker.bitmapCache, mutableListOf()) }.instances.add(entry)
         }
 
         return Board(SERIAL_VERSION, System.currentTimeMillis(), viewModel.canvasMatrix.value!!.getMatrix(), dedup)

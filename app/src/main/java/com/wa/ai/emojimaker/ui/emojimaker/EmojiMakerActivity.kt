@@ -4,6 +4,8 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
@@ -25,7 +27,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.view.doOnAttach
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.github.kittinunf.fuel.core.FuelManager
@@ -34,10 +35,11 @@ import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.common.Constant.TAG
 import com.wa.ai.emojimaker.data.model.ItemOptionUI
 import com.wa.ai.emojimaker.databinding.ActivityEmojiMakerBinding
-import com.wa.ai.emojimaker.ui.adapter.IntroAdapter
 import com.wa.ai.emojimaker.ui.adapter.OptionAdapter
 import com.wa.ai.emojimaker.ui.adapter.PagerIconAdapter
 import com.wa.ai.emojimaker.ui.base.BaseBindingActivity
+import com.wa.ai.emojimaker.utils.DeviceUtils
+import com.wa.ai.emojimaker.utils.extention.getBitMapFromView
 import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 import com.wa.ai.emojimaker.utils.sticker.BitmapStickerIcon
 import com.wa.ai.emojimaker.utils.sticker.DrawableSticker
@@ -51,6 +53,7 @@ import com.wa.ai.emojimaker.utils.sticker.iconEvents.FlipVerticallyEvent
 import com.wa.ai.emojimaker.utils.sticker.iconEvents.ZoomIconEvent
 import timber.log.Timber
 import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -62,7 +65,9 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     private var rotateToastShowed = false;
     private val optionList = ArrayList<ItemOptionUI>()
     private lateinit var emojiViewModel: EmojiViewModel
-    private val pagerIconAdapter: PagerIconAdapter by lazy { PagerIconAdapter() }
+    private val pagerIconAdapter: PagerIconAdapter by lazy { PagerIconAdapter(itemClick = {
+        doAddSticker(it)
+    })}
 
     override val layoutId: Int
         get() = R.layout.activity_emoji_maker
@@ -83,7 +88,22 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         setUpViewPager()
 
         binding.btnCreate.setOnSafeClick {
+            val bitmap = binding.stickerView.createBitmap()
+            createSticker(bitmap)
+            toast("Saved to storage!")
 
+            //saveAs()
+//            try {
+//                FileOutputStream(File(emojiDir, "Emoji_${System.currentTimeMillis()}.png")).use { out ->
+//                    .compress(
+//                        Bitmap.CompressFormat.PNG,
+//                        100,
+//                        out
+//                    ) // bmp is your Bitmap instance
+//                }
+//            } catch (e: IOException) {
+//                e.printStackTrace()
+//            }
         }
     }
 
@@ -108,6 +128,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         }
         val optionAdapter = OptionAdapter(this, optionList, itemClick = {
             binding.vpIcon.setCurrentItem(it, true)
+
         })
 
         binding.rvOptions.adapter = optionAdapter
@@ -229,12 +250,11 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         input.setText(defaultFileName, TextView.BufferType.EDITABLE)
         builder.setView(input)
 
-        builder.setPositiveButton(
-            "OK"
-        ) { dialog, which -> doSave(input.text.toString()) }
-        builder.setNegativeButton(
-            "Cancel"
-        ) { dialog, which -> dialog.cancel() }
+        builder.setPositiveButton("OK") { _, _ ->
+            doSave(input.text.toString())
+        }
+        builder.setNegativeButton("Cancel") { dialog, _ ->
+            dialog.cancel() }
 
         builder.show()
     }
@@ -249,22 +269,21 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         )
 
     private fun doSave(fileName: String) {
-        requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-
-        if (hasPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            val saveDir = getSaveDirectory()
-            val file = File(saveDir, fileName)
-
-            try {
-                saveDir.mkdirs()
-                StickerViewSerializer().serialize(viewModel, file)
-                viewModel.currentFileName = fileName
-                Toast.makeText(this, "Saved to $file", Toast.LENGTH_SHORT).show()
-            } catch (e: IOException) {
-                Timber.e(e, "Error writing %s", file)
-                Toast.makeText(this, "Error writing $file", Toast.LENGTH_LONG).show()
-            }
+        val cw = ContextWrapper(this)
+        val directory: File = cw.getDir("mySticker", Context.MODE_PRIVATE)
+        val file = File(directory, fileName)
+        try {
+            StickerViewSerializer().serialize(viewModel, file)
+            viewModel.currentFileName = fileName
+            Toast.makeText(this, "Saved to $file", Toast.LENGTH_SHORT).show()
+        } catch (e: IOException) {
+            Timber.e(e, "Error writing %s", file)
+            Toast.makeText(this, "Error writing $file", Toast.LENGTH_LONG).show()
         }
+    }
+
+    private fun createSticker(bitmap: Bitmap) {
+        DeviceUtils.savePNGToInternalStorage(this, "mySticker", bitmap)
     }
 
     private fun load() {
@@ -629,5 +648,6 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         const val INTENT_PICK_SAVED_FILE = 2
 
         const val MAX_SIZE_PIXELS = 2000 * 2000
+        val emojiDir = DeviceUtils.getPublicDirectoryPath(Environment.DIRECTORY_PICTURES) + "/Emoji/"
     }
 }

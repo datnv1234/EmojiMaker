@@ -558,6 +558,14 @@ public class StickerView extends FrameLayout {
         this.handlingSticker = null;
     }
 
+    @NonNull public Bitmap createBitmap() throws OutOfMemoryError {
+        handlingSticker = null;
+        Bitmap bitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        this.draw(canvas);
+        return bitmap;
+    }
+
     public ObservableMatrix getCanvasMatrix() {
         return canvasMatrix;
     }
