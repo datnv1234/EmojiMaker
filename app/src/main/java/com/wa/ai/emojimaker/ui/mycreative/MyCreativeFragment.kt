@@ -1,16 +1,18 @@
 package com.wa.ai.emojimaker.ui.mycreative
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.databinding.FragmentMyCreativeBinding
+import com.wa.ai.emojimaker.ui.adapter.CreativeAdapter
 import com.wa.ai.emojimaker.ui.base.BaseBindingFragment
 
 class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCreativeViewModel>() {
+
+    private val creativeAdapter: CreativeAdapter by lazy { CreativeAdapter(itemClick = {
+
+    })}
 
     companion object {
         fun newInstance() = MyCreativeFragment()
@@ -22,9 +24,15 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
         get() = getString(R.string.app_name)
 
     override fun onCreatedView(view: View?, savedInstanceState: Bundle?) {
+
     }
 
     override fun setupData() {
+        viewModel.getItemSticker(requireContext())
+        viewModel.stickerMutableLiveData.observe(this) {
+            creativeAdapter.submitList(it.toMutableList())
+        }
+        binding.rvSticker.adapter = creativeAdapter
     }
 
     override fun getViewModel(): Class<MyCreativeViewModel> = MyCreativeViewModel::class.java

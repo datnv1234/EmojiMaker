@@ -91,19 +91,6 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
             val bitmap = binding.stickerView.createBitmap()
             createSticker(bitmap)
             toast("Saved to storage!")
-
-            //saveAs()
-//            try {
-//                FileOutputStream(File(emojiDir, "Emoji_${System.currentTimeMillis()}.png")).use { out ->
-//                    .compress(
-//                        Bitmap.CompressFormat.PNG,
-//                        100,
-//                        out
-//                    ) // bmp is your Bitmap instance
-//                }
-//            } catch (e: IOException) {
-//                e.printStackTrace()
-//            }
         }
     }
 
@@ -191,7 +178,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         val deleteIcon = BitmapStickerIcon(
             ContextCompat.getDrawable(
                 this,
-                R.drawable.sticker_ic_close_white_18dp
+                R.drawable.ic_remove
             ),
             BitmapStickerIcon.LEFT_TOP
         )
@@ -199,7 +186,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         val zoomIcon = BitmapStickerIcon(
             ContextCompat.getDrawable(
                 this,
-                R.drawable.sticker_ic_scale_white_18dp
+                R.drawable.ic_zoom_and_rotate
             ),
             BitmapStickerIcon.RIGHT_BOTTOM
         )
@@ -421,6 +408,10 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     }
 
     private fun setupButtons() {
+
+        binding.ivBack.setOnSafeClick {
+            finish()
+        }
         /*binding.buttonOpen.setOnClickListener { load() }
 
         binding.buttonSave.setOnClickListener { save() }
@@ -478,6 +469,13 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         binding.buttonRotate.setOnLongClickListener {
             viewModel.resetCurrentStickerRotation();
             true
+        }
+
+        binding.btnFlipHorizontal.setOnSafeClick {
+            viewModel.flipCurrentSticker(StickerView.FLIP_HORIZONTALLY)
+        }
+        binding.btnFlipVertical.setOnSafeClick {
+            viewModel.flipCurrentSticker(StickerView.FLIP_VERTICALLY)
         }
     }
 
@@ -601,14 +599,16 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         override fun onStickerAdded(sticker: Sticker, direction: Int) {
             binding.stickerView.layoutSticker(sticker, direction)
             binding.stickerView.invalidate()
+            binding.btnCreate.isEnabled = true
         }
 
         override fun onStickerClicked(sticker: Sticker) {
             binding.stickerView.invalidate()
         }
 
-        override fun onStickerDeleted(sticker: Sticker) {
+        override fun onStickerDeleted(sticker: Sticker, isLastSticker: Boolean) {
             binding.stickerView.invalidate()
+            binding.btnCreate.isEnabled = !isLastSticker
         }
 
         override fun onStickerDragFinished(sticker: Sticker) {

@@ -100,7 +100,7 @@ open class StickerViewModel : BaseViewModel() {
         addSticker(sticker, Sticker.Position.CENTER)
     }
 
-    fun addSticker(sticker: Sticker, position: Int) {
+    private fun addSticker(sticker: Sticker, position: Int) {
         sticker.setCanvasMatrix(canvasMatrix.value!!.getMatrix())
         sticker.recalcFinalMatrix()
         stickers.value!!.add(sticker)
@@ -129,18 +129,21 @@ open class StickerViewModel : BaseViewModel() {
         }
     }
 
-    fun removeSticker(sticker: Sticker): Boolean {
-        if (stickers.value!!.contains(sticker)) {
+    fun isStickerViewEmpty() = handlingSticker.value == null
+
+    private fun removeSticker(sticker: Sticker): Boolean {
+        return if (stickers.value!!.contains(sticker)) {
             stickers.value!!.remove(sticker)
-            stickerOperationListener.onStickerDeleted(sticker)
+
             if (handlingSticker.value == sticker) {
                 handlingSticker.value = null
             }
+            stickerOperationListener.onStickerDeleted(sticker, stickers.value!!.size == 0)
             stickerOperationListener.onInvalidateView()
-            return true
+            true
         } else {
             Timber.d("remove: the sticker is not in this StickerView")
-            return false
+            false
         }
     }
 
@@ -477,9 +480,10 @@ open class StickerViewModel : BaseViewModel() {
                 midPoint.x,
                 midPoint.y
             )
-            if (rotationEnabled.value == true) {
+            /*if (rotationEnabled.value == true) {
                 moveMatrix.postRotate(newRotation - oldRotation, midPoint.x, midPoint.y)
-            }
+            }*/
+            moveMatrix.postRotate(newRotation - oldRotation, midPoint.x, midPoint.y)
             handlingSticker.value!!.setMatrix(moveMatrix)
         }
     }

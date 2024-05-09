@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:tag="layout/activity_new_screen_emoji_0"
-        android:background="@drawable/new_background_main"
+        android:background="@drawable/bg"
         tools:context=".ui.emojimaker.EmojiMakerActivity">
         <RelativeLayout
             android:id="@+id/rl_header"
@@ -32,28 +32,24 @@
                 android:elevation="@dimen/_14sdp"
                 android:translationZ="@dimen/_14sdp"
                 android:contentDescription="@string/back"/>
-            <TextView
+            <Button
                 android:id="@+id/btnCreate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="14sp"
-                android:textColor="@color/white"
-                android:background="@drawable/bg_button_gray"
-                android:paddingLeft="12dp"
-                android:paddingTop="8dp"
-                android:paddingRight="12dp"
-                android:paddingBottom="8dp"
-                android:text="@string/create"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:fontFamily="@font/poppins_semibold"
-                android:paddingHorizontal="12dp"
-                android:paddingVertical="8dp"/>
+                android:text="@string/save"
+                android:textSize="@dimen/_12ssp"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:enabled="false"
+                app:background="@drawable/bg_button_save"
+                android:fontFamily="@font/poppins_medium"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:textColor="#1F1F29"
+                android:textSize="@dimen/_20ssp"
+                android:textColor="#252E40"
                 android:text="@string/Create_Emoji"
                 android:layout_centerVertical="true"
                 android:gravity="center"
@@ -64,7 +60,6 @@
         </RelativeLayout>
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_height="0dp"
-            android:background="@drawable/transparent_bg"
             android:layout_width="match_parent"
             android:layout_weight="1">
             <androidx.constraintlayout.widget.Guideline
@@ -77,6 +72,7 @@
                 android:id="@+id/rl_emoji"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:background="@drawable/transparent_bg"
                 app:layout_constraintBottom_toTopOf="@+id/g1"
                 app:layout_constraintTop_toTopOf="parent">
                 <com.wa.ai.emojimaker.utils.sticker.StickerView
@@ -85,7 +81,7 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
                     app:activeIcons="@={viewModel.activeIcons}"
-                    app:borderColor="#B0B0B0"
+                    app:borderColor="#797D87"
                     app:iconColor="@android:color/black"
                     app:bringToFrontCurrentSticker="true"
                     app:canvasMatrix="@{viewModel.canvasMatrix}"
@@ -155,15 +151,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:orientation="vertical"
-                android:background="@color/white"
+                android:background="@color/transparent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/g1">
                 <HorizontalScrollView
                     android:id="@+id/rl_option_header"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="16dp"
-                    android:paddingRight="16dp"
+                    android:paddingVertical="4dp"
                     android:paddingHorizontal="16dp">
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -175,6 +170,7 @@
                             android:layout_height="match_parent"
                             android:layout_marginEnd="@dimen/_8sdp"
                             android:checked="@={viewModel.isLocked}"
+                            android:visibility="gone"
                             android:drawableTop="@drawable/ic_lock_outline_black_24dp"
                             android:minWidth="1dp" />
                         <ImageView
@@ -183,12 +179,14 @@
                             android:layout_height="36dp"
                             android:layout_marginEnd="@dimen/_8sdp"
                             android:src="@drawable/ic_refresh"
+                            android:visibility="gone"
                             android:contentDescription="@string/todo" />
                         <ImageButton
                             android:id="@+id/buttonReset"
                             android:layout_width="30dp"
                             android:layout_height="match_parent"
                             android:layout_marginEnd="@dimen/_8sdp"
+                            android:visibility="gone"
                             app:srcCompat="@drawable/ic_refresh_black_24dp"
                             android:contentDescription="@string/todo" />
 
@@ -197,6 +195,7 @@
                             android:layout_width="30dp"
                             android:layout_height="36dp"
                             android:layout_marginEnd="@dimen/_8sdp"
+                            android:visibility="gone"
                             app:srcCompat="@drawable/ic_add_box_black_24dp"
                             android:contentDescription="@string/todo" />
 
@@ -204,19 +203,20 @@
                             android:id="@+id/buttonDuplicate"
                             android:layout_width="30dp"
                             android:layout_height="match_parent"
+                            android:background="@color/transparent"
                             android:layout_marginEnd="@dimen/_8sdp"
-                            app:srcCompat="@drawable/ic_baseline_content_copy_24"
+                            app:srcCompat="@drawable/ic_dupplicate"
                             android:contentDescription="@string/todo" />
 
                         <ImageView
-                            android:id="@+id/iv_flip_horizontal"
+                            android:id="@+id/btnFlipHorizontal"
                             android:layout_width="30dp"
-                            android:layout_height="36dp"
+                            android:layout_height="match_parent"
                             android:layout_marginEnd="@dimen/_8sdp"
                             android:src="@drawable/ic_flip_horizontal"
                             android:contentDescription="@string/todo" />
                         <ImageView
-                            android:id="@+id/iv_flip_vertical"
+                            android:id="@+id/btnFlipVertical"
                             android:layout_width="30dp"
                             android:layout_height="36dp"
                             android:layout_marginEnd="@dimen/_8sdp"
@@ -231,7 +231,8 @@
                             android:drawableTop="@drawable/ic_crop_black_24dp"
                             android:minWidth="1dp"
                             android:textOff=""
-                            android:textOn=""/>
+                            android:textOn=""
+                            android:visibility="gone"/>
                         <ToggleButton
                             android:id="@+id/buttonRotate"
                             android:layout_width="30dp"
@@ -241,6 +242,7 @@
                             android:drawableTop="@drawable/ic_rotate"
                             android:gravity="center"
                             android:minWidth="1dp"
+                            android:visibility="gone"
                             android:textOff=""
                             android:textOn=""/>
                         <ImageButton
@@ -249,6 +251,7 @@
                             android:layout_height="match_parent"
                             android:layout_marginEnd="@dimen/_8sdp"
                             app:srcCompat="@drawable/ic_crop_rotate_black_24dp"
+                            android:visibility="gone"
                             android:contentDescription="@string/todo" />
                         <ImageButton
                             android:id="@+id/buttonResetZoom"
@@ -256,8 +259,25 @@
                             android:layout_height="match_parent"
                             android:layout_marginEnd="@dimen/_8sdp"
                             app:srcCompat="@drawable/ic_zoom_out_map_black_24dp"
+                            android:visibility="gone"
                             android:contentDescription="@string/todo" />
-
+                        <TextView
+                            android:layout_width="16dp"
+                            android:layout_height="match_parent"/>
+                        <ImageView
+                            android:id="@+id/btnUndo"
+                            android:layout_width="30dp"
+                            android:layout_height="36dp"
+                            android:layout_marginEnd="@dimen/_8sdp"
+                            android:src="@drawable/ic_undo_left_round"
+                            android:contentDescription="@string/todo"/>
+                        <ImageView
+                            android:id="@+id/btnReUndo"
+                            android:layout_width="30dp"
+                            android:layout_height="36dp"
+                            android:layout_marginEnd="@dimen/_8sdp"
+                            android:src="@drawable/ic_undo_right_round"
+                            android:contentDescription="@string/todo"/>
                     </LinearLayout>
                 </HorizontalScrollView>
                 <View android:id="@+id/view1"
@@ -331,6 +351,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
                         android:paddingHorizontal="8dp"
+                        android:paddingVertical="8dp"
                         android:layout_toEndOf="@+id/rl_recent"
                         android:elevation="@dimen/_6sdp"
                         android:orientation="horizontal"

@@ -36,4 +36,6 @@
     <string name="mouth">Mouth</string>
     <string name="nose">Nose</string>
     <string name="piece_of_sticker">piece of sticker</string>
+    <string name="save">Save</string>
+    <string name="this_action_can_contain_ads">This action can contain ads</string>
 </resources>

@@ -109,6 +109,7 @@ public class StickerView extends FrameLayout {
             borderPaint.setStrokeWidth(3);
             borderPaint.setColor(a.getColor(R.styleable.StickerView_borderColor, Color.BLACK));
             borderPaint.setAlpha(a.getInteger(R.styleable.StickerView_borderAlpha, 128));
+            borderPaint.setPathEffect(new DashPathEffect(new float[] {20f, 20f}, 0f));
 
             iconPaint.setAntiAlias(true);
             iconPaint.setStrokeWidth(3);
@@ -508,7 +509,7 @@ public class StickerView extends FrameLayout {
 
         void onStickerClicked(@NonNull Sticker sticker);
 
-        void onStickerDeleted(@NonNull Sticker sticker);
+        void onStickerDeleted(@NonNull Sticker sticker, Boolean isLastSticker);
 
         void onStickerDragFinished(@NonNull Sticker sticker);
 
