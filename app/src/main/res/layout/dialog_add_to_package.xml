@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom"
+        android:orientation="vertical"
+        android:background="#80000000">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/_16sdp"
+            android:paddingTop="24dp"
+            android:background="@drawable/bg_dialog"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="@dimen/_16sdp"
+                android:text="@string/add_to_package"
+                android:fontFamily="@font/poppins_semibold"
+                android:textSize="@dimen/_16ssp"
+                android:gravity="center"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/_12sdp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+                <ImageButton
+                    android:id="@+id/btnCreateNewPackage"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:layout_marginEnd="@dimen/_16sdp"
+                    android:background="@color/transparent"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_add_package"
+                    android:contentDescription="@string/icon_button" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/create_new_package"/>
+            </LinearLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvPackage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:itemCount="3"/>
+
+            <Button
+                android:id="@+id/btnSave"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="12dp"
+                android:paddingVertical="16dp"
+                android:text="@string/save"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+</layout>

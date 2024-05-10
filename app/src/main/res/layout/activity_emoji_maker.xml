@@ -43,8 +43,7 @@
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:enabled="false"
-                app:background="@drawable/bg_button_save"
-                android:fontFamily="@font/poppins_medium"/>
+                app:background="@drawable/bg_button_save"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -205,7 +204,7 @@
                             android:layout_height="match_parent"
                             android:background="@color/transparent"
                             android:layout_marginEnd="@dimen/_8sdp"
-                            app:srcCompat="@drawable/ic_dupplicate"
+                            app:srcCompat="@drawable/ic_duplicate"
                             android:contentDescription="@string/todo" />
 
                         <ImageView

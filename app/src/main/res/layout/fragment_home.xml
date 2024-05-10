@@ -62,7 +62,6 @@
                 android:layout_marginBottom="24dp"
                 android:text="@string/unleash_your_individuality"
                 android:textColor="@color/white"
-                android:fontFamily="@font/poppins_medium"
                 android:textSize="@dimen/_11ssp"/>
             <LinearLayout
                 android:id="@+id/btnCreateSticker"

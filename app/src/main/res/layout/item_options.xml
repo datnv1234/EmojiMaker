@@ -29,7 +29,6 @@
                 android:layout_height="wrap_content"
                 android:text="@string/face"
                 android:textSize="12sp"
-                android:textColor="#797D87"
-                android:fontFamily="@font/poppins_medium"/>
+                android:textColor="#797D87"/>
     </LinearLayout>
 </layout>

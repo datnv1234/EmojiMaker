@@ -19,10 +19,9 @@ class IntroViewModel : BaseViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             val listIntroEntity = mutableListOf<IntroUI>()
             val titlesResourceIds = listOf(
-                R.string.content_intro_1,
-                R.string.content_intro_2,
-                R.string.content_intro_3,
-
+                R.string.title_intro_1,
+                R.string.title_intro_2,
+                R.string.title_intro_3,
                 )
 
             val contentsResourceIds = listOf(
@@ -32,16 +31,16 @@ class IntroViewModel : BaseViewModel() {
             )
 
             val drawableResourceIds = listOf(
-                R.drawable.ic_launcher_background,
-                R.drawable.ic_launcher_background,
-                R.drawable.ic_launcher_background,
+                R.drawable.intro1,
+                R.drawable.intro2,
+                R.drawable.intro3,
             )
 
             for (i in titlesResourceIds.indices) {
                 listIntroEntity.add(
                     IntroUI(
                         context.getString(titlesResourceIds[i]),
-                        "",
+                        context.getString(contentsResourceIds[i]),
                         drawableResourceIds[i]
                     )
                 )

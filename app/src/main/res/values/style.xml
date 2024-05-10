@@ -18,4 +18,8 @@
         <item name="android:backgroundDimEnabled">false</item>
         <item name="android:layout_marginBottom">0dp</item>
     </style>
+
+    <style name="CustomButtonStyle" parent="Widget.AppCompat.ImageButton">
+        <item name="android:radius">@dimen/_100sdp</item>
+    </style>
 </resources>

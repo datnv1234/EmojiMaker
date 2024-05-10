@@ -1,9 +1,12 @@
 <resources>
     <string name="app_name">AI emoji maker</string>
     <string name="unable_to_access_the_internet_please_visit_connection_wifi_settings">Unable to access the internet please visit connection wifi settings</string>
-    <string name="content_intro_1">This is intro!</string>
-    <string name="content_intro_2">This is intro!</string>
-    <string name="content_intro_3">This is intro!</string>
+    <string name="title_intro_1">Welcome to Emoji Stitch</string>
+    <string name="title_intro_2">Embark on your sticker journey</string>
+    <string name="title_intro_3">Joyful Stickers and Emoji</string>
+    <string name="content_intro_1">Let your creativity shine with personalized emojis and stickers, lovingly crafted by yourself</string>
+    <string name="content_intro_2">Craft custom emojis and stickers to convey your emotions uniquely</string>
+    <string name="content_intro_3">Many rich categories with 100+ free stickers for you</string>
     <string name="start">Start</string>
     <string name="next">Next</string>
     <string name="language">Language</string>
@@ -38,4 +41,17 @@
     <string name="piece_of_sticker">piece of sticker</string>
     <string name="save">Save</string>
     <string name="this_action_can_contain_ads">This action can contain ads</string>
+    <string name="introduce">Introduce</string>
+    <string name="preview">Preview</string>
+    <string name="share">Share</string>
+    <string name="download">Download</string>
+    <string name="add_to_package">Add to Package</string>
+    <string name="add_to_whatsapp">Add to Whatsapp</string>
+    <string name="add_to_telegram">Add to Telegram</string>
+    <string name="icon_button">Icon button</string>
+    <string name="create_new_package">Create new package</string>
+    <string name="title">Title</string>
+    <string name="description">Description</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
 </resources>

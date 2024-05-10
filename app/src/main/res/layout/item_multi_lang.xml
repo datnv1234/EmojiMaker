@@ -29,7 +29,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:layout_weight="1"
-            android:fontFamily="@font/poppins_medium"
             android:gravity="start"
             android:textSize="16sp"
             android:text="English"/>
@@ -55,7 +54,6 @@
         android:padding="12dp"
         android:textColor="#FFFFFF"
         android:background="#FFFFFF"
-        tools:fontFamily="@font/poppins_medium"
         tools:textColor="#252E40"
         tools:text="language" />-->
 

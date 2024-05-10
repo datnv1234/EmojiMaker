@@ -1,5 +1,6 @@
 package com.wa.ai.emojimaker.ui.splash
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -20,6 +21,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+@SuppressLint("CustomSplashScreen")
 class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewModel>() {
 
     val bundle = Bundle()

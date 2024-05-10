@@ -71,7 +71,7 @@ class IntroActivity : BaseBindingActivity<ActivityIntroBinding, IntroViewModel>(
     }
 
     private fun initListener() {
-        binding.tvNext.setOnSafeClick(1200) {
+        binding.btnNext.setOnSafeClick(1200) {
             viewModel.introMutableLiveData.value?.size?.let { size ->
                 with(binding.viewPager.currentItem) {
                     if (this < size - 1) {
@@ -103,9 +103,9 @@ class IntroActivity : BaseBindingActivity<ActivityIntroBinding, IntroViewModel>(
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
                     if (position == introAdapter.currentList.size - 1) {
-                        binding.tvNext.text = getString(R.string.start)
+                        binding.btnNext.text = getString(R.string.start)
                     } else {
-                        binding.tvNext.text = getString(R.string.next)
+                        binding.btnNext.text = getString(R.string.next)
                     }
                 }
             })
