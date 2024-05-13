@@ -38,6 +38,9 @@ import com.wa.ai.emojimaker.databinding.ActivityEmojiMakerBinding
 import com.wa.ai.emojimaker.ui.adapter.OptionAdapter
 import com.wa.ai.emojimaker.ui.adapter.PagerIconAdapter
 import com.wa.ai.emojimaker.ui.base.BaseBindingActivity
+import com.wa.ai.emojimaker.ui.dialog.AddToPackageDialog
+import com.wa.ai.emojimaker.ui.dialog.SaveStickerDialog
+import com.wa.ai.emojimaker.utils.AppUtils
 import com.wa.ai.emojimaker.utils.DeviceUtils
 import com.wa.ai.emojimaker.utils.extention.getBitMapFromView
 import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
@@ -48,6 +51,7 @@ import com.wa.ai.emojimaker.utils.sticker.StickerView
 import com.wa.ai.emojimaker.utils.sticker.StickerViewModel
 import com.wa.ai.emojimaker.utils.sticker.StickerViewSerializer
 import com.wa.ai.emojimaker.utils.sticker.iconEvents.DeleteIconEvent
+import com.wa.ai.emojimaker.utils.sticker.iconEvents.DuplicateIconEvent
 import com.wa.ai.emojimaker.utils.sticker.iconEvents.FlipHorizontallyEvent
 import com.wa.ai.emojimaker.utils.sticker.iconEvents.FlipVerticallyEvent
 import com.wa.ai.emojimaker.utils.sticker.iconEvents.ZoomIconEvent
@@ -69,6 +73,28 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         doAddSticker(it)
     })}
 
+    private val mSaveDialog : SaveStickerDialog by lazy {
+        SaveStickerDialog().apply {
+            addToPackage= {
+                addToPackage(bitmap)
+            }
+
+            download = {
+                download(bitmap)
+            }
+
+            share = {
+                share(this.bitmap)
+            }
+        }
+    }
+
+    private val mAddToPackageDialog : AddToPackageDialog by lazy {
+        AddToPackageDialog().apply {
+
+        }
+    }
+
     override val layoutId: Int
         get() = R.layout.activity_emoji_maker
 
@@ -89,8 +115,10 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
 
         binding.btnCreate.setOnSafeClick {
             val bitmap = binding.stickerView.createBitmap()
-            createSticker(bitmap)
-            toast("Saved to storage!")
+            mSaveDialog.bitmap = bitmap
+            mSaveDialog.show(supportFragmentManager, mSaveDialog.tag)
+//
+//            toast("Saved to storage!")
         }
     }
 
@@ -191,27 +219,18 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
             BitmapStickerIcon.RIGHT_BOTTOM
         )
         zoomIcon.iconEvent = ZoomIconEvent()
-        val flipIcon = BitmapStickerIcon(
+        val duplicateIcon = BitmapStickerIcon(
             ContextCompat.getDrawable(
                 this,
-                R.drawable.sticker_ic_flip_white_18dp
-            ),
-            BitmapStickerIcon.RIGHT_TOP
-        )
-        flipIcon.iconEvent = FlipHorizontallyEvent()
-        val flipVerticallyIcon = BitmapStickerIcon(
-            ContextCompat.getDrawable(
-                this,
-                R.drawable.sticker_ic_flip_vert_white_18dp
+                R.drawable.ic_duplicate
             ),
             BitmapStickerIcon.LEFT_BOTTOM
         )
-        flipVerticallyIcon.iconEvent = FlipVerticallyEvent()
+        duplicateIcon.iconEvent = DuplicateIconEvent()
         viewModel.icons.value = arrayListOf(
             deleteIcon,
             zoomIcon,
-            flipIcon,
-            flipVerticallyIcon
+            duplicateIcon
         )
         viewModel.activeIcons.value = viewModel.icons.value
     }
@@ -271,6 +290,18 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
 
     private fun createSticker(bitmap: Bitmap) {
         DeviceUtils.savePNGToInternalStorage(this, "mySticker", bitmap)
+    }
+
+    private fun download(bitmap: Bitmap) {
+        createSticker(bitmap)
+    }
+
+    private fun share(bitmap: Bitmap) {
+        AppUtils.shareImage(this, bitmap)
+    }
+
+    private fun addToPackage(bitmap: Bitmap) {
+        mAddToPackageDialog.show(supportFragmentManager, mAddToPackageDialog.tag)
     }
 
     private fun load() {
@@ -444,8 +475,6 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
 
         binding.buttonReset.setOnClickListener { viewModel.resetView() }
 
-        binding.buttonDuplicate.setOnClickListener { viewModel.duplicateCurrentSticker() }
-
         binding.buttonLock.setOnCheckedChangeListener { _, isToggled ->
             viewModel.isLocked.value = isToggled
         }
@@ -494,12 +523,13 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     }
 
     override fun finish() {
-        super.finish()
         AlertDialog.Builder(this)
             .setIcon(android.R.drawable.ic_dialog_alert)
             .setTitle("Confirm")
             .setMessage("Are you sure you want to quit?")
-            .setPositiveButton("Yes") { _, _ -> finish() }
+            .setPositiveButton("Yes") { _, _ ->
+                super.finish()
+            }
             .setNegativeButton("No", null)
             .show()
     }

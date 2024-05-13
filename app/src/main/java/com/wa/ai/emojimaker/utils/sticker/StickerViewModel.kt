@@ -122,10 +122,10 @@ open class StickerViewModel : BaseViewModel() {
     }
 
     fun removeCurrentSticker(): Boolean {
-        if (handlingSticker.value != null) {
-            return removeSticker(handlingSticker.value!!)
+        return if (handlingSticker.value != null) {
+            removeSticker(handlingSticker.value!!)
         } else {
-            return false
+            false
         }
     }
 

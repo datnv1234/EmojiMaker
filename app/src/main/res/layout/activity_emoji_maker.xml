@@ -80,8 +80,6 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
                     app:activeIcons="@={viewModel.activeIcons}"
-                    app:borderColor="#797D87"
-                    app:iconColor="@android:color/black"
                     app:bringToFrontCurrentSticker="true"
                     app:canvasMatrix="@{viewModel.canvasMatrix}"
                     app:constrained="@{viewModel.constrained}"
@@ -153,15 +151,13 @@
                 android:background="@color/transparent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/g1">
-                <HorizontalScrollView
-                    android:id="@+id/rl_option_header"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingVertical="4dp"
-                    android:paddingHorizontal="16dp">
+
                     <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:id="@+id/rl_option_header"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingVertical="4dp"
+                        android:layout_marginHorizontal="16dp"
                         android:orientation="horizontal">
                         <ToggleButton
                             android:id="@+id/buttonLock"
@@ -196,15 +192,6 @@
                             android:layout_marginEnd="@dimen/_8sdp"
                             android:visibility="gone"
                             app:srcCompat="@drawable/ic_add_box_black_24dp"
-                            android:contentDescription="@string/todo" />
-
-                        <ImageButton
-                            android:id="@+id/buttonDuplicate"
-                            android:layout_width="30dp"
-                            android:layout_height="match_parent"
-                            android:background="@color/transparent"
-                            android:layout_marginEnd="@dimen/_8sdp"
-                            app:srcCompat="@drawable/ic_duplicate"
                             android:contentDescription="@string/todo" />
 
                         <ImageView
@@ -261,8 +248,9 @@
                             android:visibility="gone"
                             android:contentDescription="@string/todo" />
                         <TextView
-                            android:layout_width="16dp"
-                            android:layout_height="match_parent"/>
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"/>
                         <ImageView
                             android:id="@+id/btnUndo"
                             android:layout_width="30dp"
@@ -278,16 +266,17 @@
                             android:src="@drawable/ic_undo_right_round"
                             android:contentDescription="@string/todo"/>
                     </LinearLayout>
-                </HorizontalScrollView>
                 <View android:id="@+id/view1"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#F4DED3"
+                    android:background="#D2D5DA"
+                    android:layout_marginHorizontal="16dp"
                     android:layout_below="@+id/rl_option_header"/>
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_above="@+id/view2"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_above="@+id/rl_options"
                     android:layout_below="@+id/view1">
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_icon"
@@ -302,16 +291,13 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"/>
                 </RelativeLayout>
-                <View
-                    android:id="@+id/view2"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#F4DED3"
-                    android:layout_above="@+id/rl_options"/>
                 <RelativeLayout
                     android:id="@+id/rl_options"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/bg_bottom_item"
+                    android:elevation="@dimen/_14sdp"
+                    android:translationZ="@dimen/_14sdp"
                     android:layout_alignParentBottom="true">
                     <RelativeLayout
                         android:id="@+id/rl_recent"
@@ -352,7 +338,6 @@
                         android:paddingHorizontal="8dp"
                         android:paddingVertical="8dp"
                         android:layout_toEndOf="@+id/rl_recent"
-                        android:elevation="@dimen/_6sdp"
                         android:orientation="horizontal"
                         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"/>
                 </RelativeLayout>

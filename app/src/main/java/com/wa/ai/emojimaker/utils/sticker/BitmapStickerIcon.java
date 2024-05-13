@@ -15,7 +15,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * @author wupanjie
+ * @author wa
  */
 public class BitmapStickerIcon extends DrawableSticker implements StickerIconEvent {
     public static final float DEFAULT_ICON_RADIUS = 35f;

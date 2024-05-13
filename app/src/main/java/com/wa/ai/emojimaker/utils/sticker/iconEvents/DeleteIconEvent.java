@@ -8,7 +8,7 @@ import com.wa.ai.emojimaker.utils.sticker.StickerView;
 import com.wa.ai.emojimaker.utils.sticker.StickerViewModel;
 
 /**
- * @author wupanjie
+ * @author wa
  */
 
 public class DeleteIconEvent implements StickerIconEvent {

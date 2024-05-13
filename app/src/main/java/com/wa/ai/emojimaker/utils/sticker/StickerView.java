@@ -18,6 +18,7 @@ import androidx.databinding.ObservableField;
 import com.wa.ai.emojimaker.R;
 import com.wa.ai.emojimaker.utils.sticker.iconEvents.CropIconEvent;
 import com.wa.ai.emojimaker.utils.sticker.iconEvents.DeleteIconEvent;
+import com.wa.ai.emojimaker.utils.sticker.iconEvents.DuplicateIconEvent;
 import com.wa.ai.emojimaker.utils.sticker.iconEvents.FlipHorizontallyEvent;
 import com.wa.ai.emojimaker.utils.sticker.iconEvents.ZoomIconEvent;
 
@@ -32,7 +33,7 @@ import java.util.List;
 /**
  * Sticker View
  *
- * @author wupanjie
+ * @author wa
  */
 public class StickerView extends FrameLayout {
 
@@ -112,14 +113,11 @@ public class StickerView extends FrameLayout {
             borderPaint.setPathEffect(new DashPathEffect(new float[] {20f, 20f}, 0f));
 
             iconPaint.setAntiAlias(true);
-            iconPaint.setStrokeWidth(3);
-            iconPaint.setColor(a.getColor(R.styleable.StickerView_iconColor, Color.BLACK));
-            iconPaint.setAlpha(a.getInteger(R.styleable.StickerView_borderAlpha, 128));
+            iconPaint.setColor(a.getColor(R.styleable.StickerView_iconColor, Color.TRANSPARENT));
 
             auxiliaryLinePaint.setAntiAlias(true);
             auxiliaryLinePaint.setStrokeWidth(3);
             auxiliaryLinePaint.setColor(accentColor);
-            auxiliaryLinePaint.setAlpha(a.getInteger(R.styleable.StickerView_borderAlpha, 128));
 
             configDefaultIcons();
         } finally {
@@ -133,21 +131,21 @@ public class StickerView extends FrameLayout {
 
     public void configDefaultIcons() {
         BitmapStickerIcon deleteIcon = new BitmapStickerIcon(
-                getContext(), R.drawable.ic_close, BitmapStickerIcon.LEFT_TOP);
+                getContext(), R.drawable.ic_remove, BitmapStickerIcon.LEFT_TOP);
         deleteIcon.setIconEvent(new DeleteIconEvent());
 
         BitmapStickerIcon zoomIcon = new BitmapStickerIcon(
-                getContext(), R.drawable.ic_scale, BitmapStickerIcon.RIGHT_BOTTOM);
+                getContext(), R.drawable.ic_zoom_and_rotate, BitmapStickerIcon.RIGHT_BOTTOM);
         zoomIcon.setIconEvent(new ZoomIconEvent());
 
-        BitmapStickerIcon flipIcon = new BitmapStickerIcon(
-                getContext(), R.drawable.ic_flip, BitmapStickerIcon.RIGHT_TOP);
-        flipIcon.setIconEvent(new FlipHorizontallyEvent());
+        BitmapStickerIcon dupIcon = new BitmapStickerIcon(
+                getContext(), R.drawable.ic_duplicate, BitmapStickerIcon.RIGHT_TOP);
+        dupIcon.setIconEvent(new DuplicateIconEvent());
 
         icons.clear();
         icons.add(deleteIcon);
         icons.add(zoomIcon);
-        icons.add(flipIcon);
+        icons.add(dupIcon);
 
         BitmapStickerIcon cropLeftTop = new BitmapStickerIcon(getContext(), R.drawable.scale_1, BitmapStickerIcon.LEFT_TOP);
         cropLeftTop.setIconEvent(new CropIconEvent(BitmapStickerIcon.LEFT_TOP));
@@ -247,21 +245,14 @@ public class StickerView extends FrameLayout {
                 for (int i = 0; i < activeIcons.get().size(); i++) {
                     BitmapStickerIcon icon = activeIcons.get().get(i);
                     switch (icon.getPosition()) {
-                        case BitmapStickerIcon.LEFT_TOP:
-                            configIconMatrix(icon, x1, y1, rotation);
-                            break;
-
-                        case BitmapStickerIcon.RIGHT_TOP:
-                            configIconMatrix(icon, x2, y2, rotation);
-                            break;
-
-                        case BitmapStickerIcon.LEFT_BOTTOM:
-                            configIconMatrix(icon, x3, y3, rotation);
-                            break;
-
-                        case BitmapStickerIcon.RIGHT_BOTTOM:
-                            configIconMatrix(icon, x4, y4, rotation);
-                            break;
+                        case BitmapStickerIcon.LEFT_TOP ->
+                                configIconMatrix(icon, x1, y1, rotation);
+                        case BitmapStickerIcon.RIGHT_TOP ->
+                                configIconMatrix(icon, x2, y2, rotation);
+                        case BitmapStickerIcon.LEFT_BOTTOM ->
+                                configIconMatrix(icon, x3, y3, rotation);
+                        case BitmapStickerIcon.RIGHT_BOTTOM ->
+                                configIconMatrix(icon, x4, y4, rotation);
                     }
                     icon.draw(canvas, iconPaint);
                 }

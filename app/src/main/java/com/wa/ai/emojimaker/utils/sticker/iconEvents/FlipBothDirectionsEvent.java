@@ -4,7 +4,7 @@ package com.wa.ai.emojimaker.utils.sticker.iconEvents;
 import com.wa.ai.emojimaker.utils.sticker.StickerView;
 
 /**
- * @author wupanjie
+ * @author wa
  */
 
 public class FlipBothDirectionsEvent extends AbstractFlipEvent {

@@ -12,7 +12,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * @author wupanjie
+ * @author wa
  */
 public abstract class Sticker {
 

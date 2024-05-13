@@ -12,7 +12,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.Objects;
 
 /**
- * @author wupanjie
+ * @author wa
  */
 public class DrawableSticker extends Sticker {
     private Drawable drawable;

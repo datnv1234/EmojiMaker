@@ -3,7 +3,7 @@ package com.wa.ai.emojimaker.utils.sticker;
 import android.view.MotionEvent;
 
 /**
- * @author wupanjie
+ * @author wa
  */
 
 public interface StickerIconEvent {

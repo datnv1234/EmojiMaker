@@ -19,7 +19,7 @@ import timber.log.Timber;
 import static java.lang.Math.round;
 
 /**
- * @author wupanjie
+ * @author wa
  */
 class StickerUtils {
 
