@@ -17,7 +17,7 @@ class AddToPackageDialog : BaseBindingDialogFragment<DialogAddToPackageBinding>(
     }
 
     private fun setup() {
-        binding.mainView.setOnSafeClick {
+        binding.bg.setOnSafeClick {
             dismiss()
         }
         binding.btnClose.setOnSafeClick {
