@@ -40,6 +40,7 @@
                 android:inputType="text" />
         </androidx.cardview.widget.CardView>
         <LinearLayout
+            android:id="@+id/llCreate"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_150sdp"
             android:layout_marginVertical="@dimen/_24sdp"
@@ -63,32 +64,58 @@
                 android:text="@string/unleash_your_individuality"
                 android:textColor="@color/white"
                 android:textSize="@dimen/_11ssp"/>
-
-            <LinearLayout
-                android:id="@+id/btnCreateSticker"
+            <androidx.cardview.widget.CardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="16dp"
-                android:paddingVertical="4dp"
-                android:orientation="horizontal"
-                android:gravity="center"
-                android:elevation="@dimen/_2sdp"
-                android:translationZ="@dimen/_2sdp"
-                android:background="@drawable/bg_button_maker">
-                <ImageButton
+                app:cardCornerRadius="40dp"
+                app:cardBackgroundColor="#FAFBFB">
+                <LinearLayout
+                    android:id="@+id/btnCreateSticker"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="4dp"
-                    android:background="@color/transparent"
-                    android:src="@drawable/ic_magic_pen"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/create"
-                    android:fontFamily="@font/poppins_semibold"
-                    android:textSize="@dimen/_13ssp"
-                    android:textColor="#1C274C"/>
-            </LinearLayout>
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="4dp"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:elevation="@dimen/_2sdp"
+                    android:translationZ="@dimen/_2sdp"
+                    android:foreground="?android:attr/selectableItemBackground">
+                    <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="4dp"
+                        android:background="@color/transparent"
+                        android:src="@drawable/ic_magic_pen"
+                        android:contentDescription="@string/icon_button" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/create"
+                        android:fontFamily="@font/poppins_semibold"
+                        android:textSize="@dimen/_13ssp"
+                        android:textColor="#1C274C"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
         </LinearLayout>
+        <TextView
+            android:id="@+id/categories"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_18sdp"
+            android:text="@string/categories"
+            android:textColor="#797D87"
+            app:layout_constraintTop_toBottomOf="@id/llCreate"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvCategory"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginBottom="5dp"
+            android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/categories"
+            tools:itemCount="2" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

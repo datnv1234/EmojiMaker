@@ -96,6 +96,7 @@ dependencies {
     implementation ("androidx.lifecycle:lifecycle-extensions:2.2.0")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
 
     //noinspection LifecycleAnnotationProcessorWithJava8
     kapt("androidx.lifecycle:lifecycle-compiler:2.7.0")
@@ -109,7 +110,10 @@ dependencies {
 
     //Hilt
     implementation("com.google.dagger:hilt-android:2.51.1")
+
+    //Firebase
     implementation("com.google.firebase:firebase-crashlytics:18.6.3")
+    implementation ("com.google.firebase:firebase-storage:21.0.0")
 
     implementation("androidx.databinding:databinding-runtime:8.3.1")
     kapt("com.google.dagger:hilt-android-compiler:2.51.1")
@@ -119,6 +123,9 @@ dependencies {
 
     // Lottie
     implementation("com.airbnb.android:lottie:6.4.0")
+
+    //picasso to load image
+    implementation ("com.squareup.picasso:picasso:2.71828")
 
     // Ads
     implementation("com.facebook.shimmer:shimmer:0.5.0")

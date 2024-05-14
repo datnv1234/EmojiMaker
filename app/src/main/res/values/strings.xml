@@ -54,4 +54,8 @@
     <string name="description">Description</string>
     <string name="cancel">Cancel</string>
     <string name="delete">Delete</string>
+    <string name="categories">Categories</string>
+    <string name="cat_emoji">Cat Emoji</string>
+    <string name="sticker_preview">Sticker preview</string>
+    <string name="_12">+12</string>
 </resources>

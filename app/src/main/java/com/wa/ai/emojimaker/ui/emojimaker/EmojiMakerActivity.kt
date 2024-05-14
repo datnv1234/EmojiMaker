@@ -76,7 +76,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     private val mSaveDialog : SaveStickerDialog by lazy {
         SaveStickerDialog().apply {
             addToPackage= {
-                addToPackage(bitmap)
+                addToPackage(bitmap, "")
             }
 
             download = {
@@ -300,7 +300,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         AppUtils.shareImage(this, bitmap)
     }
 
-    private fun addToPackage(bitmap: Bitmap) {
+    private fun addToPackage(bitmap: Bitmap, category: String) {
         mAddToPackageDialog.show(supportFragmentManager, mAddToPackageDialog.tag)
     }
 

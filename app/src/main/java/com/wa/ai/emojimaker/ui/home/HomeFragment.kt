@@ -1,16 +1,46 @@
 package com.wa.ai.emojimaker.ui.home
 
-import android.app.Notification.Action
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import com.wa.ai.emojimaker.R
+import com.wa.ai.emojimaker.common.Constant.TAG
 import com.wa.ai.emojimaker.databinding.FragmentHomeBinding
+import com.wa.ai.emojimaker.ui.adapter.CategoryAdapter
 import com.wa.ai.emojimaker.ui.base.BaseBindingFragment
+import com.wa.ai.emojimaker.ui.dialog.SharePackageDialog
 import com.wa.ai.emojimaker.ui.emojimaker.EmojiMakerActivity
 
 class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
 
+    private val mContext = context
+    private val sharePackageDialog : SharePackageDialog by lazy {
+        SharePackageDialog().apply {
+            addToWhatsapp = {
+
+            }
+
+            addToTelegram = {
+
+            }
+
+            share = {
+
+            }
+
+            download = {
+
+            }
+        }
+    }
+    private val categoryAdapter : CategoryAdapter by lazy {
+        CategoryAdapter(optionClick = {
+            sharePackageDialog.show(parentFragmentManager, sharePackageDialog.tag)
+        }, watchMoreClick = {
+
+        })
+    }
 
     override fun getViewModel(): Class<HomeViewModel> = HomeViewModel::class.java
     override fun registerOnBackPress() {
@@ -28,7 +58,12 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
     }
 
     override fun setupData() {
-
+        viewModel.getCategoryList()
+        viewModel.categoriesMutableLiveData.observe(this) {
+            categoryAdapter.submitList(it.toMutableList())
+        }
+        Log.d(TAG, "setupData: " + viewModel.categoriesMutableLiveData.value?.size)
+        binding.rvCategory.adapter = categoryAdapter
     }
 
 }

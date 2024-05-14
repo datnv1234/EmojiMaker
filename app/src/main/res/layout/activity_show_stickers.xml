@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -9,18 +9,40 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#80000000">
-        <View
-            android:id="@+id/bg"
+        android:background="@drawable/bg_main"
+        tools:context=".ui.showstickers.ShowStickersActivity">
+        <LinearLayout
+            android:id="@+id/llToolBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/transparent"
+                android:src="@drawable/ic_back_round"
+                android:contentDescription="@string/icon_button"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@string/app_name"
+                android:fontFamily="@font/poppins_semibold"
+                android:textSize="@dimen/_20ssp"/>
+        </LinearLayout>
+        <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/mainView"
-            app:layout_constraintStart_toStartOf="parent"/>
+            android:padding="16dp"
+            app:layout_constraintTop_toBottomOf="@id/llToolBar"
+            app:layout_constraintBottom_toTopOf="@id/action"/>
 
         <LinearLayout
-            android:id="@+id/mainView"
+            android:id="@+id/action"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_dialog"

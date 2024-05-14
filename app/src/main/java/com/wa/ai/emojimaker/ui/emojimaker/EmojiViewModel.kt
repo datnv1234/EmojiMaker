@@ -3,10 +3,12 @@ package com.wa.ai.emojimaker.ui.emojimaker
 import android.content.Context
 import android.content.res.AssetManager
 import android.graphics.BitmapFactory
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.wa.ai.emojimaker.R
+import com.wa.ai.emojimaker.common.Constant
 import com.wa.ai.emojimaker.data.model.PagerIconUI
 import com.wa.ai.emojimaker.data.model.PieceSticker
 import com.wa.ai.emojimaker.ui.base.BaseViewModel
@@ -84,6 +86,7 @@ class EmojiViewModel : BaseViewModel() {
                 )
             }
             _optionMutableLiveData.postValue(listOptionEntity)
+            Log.d(Constant.TAG, "getCategoryList: " + _optionMutableLiveData.value?.size)
         }
     }
 
