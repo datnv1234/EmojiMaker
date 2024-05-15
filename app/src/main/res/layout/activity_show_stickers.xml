@@ -26,6 +26,7 @@
                 android:src="@drawable/ic_back_round"
                 android:contentDescription="@string/icon_button"/>
             <TextView
+                android:id="@+id/tvTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -35,9 +36,12 @@
                 android:textSize="@dimen/_20ssp"/>
         </LinearLayout>
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvSticker"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:padding="16dp"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:spanCount="3"
             app:layout_constraintTop_toBottomOf="@id/llToolBar"
             app:layout_constraintBottom_toTopOf="@id/action"/>
 

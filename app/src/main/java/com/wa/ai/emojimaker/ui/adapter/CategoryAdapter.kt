@@ -72,7 +72,6 @@ class CategoryAdapter(val watchMoreClick: (category: Category) -> Unit, val opti
                 override fun onError(e: Exception?) {
                 }
             })
-
     }
 
     override val layoutIdItem: Int

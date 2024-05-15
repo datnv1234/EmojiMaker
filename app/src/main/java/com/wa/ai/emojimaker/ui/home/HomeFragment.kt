@@ -11,6 +11,8 @@ import com.wa.ai.emojimaker.ui.adapter.CategoryAdapter
 import com.wa.ai.emojimaker.ui.base.BaseBindingFragment
 import com.wa.ai.emojimaker.ui.dialog.SharePackageDialog
 import com.wa.ai.emojimaker.ui.emojimaker.EmojiMakerActivity
+import com.wa.ai.emojimaker.ui.main.MainActivity
+import com.wa.ai.emojimaker.ui.showstickers.ShowStickersActivity
 
 class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
 
@@ -38,7 +40,10 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
         CategoryAdapter(optionClick = {
             sharePackageDialog.show(parentFragmentManager, sharePackageDialog.tag)
         }, watchMoreClick = {
-
+            val intent = Intent(requireContext(), ShowStickersActivity::class.java)
+            intent.putExtra("category", it.category.toString())
+            intent.putExtra("category_name", it.categoryName)
+            startActivity(intent)
         })
     }
 
