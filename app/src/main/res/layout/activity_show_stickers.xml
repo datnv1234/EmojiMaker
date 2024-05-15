@@ -20,6 +20,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
             <ImageButton
+                android:id="@+id/btnBack"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@color/transparent"
@@ -35,15 +36,20 @@
                 android:fontFamily="@font/poppins_semibold"
                 android:textSize="@dimen/_20ssp"/>
         </LinearLayout>
+
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvSticker"
+            android:id="@+id/rvStickers"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:padding="16dp"
+            android:paddingHorizontal="16dp"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-            app:spanCount="3"
+            app:layout_constraintBottom_toTopOf="@id/action"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/llToolBar"
-            app:layout_constraintBottom_toTopOf="@id/action"/>
+            app:layout_constraintVertical_bias="0.0"
+            app:spanCount="4" />
 
         <LinearLayout
             android:id="@+id/action"

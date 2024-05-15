@@ -35,7 +35,6 @@ class MyCreativeViewModel : BaseViewModel() {
                     listEntry.add(BitmapSticker(bitmap))
                 }
             }
-            Log.d(Constant.TAG, "getItemSticker: ${listEntry.size}")
             _stickerMutableLiveData.postValue(listEntry)
         }
     }

@@ -2,7 +2,7 @@ package com.wa.ai.emojimaker.data.model
 
 import java.util.Objects
 
-class Category(var category: String?, var categoryName: String?) {
+class Category(var category: String?, var categoryName: String?, var itemSize: Int = 0) {
     override fun equals(other: Any?): Boolean {
         if (this === other) {
             return true

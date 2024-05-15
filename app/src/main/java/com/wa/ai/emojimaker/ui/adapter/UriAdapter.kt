@@ -1,23 +1,25 @@
 package com.wa.ai.emojimaker.ui.adapter
 
 import android.net.Uri
+import android.util.Log
 import android.widget.ImageView
 import androidx.recyclerview.widget.DiffUtil
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import com.wa.ai.emojimaker.R
-import com.wa.ai.emojimaker.data.model.Category
-import com.wa.ai.emojimaker.databinding.ItemCategoryBinding
+import com.wa.ai.emojimaker.common.Constant.TAG
+import com.wa.ai.emojimaker.data.model.StickerUri
 import com.wa.ai.emojimaker.databinding.ItemStickerBinding
 import com.wa.ai.emojimaker.ui.base.BaseBindingAdapterDiff
+import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 import java.lang.Exception
 
-class UriAdapter : BaseBindingAdapterDiff<Uri, ItemStickerBinding>(object : DiffUtil.ItemCallback<Uri>() {
-    override fun areItemsTheSame(oldItem: Uri, newItem: Uri): Boolean {
-        return oldItem.toString() == newItem.toString()
+class UriAdapter(val itemClick: () -> Unit) : BaseBindingAdapterDiff<StickerUri, ItemStickerBinding>(object : DiffUtil.ItemCallback<StickerUri>() {
+    override fun areItemsTheSame(oldItem: StickerUri, newItem: StickerUri): Boolean {
+        return oldItem.uri.toString() == newItem.uri.toString()
     }
 
-    override fun areContentsTheSame(oldItem: Uri, newItem: Uri): Boolean {
+    override fun areContentsTheSame(oldItem: StickerUri, newItem: StickerUri): Boolean {
         return oldItem == newItem
     }
 
@@ -26,8 +28,14 @@ class UriAdapter : BaseBindingAdapterDiff<Uri, ItemStickerBinding>(object : Diff
         get() = R.layout.item_sticker
 
     override fun onBindViewHolderBase(holder: BaseHolder<ItemStickerBinding>, position: Int) {
+
+        Log.d(TAG, "onBindViewHolderBase:")
         with(getItem(holder.adapterPosition)) {
-            download(this, holder.binding.sticker)
+            download(this.uri, holder.binding.imgSticker)
+            Log.d(TAG, "onBindViewHolderBase: $this")
+            holder.binding.imgSticker.setOnSafeClick {
+                itemClick()
+            }
         }
     }
 

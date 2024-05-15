@@ -43,6 +43,7 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
             val intent = Intent(requireContext(), ShowStickersActivity::class.java)
             intent.putExtra("category", it.category.toString())
             intent.putExtra("category_name", it.categoryName)
+            intent.putExtra("category_size", it.itemSize)
             startActivity(intent)
         })
     }
@@ -67,7 +68,6 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
         viewModel.categoriesMutableLiveData.observe(this) {
             categoryAdapter.submitList(it.toMutableList())
         }
-        Log.d(TAG, "setupData: " + viewModel.categoriesMutableLiveData.value?.size)
         binding.rvCategory.adapter = categoryAdapter
     }
 
