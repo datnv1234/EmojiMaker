@@ -39,7 +39,6 @@ class ShowStickerViewModel : BaseViewModel() {
                         listEntry[i].uri = uri
                         i++
                         _stickersMutableLiveData.postValue(listEntry)
-                        Log.d(TAG, "getStickers: " + _stickersMutableLiveData.value)
                     }
                 }
             }
@@ -54,9 +53,5 @@ class ShowStickerViewModel : BaseViewModel() {
 //            }
 //        }
 //        countDownTimer.start()
-    }
-
-    private fun getStickerUri(category: String, list: MutableList<StickerUri>) {
-
     }
 }

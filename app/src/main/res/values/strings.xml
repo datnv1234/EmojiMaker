@@ -58,4 +58,7 @@
     <string name="cat_emoji">Cat Emoji</string>
     <string name="sticker_preview">Sticker preview</string>
     <string name="_12">+12</string>
+    <string name="no_app_found">No app found!</string>
+    <string name="item">Item</string>
+    <string name="items">items</string>
 </resources>

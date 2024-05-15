@@ -4,8 +4,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import com.google.firebase.storage.FirebaseStorage
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.common.Constant.TAG
+import com.wa.ai.emojimaker.data.model.StickerUri
 import com.wa.ai.emojimaker.databinding.FragmentHomeBinding
 import com.wa.ai.emojimaker.ui.adapter.CategoryAdapter
 import com.wa.ai.emojimaker.ui.base.BaseBindingFragment
@@ -13,6 +15,7 @@ import com.wa.ai.emojimaker.ui.dialog.SharePackageDialog
 import com.wa.ai.emojimaker.ui.emojimaker.EmojiMakerActivity
 import com.wa.ai.emojimaker.ui.main.MainActivity
 import com.wa.ai.emojimaker.ui.showstickers.ShowStickersActivity
+import com.wa.ai.emojimaker.utils.AppUtils
 
 class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
 
@@ -24,11 +27,20 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
             }
 
             addToTelegram = {
+                if (viewModel.stickerUri.size != 0) {
+                    AppUtils.importToTelegram(requireContext(), viewModel.stickerUri.toList())
+                } else {
+                    toast("Please wait..!")
+                }
 
             }
 
             share = {
-
+                if (viewModel.stickerUri.size != 0) {
+                    AppUtils.shareMultipleImages(requireContext(), viewModel.stickerUri.toList())
+                } else {
+                    toast("Please wait..!")
+                }
             }
 
             download = {
@@ -38,6 +50,7 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
     }
     private val categoryAdapter : CategoryAdapter by lazy {
         CategoryAdapter(optionClick = {
+            getUri(it)
             sharePackageDialog.show(parentFragmentManager, sharePackageDialog.tag)
         }, watchMoreClick = {
             val intent = Intent(requireContext(), ShowStickersActivity::class.java)
@@ -71,4 +84,16 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
         binding.rvCategory.adapter = categoryAdapter
     }
 
+    private fun getUri(category: String) {
+        viewModel.stickerUri.clear()
+        val storage = FirebaseStorage.getInstance()
+        val storageRef = storage.reference.child(category)
+        storageRef.listAll().addOnSuccessListener { listResult ->
+            for (item in listResult.items) {
+                item.downloadUrl.addOnSuccessListener { uri ->
+                    viewModel.stickerUri.add(uri)
+                }
+            }
+        }
+    }
 }

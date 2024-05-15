@@ -89,6 +89,37 @@ object DeviceUtils {
         return Environment.getExternalStoragePublicDirectory(directoryType)?.absolutePath
     }
 
+    fun saveToPackage(
+        context: Context,
+        folder: String,
+        packageName: String = "draft",
+        bitmapImage: Bitmap,
+        fileName: String = "${System.currentTimeMillis()}.png"
+    ): String {
+
+        val cw = ContextWrapper(context)
+        // Path to /data/data/your_app/app_data/imageDir
+        val internalStorage: File = cw.getDir(folder, Context.MODE_PRIVATE)
+        val mPackage = File(internalStorage, packageName)
+        mPackage.mkdir()
+        // Tạo tệp lưu trữ ảnh
+        val path = File(mPackage, fileName)
+        var fos: FileOutputStream? = null
+        try {
+            fos = FileOutputStream(path)
+            // Lưu ảnh vào FileOutputStream
+            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            try {
+                fos!!.close()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }
+        return internalStorage.absolutePath
+    }
     fun savePNGToInternalStorage(
         context: Context,
         folder: String,
@@ -98,6 +129,8 @@ object DeviceUtils {
         val cw = ContextWrapper(context)
         // Path to /data/data/your_app/app_data/imageDir
         val directory: File = cw.getDir(folder, Context.MODE_PRIVATE)
+        val folderss = File(directory, "draft")
+        folderss.mkdir()
         // Tạo tệp lưu trữ ảnh
         val path = File(directory, fileName)
         var fos: FileOutputStream? = null

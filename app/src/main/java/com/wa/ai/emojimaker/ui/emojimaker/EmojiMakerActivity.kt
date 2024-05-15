@@ -32,6 +32,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.Headers
 import com.wa.ai.emojimaker.R
+import com.wa.ai.emojimaker.common.Constant.INTERNAL_MY_CREATIVE_DIR
 import com.wa.ai.emojimaker.common.Constant.TAG
 import com.wa.ai.emojimaker.data.model.ItemOptionUI
 import com.wa.ai.emojimaker.databinding.ActivityEmojiMakerBinding
@@ -288,12 +289,12 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         }
     }
 
-    private fun createSticker(bitmap: Bitmap) {
-        DeviceUtils.savePNGToInternalStorage(this, "mySticker", bitmap)
+    private fun createSticker(bitmap: Bitmap, packageName : String) {
+        DeviceUtils.saveToPackage(this, INTERNAL_MY_CREATIVE_DIR, packageName = packageName ,bitmapImage = bitmap)
     }
 
     private fun download(bitmap: Bitmap) {
-        createSticker(bitmap)
+        createSticker(bitmap, "draft")
     }
 
     private fun share(bitmap: Bitmap) {

@@ -24,7 +24,7 @@ class StickerAdapter(val itemClick:(pos: Int)->Unit) : BaseBindingAdapterDiff<Pi
         holder.binding.piece.setOnSafeClick {
             itemClick(holder.adapterPosition)
         }
-        Log.d(Constant.TAG, "StickerAdapter: " + getItem(holder.adapterPosition).bitmap)
+        //Log.d(Constant.TAG, "StickerAdapter: " + getItem(holder.adapterPosition).bitmap)
     }
 
     override val layoutIdItem: Int

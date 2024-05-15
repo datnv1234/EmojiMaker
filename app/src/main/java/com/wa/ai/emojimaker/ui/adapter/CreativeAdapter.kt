@@ -21,11 +21,17 @@ class CreativeAdapter(val itemClick:(pos: Int)->Unit) : BaseBindingAdapterDiff<B
 
 }) {
     override fun onBindViewHolderBase(holder: BaseHolder<ItemCreativeBinding>, position: Int) {
-        holder.binding.piece.setImageBitmap(getItem(holder.adapterPosition).bitmap)
-        holder.binding.piece.setOnSafeClick {
-            itemClick(holder.adapterPosition)
+        with(getItem(holder.adapterPosition)) {
+            if (this.bitmap != null) {
+                holder.binding.imgSticker.setImageBitmap(getItem(holder.adapterPosition).bitmap)
+            }
+            holder.binding.imgSticker.setOnSafeClick {
+                itemClick(holder.adapterPosition)
+            }
         }
-        Log.d(Constant.TAG, "StickerAdapter: " + getItem(holder.adapterPosition).bitmap)
+
+
+        //Log.d(Constant.TAG, "StickerAdapter: " + getItem(holder.adapterPosition).bitmap)
     }
 
     override val layoutIdItem: Int

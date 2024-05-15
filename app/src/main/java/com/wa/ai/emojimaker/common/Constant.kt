@@ -77,4 +77,7 @@ object Constant {
 
     const val NAME_DEVICE = "NAME_DEVICE"
 
+    //Local storage
+    const val INTERNAL_MY_CREATIVE_DIR = "my_creative"
+
 }

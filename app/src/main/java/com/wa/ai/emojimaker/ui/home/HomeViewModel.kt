@@ -1,16 +1,21 @@
 package com.wa.ai.emojimaker.ui.home
 
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.wa.ai.emojimaker.common.Constant.TAG
 import com.wa.ai.emojimaker.data.model.Category
+import com.wa.ai.emojimaker.data.model.StickerUri
 import com.wa.ai.emojimaker.ui.base.BaseViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class HomeViewModel : BaseViewModel() {
+
+    var stickerUri = mutableListOf<Uri>()
+
     private val _categoriesMutableLiveData: MutableLiveData<List<Category>> = MutableLiveData()
 
     val categoriesMutableLiveData: LiveData<List<Category>>

@@ -9,8 +9,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.wa.ai.emojimaker.common.Constant
+import com.wa.ai.emojimaker.common.Constant.TAG
 import com.wa.ai.emojimaker.data.model.BitmapSticker
 import com.wa.ai.emojimaker.ui.base.BaseViewModel
+import com.wa.ai.emojimaker.utils.AppUtils.convertFileToBitmap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
@@ -27,12 +29,20 @@ class MyCreativeViewModel : BaseViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             val listEntry = mutableListOf<BitmapSticker>()
             val cw = ContextWrapper(context)
-            val directory: File = cw.getDir("mySticker", Context.MODE_PRIVATE)
+            val directory: File = cw.getDir(Constant.INTERNAL_MY_CREATIVE_DIR, Context.MODE_PRIVATE)
             val files = directory.listFiles()
             if (files != null) {
                 for (file in files) {
-                    val bitmap = convertFileToBitmap(file)
-                    listEntry.add(BitmapSticker(bitmap))
+                    if (file.isDirectory) {
+                        var bitmap : Bitmap? = null
+                        val item = file.listFiles()
+                        if (item != null) {
+                            if (item.isNotEmpty()) {
+                                bitmap = convertFileToBitmap(item.random())
+                            }
+                        }
+                        listEntry.add(BitmapSticker(bitmap))
+                    }
                 }
             }
             _stickerMutableLiveData.postValue(listEntry)
@@ -40,21 +50,5 @@ class MyCreativeViewModel : BaseViewModel() {
     }
 
 
-    private fun convertFileToBitmap(file: File): Bitmap {
-        lateinit var bitmap: Bitmap
-        try {
-            // Đọc tệp vào một đối tượng FileInputStream
-            val fis = FileInputStream(file)
-
-            // Đọc dữ liệu từ FileInputStream và chuyển đổi thành Bitmap bằng BitmapFactory
-            bitmap = BitmapFactory.decodeStream(fis)
-
-            // Đóng FileInputStream
-            fis.close()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-        return bitmap
-    }
 
 }
