@@ -64,12 +64,12 @@ object StickerViewBindingAdapters {
     }
 
     @JvmStatic
-    @InverseBindingAdapter(attribute = "app:activeIcons")
+    @InverseBindingAdapter(attribute = "activeIcons")
     fun getActiveIcons(view: StickerView): List<BitmapStickerIcon> {
         return view.activeIcons.get()!!
     }
 
-    @BindingAdapter("app:activeIconsAttrChanged")
+    @BindingAdapter("activeIconsAttrChanged")
     @JvmStatic fun setActiveIconListener(
         view: StickerView,
         attrChange: InverseBindingListener

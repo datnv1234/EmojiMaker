@@ -18,7 +18,9 @@ class PackageAdapter : BaseBindingAdapterDiff<PackageModel, ItemPackageBinding>(
 }) {
     override fun onBindViewHolderBase(holder: BaseHolder<ItemPackageBinding>, position: Int) {
         with(getItem(holder.adapterPosition)) {
-            holder.binding.imgAvatar.setImageBitmap(this.avatar)
+            if (this.avatar != null) {
+                holder.binding.imgAvatar.setImageBitmap(this.avatar)
+            }
             holder.binding.tvPackageName.text = this.name
         }
     }
