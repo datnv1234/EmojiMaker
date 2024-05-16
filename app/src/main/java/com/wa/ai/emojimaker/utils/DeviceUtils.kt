@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Path
 import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Environment
@@ -90,20 +91,29 @@ object DeviceUtils {
     }
 
     fun saveToPackage(
+        bitmapImage: Bitmap,
+        path: File,
+        fileName: String = "${System.currentTimeMillis()}.png"
+    ) {
+        val mPath = File(path, fileName)
+        saveToInternalStorage(mPath, bitmapImage)
+    }
+    fun saveToPackage(
         context: Context,
         folder: String,
         packageName: String = "draft",
         bitmapImage: Bitmap,
         fileName: String = "${System.currentTimeMillis()}.png"
-    ): String {
-
-        val cw = ContextWrapper(context)
-        // Path to /data/data/your_app/app_data/imageDir
-        val internalStorage: File = cw.getDir(folder, Context.MODE_PRIVATE)
-        val mPackage = File(internalStorage, packageName)
-        mPackage.mkdir()
+    ): String? {
+        val mPackage = mkInternalDir(context, folder, packageName) ?: return null
         // Tạo tệp lưu trữ ảnh
         val path = File(mPackage, fileName)
+        saveToInternalStorage(path, bitmapImage)
+
+        return mPackage.absolutePath
+    }
+
+    fun saveToInternalStorage(path : File, bitmapImage: Bitmap) {
         var fos: FileOutputStream? = null
         try {
             fos = FileOutputStream(path)
@@ -118,8 +128,22 @@ object DeviceUtils {
                 e.printStackTrace()
             }
         }
-        return internalStorage.absolutePath
     }
+
+    @JvmStatic
+    fun mkInternalDir(context: Context, folder: String, packageName: String) : File?{
+        val cw = ContextWrapper(context)
+        // Path to /data/data/your_app/app_data/imageDir
+        val internalStorage: File = cw.getDir(folder, Context.MODE_PRIVATE)
+        val mPackage = File(internalStorage, packageName)
+        if (mPackage.exists()) {
+            return null
+        }
+        mPackage.mkdir()
+        return mPackage
+    }
+
+    @JvmStatic
     fun savePNGToInternalStorage(
         context: Context,
         folder: String,

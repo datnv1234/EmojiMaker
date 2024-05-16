@@ -558,6 +558,16 @@ public class StickerView extends FrameLayout {
         return bitmap;
     }
 
+    public void removeAllStickers() {
+        this.stickers.clear();
+        Sticker sticker = this.handlingSticker;
+        if (sticker != null) {
+            sticker.release();
+            this.handlingSticker = null;
+        }
+        invalidate();
+    }
+
     public ObservableMatrix getCanvasMatrix() {
         return canvasMatrix;
     }

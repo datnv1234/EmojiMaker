@@ -44,7 +44,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="20dp"
             android:layout_marginEnd="8dp"
-            android:background="@drawable/bg_button_gray"
+            android:background="@drawable/bg_button_disable"
             android:gravity="center"
             android:paddingVertical="10dp"
             android:text="Cancel"

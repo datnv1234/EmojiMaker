@@ -62,4 +62,12 @@
     <string name="item">Item</string>
     <string name="items">items</string>
     <string name="avatar_package">Avatar package</string>
+    <string name="please_input_package_name">Please input package name</string>
+    <string name="package_existed">Package Existed!</string>
+    <string name="confirm">Confirm</string>
+    <string name="save_successfully">Save successfully!</string>
+    <string name="your_emoji_has_been_saved_to">Your emoji has been saved to</string>
+    <string name="back_to_home">Back to Home</string>
+    <string name="create_more">Create More</string>
+
 </resources>

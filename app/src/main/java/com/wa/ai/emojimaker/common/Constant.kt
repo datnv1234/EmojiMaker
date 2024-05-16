@@ -80,4 +80,6 @@ object Constant {
     //Local storage
     const val INTERNAL_MY_CREATIVE_DIR = "my_creative"
 
+    const val CREATE_STICKER_DELAY = 3000L
+
 }

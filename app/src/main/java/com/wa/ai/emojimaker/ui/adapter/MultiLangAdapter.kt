@@ -39,28 +39,14 @@ class MultiLangAdapter : BaseBindingAdapterDiff<LanguageUI, ItemMultiLangBinding
         with(getItem(holder.adapterPosition)) {
             holder.binding.apply {
                 tvLanguage.text = name
-                //tvLanguage.strokeColor = "#4E545F"
-                //tvLanguage.strokeWidth = 2f.dpToPx()
                 if (holder.adapterPosition == newPosition) {
                     avatar?.let {
-//                        tvLanguage.setDrawableTv(
-//                            it,
-//                            0,
-//                            R.drawable.ic_language_selected,
-//                            0
-//                        )
                         radioBtn.setImageResource(R.drawable.ic_language_selected)
                         imgLanguage.setImageResource(it)
                     }
 
                 } else {
                     avatar?.let {
-//                        tvLanguage.setDrawableTv(
-//                            it,
-//                            0,
-//                            R.drawable.ic_language_unselected,
-//                            0
-//                        )
                         radioBtn.setImageResource(R.drawable.ic_language_unselected)
                         imgLanguage.setImageResource(it)
                     }

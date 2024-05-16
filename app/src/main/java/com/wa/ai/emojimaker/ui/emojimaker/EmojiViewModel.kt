@@ -2,6 +2,7 @@ package com.wa.ai.emojimaker.ui.emojimaker
 
 import android.content.Context
 import android.content.res.AssetManager
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -17,6 +18,9 @@ import kotlinx.coroutines.launch
 
 
 class EmojiViewModel : BaseViewModel() {
+
+    var bitmap: Bitmap? = null
+
     private val _optionMutableLiveData: MutableLiveData<List<PagerIconUI>> = MutableLiveData()
     val optionMutableLiveData: LiveData<List<PagerIconUI>>
         get() = _optionMutableLiveData
@@ -86,7 +90,7 @@ class EmojiViewModel : BaseViewModel() {
                 )
             }
             _optionMutableLiveData.postValue(listOptionEntity)
-            Log.d(Constant.TAG, "getCategoryList: " + _optionMutableLiveData.value?.size)
+            //Log.d(Constant.TAG, "getCategoryList: " + _optionMutableLiveData.value?.size)
         }
     }
 

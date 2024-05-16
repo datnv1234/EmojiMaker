@@ -42,8 +42,8 @@ class HomeViewModel : BaseViewModel() {
             listEntry.add(Category("cute_girl", "Cute girl"))
 
             _categoriesMutableLiveData.postValue(listEntry)
-            Log.d(TAG, "getCategoryList: " + _categoriesMutableLiveData.value?.size)
-            Log.d(TAG, "getCategoryList: " + listEntry.size)
+            //Log.d(TAG, "getCategoryList: " + _categoriesMutableLiveData.value?.size)
+            //Log.d(TAG, "getCategoryList: " + listEntry.size)
         }
     }
 }

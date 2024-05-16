@@ -19,7 +19,6 @@ import android.os.Environment
 import android.os.Parcelable
 import android.provider.OpenableColumns
 import android.text.InputType
-import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.widget.EditText
@@ -33,17 +32,19 @@ import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.Headers
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.common.Constant.INTERNAL_MY_CREATIVE_DIR
-import com.wa.ai.emojimaker.common.Constant.TAG
 import com.wa.ai.emojimaker.data.model.ItemOptionUI
 import com.wa.ai.emojimaker.databinding.ActivityEmojiMakerBinding
 import com.wa.ai.emojimaker.ui.adapter.OptionAdapter
 import com.wa.ai.emojimaker.ui.adapter.PagerIconAdapter
 import com.wa.ai.emojimaker.ui.base.BaseBindingActivity
 import com.wa.ai.emojimaker.ui.dialog.AddToPackageDialog
+import com.wa.ai.emojimaker.ui.dialog.CreatePackageDialog
 import com.wa.ai.emojimaker.ui.dialog.SaveStickerDialog
+import com.wa.ai.emojimaker.ui.dialog.SaveSuccessDialog
+import com.wa.ai.emojimaker.ui.dialog.WaitingDialog
+import com.wa.ai.emojimaker.ui.main.MainActivity
 import com.wa.ai.emojimaker.utils.AppUtils
 import com.wa.ai.emojimaker.utils.DeviceUtils
-import com.wa.ai.emojimaker.utils.extention.getBitMapFromView
 import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 import com.wa.ai.emojimaker.utils.sticker.BitmapStickerIcon
 import com.wa.ai.emojimaker.utils.sticker.DrawableSticker
@@ -53,12 +54,9 @@ import com.wa.ai.emojimaker.utils.sticker.StickerViewModel
 import com.wa.ai.emojimaker.utils.sticker.StickerViewSerializer
 import com.wa.ai.emojimaker.utils.sticker.iconEvents.DeleteIconEvent
 import com.wa.ai.emojimaker.utils.sticker.iconEvents.DuplicateIconEvent
-import com.wa.ai.emojimaker.utils.sticker.iconEvents.FlipHorizontallyEvent
-import com.wa.ai.emojimaker.utils.sticker.iconEvents.FlipVerticallyEvent
 import com.wa.ai.emojimaker.utils.sticker.iconEvents.ZoomIconEvent
 import timber.log.Timber
 import java.io.File
-import java.io.FileOutputStream
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -67,13 +65,29 @@ import java.util.Locale
 
 class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, StickerViewModel>() {
 
-    private var rotateToastShowed = false;
     private val optionList = ArrayList<ItemOptionUI>()
     private lateinit var emojiViewModel: EmojiViewModel
     private val pagerIconAdapter: PagerIconAdapter by lazy { PagerIconAdapter(itemClick = {
         doAddSticker(it)
     })}
 
+    private val mDialogWaiting: WaitingDialog by lazy {
+        WaitingDialog().apply { 
+            action = {
+                mSaveSuccessDialog.show(supportFragmentManager, mSaveSuccessDialog.tag)
+            }
+        }
+    }
+    private val mSaveSuccessDialog: SaveSuccessDialog by lazy {
+        SaveSuccessDialog(emojiViewModel.bitmap!!).apply {
+            home = {
+                startActivity(Intent(this@EmojiMakerActivity, MainActivity::class.java))
+            }
+            createMore = {
+                binding.stickerView.removeAllStickers()
+            }
+        }
+    }
     private val mSaveDialog : SaveStickerDialog by lazy {
         SaveStickerDialog().apply {
             addToPackage= {
@@ -90,11 +104,31 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         }
     }
 
+    private val mCreatePackageDialog : CreatePackageDialog by lazy {
+        CreatePackageDialog().apply {
+            confirm = { path ->
+                mAddToPackageDialog.dismiss()
+                mSaveDialog.dismiss()
+                mDialogWaiting.show(supportFragmentManager, mDialogWaiting.tag)
+                DeviceUtils.saveToPackage(binding.stickerView.createBitmap(), path)
+            }
+        }
+    }
+
+
     private val mAddToPackageDialog : AddToPackageDialog by lazy {
         AddToPackageDialog().apply {
+            save = {
+                //
+            }
+
+            createNewPackage = {
+                mCreatePackageDialog.show(supportFragmentManager, mCreatePackageDialog.tag)
+            }
 
         }
     }
+
 
     override val layoutId: Int
         get() = R.layout.activity_emoji_maker
@@ -116,6 +150,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
 
         binding.btnCreate.setOnSafeClick {
             val bitmap = binding.stickerView.createBitmap()
+            emojiViewModel.bitmap = bitmap
             mSaveDialog.bitmap = bitmap
             mSaveDialog.show(supportFragmentManager, mSaveDialog.tag)
 //
