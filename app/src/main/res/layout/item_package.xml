@@ -29,7 +29,8 @@
                     android:id="@+id/imgAvatar"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:src="@drawable/emoji1"/>
+                    android:src="@drawable/emoji1"
+                    android:contentDescription="@string/avatar_package" />
             </androidx.cardview.widget.CardView>
             <TextView
                 android:id="@+id/tvPackageName"
