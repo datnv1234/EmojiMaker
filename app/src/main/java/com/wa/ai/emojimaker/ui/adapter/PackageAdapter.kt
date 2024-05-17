@@ -32,7 +32,7 @@ class PackageAdapter : BaseBindingAdapterDiff<PackageModel, ItemPackageBinding>(
         }
     var callBack: (Int, PackageModel) -> Unit = { _, _ -> }
 
-    fun getCurrentPackage() = currentList[newPosition]
+    fun getCurrentPackage(): PackageModel? = currentList[newPosition]
 
     override fun onBindViewHolderBase(holder: BaseHolder<ItemPackageBinding>, position: Int) {
         with(getItem(holder.adapterPosition)) {

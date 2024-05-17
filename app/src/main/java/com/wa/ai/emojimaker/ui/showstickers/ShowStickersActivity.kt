@@ -9,6 +9,7 @@ import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.common.Constant.TAG
 import com.wa.ai.emojimaker.data.model.StickerUri
 import com.wa.ai.emojimaker.databinding.ActivityShowStickersBinding
+import com.wa.ai.emojimaker.ui.adapter.MadeStickerAdapter
 import com.wa.ai.emojimaker.ui.adapter.UriAdapter
 import com.wa.ai.emojimaker.ui.base.BaseBindingActivity
 import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
@@ -21,6 +22,13 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
             toast("Clicked")
         })
     }
+
+    private val madeStickerAdapter : MadeStickerAdapter by lazy {
+        MadeStickerAdapter(itemClick = {
+            toast("Clicked")
+        })
+    }
+
     override val layoutId: Int
         get() = R.layout.activity_show_stickers
 
@@ -31,19 +39,29 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
         binding.btnBack.setOnSafeClick {
             finish()
         }
+        val isLocal = intent.getBooleanExtra("local", false)
         val category = intent.getStringExtra("category")
         val categoryName = intent.getStringExtra("category_name")
         val categorySize = intent.getIntExtra("category_size", 0)
         binding.tvTitle.text = categoryName
+
         if (category != null) {
-            viewModel.getStickers(category, categorySize)
+            if (!isLocal) {
+                viewModel.getStickers(category, categorySize)
 
-            viewModel.stickersMutableLiveData.observe(this) {
-                uriAdapter.submitList(it.toMutableList())
-                uriAdapter.notifyDataSetChanged()
+                viewModel.stickersMutableLiveData.observe(this) {
+                    uriAdapter.submitList(it.toMutableList())
+                    uriAdapter.notifyDataSetChanged()
+                }
+                binding.rvStickers.adapter = uriAdapter
+            } else {
+                viewModel.getLocalSticker(this, category, categorySize)
+                viewModel.localStickerMutableLiveData.observe(this) {
+                    madeStickerAdapter.submitList(it.toMutableList())
+                    madeStickerAdapter.notifyDataSetChanged()
+                }
+                binding.rvStickers.adapter = madeStickerAdapter
             }
-            binding.rvStickers.adapter = uriAdapter
-
         }
     }
 

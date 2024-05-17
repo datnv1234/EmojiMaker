@@ -6,16 +6,23 @@
     <data>
 
     </data>
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/pkgView"
+        android:layout_width="@dimen/_120sdp"
+        android:layout_height="@dimen/_123sdp"
         android:layout_marginVertical="6dp"
-        android:layout_marginHorizontal="8dp"
-        android:background="@drawable/bg_category">
+        android:padding="0dp"
+        android:foreground="?android:attr/selectableItemBackground"
+        app:cardCornerRadius="@dimen/_13sdp"
+        app:cardBackgroundColor="@color/white"
+        app:cardElevation="0dp">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
         <ImageView
             android:id="@+id/imgSticker"
-            android:layout_width="@dimen/_72sdp"
-            android:layout_height="@dimen/_72sdp"
+            android:layout_width="@dimen/_56sdp"
+            android:layout_height="@dimen/_56sdp"
             android:layout_margin="16dp"
             android:src="@drawable/emoji1"
             android:scaleType="centerCrop"
@@ -23,14 +30,14 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"/>
         <androidx.cardview.widget.CardView
+            android:id="@+id/showOptionView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_24sdp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="8dp"
-            android:outlineSpotShadowColor="@color/transparent"
-            android:outlineAmbientShadowColor="@color/transparent"
-            app:cardBackgroundColor="@color/transparent"
+            android:checked="false"
+            app:cardElevation="0dp"
             app:cardCornerRadius="@dimen/_20sdp"
             app:layout_constraintStart_toEndOf="@id/imgSticker"
             app:layout_constraintEnd_toEndOf="parent"
@@ -46,55 +53,84 @@
                 android:foreground="?android:attr/selectableItemBackground"
                 android:contentDescription="@string/icon_button"/>
         </androidx.cardview.widget.CardView>
-
-        <TextView
-            android:id="@+id/tvCategory"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:id="@+id/optionView"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="20dp"
-            android:fontFamily="@font/poppins_semibold"
-            android:text="@string/item"
-            app:layout_constraintBottom_toTopOf="@id/llView"
-            app:layout_constraintTop_toBottomOf="@+id/imgSticker"
-            tools:layout_editor_absoluteX="16dp" />
+            android:elevation="@dimen/_7sdp"
+            android:translationZ="@dimen/_7sdp"
+            android:translationX="@dimen/_10sdp"
+            android:translationY="@dimen/_minus5sdp"
+            android:background="@drawable/bg_options"
+            android:visibility="gone"
+            app:layout_constraintEnd_toStartOf="@id/showOptionView"
+            app:layout_constraintTop_toBottomOf="@id/showOptionView">
+            <TextView
+                android:id="@+id/btnDelete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/_7sdp"
+                android:gravity="center_vertical"
+                android:text="@string/delete"
+                android:fontFamily="@font/poppins_regular"
+                android:textSize="@dimen/_10ssp"
+                app:drawableStartCompat="@drawable/ic_trash_bin" />
+        </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/llView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@id/tvCategory"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:contentDescription="@string/icon_button"
-                android:src="@drawable/ic_notes" />
-
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
             <TextView
-                android:id="@+id/tvQuantity"
-                android:layout_width="wrap_content"
+                android:id="@+id/tvCategory"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/poppins_regular"
-                android:text="0"
-                android:textColor="#797D87"
-                android:textSize="12sp"
-                tools:ignore="HardcodedText" />
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/poppins_semibold"
+                android:text="@string/item"
+                android:clickable="false"
+                tools:layout_editor_absoluteX="16dp" />
 
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/llView"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/_2sdp"
-                android:fontFamily="@font/poppins_regular"
-                android:text="@string/items"
-                android:textColor="#797D87"
-                android:textSize="12sp" />
+                android:layout_marginHorizontal="16dp"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:contentDescription="@string/icon_button"
+                    android:src="@drawable/ic_notes" />
 
+                <TextView
+                    android:id="@+id/tvQuantity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_regular"
+                    android:text="0"
+                    android:textColor="#797D87"
+                    android:textSize="12sp"
+                    android:clickable="false"
+                    tools:ignore="HardcodedText" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/_2sdp"
+                    android:fontFamily="@font/poppins_regular"
+                    android:text="@string/items"
+                    android:textColor="#797D87"
+                    android:textSize="12sp"
+                    android:clickable="false" />
+
+            </LinearLayout>
         </LinearLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
 </layout>

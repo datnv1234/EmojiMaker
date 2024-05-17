@@ -46,8 +46,8 @@ class MyCreativeViewModel : BaseViewModel() {
                         listEntry.add(PackageModel(name, item?.size ?: 0, bitmap))
                     }
                 }
+                _stickerMutableLiveData.postValue(listEntry)
             }
-            _stickerMutableLiveData.postValue(listEntry)
         }
     }
 

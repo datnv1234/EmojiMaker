@@ -12,11 +12,37 @@
         android:layout_height="match_parent"
         android:paddingHorizontal="16dp"
         tools:context=".ui.mycreative.MyCreativeFragment">
+        <LinearLayout
+            android:id="@+id/llEmpty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_13sdp"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:ignore="UseCompoundDrawables">
+            <ImageView
+                android:layout_width="@dimen/_122sdp"
+                android:layout_height="@dimen/_146sdp"
+                android:src="@drawable/ic_cry"
+                android:contentDescription="@string/empty" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_19sdp"
+                android:gravity="center"
+                android:text="@string/you_don_t_have_any_package"
+                android:fontFamily="@font/poppins_regular"/>
+        </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvSticker"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:visibility="visible"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:spanCount="2"/>
 

@@ -29,10 +29,10 @@ class UriAdapter(val itemClick: () -> Unit) : BaseBindingAdapterDiff<StickerUri,
 
     override fun onBindViewHolderBase(holder: BaseHolder<ItemStickerBinding>, position: Int) {
 
-        Log.d(TAG, "onBindViewHolderBase:")
+        //Log.d(TAG, "onBindViewHolderBase:")
         with(getItem(holder.adapterPosition)) {
             download(this.uri, holder.binding.imgSticker)
-            Log.d(TAG, "onBindViewHolderBase: $this")
+            //Log.d(TAG, "onBindViewHolderBase: $this")
             holder.binding.imgSticker.setOnSafeClick {
                 itemClick()
             }

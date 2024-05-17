@@ -23,7 +23,7 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
     private val sharePackageDialog : SharePackageDialog by lazy {
         SharePackageDialog().apply {
             addToWhatsapp = {
-
+                toast(getString(R.string.this_function_is_not_supported_yet))
             }
 
             addToTelegram = {
@@ -44,7 +44,7 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
             }
 
             download = {
-
+                toast("Cannot download this category")
             }
         }
     }

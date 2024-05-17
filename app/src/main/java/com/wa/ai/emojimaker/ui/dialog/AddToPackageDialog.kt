@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import com.wa.ai.emojimaker.R
+import com.wa.ai.emojimaker.data.model.PackageModel
 import com.wa.ai.emojimaker.databinding.DialogAddToPackageBinding
 import com.wa.ai.emojimaker.evenbus.CreatePackageEvent
 import com.wa.ai.emojimaker.ui.adapter.PackageAdapter
@@ -15,7 +16,7 @@ import org.greenrobot.eventbus.ThreadMode
 class AddToPackageDialog : BaseBindingDialogFragment<DialogAddToPackageBinding>() {
 
 
-    lateinit var save: ((binding : DialogAddToPackageBinding) -> Unit)
+    lateinit var save: ((pkg: PackageModel?) -> Unit)
     lateinit var createNewPackage: ((binding : DialogAddToPackageBinding) -> Unit)
 
     override val layoutId: Int
@@ -36,12 +37,15 @@ class AddToPackageDialog : BaseBindingDialogFragment<DialogAddToPackageBinding>(
         setup()
     }
 
+    private fun getPackage() : PackageModel? = packageAdapter.getCurrentPackage()
+
     private fun setup() {
         binding.btnCreateNewPackage.setOnSafeClick {
             createNewPackage.invoke(binding)
         }
         binding.btnSave.setOnSafeClick {
-            save.invoke(binding)
+            dismiss()
+            save.invoke(getPackage())
         }
         binding.bg.setOnSafeClick {
             dismiss()

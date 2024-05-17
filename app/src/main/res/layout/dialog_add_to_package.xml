@@ -90,15 +90,18 @@
                     app:spanCount="3"
                     tools:itemCount="4"/>
 
-                <Button
+                <TextView
                     android:id="@+id/btnSave"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginVertical="12dp"
+                    android:gravity="center"
                     android:background="@drawable/bg_button_default"
+                    android:enabled="true"
                     android:paddingVertical="16dp"
                     android:text="@string/save"
-                    android:textColor="@color/white" />
+                    android:textColor="@color/white"
+                    android:foreground="?android:attr/selectableItemBackground"/>
             </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

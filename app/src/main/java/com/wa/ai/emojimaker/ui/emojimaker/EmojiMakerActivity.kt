@@ -94,6 +94,19 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         AddToPackageDialog().apply {
             save = {
                 //
+                if (it == null) {
+                    toast(getString(R.string.please_input_package_name))
+                } else {
+                    mSaveDialog.dismiss()
+                    DeviceUtils.saveToPackage(
+                        this@EmojiMakerActivity,
+                        INTERNAL_MY_CREATIVE_DIR,
+                        packageName = it.id,
+                        bitmapImage = emojiViewModel.bitmap
+                    )
+                    mDialogWaiting.show(supportFragmentManager, mDialogWaiting.tag)
+                }
+
             }
 
             createNewPackage = {
@@ -108,13 +121,13 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
             confirm = { pkg ->
                 mAddToPackageDialog.dismiss()
                 mSaveDialog.dismiss()
-                mDialogWaiting.show(supportFragmentManager, mDialogWaiting.tag)
                 DeviceUtils.saveToPackage(
                     this@EmojiMakerActivity,
                     INTERNAL_MY_CREATIVE_DIR,
                     packageName = pkg.id,
                     bitmapImage = emojiViewModel.bitmap
                 )
+                mDialogWaiting.show(supportFragmentManager, mDialogWaiting.tag)
             }
         }
     }
@@ -339,7 +352,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     }
 
     private fun download(bitmap: Bitmap) {
-        createSticker(bitmap, "draft")
+        createSticker(bitmap, "Download")
     }
 
     private fun share(bitmap: Bitmap) {
