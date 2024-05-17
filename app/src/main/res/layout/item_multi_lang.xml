@@ -31,15 +31,14 @@
             android:layout_weight="1"
             android:gravity="start"
             android:textSize="16sp"
-            android:text="English"/>
+            android:text="@string/english"/>
 
-        <ImageView
+        <androidx.appcompat.widget.AppCompatRadioButton
             android:id="@+id/radio_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="12dp"
-            android:src="@drawable/ic_language_unselected"
-            tools:ignore="ContentDescription" />
+            android:clickable="false"
+            android:checked="false"/>
     </LinearLayout>
     <!--<com.wa.ai.emojimaker.utils.customview.RippleCornerTextView
         android:id="@+id/tvLanguage"

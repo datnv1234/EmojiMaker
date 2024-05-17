@@ -113,6 +113,7 @@ object DeviceUtils {
         return mPackage.absolutePath
     }
 
+    @JvmStatic
     fun saveToInternalStorage(path : File, bitmapImage: Bitmap) {
         var fos: FileOutputStream? = null
         try {
@@ -136,9 +137,9 @@ object DeviceUtils {
         // Path to /data/data/your_app/app_data/imageDir
         val internalStorage: File = cw.getDir(folder, Context.MODE_PRIVATE)
         val mPackage = File(internalStorage, packageName)
-        if (mPackage.exists()) {
-            return null
-        }
+//        if (mPackage.exists()) {
+//            return null
+//        }
         mPackage.mkdir()
         return mPackage
     }

@@ -71,27 +71,13 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         doAddSticker(it)
     })}
 
-    private val mDialogWaiting: WaitingDialog by lazy {
-        WaitingDialog().apply { 
-            action = {
-                mSaveSuccessDialog.show(supportFragmentManager, mSaveSuccessDialog.tag)
-            }
-        }
-    }
-    private val mSaveSuccessDialog: SaveSuccessDialog by lazy {
-        SaveSuccessDialog(emojiViewModel.bitmap!!).apply {
-            home = {
-                startActivity(Intent(this@EmojiMakerActivity, MainActivity::class.java))
-            }
-            createMore = {
-                binding.stickerView.removeAllStickers()
-            }
-        }
-    }
+    /*
+    * Declare dialog variable
+    * */
     private val mSaveDialog : SaveStickerDialog by lazy {
         SaveStickerDialog().apply {
             addToPackage= {
-                addToPackage(bitmap, "")
+                mAddToPackageDialog.show(supportFragmentManager, mAddToPackageDialog.tag)
             }
 
             download = {
@@ -103,18 +89,6 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
             }
         }
     }
-
-    private val mCreatePackageDialog : CreatePackageDialog by lazy {
-        CreatePackageDialog().apply {
-            confirm = { path ->
-                mAddToPackageDialog.dismiss()
-                mSaveDialog.dismiss()
-                mDialogWaiting.show(supportFragmentManager, mDialogWaiting.tag)
-                DeviceUtils.saveToPackage(binding.stickerView.createBitmap(), path)
-            }
-        }
-    }
-
 
     private val mAddToPackageDialog : AddToPackageDialog by lazy {
         AddToPackageDialog().apply {
@@ -129,6 +103,44 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         }
     }
 
+    private val mCreatePackageDialog : CreatePackageDialog by lazy {
+        CreatePackageDialog().apply {
+            confirm = { pkg ->
+                mAddToPackageDialog.dismiss()
+                mSaveDialog.dismiss()
+                mDialogWaiting.show(supportFragmentManager, mDialogWaiting.tag)
+                DeviceUtils.saveToPackage(
+                    this@EmojiMakerActivity,
+                    INTERNAL_MY_CREATIVE_DIR,
+                    packageName = pkg.id,
+                    bitmapImage = emojiViewModel.bitmap
+                )
+            }
+        }
+    }
+
+    private val mDialogWaiting: WaitingDialog by lazy {
+        WaitingDialog().apply { 
+            action = {
+                mSaveSuccessDialog.show(supportFragmentManager, mSaveSuccessDialog.tag)
+            }
+        }
+    }
+
+    private val mSaveSuccessDialog: SaveSuccessDialog by lazy {
+        SaveSuccessDialog(emojiViewModel.bitmap).apply {
+            home = {
+                startActivity(Intent(this@EmojiMakerActivity, MainActivity::class.java))
+            }
+            createMore = {
+                newBoard()
+            }
+        }
+    }
+
+    /*
+    * End of declaring dialog variable
+    * */
 
     override val layoutId: Int
         get() = R.layout.activity_emoji_maker
@@ -148,13 +160,11 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         intent.type = null // Don't run again if rotated/etc.
         setUpViewPager()
 
-        binding.btnCreate.setOnSafeClick {
+        binding.btnSave.setOnSafeClick {
             val bitmap = binding.stickerView.createBitmap()
             emojiViewModel.bitmap = bitmap
             mSaveDialog.bitmap = bitmap
             mSaveDialog.show(supportFragmentManager, mSaveDialog.tag)
-//
-//            toast("Saved to storage!")
         }
     }
 
@@ -665,7 +675,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         override fun onStickerAdded(sticker: Sticker, direction: Int) {
             binding.stickerView.layoutSticker(sticker, direction)
             binding.stickerView.invalidate()
-            binding.btnCreate.isEnabled = true
+            binding.btnSave.isEnabled = true
         }
 
         override fun onStickerClicked(sticker: Sticker) {
@@ -674,7 +684,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
 
         override fun onStickerDeleted(sticker: Sticker, isLastSticker: Boolean) {
             binding.stickerView.invalidate()
-            binding.btnCreate.isEnabled = !isLastSticker
+            binding.btnSave.isEnabled = !isLastSticker
         }
 
         override fun onStickerDragFinished(sticker: Sticker) {
@@ -703,6 +713,11 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
 
         override fun onInvalidateView() {
             binding.stickerView.invalidate()
+        }
+
+        override fun onClearBoard() {
+            binding.stickerView.invalidate()
+            binding.btnSave.isEnabled = false
         }
     }
 

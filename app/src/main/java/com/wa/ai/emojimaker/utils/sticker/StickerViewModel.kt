@@ -154,6 +154,7 @@ open class StickerViewModel : BaseViewModel() {
             handlingSticker.value = null
         }
         currentIcon.value = null
+        stickerOperationListener.onClearBoard()
         stickerOperationListener.onInvalidateView()
     }
 

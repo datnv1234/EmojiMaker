@@ -41,13 +41,13 @@ class MultiLangAdapter : BaseBindingAdapterDiff<LanguageUI, ItemMultiLangBinding
                 tvLanguage.text = name
                 if (holder.adapterPosition == newPosition) {
                     avatar?.let {
-                        radioBtn.setImageResource(R.drawable.ic_language_selected)
+                        radioBtn.isChecked = true
                         imgLanguage.setImageResource(it)
                     }
 
                 } else {
                     avatar?.let {
-                        radioBtn.setImageResource(R.drawable.ic_language_unselected)
+                        radioBtn.isChecked = false
                         imgLanguage.setImageResource(it)
                     }
                 }

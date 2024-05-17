@@ -8,7 +8,6 @@ import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import com.wa.ai.emojimaker.R
-import com.wa.ai.emojimaker.common.Constant.TAG
 import com.wa.ai.emojimaker.data.model.Category
 import com.wa.ai.emojimaker.databinding.ItemCategoryBinding
 import com.wa.ai.emojimaker.ui.base.BaseBindingAdapterDiff

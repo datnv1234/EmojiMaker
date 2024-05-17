@@ -515,6 +515,8 @@ public class StickerView extends FrameLayout {
         void onStickerMoved(@NonNull Sticker sticker);
 
         void onInvalidateView();
+
+        void onClearBoard();
     }
 
     public interface OnStickerAreaTouchListener {

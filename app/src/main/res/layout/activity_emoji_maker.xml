@@ -33,7 +33,7 @@
                 android:translationZ="@dimen/_14sdp"
                 android:contentDescription="@string/back"/>
             <Button
-                android:id="@+id/btnCreate"
+                android:id="@+id/btnSave"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
@@ -54,7 +54,7 @@
                 android:gravity="center"
                 android:fontFamily="@font/poppins_semibold"
                 android:layout_marginHorizontal="16dp"
-                android:layout_toStartOf="@+id/btnCreate"
+                android:layout_toStartOf="@+id/btnSave"
                 android:layout_toEndOf="@+id/iv_back"/>
         </RelativeLayout>
         <androidx.constraintlayout.widget.ConstraintLayout

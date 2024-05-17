@@ -1,6 +1,7 @@
 package com.wa.ai.emojimaker.ui.dialog
 
 import android.content.DialogInterface
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.content.res.AppCompatResources
@@ -19,7 +20,8 @@ import java.io.File
 
 class CreatePackageDialog : BaseBindingDialogFragment<DialogCreatePackageBinding>() {
 
-    lateinit var confirm: ((file : File) -> Unit)
+    lateinit var bitmap: Bitmap
+    lateinit var confirm: ((pkg : PackageModel) -> Unit)
     private var isCreatePackage = false
     override val layoutId: Int
         get() = R.layout.dialog_create_package
@@ -42,9 +44,9 @@ class CreatePackageDialog : BaseBindingDialogFragment<DialogCreatePackageBinding
                 //Save
                 isCreatePackage = true
 
-                EventBus.getDefault().post(CreatePackageEvent(mPackage, path))
+                //EventBus.getDefault().post(CreatePackageEvent(mPackage, path))
 
-                confirm.invoke(path)
+                confirm.invoke(mPackage)
                 dismiss()
             }
         }

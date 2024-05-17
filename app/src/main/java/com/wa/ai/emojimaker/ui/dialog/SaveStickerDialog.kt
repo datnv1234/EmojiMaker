@@ -1,8 +1,6 @@
 package com.wa.ai.emojimaker.ui.dialog
 
-import android.content.res.ColorStateList
 import android.graphics.Bitmap
-import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import com.wa.ai.emojimaker.R
@@ -34,7 +32,6 @@ class SaveStickerDialog : BaseBindingDialogFragment<DialogSaveBinding>() {
         binding.btnDownload.setOnSafeClick {
             download?.invoke(binding)
         }
-
         binding.btnShare.setOnSafeClick {
             share?.invoke(binding)
         }

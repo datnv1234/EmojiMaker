@@ -2,7 +2,6 @@ package com.wa.ai.emojimaker.ui.adapter
 
 import androidx.recyclerview.widget.DiffUtil
 import com.wa.ai.emojimaker.R
-import com.wa.ai.emojimaker.data.model.LanguageUI
 import com.wa.ai.emojimaker.data.model.PackageModel
 import com.wa.ai.emojimaker.databinding.ItemPackageBinding
 import com.wa.ai.emojimaker.ui.base.BaseBindingAdapterDiff
@@ -25,7 +24,7 @@ class PackageAdapter : BaseBindingAdapterDiff<PackageModel, ItemPackageBinding>(
             notifyItemChanged(value)
         }
 
-    var newPosition: Int = -1
+    private var newPosition: Int = -1
         set(value) {
             oldPosition = field
             field = value

@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 
 class EmojiViewModel : BaseViewModel() {
 
-    var bitmap: Bitmap? = null
+    lateinit var bitmap: Bitmap
 
     private val _optionMutableLiveData: MutableLiveData<List<PagerIconUI>> = MutableLiveData()
     val optionMutableLiveData: LiveData<List<PagerIconUI>>

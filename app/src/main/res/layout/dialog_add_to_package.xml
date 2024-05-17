@@ -71,6 +71,7 @@
                         android:layout_marginEnd="@dimen/_16sdp"
                         android:background="@color/transparent"
                         android:scaleType="fitXY"
+                        android:clickable="false"
                         android:src="@drawable/ic_add_package"
                         android:contentDescription="@string/icon_button" />
                     <TextView
