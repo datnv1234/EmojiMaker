@@ -35,7 +35,8 @@ class AddToPackageViewModel : BaseViewModel() {
                                 bitmap = convertFileToBitmap(item.random())
                             }
                         }
-                        listEntry.add(PackageModel(file.name, bitmap))
+                        val name = file.name.replace("_", " ")
+                        listEntry.add(PackageModel(name, 0, bitmap))
                     }
                 }
             }

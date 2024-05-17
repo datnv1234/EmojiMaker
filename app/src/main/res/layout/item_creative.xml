@@ -81,7 +81,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins_regular"
-                android:text="0 "
+                android:text="0"
                 android:textColor="#797D87"
                 android:textSize="12sp"
                 tools:ignore="HardcodedText" />
@@ -89,6 +89,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/_2sdp"
                 android:fontFamily="@font/poppins_regular"
                 android:text="@string/items"
                 android:textColor="#797D87"
