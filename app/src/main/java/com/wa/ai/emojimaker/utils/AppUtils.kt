@@ -93,7 +93,7 @@ object AppUtils {
         intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, stickerUris)
         intent.putExtra("IMPORTER", context.packageName)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_GRANT_READ_URI_PERMISSION
-        intent.type = "image/webp"
+        intent.type = "image/*"
 
         try {
             context.startActivity(intent)
