@@ -74,4 +74,20 @@
     <string name="this_function_is_not_supported_yet">This function is not supported yet!</string>
     <string name="empty">Empty</string>
     <string name="you_don_t_have_any_package">You don\'t have any package</string>
+
+    <string name="please_feedback">Please feedback</string>
+    <string name="thank_you">Thank you</string>
+    <string name="title_dialog_rating_1">Oh, no</string>
+    <string name="content_dialog_rating_1_2_3">Please give us some feedback!</string>
+    <string name="title_dialog_rating_5">We love you too</string>
+    <string name="content_dialog_rating_4_5">Thanks for your feedback</string>
+    <string name="title_rate_default">Do you like the app?</string>
+    <string name="content_rate_default">Let us know your experience</string>
+    <string name="may_be_later">May be later</string>
+    <string name="rate_us">Rate us</string>
+    <string name="rate">Rate</string>
+    <string name="privacy_policy">Price policy</string>
+    <string name="language_options">Language option</string>
+    <string name="share_app">Share app</string>
+
 </resources>

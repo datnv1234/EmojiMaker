@@ -1,9 +1,9 @@
 package com.wa.ai.emojimaker.ui.adapter
 
 import android.content.Context
-import android.view.View
 import android.widget.PopupMenu
 import android.widget.Toast
+import androidx.appcompat.view.ContextThemeWrapper
 import androidx.recyclerview.widget.DiffUtil
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.data.model.PackageModel
@@ -61,8 +61,10 @@ class CreativeAdapter (
 
                 btnOption.setOnSafeClick {
                     optionClick(this)
-                    val popUp = PopupMenu(context, it)
+                    val wrapper = ContextThemeWrapper(context, R.style.CustomPopupMenu)
+                    val popUp = PopupMenu(wrapper, it)
                     popUp.menuInflater.inflate(R.menu.popup_menu, popUp.menu)
+                    //popUp.gravity = Gravity.END
                     popUp.setOnMenuItemClickListener { item ->
                         when (item.itemId) {
                             R.id.action_delete -> {

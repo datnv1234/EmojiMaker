@@ -22,4 +22,11 @@
     <style name="CustomButtonStyle" parent="Widget.AppCompat.ImageButton">
         <item name="android:radius">@dimen/_100sdp</item>
     </style>
+
+    <style name="CustomPopupMenu" parent="Widget.AppCompat.PopupMenu.Overflow">
+        <item name="android:popupBackground">@drawable/bg_options</item>
+        <item name="android:width">@dimen/_30sdp</item>
+        <item name="android:gravity">end</item>
+
+    </style>
 </resources>
