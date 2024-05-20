@@ -18,6 +18,9 @@ import kotlin.jvm.internal.Intrinsics
 
 object AppUtils {
 
+    private val CREATE_STICKER_PACK_ACTION = "org.telegram.messenger.CREATE_STICKER_PACK"
+    private val CREATE_STICKER_PACK_EMOJIS_EXTRA = "STICKER_EMOJIS"
+    private val CREATE_STICKER_PACK_IMPORTER_EXTRA = "IMPORTER"
     fun shareImage(context: Context, bitmap: Bitmap) {
         try {
             // Save the image to a temporary file
@@ -54,17 +57,16 @@ object AppUtils {
     fun importToTelegram(context: Context, list: List<Uri>) {
         Intrinsics.checkNotNullParameter(context, "context")
         Intrinsics.checkNotNullParameter(list, "uriList")
-        val arrayList: ArrayList<Parcelable> = java.util.ArrayList<Parcelable>(list)
+        val arrayList: ArrayList<Parcelable> = ArrayList<Parcelable>(list)
         val it: Iterator<*> = arrayList.iterator()
         Intrinsics.checkNotNullExpressionValue(it, "list.iterator()")
         while (it.hasNext()) {
-            context.grantUriPermission("org.telegram.messenger", it.next() as Uri?, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            context.grantUriPermission("org.telegram.messenger", it.next() as Uri?, 3)
         }
         val intent = Intent("org.telegram.messenger.CREATE_STICKER_PACK")
         intent.putParcelableArrayListExtra("android.intent.extra.STREAM", arrayList)
         intent.putExtra("IMPORTER", context.packageName)
-        //intent.setFlags(268435457)
-//        268435457
+        intent.setFlags(268435457)
         intent.setType("image/*")
         try {
             context.startActivity(intent)
@@ -74,6 +76,29 @@ object AppUtils {
                 context.getString(R.string.no_app_found),
                 Toast.LENGTH_SHORT
             ).show()
+        }
+    }
+
+    fun doImport(context: Context, stickerUris: ArrayList<Uri>) {
+        val it = stickerUris.iterator()
+        while (it.hasNext()) {
+            context.grantUriPermission(
+                "org.telegram.messenger",
+                it.next(),
+                Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION
+            )
+        }
+
+        val intent = Intent(CREATE_STICKER_PACK_ACTION)
+        intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, stickerUris)
+        intent.putExtra("IMPORTER", context.packageName)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_GRANT_READ_URI_PERMISSION
+        intent.type = "image/webp"
+
+        try {
+            context.startActivity(intent)
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(context, context.getString(R.string.app_name), Toast.LENGTH_SHORT).show()
         }
     }
 

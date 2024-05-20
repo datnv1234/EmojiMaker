@@ -144,6 +144,16 @@ object DeviceUtils {
         return mPackage
     }
 
+    fun deletePackage(context: Context, folder: String, packageName: String) {
+        val cw = ContextWrapper(context)
+        // Path to /data/data/your_app/app_data/imageDir
+        val internalStorage: File = cw.getDir(folder, Context.MODE_PRIVATE)
+        val mPackage = File(internalStorage, packageName)
+        if (mPackage.exists() && mPackage.isDirectory) {
+            mPackage.deleteRecursively()
+        }
+    }
+
     @JvmStatic
     fun savePNGToInternalStorage(
         context: Context,

@@ -68,7 +68,7 @@ class CreativeAdapter (
                     popUp.setOnMenuItemClickListener { item ->
                         when (item.itemId) {
                             R.id.action_delete -> {
-                                Toast.makeText(context, "OK!", Toast.LENGTH_SHORT).show()
+                                delete(this@with)
                             }
                         }
                         true

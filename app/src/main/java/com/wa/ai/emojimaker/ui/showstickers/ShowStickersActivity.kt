@@ -1,18 +1,24 @@
 package com.wa.ai.emojimaker.ui.showstickers
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.ContextWrapper
 import android.graphics.Movie
 import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.Observer
 import com.wa.ai.emojimaker.R
+import com.wa.ai.emojimaker.common.Constant
 import com.wa.ai.emojimaker.common.Constant.TAG
 import com.wa.ai.emojimaker.data.model.StickerUri
 import com.wa.ai.emojimaker.databinding.ActivityShowStickersBinding
 import com.wa.ai.emojimaker.ui.adapter.MadeStickerAdapter
 import com.wa.ai.emojimaker.ui.adapter.UriAdapter
 import com.wa.ai.emojimaker.ui.base.BaseBindingActivity
+import com.wa.ai.emojimaker.utils.AppUtils
+import com.wa.ai.emojimaker.utils.FileUtils
 import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
+import java.io.File
 
 
 class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, ShowStickerViewModel>() {
@@ -54,6 +60,31 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
                     uriAdapter.notifyDataSetChanged()
                 }
                 binding.rvStickers.adapter = uriAdapter
+                binding.btnAddToTelegram.setOnSafeClick {
+                    val cw = ContextWrapper(this)
+                    val directory: File = cw.getDir(Constant.INTERNAL_MY_CREATIVE_DIR, Context.MODE_PRIVATE)
+                    val files = directory.listFiles()      // Get packages
+                    if (files != null) {                    //package's size > 0
+                        for (file in files) {
+                            if (file.isDirectory && file.name.equals(category)) {
+                                val stickers = file.listFiles()
+                                if (stickers != null) {
+                                    for (sticker in stickers) {
+                                        viewModel.stickerUri.add(
+                                            FileUtils.getUriForFile(
+                                                this,
+                                                sticker
+                                            )
+                                        )
+                                    }
+                                }
+                                break
+                            }
+                        }
+                    }
+
+                    AppUtils.doImport(this, viewModel.stickerUri)
+                }
             } else {
                 viewModel.getLocalSticker(this, category, categorySize)
                 viewModel.localStickerMutableLiveData.observe(this) {

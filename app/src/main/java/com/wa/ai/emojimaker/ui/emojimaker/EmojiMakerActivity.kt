@@ -82,6 +82,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
 
             download = {
                 download(bitmap)
+                toast("Downloaded!")
             }
 
             share = {
@@ -564,6 +565,12 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         }
         binding.btnFlipVertical.setOnSafeClick {
             viewModel.flipCurrentSticker(StickerView.FLIP_VERTICALLY)
+        }
+        binding.btnUndo.setOnSafeClick {
+            toast("This function is not available!")
+        }
+        binding.btnReUndo.setOnSafeClick {
+            toast("This function is not available!")
         }
     }
 

@@ -1,5 +1,7 @@
 package com.wa.ai.emojimaker.ui.settings
 
+import android.content.Intent
+import android.net.Uri
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -8,9 +10,11 @@ import android.view.View
 import android.view.ViewGroup
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.wa.ai.emojimaker.R
+import com.wa.ai.emojimaker.common.Constant
 import com.wa.ai.emojimaker.databinding.FragmentSettingsBinding
 import com.wa.ai.emojimaker.ui.base.BaseBindingFragment
 import com.wa.ai.emojimaker.ui.dialog.DialogRating
+import com.wa.ai.emojimaker.ui.multilang.MultiLangActivity
 import com.wa.ai.emojimaker.utils.extention.gone
 import com.wa.ai.emojimaker.utils.extention.hideSystemUI
 
@@ -39,9 +43,37 @@ class SettingsFragment : BaseBindingFragment<FragmentSettingsBinding, SettingsVi
 
 
     override val title: String
-        get() = getString(R.string.app_name)
+        get() = getString(R.string.settings)
 
     override fun onCreatedView(view: View?, savedInstanceState: Bundle?) {
+
+        binding.language.setOnClickListener {
+            val intent = Intent(requireContext(), MultiLangActivity::class.java)
+            intent.putExtra(Constant.TYPE_LANG, Constant.TYPE_LANGUAGE_SETTING)
+            startActivity(intent)
+        }
+
+        binding.share.setOnClickListener {
+            val shareIntent = Intent(Intent.ACTION_SEND)
+            shareIntent.setType("text/plain")
+            shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Share my application")
+            shareIntent.putExtra(
+                Intent.EXTRA_TEXT,
+                "https://play.google.com/store/apps/details?id=${requireContext().packageName}"
+            )
+            startActivity(Intent.createChooser(shareIntent, "Share the application via"))
+        }
+
+        binding.rate.setOnClickListener {
+            ratingDialog.show(parentFragmentManager, null)
+            //openPlayStoreForRating()
+        }
+
+        binding.about.setOnClickListener {
+            Intent(Intent.ACTION_VIEW, Uri.parse(this.getString(R.string.privacy_policy_link))).apply {
+                startActivity(this)
+            }
+        }
     }
 
     override fun setupData() {

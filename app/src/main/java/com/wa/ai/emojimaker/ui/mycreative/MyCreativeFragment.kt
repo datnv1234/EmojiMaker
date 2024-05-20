@@ -1,17 +1,22 @@
 package com.wa.ai.emojimaker.ui.mycreative
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import com.wa.ai.emojimaker.R
+import com.wa.ai.emojimaker.common.Constant
 import com.wa.ai.emojimaker.databinding.FragmentMyCreativeBinding
 import com.wa.ai.emojimaker.ui.adapter.CreativeAdapter
 import com.wa.ai.emojimaker.ui.base.BaseBindingFragment
+import com.wa.ai.emojimaker.ui.dialog.ConfirmDialog
 import com.wa.ai.emojimaker.ui.dialog.SharePackageDialog
 import com.wa.ai.emojimaker.ui.showstickers.ShowStickersActivity
+import com.wa.ai.emojimaker.utils.DeviceUtils
 import com.wa.ai.emojimaker.utils.extention.gone
 import com.wa.ai.emojimaker.utils.extention.visible
 
+@SuppressLint("NotifyDataSetChanged")
 class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCreativeViewModel>() {
 
     private val sharePackageDialog : SharePackageDialog by lazy {
@@ -54,13 +59,20 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
     }, optionClick = {
         //sharePackageDialog.show(parentFragmentManager, sharePackageDialog.tag)
     }, delete = {
-
+        deletePkgDialog.pkg = it.id
+        deletePkgDialog.show(parentFragmentManager, deletePkgDialog.tag)
     })
     }
 
-    companion object {
-        fun newInstance() = MyCreativeFragment()
+    private val deletePkgDialog: ConfirmDialog by lazy {
+        ConfirmDialog(getString(R.string.delete), getString(R.string.delete)).apply {
+             confirm = { pkg ->
+                 DeviceUtils.deletePackage(requireContext(), Constant.INTERNAL_MY_CREATIVE_DIR, pkg)
+                 creativeAdapter.notifyDataSetChanged()
+             }
+        }
     }
+
     override val layoutId: Int
         get() = R.layout.fragment_my_creative
 
