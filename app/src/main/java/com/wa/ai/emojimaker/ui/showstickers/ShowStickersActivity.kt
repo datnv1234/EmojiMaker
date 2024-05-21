@@ -17,6 +17,7 @@ import com.wa.ai.emojimaker.ui.adapter.UriAdapter
 import com.wa.ai.emojimaker.ui.base.BaseBindingActivity
 import com.wa.ai.emojimaker.utils.AppUtils
 import com.wa.ai.emojimaker.utils.FileUtils
+import com.wa.ai.emojimaker.utils.FileUtils.copyFileToCache
 import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 import java.io.File
 
@@ -60,7 +61,16 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
                     uriAdapter.notifyDataSetChanged()
                 }
                 binding.rvStickers.adapter = uriAdapter
+
+            } else {
+                viewModel.getLocalSticker(this, category, categorySize)
+                viewModel.localStickerMutableLiveData.observe(this) {
+                    madeStickerAdapter.submitList(it.toMutableList())
+                    madeStickerAdapter.notifyDataSetChanged()
+                }
+                binding.rvStickers.adapter = madeStickerAdapter
                 binding.btnAddToTelegram.setOnSafeClick {
+                    toast("OKay!")
                     val cw = ContextWrapper(this)
                     val directory: File = cw.getDir(Constant.INTERNAL_MY_CREATIVE_DIR, Context.MODE_PRIVATE)
                     val files = directory.listFiles()      // Get packages
@@ -71,10 +81,7 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
                                 if (stickers != null) {
                                     for (sticker in stickers) {
                                         viewModel.stickerUri.add(
-                                            FileUtils.getUriForFile(
-                                                this,
-                                                sticker
-                                            )
+                                            FileUtils.getUriForFile(this, copyFileToCache(this, sticker))
                                         )
                                     }
                                 }
@@ -85,13 +92,6 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
 
                     AppUtils.doImport(this, viewModel.stickerUri)
                 }
-            } else {
-                viewModel.getLocalSticker(this, category, categorySize)
-                viewModel.localStickerMutableLiveData.observe(this) {
-                    madeStickerAdapter.submitList(it.toMutableList())
-                    madeStickerAdapter.notifyDataSetChanged()
-                }
-                binding.rvStickers.adapter = madeStickerAdapter
             }
         }
     }
