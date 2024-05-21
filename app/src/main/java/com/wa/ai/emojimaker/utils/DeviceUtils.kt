@@ -184,4 +184,8 @@ object DeviceUtils {
         }
         return directory.absolutePath
     }
+
+    fun getBitmapFromStorage() {
+
+    }
 }

@@ -86,6 +86,20 @@
                     android:textSize="@dimen/_16ssp" />
             </LinearLayout>
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="@dimen/_12sdp"
+                android:paddingStart="@dimen/_50sdp"
+                android:paddingEnd="@dimen/_20sdp"
+                android:text="@string/add_to_telegram"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_16ssp"
+                android:visibility="gone"
+                android:background="@drawable/bg_button_social_blue"
+                android:drawablePadding="@dimen/_6sdp"
+                app:drawableStartCompat="@drawable/ic_telegram" />
+
             <LinearLayout
                 android:id="@+id/btnAddToTelegram"
                 android:layout_width="match_parent"

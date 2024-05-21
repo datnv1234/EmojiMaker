@@ -4,8 +4,10 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.*;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.FrameLayout;
 
 import androidx.annotation.ColorInt;
@@ -552,12 +554,30 @@ public class StickerView extends FrameLayout {
         this.handlingSticker = null;
     }
 
+    public static Bitmap resizeBitmapMaintainingAspectRatio(Bitmap originalBitmap, int newWidth) {
+        int originalWidth = originalBitmap.getWidth();
+        int originalHeight = originalBitmap.getHeight();
+
+        // Tính toán newHeight để duy trì tỷ lệ khung hình
+        int newHeight = (originalHeight * newWidth) / originalWidth;
+
+        return Bitmap.createScaledBitmap(originalBitmap, newWidth, newHeight, true);
+    }
+
     @NonNull public Bitmap createBitmap() throws OutOfMemoryError {
         handlingSticker = null;
+        /*this.measure(View.MeasureSpec.makeMeasureSpec(512, View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec(512, View.MeasureSpec.EXACTLY));*/
+        //this.layout(0, 0, 512, 512);
+
+
         Bitmap bitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
+        //Log.d("datnv", "createBitmap: width(" + getWidth() + ") height(" + getHeight() + ")");
+        Bitmap bm = Bitmap.createScaledBitmap(bitmap, (int) (getWidth() * 0.5), (int) (getHeight() * 0.5), false);
+        Canvas canvas = new Canvas(bm);
+
         this.draw(canvas);
-        return bitmap;
+        return bm;
     }
 
     public void removeAllStickers() {

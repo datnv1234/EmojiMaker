@@ -26,7 +26,7 @@ class MadeStickerAdapter(val itemClick: () -> Unit) : BaseBindingAdapterDiff<Mad
     override fun onBindViewHolderBase(holder: BaseHolder<ItemStickerBinding>, position: Int) {
         with(getItem(holder.adapterPosition)) {
             holder.binding.imgSticker.setImageBitmap(this.bitmap)
-            Log.d(TAG, "onBindViewHolderBase: ${this.name}")
+            //Log.d(TAG, "onBindViewHolderBase: ${this.name}")
             holder.binding.imgSticker.setOnSafeClick {
                 itemClick()
             }

@@ -33,33 +33,14 @@ class CategoryAdapter(val watchMoreClick: (category: Category) -> Unit, val opti
                 watchMoreClick(this)
             }
             holder.binding.tvTitle.text = this.categoryName
-            getPreView(holder, this)
-        }
-    }
-
-    private fun getPreView(holder: BaseHolder<ItemCategoryBinding>, category: Category) {
-        val storage = FirebaseStorage.getInstance()
-        val storageRef = storage.reference.child(category.category!!)
-        storageRef.listAll().addOnSuccessListener {
-            val item0 = it.items[0]
-            val item1 = it.items[1]
-            val item2 = it.items[2]
-            val item3 = it.items[3]
-            category.itemSize = it.items.size
-            val size = "+" + (category.itemSize - 3).toString()
-            holder.binding.tvRemainingNumber.text = size
-            item0.downloadUrl.addOnSuccessListener { uri ->
-                download(uri, holder.binding.imgPreview1)
-            }
-            item1.downloadUrl.addOnSuccessListener { uri ->
-                download(uri, holder.binding.imgPreview2)
-            }
-            item2.downloadUrl.addOnSuccessListener { uri ->
-                download(uri, holder.binding.imgPreview3)
-            }
-            item3.downloadUrl.addOnSuccessListener { uri ->
-                download(uri, holder.binding.imgPreview4)
-            }
+            if (avatar1 != null)
+                holder.binding.imgPreview1.setImageBitmap(avatar1)
+            if (avatar2 != null)
+                holder.binding.imgPreview2.setImageBitmap(avatar2)
+            if (avatar3 != null)
+                holder.binding.imgPreview3.setImageBitmap(avatar3)
+            if (avatar4 != null)
+                holder.binding.imgPreview4.setImageBitmap(avatar4)
         }
     }
 

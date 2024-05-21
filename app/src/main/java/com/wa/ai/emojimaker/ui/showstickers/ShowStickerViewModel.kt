@@ -3,20 +3,13 @@ package com.wa.ai.emojimaker.ui.showstickers
 import android.content.Context
 import android.content.ContextWrapper
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
-import android.os.CountDownTimer
-import android.util.Log
-import androidx.core.net.toUri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.storage.FirebaseStorage
 import com.wa.ai.emojimaker.common.Constant
-import com.wa.ai.emojimaker.common.Constant.TAG
 import com.wa.ai.emojimaker.data.model.MadeStickerModel
-import com.wa.ai.emojimaker.data.model.PackageModel
-import com.wa.ai.emojimaker.data.model.PieceSticker
-import com.wa.ai.emojimaker.data.model.StickerUri
 import com.wa.ai.emojimaker.ui.base.BaseViewModel
 import com.wa.ai.emojimaker.utils.AppUtils
 import kotlinx.coroutines.Dispatchers
@@ -27,10 +20,10 @@ class ShowStickerViewModel : BaseViewModel() {
 
     var stickerUri = ArrayList<Uri>()
 
-    private val _stickersMutableLiveData: MutableLiveData<List<StickerUri>> = MutableLiveData()
+    private val _stickersMutableLiveData: MutableLiveData<List<MadeStickerModel>> = MutableLiveData()
     private val _localStickerMutableLiveData: MutableLiveData<List<MadeStickerModel>> = MutableLiveData()
 
-    val stickersMutableLiveData: LiveData<List<StickerUri>>
+    val stickersMutableLiveData: LiveData<List<MadeStickerModel>>
         get() = _stickersMutableLiveData
 
     val localStickerMutableLiveData: LiveData<List<MadeStickerModel>>
@@ -74,24 +67,19 @@ class ShowStickerViewModel : BaseViewModel() {
         }
     }
 
-    fun getStickers(category: String, size: Int) {
-        val listStickerUri = mutableListOf<StickerUri>()
-        for (i in 0 until size) {
-            listStickerUri.add(StickerUri("".toUri()))
-        }
-        val listEntry = mutableListOf<StickerUri>()
+    fun getStickers(context: Context, category: String, size: Int) {
+        val assetManager = context.assets
+        val listEntry = mutableListOf<MadeStickerModel>()
         viewModelScope.launch(Dispatchers.IO) {
-            listEntry.addAll(listStickerUri)
-            val storage = FirebaseStorage.getInstance()
-            val storageRef = storage.reference.child(category)
-            storageRef.listAll().addOnSuccessListener { listResult ->
-                var i = 0
-                for (item in listResult.items) {
-                    item.downloadUrl.addOnSuccessListener { uri ->
-                        listEntry[i].uri = uri
-                        i++
-                        _stickersMutableLiveData.postValue(listEntry)
-                    }
+            val listFile = assetManager.list("categories/$category/")
+
+            if (listFile != null) {
+                for ((i, file) in listFile.withIndex()) {
+                    val inputStream = assetManager.open("categories/$category/$file")
+                    val bitmap = BitmapFactory.decodeStream(inputStream)
+                    listEntry.add(MadeStickerModel(category, null, bitmap))
+                    _stickersMutableLiveData.postValue(listEntry)
+                    inputStream.close()
                 }
             }
             _stickersMutableLiveData.postValue(listEntry)

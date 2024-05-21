@@ -79,6 +79,12 @@ object AppUtils {
         }
     }
 
+    fun Bitmap.scaleWith(scale: Float) = Bitmap.createScaledBitmap(
+        this,
+        (width * scale).toInt(),
+        (height * scale).toInt(),
+        false
+    )
     fun doImport(context: Context, stickerUris: ArrayList<Uri>) {
         val it = stickerUris.iterator()
         while (it.hasNext()) {
@@ -93,7 +99,7 @@ object AppUtils {
         intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, stickerUris)
         intent.putExtra("IMPORTER", context.packageName)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_GRANT_READ_URI_PERMISSION
-        intent.type = "image/*"
+        intent.type = "image/webp"
 
         try {
             context.startActivity(intent)

@@ -7,19 +7,20 @@ import android.net.Uri;
 import androidx.core.content.FileProvider;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 public class FileUtils {
 
-    public static File copyRawFileToInternalStorage(Context context, int rawResId, String fileName) {
+    public static File copyFileToCache(Context context, File sourceFile) {
         InputStream inputStream = null;
         FileOutputStream outputStream = null;
-        File file = new File(context.getFilesDir(), fileName);
+        File file = new File(context.getFilesDir(), sourceFile.getName());
 
         try {
-            inputStream = context.getResources().openRawResource(rawResId);
+            inputStream = new FileInputStream((sourceFile));
             outputStream = new FileOutputStream(file);
             byte[] buffer = new byte[1024];
             int length;
@@ -88,4 +89,6 @@ public class FileUtils {
 
         return file;
     }
+
+
 }

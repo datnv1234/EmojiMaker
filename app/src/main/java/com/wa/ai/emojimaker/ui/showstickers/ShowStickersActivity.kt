@@ -24,8 +24,8 @@ import java.io.File
 
 class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, ShowStickerViewModel>() {
 
-    private val uriAdapter : UriAdapter by lazy {
-        UriAdapter(itemClick = {
+    private val cateStickerAdapter : MadeStickerAdapter by lazy {
+        MadeStickerAdapter(itemClick = {
             toast("Clicked")
         })
     }
@@ -54,13 +54,14 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
 
         if (category != null) {
             if (!isLocal) {
-                viewModel.getStickers(category, categorySize)
+                viewModel.getStickers(this, category, categorySize)
 
                 viewModel.stickersMutableLiveData.observe(this) {
-                    uriAdapter.submitList(it.toMutableList())
-                    uriAdapter.notifyDataSetChanged()
+                    cateStickerAdapter.submitList(it.toMutableList())
+                    cateStickerAdapter.notifyDataSetChanged()
                 }
-                binding.rvStickers.adapter = uriAdapter
+                binding.rvStickers.adapter = cateStickerAdapter
+                Log.d(TAG, "setupView: " + viewModel.stickersMutableLiveData.value?.size)
 
             } else {
                 viewModel.getLocalSticker(this, category, categorySize)

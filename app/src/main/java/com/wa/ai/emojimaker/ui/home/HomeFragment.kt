@@ -85,7 +85,7 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
     }
 
     override fun setupData() {
-        viewModel.getCategoryList()
+        viewModel.getCategoryList(requireContext())
         viewModel.categoriesMutableLiveData.observe(this) {
             categoryAdapter.submitList(it.toMutableList())
         }
