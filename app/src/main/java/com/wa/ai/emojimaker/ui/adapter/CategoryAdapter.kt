@@ -29,6 +29,8 @@ class CategoryAdapter(val watchMoreClick: (category: Category) -> Unit, val opti
             holder.binding.btnOption.setOnSafeClick {
                 optionClick(this.category.toString())
             }
+            val text = "+" + (this.itemSize - 3).toString()
+            holder.binding.tvRemainingNumber.text = text
             holder.binding.tvRemainingNumber.setOnSafeClick {
                 watchMoreClick(this)
             }

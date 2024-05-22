@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 
 class HomeViewModel : BaseViewModel() {
 
-    var stickerUri = mutableListOf<Uri>()
+    var stickerUri = ArrayList<Uri>()
 
     private val _categoriesMutableLiveData: MutableLiveData<List<Category>> = MutableLiveData()
 
@@ -45,24 +45,24 @@ class HomeViewModel : BaseViewModel() {
     private fun getCategory(assetManager: AssetManager, category: String, categoryName: String) : Category {
         val cate = Category(category, categoryName, 0)
         val listFile = assetManager.list("categories/$category/")
-        if (listFile != null) {
-            val inputStream1 = assetManager.open("categories/$category/${listFile[0]}")
-            val bitmap1 = BitmapFactory.decodeStream(inputStream1)
-            cate.avatar1 = bitmap1
-            inputStream1.close()
-            val inputStream2 = assetManager.open("categories/$category/${listFile[1]}")
-            val bitmap2 = BitmapFactory.decodeStream(inputStream2)
-            cate.avatar2 = bitmap2
-            inputStream2.close()
-            val inputStream3 = assetManager.open("categories/$category/${listFile[2]}")
-            val bitmap3 = BitmapFactory.decodeStream(inputStream3)
-            cate.avatar3 = bitmap3
-            inputStream3.close()
-            val inputStream4 = assetManager.open("categories/$category/${listFile[3]}")
-            val bitmap4 = BitmapFactory.decodeStream(inputStream4)
-            cate.avatar4 = bitmap4
-            inputStream4.close()
-        }
+        cate.itemSize = listFile?.size!!
+
+        val inputStream1 = assetManager.open("categories/$category/${listFile[0]}")
+        val bitmap1 = BitmapFactory.decodeStream(inputStream1)
+        cate.avatar1 = bitmap1
+        inputStream1.close()
+        val inputStream2 = assetManager.open("categories/$category/${listFile[1]}")
+        val bitmap2 = BitmapFactory.decodeStream(inputStream2)
+        cate.avatar2 = bitmap2
+        inputStream2.close()
+        val inputStream3 = assetManager.open("categories/$category/${listFile[2]}")
+        val bitmap3 = BitmapFactory.decodeStream(inputStream3)
+        cate.avatar3 = bitmap3
+        inputStream3.close()
+        val inputStream4 = assetManager.open("categories/$category/${listFile[3]}")
+        val bitmap4 = BitmapFactory.decodeStream(inputStream4)
+        cate.avatar4 = bitmap4
+        inputStream4.close()
         return cate
     }
 }

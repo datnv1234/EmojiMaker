@@ -9,8 +9,9 @@ import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 
 class SharePackageDialog: BaseBindingDialogFragment<DialogShareBinding>() {
 
-    var addToWhatsapp: ((binding : DialogShareBinding) -> Unit)? = null
-    var addToTelegram: ((binding : DialogShareBinding) -> Unit)? = null
+    var category: String? = null
+    var addToWhatsapp: ((category: String) -> Unit)? = null
+    var addToTelegram: ((category: String) -> Unit)? = null
     var download: ((binding : DialogShareBinding) -> Unit)? = null
     var share: ((binding : DialogShareBinding) -> Unit)? = null
 
@@ -27,11 +28,15 @@ class SharePackageDialog: BaseBindingDialogFragment<DialogShareBinding>() {
         }
 
         binding.btnAddToWhatsapp.setOnSafeClick {
-            addToWhatsapp?.invoke(binding)
+            if (category != null) {
+                addToWhatsapp?.invoke(category!!)
+            }
         }
 
         binding.btnAddToTelegram.setOnSafeClick {
-            addToTelegram?.invoke(binding)
+            if (category != null) {
+                addToTelegram?.invoke(category!!)
+            }
         }
 
         binding.btnShare.setOnSafeClick {

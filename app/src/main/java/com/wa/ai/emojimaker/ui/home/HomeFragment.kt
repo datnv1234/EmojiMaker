@@ -4,11 +4,9 @@ import android.content.ContentResolver
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import com.google.firebase.storage.FirebaseStorage
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.common.Constant
 import com.wa.ai.emojimaker.databinding.FragmentHomeBinding
@@ -18,6 +16,7 @@ import com.wa.ai.emojimaker.ui.dialog.SharePackageDialog
 import com.wa.ai.emojimaker.ui.emojimaker.EmojiMakerActivity
 import com.wa.ai.emojimaker.ui.showstickers.ShowStickersActivity
 import com.wa.ai.emojimaker.utils.AppUtils
+import com.wa.ai.emojimaker.utils.FileUtils
 import com.wa.ai.emojimaker.utils.FileUtils.getUriForFile
 import java.io.File
 
@@ -27,20 +26,28 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
     private val CREATE_STICKER_PACK_EMOJIS_EXTRA = "STICKER_EMOJIS"
     private val CREATE_STICKER_PACK_IMPORTER_EXTRA = "IMPORTER"
 
-    private val mContext = context
     private val sharePackageDialog : SharePackageDialog by lazy {
         SharePackageDialog().apply {
             addToWhatsapp = {
                 toast(getString(R.string.this_function_is_not_supported_yet))
             }
 
-            addToTelegram = {
-                if (viewModel.stickerUri.size != 0) {
-                    AppUtils.importToTelegram(requireContext(), viewModel.stickerUri.toList())
-                } else {
-                    toast("Please wait..!")
+            addToTelegram = { cate ->
+                viewModel.stickerUri.clear()
+                val assetManager = requireContext().assets
+                val listFile = assetManager.list("categories/$cate/")
+                if (listFile != null) {                    //package's size > 0
+                    for (file in listFile) {
+                        val inputStream1 = assetManager.open("categories/$cate/$file")
+                        viewModel.stickerUri.add(
+                            getUriForFile(requireContext(),
+                                FileUtils.copyAssetFileToCache(requireContext(), inputStream1, file)
+                            )
+                        )
+                        inputStream1.close()
+                    }
                 }
-
+                AppUtils.doImport(requireContext(), viewModel.stickerUri)
             }
 
             share = {
@@ -58,7 +65,8 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
     }
     private val categoryAdapter : CategoryAdapter by lazy {
         CategoryAdapter(optionClick = {
-            getUri(it)
+            //getUri(it)
+            sharePackageDialog.category = it
             sharePackageDialog.show(parentFragmentManager, sharePackageDialog.tag)
         }, watchMoreClick = {
             val intent = Intent(requireContext(), ShowStickersActivity::class.java)

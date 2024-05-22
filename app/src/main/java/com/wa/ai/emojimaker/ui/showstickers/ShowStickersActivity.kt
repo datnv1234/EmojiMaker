@@ -61,8 +61,28 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
                     cateStickerAdapter.notifyDataSetChanged()
                 }
                 binding.rvStickers.adapter = cateStickerAdapter
-                Log.d(TAG, "setupView: " + viewModel.stickersMutableLiveData.value?.size)
-
+                binding.btnAddToTelegram.setOnSafeClick {
+                    viewModel.stickerUri.clear()
+                    val assetManager = this.assets
+                    val listFile = assetManager.list("categories/$category/")
+                    if (listFile != null) {                    //package's size > 0
+                        for (file in listFile) {
+                            val inputStream1 = assetManager.open("categories/$category/$file")
+                            viewModel.stickerUri.add(
+                                FileUtils.getUriForFile(
+                                    this,
+                                    FileUtils.copyAssetFileToCache(
+                                        this,
+                                        inputStream1,
+                                        file
+                                    )
+                                )
+                            )
+                            inputStream1.close()
+                        }
+                    }
+                    AppUtils.doImport(this, viewModel.stickerUri)
+                }
             } else {
                 viewModel.getLocalSticker(this, category, categorySize)
                 viewModel.localStickerMutableLiveData.observe(this) {
@@ -71,7 +91,7 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
                 }
                 binding.rvStickers.adapter = madeStickerAdapter
                 binding.btnAddToTelegram.setOnSafeClick {
-                    toast("OKay!")
+                    viewModel.stickerUri.clear()
                     val cw = ContextWrapper(this)
                     val directory: File = cw.getDir(Constant.INTERNAL_MY_CREATIVE_DIR, Context.MODE_PRIVATE)
                     val files = directory.listFiles()      // Get packages

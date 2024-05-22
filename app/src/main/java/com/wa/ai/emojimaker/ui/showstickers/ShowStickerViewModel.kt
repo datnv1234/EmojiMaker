@@ -47,14 +47,12 @@ class ShowStickerViewModel : BaseViewModel() {
                     if (file.isDirectory && file.name.equals(category)) {
                         val stickers = file.listFiles()
                         if (stickers != null) {
-                            var i = 0
-                            for (sticker in stickers) {
+                            for ((i, sticker) in stickers.withIndex()) {
                                 val name : String = sticker.name
                                 val bitmap : Bitmap = AppUtils.convertFileToBitmap(sticker)
                                 listEntry[i].name = name
                                 listEntry[i].packageName = category
                                 listEntry[i].bitmap = bitmap
-                                i++
 
                                 _localStickerMutableLiveData.postValue(listEntry)
                             }

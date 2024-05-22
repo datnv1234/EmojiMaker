@@ -45,6 +45,33 @@ public class FileUtils {
         return file;
     }
 
+    public static File copyAssetFileToCache(Context context, InputStream sourceFile, String fileName) {
+        FileOutputStream outputStream = null;
+        File file = new File(context.getFilesDir(), fileName);
+
+        try {
+            outputStream = new FileOutputStream(file);
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = sourceFile.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, length);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+//                sourceFile.close();
+                if (outputStream != null) {
+                    outputStream.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return file;
+    }
+
     public static Uri getUriForFile(Context context, File file) {
         return FileProvider.getUriForFile(context, context.getPackageName() + ".fileprovider", file);
     }
