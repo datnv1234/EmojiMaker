@@ -58,14 +58,14 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
         binding.btnBack.setOnSafeClick {
             finish()
         }
-        val isLocal = intent.getBooleanExtra("local", false)
+        val isCreative = intent.getBooleanExtra("local", false)
         val category = intent.getStringExtra("category")
         val categoryName = intent.getStringExtra("category_name")
         val categorySize = intent.getIntExtra("category_size", 0)
         binding.tvTitle.text = categoryName
 
         if (category != null) {
-            if (!isLocal) {
+            if (!isCreative) {
                 viewModel.getStickers(this, category, categorySize)
 
                 viewModel.stickersMutableLiveData.observe(this) {
@@ -74,50 +74,18 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
                 }
                 binding.rvStickers.adapter = cateStickerAdapter
                 binding.btnAddToTelegram.setOnSafeClick {
-                    viewModel.stickerUri.clear()
-                    val assetManager = this.assets
-                    val listFile = assetManager.list("categories/$category/")
-                    if (listFile != null) {                    //package's size > 0
-                        for (file in listFile) {
-                            val inputStream1 = assetManager.open("categories/$category/$file")
-                            viewModel.stickerUri.add(
-                                FileUtils.getUriForFile(
-                                    this,
-                                    FileUtils.copyAssetFileToCache(
-                                        this,
-                                        inputStream1,
-                                        file
-                                    )
-                                )
-                            )
-                            inputStream1.close()
-                        }
-                    }
-                    AppUtils.doImport(this, viewModel.stickerUri)
+                    addStickerInCategoryToTele(category)
                 }
                 binding.btnDownload.setOnSafeClick {
                     if (AppUtils.checkPermission(this)) {
                         AppUtils.requestPermissionAndContinue(this)
                         return@setOnSafeClick
                     }
-                    val assetManager = this.assets
-                    val listFile = assetManager.list("categories/$category/")
-                    if (listFile != null) {                    //package's size > 0
-                        for (file in listFile) {
-                            val inputStream1 = assetManager.open("categories/$category/$file")
-
-                            saveSticker(this, AppUtils.convertFileToBitmap(FileUtils.copyAssetFileToCache(
-                                this,
-                                inputStream1,
-                                file
-                            )), category)
-                        }
-                        toast(getString(R.string.download_done))
-                    } else {
-                        toast(getString(R.string.download_failed))
-                    }
+                    downloadStickerInCategory(category)
                 }
-
+                binding.btnShare.setOnSafeClick {
+                    shareStickerInCategory(category)
+                }
             } else {
                 viewModel.getLocalSticker(this, category, categorySize)
                 viewModel.localStickerMutableLiveData.observe(this) {
@@ -126,51 +94,17 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
                 }
                 binding.rvStickers.adapter = madeStickerAdapter
                 binding.btnAddToTelegram.setOnSafeClick {
-                    viewModel.stickerUri.clear()
-                    val cw = ContextWrapper(this)
-                    val directory: File = cw.getDir(Constant.INTERNAL_MY_CREATIVE_DIR, Context.MODE_PRIVATE)
-                    val files = directory.listFiles()      // Get packages
-                    if (files != null) {                    //package's size > 0
-                        for (file in files) {
-                            if (file.isDirectory && file.name.equals(category)) {
-                                val stickers = file.listFiles()
-                                if (stickers != null) {
-                                    for (sticker in stickers) {
-                                        viewModel.stickerUri.add(
-                                            FileUtils.getUriForFile(this, copyFileToCache(this, sticker))
-                                        )
-                                    }
-                                }
-                                break
-                            }
-                        }
-                    }
-                    AppUtils.doImport(this, viewModel.stickerUri)
+                    addCreativeStickerToTelegram(category)
                 }
                 binding.btnDownload.setOnSafeClick {
                     if (AppUtils.checkPermission(this)) {
                         AppUtils.requestPermissionAndContinue(this)
                         return@setOnSafeClick
                     }
-                    val cw = ContextWrapper(this)
-                    val directory: File = cw.getDir(Constant.INTERNAL_MY_CREATIVE_DIR, Context.MODE_PRIVATE)
-                    val files = directory.listFiles()      // Get packages
-                    if (files != null) {                    //package's size > 0
-                        for (file in files) {
-                            if (file.isDirectory && file.name.equals(category)) {
-                                val stickers = file.listFiles()
-                                if (stickers != null) {
-                                    for (sticker in stickers) {
-                                        saveSticker(this, AppUtils.convertFileToBitmap(sticker), category)
-                                    }
-                                }
-                                break
-                            }
-                        }
-                        toast(getString(R.string.download_done))
-                    } else {
-                        toast(getString(R.string.download_failed))
-                    }
+                    downloadCreativeSticker(category)
+                }
+                binding.btnShare.setOnSafeClick {
+                    shareCreativeSticker(category)
                 }
             }
         }
@@ -197,54 +131,112 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
         downloadManager.enqueue(request)
     }
 
-    private fun checkPermission(): Boolean {
-        return (ContextCompat.checkSelfPermission(
-            this,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-        ) != PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(
-            this,
-            Manifest.permission.READ_EXTERNAL_STORAGE
-        ) != PackageManager.PERMISSION_GRANTED)
+    private fun shareStickerInCategory(category: String) {
+        getStickerUriInCategory(category)
+        if (viewModel.stickerUri.size != 0)
+            AppUtils.shareMultipleImages(this, viewModel.stickerUri.toList())
     }
 
-    private fun requestPermissionAndContinue() {
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED
-            && ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(
-                    this,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                )
-                && ActivityCompat.shouldShowRequestPermissionRationale(
-                    this,
-                    Manifest.permission.READ_EXTERNAL_STORAGE
-                )
-            ) {
-                ActivityCompat.requestPermissions(
-                    this,
-                    arrayOf(
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        Manifest.permission.READ_EXTERNAL_STORAGE
-                    ),
-                    PERMISSION_REQUEST_CODE
-                )
-            } else {
-                ActivityCompat.requestPermissions(
-                    this, arrayOf(
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        Manifest.permission.READ_EXTERNAL_STORAGE
-                    ), PERMISSION_REQUEST_CODE
-                )
-            }
-        } else {
+    private fun addStickerInCategoryToTele(category: String) {
+        getStickerUriInCategory(category)
+        if (viewModel.stickerUri.size != 0)
+            AppUtils.doImport(this, viewModel.stickerUri)
+    }
 
+    private fun downloadStickerInCategory(category: String) {
+        val assetManager = this.assets
+        val listFile = assetManager.list("categories/$category/")
+        if (listFile != null) {                    //package's size > 0
+            for (file in listFile) {
+                val inputStream1 = assetManager.open("categories/$category/$file")
+
+                saveSticker(this, AppUtils.convertFileToBitmap(FileUtils.copyAssetFileToCache(
+                    this,
+                    inputStream1,
+                    file
+                )), category)
+            }
+            toast(getString(R.string.download_done))
+        } else {
+            toast(getString(R.string.download_failed))
+        }
+    }
+
+    private fun addCreativeStickerToTelegram(category: String) {
+        getCreativeStickerUri(category)
+        if (viewModel.stickerUri.size != 0)
+            AppUtils.doImport(this, viewModel.stickerUri)
+    }
+
+    private fun downloadCreativeSticker(category: String) {
+        val cw = ContextWrapper(this)
+        val directory: File = cw.getDir(Constant.INTERNAL_MY_CREATIVE_DIR, Context.MODE_PRIVATE)
+        val files = directory.listFiles()      // Get packages
+        if (files != null) {                    //package's size > 0
+            for (file in files) {
+                if (file.isDirectory && file.name.equals(category)) {
+                    val stickers = file.listFiles()
+                    if (stickers != null) {
+                        for (sticker in stickers) {
+                            saveSticker(this, AppUtils.convertFileToBitmap(sticker), category)
+                        }
+                    }
+                    break
+                }
+            }
+            toast(getString(R.string.download_done))
+        } else {
+            toast(getString(R.string.download_failed))
+        }
+    }
+
+    private fun shareCreativeSticker(category: String) {
+        getCreativeStickerUri(category)
+        if (viewModel.stickerUri.size != 0)
+            AppUtils.shareMultipleImages(this, viewModel.stickerUri.toList())
+    }
+
+    private fun getStickerUriInCategory(category: String) {
+        viewModel.stickerUri.clear()
+        val assetManager = this.assets
+        val listFile = assetManager.list("categories/$category/")
+        if (listFile != null) {                    //package's size > 0
+            for (file in listFile) {
+                val inputStream1 = assetManager.open("categories/$category/$file")
+                viewModel.stickerUri.add(
+                    FileUtils.getUriForFile(
+                        this,
+                        FileUtils.copyAssetFileToCache(
+                            this,
+                            inputStream1,
+                            file
+                        )
+                    )
+                )
+                inputStream1.close()
+            }
+        }
+    }
+
+    private fun getCreativeStickerUri(category: String) {
+        viewModel.stickerUri.clear()
+        val cw = ContextWrapper(this)
+        val directory: File = cw.getDir(Constant.INTERNAL_MY_CREATIVE_DIR, Context.MODE_PRIVATE)
+        val files = directory.listFiles()      // Get packages
+        if (files != null) {                    //package's size > 0
+            for (file in files) {
+                if (file.isDirectory && file.name.equals(category)) {
+                    val stickers = file.listFiles()
+                    if (stickers != null) {
+                        for (sticker in stickers) {
+                            viewModel.stickerUri.add(
+                                FileUtils.getUriForFile(this, copyFileToCache(this, sticker))
+                            )
+                        }
+                    }
+                    break
+                }
+            }
         }
     }
 }

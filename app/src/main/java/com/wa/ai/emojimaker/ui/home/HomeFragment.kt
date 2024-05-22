@@ -50,7 +50,21 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
                 AppUtils.doImport(requireContext(), viewModel.stickerUri)
             }
 
-            share = {
+            share = { cate ->
+                viewModel.stickerUri.clear()
+                val assetManager = requireContext().assets
+                val listFile = assetManager.list("categories/$cate/")
+                if (listFile != null) {                    //package's size > 0
+                    for (file in listFile) {
+                        val inputStream1 = assetManager.open("categories/$cate/$file")
+                        viewModel.stickerUri.add(
+                            getUriForFile(requireContext(),
+                                FileUtils.copyAssetFileToCache(requireContext(), inputStream1, file)
+                            )
+                        )
+                        inputStream1.close()
+                    }
+                }
                 if (viewModel.stickerUri.size != 0) {
                     AppUtils.shareMultipleImages(requireContext(), viewModel.stickerUri.toList())
                 } else {
