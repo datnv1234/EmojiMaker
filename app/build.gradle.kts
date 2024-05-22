@@ -29,7 +29,7 @@ android {
     defaultConfig {
         applicationId = "com.wa.ai.emojimaker"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 32
         versionCode = 1
         versionName = "1.0"
 
@@ -115,7 +115,6 @@ dependencies {
     implementation("com.google.firebase:firebase-crashlytics:18.6.3")
     implementation ("com.google.firebase:firebase-storage:21.0.0")
 
-    implementation("androidx.databinding:databinding-runtime:8.3.1")
     kapt("com.google.dagger:hilt-android-compiler:2.51.1")
 
     implementation("org.greenrobot:eventbus:3.3.1")

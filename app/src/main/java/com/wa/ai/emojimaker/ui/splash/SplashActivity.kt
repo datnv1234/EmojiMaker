@@ -94,7 +94,7 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
                             if (isNextScreen) {
                                 startActivity(Intent(this@SplashActivity, MainActivity::class.java))
                             } else {
-                               // startActivity(Intent(this@SplashActivity, PermissionActivity::class.java))
+                                startActivity(Intent(this@SplashActivity, MainActivity::class.java))
                             }
                         }
                     }
