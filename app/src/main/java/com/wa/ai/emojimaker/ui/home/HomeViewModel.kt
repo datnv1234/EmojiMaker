@@ -18,9 +18,24 @@ class HomeViewModel : BaseViewModel() {
 
     private val _categoriesMutableLiveData: MutableLiveData<List<Category>> = MutableLiveData()
 
+    private val _categoriesSearchedMutableLiveData: MutableLiveData<List<Category>> = MutableLiveData()
+
+
+    val categoriesSearchedMutableLiveData: LiveData<List<Category>>
+        get() = _categoriesSearchedMutableLiveData
+
     val categoriesMutableLiveData: LiveData<List<Category>>
         get() = _categoriesMutableLiveData
 
+    fun getSearchedData(tx: String) {
+        val listEntry = mutableListOf<Category>()
+        for (cate in _categoriesMutableLiveData.value!!) {
+            if (cate.category?.contains(tx) == true || tx == "") {
+                listEntry.add(cate)
+            }
+        }
+        _categoriesSearchedMutableLiveData.postValue(listEntry)
+    }
     fun getCategoryList(context: Context) {
         val assetManager = context.assets
         viewModelScope.launch(Dispatchers.IO) {

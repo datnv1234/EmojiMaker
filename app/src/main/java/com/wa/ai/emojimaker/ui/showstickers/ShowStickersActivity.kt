@@ -96,6 +96,9 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
                 binding.btnAddToTelegram.setOnSafeClick {
                     addCreativeStickerToTelegram(category)
                 }
+                binding.btnAddToWhatsapp.setOnSafeClick {
+                    toast(getString(R.string.this_function_is_not_supported_yet))
+                }
                 binding.btnDownload.setOnSafeClick {
                     if (AppUtils.checkPermission(this)) {
                         AppUtils.requestPermissionAndContinue(this)

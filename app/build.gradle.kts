@@ -29,7 +29,7 @@ android {
     defaultConfig {
         applicationId = "com.wa.ai.emojimaker"
         minSdk = 24
-        targetSdk = 32
+        targetSdk = 33
         versionCode = 1
         versionName = "1.0"
 

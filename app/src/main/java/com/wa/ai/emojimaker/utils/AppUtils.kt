@@ -112,6 +112,30 @@ object AppUtils {
         intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, stickerUris)
         intent.putExtra("IMPORTER", context.packageName)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_GRANT_READ_URI_PERMISSION
+        intent.type = "image/*"
+
+        try {
+            val shareIntent = Intent.createChooser(intent, null)
+            context.startActivity(shareIntent)
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(context, context.getString(R.string.app_name), Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    fun doImportWhatsApp(context: Context, stickerUris: ArrayList<Uri>) {
+        val it = stickerUris.iterator()
+        while (it.hasNext()) {
+            context.grantUriPermission(
+                "com.whatsapp",
+                it.next(),
+                Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION
+            )
+        }
+
+        val intent = Intent("com.whatsapp.intent.action.ENABLE_STICKER_PACK")
+        intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, stickerUris)
+        intent.putExtra("IMPORTER", context.packageName)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_GRANT_READ_URI_PERMISSION
         intent.type = "image/webp"
 
         try {
@@ -182,24 +206,16 @@ object AppUtils {
         ).toString()
         val myDir = File("$root/AIEmojiMaker/")
         myDir.mkdirs()
-        val generator = Random()
-        var n = 10000
-        n = generator.nextInt(n)
         val fname : String = System.currentTimeMillis().toString() + ".png"
         val file = File(myDir, fname)
-        //if (file.exists()) file.delete()
         try {
             val out = FileOutputStream(file)
-            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out)
-            // sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED,
-            //     Uri.parse("file://"+ Environment.getExternalStorageDirectory())));
+            finalBitmap.compress(Bitmap.CompressFormat.PNG, 90, out)
             out.flush()
             out.close()
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
         }
-        // Tell the media scanner about the new file so that it is
-        // immediately available to the user.
         MediaScannerConnection.scanFile(
             context, arrayOf(file.toString()), null
         ) { path, uri ->

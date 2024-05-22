@@ -81,7 +81,8 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
             }
 
             download = {
-                download(bitmap)
+                AppUtils.saveSticker(this@EmojiMakerActivity, bitmap, "creative")
+                //download(bitmap)
                 toast("Downloaded!")
             }
 
