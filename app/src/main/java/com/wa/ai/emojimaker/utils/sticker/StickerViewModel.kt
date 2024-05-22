@@ -20,7 +20,7 @@ open class StickerViewModel : BaseViewModel() {
     var isCropActive: MutableLiveData<Boolean> = MutableLiveData(false)
     var rotationEnabled: MutableLiveData<Boolean> = MutableLiveData(false)
     var constrained: MutableLiveData<Boolean> = MutableLiveData(false)
-    var bringToFrontCurrentSticker = MutableLiveData(true)
+    var bringToFrontCurrentSticker = MutableLiveData(false)
 
     var canvasMatrix: CustomMutableLiveData<ObservableMatrix> = CustomMutableLiveData(
         ObservableMatrix()
@@ -363,8 +363,8 @@ open class StickerViewModel : BaseViewModel() {
         }
 
        handlingSticker.value?.let {
-            stickerWorldMatrix.set(it.getMatrix())
-            stickerScreenMatrix.set(it.getFinalMatrix())
+            stickerWorldMatrix.set(it.matrix)
+            stickerScreenMatrix.set(it.finalMatrix)
             if (bringToFrontCurrentSticker.value == true) {
                 stickers.value!!.remove(it)
                 stickers.value!!.add(it)
@@ -695,10 +695,10 @@ open class StickerViewModel : BaseViewModel() {
     }
 
     fun showCurrentSticker() {
-        handlingSticker.value?.setVisible(true)
+        handlingSticker.value?.isVisible = true
     }
 
     fun hideCurrentSticker() {
-        handlingSticker.value?.setVisible(false)
+        handlingSticker.value?.isVisible = false
     }
 }

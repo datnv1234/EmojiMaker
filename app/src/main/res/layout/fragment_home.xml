@@ -53,7 +53,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/create_your_emblem"
-                android:textSize="@dimen/_15ssp"
+                android:textSize="@dimen/_13ssp"
                 android:textColor="@color/white"
                 android:fontFamily="@font/poppins_semibold"/>
             <TextView
@@ -63,7 +63,7 @@
                 android:layout_marginBottom="24dp"
                 android:text="@string/unleash_your_individuality"
                 android:textColor="@color/white"
-                android:textSize="@dimen/_11ssp"/>
+                android:textSize="@dimen/_10ssp"/>
             <androidx.cardview.widget.CardView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -92,7 +92,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/create"
                         android:fontFamily="@font/poppins_semibold"
-                        android:textSize="@dimen/_13ssp"
+                        android:textSize="@dimen/_11ssp"
                         android:textColor="#1C274C"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>

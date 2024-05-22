@@ -1,19 +1,32 @@
 package com.wa.ai.emojimaker.utils
 
+import android.Manifest
+import android.app.Activity
+import android.app.DownloadManager
 import android.content.ActivityNotFoundException
 import android.content.Context
+import android.content.Context.DOWNLOAD_SERVICE
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.media.MediaScannerConnection
 import android.net.Uri
+import android.os.Environment
 import android.os.Parcelable
+import android.util.Log
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.wa.ai.emojimaker.R
+import com.wa.ai.emojimaker.common.Constant
+import timber.log.Timber
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
+import java.util.Random
 import kotlin.jvm.internal.Intrinsics
 
 object AppUtils {
@@ -161,6 +174,89 @@ object AppUtils {
             e.printStackTrace()
         }
         return bitmap
+    }
+
+    fun saveSticker(context: Context, finalBitmap: Bitmap, category: String) {
+        val root = Environment.getExternalStoragePublicDirectory(
+            Environment.DIRECTORY_PICTURES
+        ).toString()
+        val myDir = File("$root/AIEmojiMaker/")
+        myDir.mkdirs()
+        val generator = Random()
+        var n = 10000
+        n = generator.nextInt(n)
+        val fname : String = System.currentTimeMillis().toString() + ".png"
+        val file = File(myDir, fname)
+        //if (file.exists()) file.delete()
+        try {
+            val out = FileOutputStream(file)
+            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out)
+            // sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED,
+            //     Uri.parse("file://"+ Environment.getExternalStorageDirectory())));
+            out.flush()
+            out.close()
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+        }
+        // Tell the media scanner about the new file so that it is
+        // immediately available to the user.
+        MediaScannerConnection.scanFile(
+            context, arrayOf(file.toString()), null
+        ) { path, uri ->
+            Timber.tag("ExternalStorage").i("Scanned: %s", path)
+            Timber.tag("ExternalStorage").i("-> uri= %s", uri)
+        }
+    }
+
+    fun checkPermission(context: Context): Boolean {
+        return (ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        ) != PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        ) != PackageManager.PERMISSION_GRANTED)
+    }
+
+    fun requestPermissionAndContinue(activity: Activity) {
+        if (ContextCompat.checkSelfPermission(
+                activity.applicationContext,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            ) != PackageManager.PERMISSION_GRANTED
+            && ContextCompat.checkSelfPermission(
+                activity.applicationContext,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(
+                    activity,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                )
+                && ActivityCompat.shouldShowRequestPermissionRationale(
+                    activity,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                )
+            ) {
+                ActivityCompat.requestPermissions(
+                    activity,
+                    arrayOf(
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_EXTERNAL_STORAGE
+                    ),
+                    Constant.PERMISSION_REQUEST_CODE
+                )
+            } else {
+                ActivityCompat.requestPermissions(
+                    activity, arrayOf(
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_EXTERNAL_STORAGE
+                    ), Constant.PERMISSION_REQUEST_CODE
+                )
+            }
+        } else {
+
+        }
     }
 
 }

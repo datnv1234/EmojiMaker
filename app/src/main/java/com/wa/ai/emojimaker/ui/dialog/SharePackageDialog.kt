@@ -12,7 +12,7 @@ class SharePackageDialog: BaseBindingDialogFragment<DialogShareBinding>() {
     var category: String? = null
     var addToWhatsapp: ((category: String) -> Unit)? = null
     var addToTelegram: ((category: String) -> Unit)? = null
-    var download: ((binding : DialogShareBinding) -> Unit)? = null
+    var download: ((category: String) -> Unit)? = null
     var share: ((binding : DialogShareBinding) -> Unit)? = null
 
     override val layoutId: Int
@@ -44,7 +44,7 @@ class SharePackageDialog: BaseBindingDialogFragment<DialogShareBinding>() {
         }
 
         binding.btnDownload.setOnSafeClick {
-            download?.invoke(binding)
+            download?.invoke(category!!)
         }
     }
 }

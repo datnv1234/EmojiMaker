@@ -19,6 +19,7 @@ import java.io.File
 class ShowStickerViewModel : BaseViewModel() {
 
     var stickerUri = ArrayList<Uri>()
+    var stickerBitmaps = ArrayList<Bitmap>()
 
     private val _stickersMutableLiveData: MutableLiveData<List<MadeStickerModel>> = MutableLiveData()
     private val _localStickerMutableLiveData: MutableLiveData<List<MadeStickerModel>> = MutableLiveData()

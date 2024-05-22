@@ -1,11 +1,15 @@
 package com.wa.ai.emojimaker
 
+import android.Manifest
 import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.net.ConnectivityManager
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
@@ -22,6 +26,7 @@ import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.appopen.AppOpenAd
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
+import com.wa.ai.emojimaker.common.Constant
 import com.wa.ai.emojimaker.data.local.SharedPreferenceHelper
 import com.wa.ai.emojimaker.service.receiver.NetworkChangeReceiver
 import com.wa.ai.emojimaker.utils.MyDebugTree
@@ -192,4 +197,6 @@ class App : Application() {
             appOpenAd?.show(activity)
         }
     }
+
+
 }

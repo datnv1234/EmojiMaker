@@ -213,6 +213,7 @@ public class StickerView extends FrameLayout {
     protected void drawStickers(Canvas canvas) {
         for (int i = 0; i < stickers.size(); i++) {
             Sticker sticker = stickers.get(i);
+            Log.d("datnv", "drawStickers: " + stickers.size());
             if (sticker != null) {
                 if (sticker.isVisible()) {
                     sticker.draw(canvas);
@@ -261,6 +262,8 @@ public class StickerView extends FrameLayout {
             }
         }
     }
+
+
 
     private float roundOff(float rotation) {
         return Math.round(rotation * 100f) / 100f;
@@ -564,21 +567,59 @@ public class StickerView extends FrameLayout {
         return Bitmap.createScaledBitmap(originalBitmap, newWidth, newHeight, true);
     }
 
-    @NonNull public Bitmap createBitmap() throws OutOfMemoryError {
+   /* @NonNull public Bitmap createBitmap() throws OutOfMemoryError {
         handlingSticker = null;
-        /*this.measure(View.MeasureSpec.makeMeasureSpec(512, View.MeasureSpec.EXACTLY),
-                View.MeasureSpec.makeMeasureSpec(512, View.MeasureSpec.EXACTLY));*/
+        *//*this.measure(View.MeasureSpec.makeMeasureSpec(512, View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec(512, View.MeasureSpec.EXACTLY));*//*
         //this.layout(0, 0, 512, 512);
 
 
         Bitmap bitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
-        //Log.d("datnv", "createBitmap: width(" + getWidth() + ") height(" + getHeight() + ")");
+        Log.d("datnv", "createBitmap: width(" + getWidth() + ") height(" + getHeight() + ")");
         Bitmap bm = Bitmap.createScaledBitmap(bitmap, (int) (getWidth() * 0.5), (int) (getHeight() * 0.5), false);
         Canvas canvas = new Canvas(bm);
 
         this.draw(canvas);
         return bm;
+    }*/
+
+    @NonNull
+    public Bitmap createBitmap() throws OutOfMemoryError {
+        handlingSticker = null;
+        // Measure the view
+        int originalWidth = getWidth();
+        int originalHeight = getHeight();
+
+        // Create a Bitmap with the view's original size
+        Bitmap originalBitmap = Bitmap.createBitmap(originalWidth, originalHeight, Bitmap.Config.ARGB_8888);
+        Canvas originalCanvas = new Canvas(originalBitmap);
+
+        // Draw the view onto the original Bitmap
+        this.draw(originalCanvas);
+
+        // Calculate the new width and height (half of the original dimensions)
+        int newWidth = 512;
+        int newHeight = 512;
+
+        // Create a new Bitmap with the desired size
+        Bitmap resizedBitmap = Bitmap.createBitmap(newWidth, newHeight, Bitmap.Config.ARGB_8888);
+        Canvas resizedCanvas = new Canvas(resizedBitmap);
+
+        // Set up the source and destination rectangles for drawing
+        Rect srcRect = new Rect(0, 0, originalWidth, originalHeight);
+        Rect dstRect = new Rect(0, 0, newWidth, newHeight);
+
+
+        // Draw the original Bitmap onto the new Bitmap
+        resizedCanvas.drawBitmap(originalBitmap, srcRect, dstRect, null);
+
+        // Clean up the original bitmap
+        originalBitmap.recycle();
+
+        return resizedBitmap;
     }
+
+
 
     public void removeAllStickers() {
         this.stickers.clear();

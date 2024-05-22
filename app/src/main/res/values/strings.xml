@@ -89,5 +89,9 @@
     <string name="privacy_policy">Price policy</string>
     <string name="language_options">Language option</string>
     <string name="share_app">Share app</string>
+    <string name="download_done">Download done!</string>
+    <string name="download_failed">Download failed!</string>
+    <string name="permission_necessary">Permission necessary</string>
+    <string name="storage_permission_is_encessary_to_wrote_event">Storage permission is encessary to wrote event</string>
 
 </resources>

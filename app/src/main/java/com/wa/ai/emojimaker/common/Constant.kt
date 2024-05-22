@@ -2,6 +2,9 @@ package com.wa.ai.emojimaker.common
 
 object Constant {
 
+
+    const val PERMISSION_REQUEST_CODE = 200
+
     const val TAG = "datnv"
     const val BUFSIZE = 8192
     var DEFAULT_SERVER_PORT = 54613

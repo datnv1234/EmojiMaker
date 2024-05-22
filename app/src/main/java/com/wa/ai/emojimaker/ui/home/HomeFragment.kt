@@ -58,8 +58,8 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
                 }
             }
 
-            download = {
-                toast("Cannot download this category")
+            download = { cate ->
+                download(requireContext(), cate)
             }
         }
     }
@@ -167,6 +167,34 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
         } catch (e: Exception) {
             e.printStackTrace()
             //no activity to handle intent
+        }
+    }
+
+    private fun download(context: Context, category: String) {
+        val assetManager = context.assets
+        val listFile = assetManager.list("categories/$category/")
+
+        if (AppUtils.checkPermission(context)) {
+            AppUtils.requestPermissionAndContinue(requireActivity())
+            return
+        }
+        if (listFile != null) {                    //package's size > 0
+            for (file in listFile) {
+                val inputStream1 = assetManager.open("categories/$category/$file")
+
+                AppUtils.saveSticker(
+                    context, AppUtils.convertFileToBitmap(
+                        FileUtils.copyAssetFileToCache(
+                            context,
+                            inputStream1,
+                            file
+                        )
+                    ), category
+                )
+            }
+            toast(getString(R.string.download_done))
+        } else {
+            toast(getString(R.string.download_failed))
         }
     }
 }
