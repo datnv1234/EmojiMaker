@@ -5,4 +5,116 @@
     <key>force_update</key>
     <value>false</value>
   </entry>
+
+
+  <entry>
+    <key>key_delay_load_ads</key>
+    <value>3000</value>
+  </entry>
+
+  <entry>
+    <key>key_ads_inter_open_app</key>
+    <value>ca-app-pub-3940256099942544/1033173712</value>
+  </entry>
+  <entry>
+    <key>key_ads_inter_home_screen</key>
+    <value>ca-app-pub-3940256099942544/1033173712</value>
+  </entry>
+  <entry>
+    <key>key_ads_inter_my_creative</key>
+    <value>ca-app-pub-3940256099942544/1033173712</value>
+  </entry>
+  <entry>
+    <key>key_ads_inter_create_emoji</key>
+    <value>ca-app-pub-3940256099942544/1033173712</value>
+  </entry>
+  <entry>
+    <key>key_ads_inter_show_stickers</key>
+    <value>ca-app-pub-3940256099942544/1033173712</value>
+  </entry>
+
+  <entry>
+    <key>key_ads_native_intro</key>
+    <value>ca-app-pub-3940256099942544/2247696110</value>
+  </entry>
+  <entry>
+    <key>key_ads_native_language</key>
+    <value>ca-app-pub-3940256099942544/2247696110</value>
+  </entry>
+  <entry>
+    <key>key_ads_native_my_creative</key>
+    <value>ca-app-pub-3940256099942544/2247696110</value>
+  </entry>
+  <entry>
+    <key>key_ads_native_show_stickers</key>
+    <value>ca-app-pub-3940256099942544/2247696110</value>
+  </entry>
+
+  <entry>
+    <key>key_ads_banner_main</key>
+    <value>ca-app-pub-3940256099942544/2014213617</value>
+  </entry>
+  <entry>
+    <key>key_ads_banner_create_emoji</key>
+    <value>ca-app-pub-3940256099942544/2014213617</value>
+  </entry>
+  <entry>
+    <key>key_ads_banner_show_stickers</key>
+    <value>ca-app-pub-3940256099942544/2014213617</value>
+  </entry>
+
+
+
+  <entry>
+    <key>is_show_ads_inter_open_app</key>
+    <value>true</value>
+  </entry>
+  <entry>
+    <key>is_show_ads_inter_home_screen</key>
+    <value>true</value>
+  </entry>
+  <entry>
+    <key>is_show_ads_inter_my_creative</key>
+    <value>true</value>
+  </entry>
+  <entry>
+    <key>is_show_ads_inter_create_emoji</key>
+    <value>true</value>
+  </entry>
+  <entry>
+    <key>is_show_ads_inter_show_stickers</key>
+    <value>true</value>
+  </entry>
+
+
+  <entry>
+    <key>is_show_ads_native_intro</key>
+    <value>true</value>
+  </entry>
+  <entry>
+    <key>is_show_ads_native_language</key>
+    <value>true</value>
+  </entry>
+  <entry>
+    <key>is_show_ads_native_my_creative</key>
+    <value>true</value>
+  </entry>
+  <entry>
+    <key>is_show_ads_native_show_stickers</key>
+    <value>true</value>
+  </entry>
+
+  <entry>
+    <key>is_show_ads_banner_main</key>
+    <value>true</value>
+  </entry>
+  <entry>
+    <key>is_show_ads_banner_create_emoji</key>
+    <value>true</value>
+  </entry>
+  <entry>
+    <key>is_show_ads_banner_show_stickers</key>
+    <value>true</value>
+  </entry>
+
 </defaults>

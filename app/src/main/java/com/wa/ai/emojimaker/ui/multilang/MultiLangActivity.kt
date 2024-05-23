@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import com.google.android.gms.ads.nativead.NativeAdView
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.common.Constant
 import com.wa.ai.emojimaker.databinding.ActivityMultiLangBinding
@@ -13,6 +14,7 @@ import com.wa.ai.emojimaker.ui.base.BaseBindingActivity
 import com.wa.ai.emojimaker.ui.intro.IntroActivity
 import com.wa.ai.emojimaker.ui.main.MainActivity
 import com.wa.ai.emojimaker.utils.DeviceUtils
+import com.wa.ai.emojimaker.utils.RemoteConfigKey
 import com.wa.ai.emojimaker.utils.SystemUtil
 import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils
 import com.wa.ai.emojimaker.utils.extention.invisible
@@ -62,7 +64,15 @@ class MultiLangActivity : BaseBindingActivity<ActivityMultiLangBinding, MultiLan
 
 	override fun onStart() {
 		super.onStart()
-		loadNativeAds(getString(R.string.native_multi_lang))
+		val firebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
+		if (firebaseRemoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_LANGUAGE)) {
+			val keyAds = firebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_NATIVE_LANGUAGE)
+			if (keyAds.isNotEmpty()) {
+				loadNativeAds(keyAds)
+			} else {
+				loadNativeAds(getString(R.string.native_language))
+			}
+		}
 	}
 	private fun initAction() {
 

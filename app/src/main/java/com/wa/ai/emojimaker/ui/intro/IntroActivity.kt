@@ -136,15 +136,4 @@ class IntroActivity : BaseBindingActivity<ActivityIntroBinding, IntroViewModel>(
 
     }
 
-    private fun loadBanner(keyAdsBanner:String) {
-        var timeDelay : Long = 2000
-        if (!DeviceUtils.checkInternetConnection(this)) binding.rlBanner.visibility = View.GONE
-        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_INTRO)) {
-            val adConfig = FirebaseRemoteConfig.getInstance().getLong(RemoteConfigKey.KEY_COLLAPSE_RELOAD_TIME)
-            if (adConfig != 0L) {
-                timeDelay = adConfig * 1000
-            }
-        }
-        BannerUtils.instance?.loadCollapsibleBanner(this, keyAdsBanner, timeDelay)
-    }
 }

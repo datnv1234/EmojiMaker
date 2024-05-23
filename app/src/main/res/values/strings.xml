@@ -93,5 +93,11 @@
     <string name="download_failed">Download failed!</string>
     <string name="permission_necessary">Permission necessary</string>
     <string name="storage_permission_is_encessary_to_wrote_event">Storage permission is encessary to wrote event</string>
+    <string name="loading">Loading</string>
+
+    <string name="creating_sticker">Creating sticker…</string>
+    <string name="preparing_workplace">Preparing workplace…</string>
+    <string name="loading_stickers">Loading stickers…</string>
+    <string name="load_ad_failed">Load ad failed!</string>
 
 </resources>

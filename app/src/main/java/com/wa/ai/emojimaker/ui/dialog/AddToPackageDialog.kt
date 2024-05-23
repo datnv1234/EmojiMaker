@@ -44,6 +44,10 @@ class AddToPackageDialog : BaseBindingDialogFragment<DialogAddToPackageBinding>(
             createNewPackage.invoke(binding)
         }
         binding.btnSave.setOnSafeClick {
+            if (getPackage() == null) {
+                toast(getString(R.string.please_input_package_name))
+                return@setOnSafeClick
+            }
             dismiss()
             save.invoke(getPackage())
         }

@@ -3,6 +3,8 @@ package com.wa.ai.emojimaker.utils.ads
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
+import android.view.LayoutInflater
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import com.google.android.gms.ads.AdListener
@@ -13,6 +15,8 @@ import com.google.android.gms.ads.nativead.MediaView
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.wa.ai.emojimaker.R
+import com.wa.ai.emojimaker.databinding.AdNativeVideoBinding
+import com.wa.ai.emojimaker.utils.DeviceUtils
 import com.wa.ai.emojimaker.utils.extention.gone
 import com.wa.ai.emojimaker.utils.extention.visible
 
@@ -95,7 +99,5 @@ class NativeAdsUtils {
         }.onFailure { it.printStackTrace() }
 
     }
-
-
 
 }

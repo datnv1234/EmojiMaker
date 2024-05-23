@@ -3,21 +3,30 @@ package com.wa.ai.emojimaker.ui.mycreative
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.view.View
+import com.google.android.gms.ads.nativead.NativeAdView
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.common.Constant
+import com.wa.ai.emojimaker.databinding.AdNativeVideoBinding
 import com.wa.ai.emojimaker.databinding.FragmentMyCreativeBinding
 import com.wa.ai.emojimaker.ui.adapter.CreativeAdapter
 import com.wa.ai.emojimaker.ui.base.BaseBindingFragment
 import com.wa.ai.emojimaker.ui.dialog.ConfirmDialog
 import com.wa.ai.emojimaker.ui.dialog.SharePackageDialog
+import com.wa.ai.emojimaker.ui.dialog.WaitingDialog
+import com.wa.ai.emojimaker.ui.main.MainActivity
 import com.wa.ai.emojimaker.ui.showstickers.ShowStickersActivity
 import com.wa.ai.emojimaker.utils.DeviceUtils
+import com.wa.ai.emojimaker.utils.RemoteConfigKey
+import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils
 import com.wa.ai.emojimaker.utils.extention.gone
 import com.wa.ai.emojimaker.utils.extention.visible
 
 @SuppressLint("NotifyDataSetChanged")
 class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCreativeViewModel>() {
+
+    lateinit var mMainActivity: MainActivity
 
     private val sharePackageDialog : SharePackageDialog by lazy {
         SharePackageDialog().apply {
@@ -55,7 +64,10 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
         intent.putExtra("category", it.id)
         intent.putExtra("category_name", it.name)
         intent.putExtra("category_size", it.itemSize)
-        startActivity(intent)
+        mMainActivity.openNextScreen {
+            startActivity(intent)
+        }
+        mMainActivity.mFirebaseAnalytics?.logEvent("v_inter_ads_open_${it.name}", null)
     }, optionClick = {
         //sharePackageDialog.show(parentFragmentManager, sharePackageDialog.tag)
     }, delete = {
@@ -73,11 +85,18 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
         }
     }
 
+    private val mDialogPrepare: WaitingDialog by lazy {
+        WaitingDialog(getString(R.string.loading_stickers)).apply {
+            action = {}
+        }
+    }
+
     override val layoutId: Int
         get() = R.layout.fragment_my_creative
 
     override val title: String
         get() = getString(R.string.my_creative)
+
 
     override fun onCreatedView(view: View?, savedInstanceState: Bundle?) {
 
@@ -96,12 +115,71 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
             }
         }
         binding.rvSticker.adapter = creativeAdapter
+        mMainActivity = activity as MainActivity
     }
 
+    override fun onStart() {
+        super.onStart()
+        setUpLoadInterAds()
+
+        if (mMainActivity.mFirebaseRemoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_MY_CREATIVE)) {
+            val keyAds = mMainActivity.mFirebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_NATIVE_MY_CREATIVE)
+            if (keyAds.isNotEmpty()) {
+                loadNativeAds(keyAds)
+            } else {
+                loadNativeAds(getString(R.string.native_my_creative))
+            }
+        } else {
+            binding.rlNative.gone()
+        }
+
+        mDialogPrepare.show(parentFragmentManager, mDialogPrepare.tag)
+        val countDownTimer: CountDownTimer = object : CountDownTimer(Constant.WAITING_TO_LOAD_BANNER, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+            }
+            override fun onFinish() {
+                mDialogPrepare.dismiss()
+            }
+        }
+        countDownTimer.start()
+
+    }
     override fun getViewModel(): Class<MyCreativeViewModel> = MyCreativeViewModel::class.java
     override fun registerOnBackPress() {
 
     }
 
+    private fun setUpLoadInterAds() {
+        mMainActivity.keyAds = mMainActivity.mFirebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_INTER_MY_CREATIVE)
+        if (mMainActivity.keyAds.isEmpty()) {
+            mMainActivity.keyAds = getString(R.string.inter_my_creative)
+        }
+        if (mMainActivity.mFirebaseRemoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_INTER_MY_CREATIVE)) {
+            mMainActivity.loadInterAds(mMainActivity.keyAds)
+        }
+    }
+
+    private fun loadNativeAds(keyAds:String) {
+        if (!DeviceUtils.checkInternetConnection(requireContext())) binding.rlNative.visibility = View.GONE
+        this.let {
+            NativeAdsUtils.instance.loadNativeAds(
+                requireContext(),
+                keyAds
+            ) { nativeAds ->
+                if (nativeAds != null && isAdded && isVisible) {
+                    //binding.frNativeAds.removeAllViews()
+                    val adNativeVideoBinding = AdNativeVideoBinding.inflate(layoutInflater)
+                    NativeAdsUtils.instance.populateNativeAdVideoView(
+                        nativeAds,
+                        adNativeVideoBinding.root as NativeAdView
+                    )
+                    binding.frNativeAds.addView(adNativeVideoBinding.root)
+                } else {
+                    binding.rlNative.visibility = View.GONE
+                }
+            }
+        }
+
+    }
 
 }

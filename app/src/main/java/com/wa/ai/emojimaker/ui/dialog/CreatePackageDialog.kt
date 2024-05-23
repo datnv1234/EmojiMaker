@@ -32,7 +32,8 @@ class CreatePackageDialog : BaseBindingDialogFragment<DialogCreatePackageBinding
 
     private fun setUp() {
         binding.btnConfirm.setOnSafeClick {
-            if (binding.edtPkgName.text == null) {
+            val text = binding.edtPkgName.text.toString()
+            if (text == "") {
                 toast(getString(R.string.please_input_package_name))
                 return@setOnSafeClick
             }

@@ -4,6 +4,7 @@ object Constant {
 
 
     const val PERMISSION_REQUEST_CODE = 200
+    const val WAITING_TO_LOAD_BANNER = 5000L
 
     const val TAG = "datnv"
     const val BUFSIZE = 8192

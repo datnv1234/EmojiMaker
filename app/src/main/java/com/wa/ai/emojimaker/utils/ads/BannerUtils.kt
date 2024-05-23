@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import com.facebook.shimmer.ShimmerFrameLayout
@@ -25,6 +26,7 @@ import com.adjust.sdk.AdjustAdRevenue
 import com.adjust.sdk.AdjustConfig
 import com.google.firebase.analytics.ktx.analytics
 import com.wa.ai.emojimaker.R
+import com.wa.ai.emojimaker.common.Constant.TAG
 import com.wa.ai.emojimaker.utils.DeviceUtils
 import com.wa.ai.emojimaker.utils.extention.gone
 import com.wa.ai.emojimaker.utils.extention.visible
@@ -182,15 +184,19 @@ class BannerUtils {
                 adView.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
                 adView.adListener = object : AdListener() {
                     override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                        Log.d(TAG, "onAdFailedToLoad: " + loadAdError.message)
+                        Log.d(TAG, "onAdFailedToLoad: " + loadAdError.domain)
+                        Log.d(TAG, "onAdFailedToLoad: " + loadAdError.code)
                         containerShimmer.stopShimmer()
                         adContainer.gone()
                         containerShimmer.gone()
                     }
 
                     override fun onAdLoaded() {
+                        Log.d(TAG, "onAdLoaded: ")
                         containerShimmer.stopShimmer()
                         containerShimmer.gone()
-                        adContainer.gone()
+                        adContainer.visible()
                         adView.onPaidEventListener = OnPaidEventListener { adValue: AdValue ->
                         }
                     }

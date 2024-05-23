@@ -6,6 +6,7 @@ import android.content.ContextWrapper
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.view.View
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.common.Constant
@@ -13,11 +14,17 @@ import com.wa.ai.emojimaker.databinding.FragmentHomeBinding
 import com.wa.ai.emojimaker.ui.adapter.CategoryAdapter
 import com.wa.ai.emojimaker.ui.base.BaseBindingFragment
 import com.wa.ai.emojimaker.ui.dialog.SharePackageDialog
+import com.wa.ai.emojimaker.ui.dialog.WaitingDialog
 import com.wa.ai.emojimaker.ui.emojimaker.EmojiMakerActivity
+import com.wa.ai.emojimaker.ui.main.MainActivity
 import com.wa.ai.emojimaker.ui.showstickers.ShowStickersActivity
 import com.wa.ai.emojimaker.utils.AppUtils
 import com.wa.ai.emojimaker.utils.FileUtils
 import com.wa.ai.emojimaker.utils.FileUtils.getUriForFile
+import com.wa.ai.emojimaker.utils.RemoteConfigKey
+import com.wa.ai.emojimaker.utils.extention.invisible
+import com.wa.ai.emojimaker.utils.extention.visible
+import timber.log.Timber
 import java.io.File
 
 class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
@@ -25,6 +32,8 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
     private val CREATE_STICKER_PACK_ACTION = "org.telegram.messenger.CREATE_STICKER_PACK"
     private val CREATE_STICKER_PACK_EMOJIS_EXTRA = "STICKER_EMOJIS"
     private val CREATE_STICKER_PACK_IMPORTER_EXTRA = "IMPORTER"
+
+    lateinit var mMainActivity: MainActivity
 
     private val sharePackageDialog : SharePackageDialog by lazy {
         SharePackageDialog().apply {
@@ -47,7 +56,11 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
                         inputStream1.close()
                     }
                 }
-                AppUtils.doImport(requireContext(), viewModel.stickerUri)
+                mMainActivity.openNextScreen {
+                    AppUtils.doImport(requireContext(), viewModel.stickerUri)
+                }
+                mMainActivity.mFirebaseAnalytics?.logEvent("v_inter_ads_import_$cate", null)
+
             }
 
             share = { cate ->
@@ -66,19 +79,23 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
                     }
                 }
                 if (viewModel.stickerUri.size != 0) {
-                    AppUtils.shareMultipleImages(requireContext(), viewModel.stickerUri.toList())
-                } else {
-                    toast("Please wait..!")
+                    mMainActivity.openNextScreen {
+                        AppUtils.shareMultipleImages(requireContext(), viewModel.stickerUri.toList())
+                    }
+                    mMainActivity.mFirebaseAnalytics?.logEvent("v_inter_ads_share_$cate", null)
                 }
             }
 
             download = { cate ->
-                download(requireContext(), cate)
+                mMainActivity.openNextScreen {
+                    download(requireContext(), cate)
+                }
+                mMainActivity.mFirebaseAnalytics?.logEvent("v_inter_ads_download_$cate", null)
             }
         }
     }
     private val categoryAdapter : CategoryAdapter by lazy {
-        CategoryAdapter(optionClick = {
+        CategoryAdapter(requireContext(), optionClick = {
             //getUri(it)
             sharePackageDialog.category = it
             sharePackageDialog.show(parentFragmentManager, sharePackageDialog.tag)
@@ -87,8 +104,18 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
             intent.putExtra("category", it.category.toString())
             intent.putExtra("category_name", it.categoryName)
             intent.putExtra("category_size", it.itemSize)
-            startActivity(intent)
+
+            mMainActivity.openNextScreen {
+                startActivity(intent)
+            }
+            mMainActivity.mFirebaseAnalytics?.logEvent("v_inter_ads_open_$it", null)
         })
+    }
+
+    private val mDialogPrepare: WaitingDialog by lazy {
+        WaitingDialog(getString(R.string.loading_stickers)).apply {
+            action = {}
+        }
     }
 
     override fun getViewModel(): Class<HomeViewModel> = HomeViewModel::class.java
@@ -102,43 +129,55 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
 
     override fun onCreatedView(view: View?, savedInstanceState: Bundle?) {
         binding.btnCreateSticker.setOnClickListener {
-            startActivity(Intent(context, EmojiMakerActivity::class.java))
+            mMainActivity.openNextScreen {
+                startActivity(Intent(context, EmojiMakerActivity::class.java))
+            }
+            mMainActivity.mFirebaseAnalytics?.logEvent("v_inter_ads_create_sticker", null)
         }
+        val timeConfig = mMainActivity.mFirebaseRemoteConfig.getLong(RemoteConfigKey.KEY_COLLAPSE_RELOAD_TIME)
+        val timeDelay = if (timeConfig == 0L) {
+            3000L
+        } else {
+            timeConfig
+        }
+
+        val countDownTimer: CountDownTimer = object : CountDownTimer(timeDelay, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+
+            }
+            override fun onFinish() {
+                binding.rvCategory.visible()
+            }
+        }
+        countDownTimer.start()
     }
 
     override fun setupData() {
         viewModel.getCategoryList(requireContext())
         viewModel.categoriesMutableLiveData.observe(this) {
             categoryAdapter.submitList(it.toMutableList())
+            Timber.e("$it")
         }
         binding.rvCategory.adapter = categoryAdapter
+        mMainActivity = activity as MainActivity
+    }
+
+    override fun onStart() {
+        super.onStart()
+        setUpLoadInterAds()
+
+        mDialogPrepare.show(parentFragmentManager, mDialogPrepare.tag)
+        val countDownTimer: CountDownTimer = object : CountDownTimer(Constant.WAITING_TO_LOAD_BANNER, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+            }
+            override fun onFinish() {
+                mDialogPrepare.dismiss()
+            }
+        }
+        countDownTimer.start()
     }
 
     private fun getUri(category: String) {
-/*
-        val uris = ArrayList<Uri>()
-        uris.add(getRawUri("sticker1"))
-        uris.add(getRawUri("sticker2"))
-        uris.add(getRawUri("sticker3"))
-        uris.add(getRawUri("sticker4"))
-        uris.add(getRawUri("sticker5"))
-        uris.add(getRawUri("sticker6"))
-        uris.add(getRawUri("sticker7"))
-        uris.add(getRawUri("sticker8"))
-        uris.add(getRawUri("sticker9"))
-
-        val emojis = ArrayList<String>()
-        emojis.add("☺️")
-        emojis.add("\uD83D\uDE22")
-        emojis.add("\uD83E\uDD73")
-        emojis.add("\uD83E\uDD2A")
-        emojis.add("\uD83D\uDE18️")
-        emojis.add("\uD83D\uDE18️")
-        emojis.add("\uD83E\uDD2A")
-        emojis.add("\uD83E\uDD73")
-        emojis.add("☺️")
-
-        doImport(uris, emojis)*/
         val cw = ContextWrapper(context)
         val directory: File = cw.getDir(Constant.INTERNAL_MY_CREATIVE_DIR, Context.MODE_PRIVATE)
         val files = directory.listFiles()      // Get packages
@@ -155,16 +194,6 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
                 }
             }
         }
-        /*viewModel.stickerUri.clear()
-        val storage = FirebaseStorage.getInstance()
-        val storageRef = storage.reference.child(category)
-        storageRef.listAll().addOnSuccessListener { listResult ->
-            for (item in listResult.items) {
-                item.downloadUrl.addOnSuccessListener { uri ->
-                    viewModel.stickerUri.add(uri)
-                }
-            }
-        }*/
     }
     private fun getRawUri(filename: String): Uri {
         return Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + requireContext().packageName + "/raw/" + filename)
@@ -211,4 +240,15 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
             toast(getString(R.string.download_failed))
         }
     }
+
+    private fun setUpLoadInterAds() {
+        mMainActivity.keyAds = mMainActivity.mFirebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_INTER_HOME_SCREEN)
+        if (mMainActivity.keyAds.isEmpty()) {
+            mMainActivity.keyAds = getString(R.string.inter_home_screen)
+        }
+        if (mMainActivity.mFirebaseRemoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_INTER_HOME_SCREEN)) {
+            mMainActivity.loadInterAds(mMainActivity.keyAds)
+        }
+    }
+
 }

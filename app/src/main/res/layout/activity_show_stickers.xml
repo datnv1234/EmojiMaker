@@ -11,11 +11,12 @@
         android:layout_height="match_parent"
         android:background="@drawable/bg_main"
         tools:context=".ui.showstickers.ShowStickersActivity">
+
         <LinearLayout
             android:id="@+id/llToolBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp"
+            android:padding="@dimen/_6sdp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
@@ -36,7 +37,20 @@
                 android:fontFamily="@font/poppins_semibold"
                 android:textSize="@dimen/_20ssp"/>
         </LinearLayout>
+        <RelativeLayout
+            android:id="@+id/rl_native"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_160sdp"
+            app:layout_constraintTop_toBottomOf="@id/llToolBar">
 
+            <FrameLayout
+                android:id="@+id/fr_native_ads"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <include layout="@layout/ads_native_shimmer" />
+            </FrameLayout>
+        </RelativeLayout>
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvStickers"
             android:layout_width="match_parent"
@@ -47,7 +61,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/llToolBar"
+            app:layout_constraintTop_toBottomOf="@id/rl_native"
             app:layout_constraintVertical_bias="0.0"
             app:spanCount="4" />
 
@@ -58,8 +72,8 @@
             android:background="@drawable/bg_dialog"
             android:orientation="vertical"
             android:paddingHorizontal="@dimen/_16sdp"
-            android:paddingVertical="@dimen/_16sdp"
-            app:layout_constraintBottom_toBottomOf="parent">
+            android:paddingVertical="@dimen/_6sdp"
+            app:layout_constraintBottom_toTopOf="@id/rl_banner">
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -137,7 +151,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_1sdp"
-                android:layout_marginVertical="@dimen/_14sdp"
+                android:layout_marginVertical="@dimen/_4sdp"
                 android:background="#D2D5DA" />
 
             <LinearLayout
@@ -208,5 +222,17 @@
                 </androidx.cardview.widget.CardView>
             </LinearLayout>
         </LinearLayout>
+        <FrameLayout
+            android:id="@+id/rl_banner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            app:layout_constraintBottom_toBottomOf="parent">
+            <include
+                android:id="@+id/ads_banner"
+                layout="@layout/ads_banner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </FrameLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

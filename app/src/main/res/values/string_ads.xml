@@ -9,29 +9,26 @@
     <string name="open_app" translatable="false">ca-app-pub-3940256099942544/9257395921</string>
 
 <!--    inter-->
-    <string name="inter_connect_to_tv" translatable="false">ca-app-pub-3940256099942544/1033173712</string>
-    <string name="inter_chrome_cast" translatable="false">ca-app-pub-3940256099942544/1033173712</string>
-    <string name="inter_anim_detail_training" translatable="false">ca-app-pub-3940256099942544/1033173712</string>
+    <string name="inter_splash" translatable="false">ca-app-pub-3940256099942544/1033173712</string>
+    <string name="inter_home_screen" translatable="false">ca-app-pub-3940256099942544/1033173712</string>
+    <string name="inter_my_creative" translatable="false">ca-app-pub-3940256099942544/1033173712</string>
+    <string name="inter_create_emoji" translatable="false">ca-app-pub-3940256099942544/1033173712</string>
+    <string name="inter_show_stickers" translatable="false">ca-app-pub-3940256099942544/1033173712</string>
 
 <!--    banner-->
 <!--    //<string name="banner_intro" translatable="false">ca-app-pub-3940256099942544/6300978111</string>-->
     <string name="banner_main" translatable="false">ca-app-pub-3940256099942544/2014213617</string>
-    <string name="banner_image" translatable="false">ca-app-pub-3940256099942544/2014213617</string>
-    <string name="banner_video" translatable="false">ca-app-pub-3940256099942544/2014213617</string>
-    <string name="banner_sound" translatable="false">ca-app-pub-3940256099942544/2014213617</string>
-    <string name="banner_document" translatable="false">ca-app-pub-3940256099942544/2014213617</string>
-    <string name="banner_detail_image" translatable="false">ca-app-pub-3940256099942544/2014213617</string>
+    <string name="banner_create_emoji" translatable="false">ca-app-pub-3940256099942544/2014213617</string>
+    <string name="banner_show_stickers" translatable="false">ca-app-pub-3940256099942544/2014213617</string>
 <!--    <string name="banner_chromecast" translatable="false">ca-app-pub-3940256099942544/2014213617</string>-->
 
 <!--    native-->
     <string name="native_intro" translatable="false">ca-app-pub-3940256099942544/2247696110</string>
-    <string name="native_connect_tv" translatable="false">ca-app-pub-3940256099942544/2247696110</string>
-    <string name="native_permission" translatable="false">ca-app-pub-3940256099942544/2247696110</string>
+    <string name="native_language" translatable="false">ca-app-pub-3940256099942544/2247696110</string>
+    <string name="native_categories" translatable="false">ca-app-pub-3940256099942544/2247696110</string>
+    <string name="native_my_creative" translatable="false">ca-app-pub-3940256099942544/2247696110</string>
+    <string name="native_show_stickers" translatable="false">ca-app-pub-3940256099942544/2247696110</string>
 
-    <string name="native_multi_lang" translatable="false">ca-app-pub-3940256099942544/2247696110</string>
-    <string name="native_process" translatable="false">ca-app-pub-3940256099942544/2247696110</string>
-    <string name="native_result" translatable="false">ca-app-pub-3940256099942544/2247696110</string>
-    <string name="native_choose_lang" translatable="false">ca-app-pub-3940256099942544/2247696110</string>
 
 <!--    Rewarded-->
     <string name="rewarded_processing" translatable="false">ca-app-pub-3940256099942544/5224354917</string>

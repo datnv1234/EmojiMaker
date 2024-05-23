@@ -8,14 +8,14 @@ import com.wa.ai.emojimaker.common.Constant
 import com.wa.ai.emojimaker.databinding.DialogWaitingDialogBinding
 import com.wa.ai.emojimaker.ui.base.BaseBindingDialogFragment
 
-class WaitingDialog : BaseBindingDialogFragment<DialogWaitingDialogBinding>() {
+class WaitingDialog(val des: String) : BaseBindingDialogFragment<DialogWaitingDialogBinding>() {
 
     lateinit var action: () -> Unit
     override val layoutId: Int
         get() = R.layout.dialog_waiting_dialog
 
     override fun onCreatedView(view: View?, savedInstanceState: Bundle?) {
-
+        binding.tvDes.text = des
         val countDownTimer: CountDownTimer = object : CountDownTimer(Constant.CREATE_STICKER_DELAY, 1000) {
             override fun onTick(millisUntilFinished: Long) {
 

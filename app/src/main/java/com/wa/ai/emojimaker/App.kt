@@ -31,6 +31,7 @@ import com.wa.ai.emojimaker.data.local.SharedPreferenceHelper
 import com.wa.ai.emojimaker.service.receiver.NetworkChangeReceiver
 import com.wa.ai.emojimaker.utils.MyDebugTree
 import com.wa.ai.emojimaker.utils.SystemUtil
+import com.wa.ai.emojimaker.utils.ads.AppOpenAdsManager
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -43,14 +44,9 @@ import javax.inject.Inject
 class App : Application() {
 
     private var mNetworkReceiver: NetworkChangeReceiver? = null
-    private var appOpenAdManager: AppOpenAdManager = AppOpenAdManager()
 
     @Inject
     lateinit var sharedPreferenceHelper: SharedPreferenceHelper
-
-    interface OnShowAdCompleteListener {
-        fun onAdShown()
-    }
 
     private fun registerNetworkBroadcastForNougat() {
         registerReceiver(
@@ -73,8 +69,14 @@ class App : Application() {
             produceFile = { instance.preferencesDataStoreFile("user_settings") }
         )
 
-        //loadConfig()
+        loadConfig()
         initTrackingAdjust()
+
+        try {
+            AppOpenAdsManager(this)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun loadConfig() {
@@ -119,84 +121,5 @@ class App : Application() {
         super.onConfigurationChanged(newConfig)
         SystemUtil.setLocale(this)
     }
-
-    fun showAdIfAvailable(activity: Activity, onShowAdCompleteListener: OnShowAdCompleteListener) {
-        appOpenAdManager.showAdIfAvailable(activity, onShowAdCompleteListener)
-    }
-
-    private class AppOpenAdManager {
-        private var appOpenAd: AppOpenAd? = null
-        private var isLoadingAd = false
-        var isShowingAd = false
-            private set
-
-        fun loadAd(context: Context) {
-            if (isLoadingAd || isAdAvailable()) {
-                return
-            }
-
-            isLoadingAd = true
-            val request = AdRequest.Builder().build()
-            AppOpenAd.load(context, context.getString(R.string.open_app), request, object : AppOpenAd.AppOpenAdLoadCallback() {
-                override fun onAdFailedToLoad(loadAdError: LoadAdError) {
-                    super.onAdFailedToLoad(loadAdError)
-                    isLoadingAd = false
-                    Timber.tag("openAdsUtils").d("There was an error while loading ad ")
-                }
-
-                override fun onAdLoaded(openAd: AppOpenAd) {
-                    super.onAdLoaded(openAd)
-                    appOpenAd = openAd
-                    isLoadingAd = false
-                    Timber.tag("openAdsUtils").d("Ad loaded ")
-
-                }
-            })
-        }
-
-        private fun isAdAvailable(): Boolean {
-            return appOpenAd != null
-        }
-
-        fun showAdIfAvailable(activity: Activity) {
-            showAdIfAvailable(activity, object : OnShowAdCompleteListener {
-                override fun onAdShown() {
-
-                }
-            })
-        }
-
-        fun showAdIfAvailable(activity: Activity, onShowAdCompleteListener: OnShowAdCompleteListener) {
-            if (isShowingAd) {
-                return
-            }
-
-            if (!isAdAvailable()) {
-                onShowAdCompleteListener.onAdShown()
-                return
-            }
-
-            appOpenAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
-
-                override fun onAdDismissedFullScreenContent() {
-                    super.onAdDismissedFullScreenContent()
-                    isShowingAd = false
-                    onShowAdCompleteListener.onAdShown()
-                    appOpenAd = null
-                }
-
-                override fun onAdFailedToShowFullScreenContent(adError: AdError) {
-                    super.onAdFailedToShowFullScreenContent(adError)
-                    isShowingAd = false
-                    onShowAdCompleteListener.onAdShown()
-                    appOpenAd = null
-                }
-            }
-
-            isShowingAd = true
-            appOpenAd?.show(activity)
-        }
-    }
-
 
 }

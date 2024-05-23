@@ -15,10 +15,12 @@ import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.os.Environment
 import android.os.Parcelable
 import android.provider.OpenableColumns
 import android.text.InputType
+import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.widget.EditText
@@ -28,10 +30,23 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
+import com.adjust.sdk.Adjust
+import com.adjust.sdk.AdjustAdRevenue
+import com.adjust.sdk.AdjustConfig
 import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.Headers
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdapterResponseInfo
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.OnPaidEventListener
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.wa.ai.emojimaker.R
+import com.wa.ai.emojimaker.common.Constant
 import com.wa.ai.emojimaker.common.Constant.INTERNAL_MY_CREATIVE_DIR
+import com.wa.ai.emojimaker.common.Constant.TAG
 import com.wa.ai.emojimaker.data.model.ItemOptionUI
 import com.wa.ai.emojimaker.databinding.ActivityEmojiMakerBinding
 import com.wa.ai.emojimaker.ui.adapter.OptionAdapter
@@ -45,6 +60,9 @@ import com.wa.ai.emojimaker.ui.dialog.WaitingDialog
 import com.wa.ai.emojimaker.ui.main.MainActivity
 import com.wa.ai.emojimaker.utils.AppUtils
 import com.wa.ai.emojimaker.utils.DeviceUtils
+import com.wa.ai.emojimaker.utils.RemoteConfigKey
+import com.wa.ai.emojimaker.utils.ads.BannerUtils
+import com.wa.ai.emojimaker.utils.extention.gone
 import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 import com.wa.ai.emojimaker.utils.sticker.BitmapStickerIcon
 import com.wa.ai.emojimaker.utils.sticker.DrawableSticker
@@ -65,6 +83,13 @@ import java.util.Locale
 
 class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, StickerViewModel>() {
 
+    lateinit var keyAds: String
+    val mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
+
+    private var mInterstitialAd: InterstitialAd? = null
+    private var analytics: FirebaseAnalytics? = null
+    var mFirebaseAnalytics: FirebaseAnalytics? = null
+
     private val optionList = ArrayList<ItemOptionUI>()
     private lateinit var emojiViewModel: EmojiViewModel
     private val pagerIconAdapter: PagerIconAdapter by lazy { PagerIconAdapter(itemClick = {
@@ -81,13 +106,19 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
             }
 
             download = {
-                AppUtils.saveSticker(this@EmojiMakerActivity, bitmap, "creative")
-                //download(bitmap)
-                toast("Downloaded!")
+                nextAction {
+                    AppUtils.saveSticker(this@EmojiMakerActivity, bitmap, "creative")
+                    //download(bitmap)
+                    toast("Downloaded!")
+                }
+                mFirebaseAnalytics?.logEvent("v_inter_ads_download_creative_emoji", null)
             }
 
             share = {
-                share(this.bitmap)
+                nextAction {
+                    share(this.bitmap)
+                }
+                mFirebaseAnalytics?.logEvent("v_inter_ads_share_creative_emoji", null)
             }
         }
     }
@@ -99,16 +130,18 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
                 if (it == null) {
                     toast(getString(R.string.please_input_package_name))
                 } else {
-                    mSaveDialog.dismiss()
-                    DeviceUtils.saveToPackage(
-                        this@EmojiMakerActivity,
-                        INTERNAL_MY_CREATIVE_DIR,
-                        packageName = it.id,
-                        bitmapImage = emojiViewModel.bitmap
-                    )
-                    mDialogWaiting.show(supportFragmentManager, mDialogWaiting.tag)
+                    nextAction {
+                        mSaveDialog.dismiss()
+                        DeviceUtils.saveToPackage(
+                            this@EmojiMakerActivity,
+                            INTERNAL_MY_CREATIVE_DIR,
+                            packageName = it.id,
+                            bitmapImage = emojiViewModel.bitmap
+                        )
+                        mDialogWaiting.show(supportFragmentManager, mDialogWaiting.tag)
+                    }
+                    mFirebaseAnalytics?.logEvent("v_inter_ads_save_creative_emoji", null)
                 }
-
             }
 
             createNewPackage = {
@@ -123,22 +156,32 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
             confirm = { pkg ->
                 mAddToPackageDialog.dismiss()
                 mSaveDialog.dismiss()
-                DeviceUtils.saveToPackage(
-                    this@EmojiMakerActivity,
-                    INTERNAL_MY_CREATIVE_DIR,
-                    packageName = pkg.id,
-                    bitmapImage = emojiViewModel.bitmap
-                )
-                mDialogWaiting.show(supportFragmentManager, mDialogWaiting.tag)
+                nextAction {
+                    DeviceUtils.saveToPackage(
+                        this@EmojiMakerActivity,
+                        INTERNAL_MY_CREATIVE_DIR,
+                        packageName = pkg.id,
+                        bitmapImage = emojiViewModel.bitmap
+                    )
+                    mDialogWaiting.show(supportFragmentManager, mDialogWaiting.tag)
+                }
+                mFirebaseAnalytics?.logEvent("v_inter_ads_save_creative_emoji", null)
+
             }
         }
     }
 
     private val mDialogWaiting: WaitingDialog by lazy {
-        WaitingDialog().apply { 
+        WaitingDialog(getString(R.string.creating_sticker)).apply {
             action = {
                 mSaveSuccessDialog.show(supportFragmentManager, mSaveSuccessDialog.tag)
             }
+        }
+    }
+
+    private val mDialogPrepare: WaitingDialog by lazy {
+        WaitingDialog(getString(R.string.preparing_workplace)).apply {
+            action = {}
         }
     }
 
@@ -146,6 +189,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         SaveSuccessDialog(emojiViewModel.bitmap).apply {
             home = {
                 startActivity(Intent(this@EmojiMakerActivity, MainActivity::class.java))
+                finishAffinity()
             }
             createMore = {
                 newBoard()
@@ -179,7 +223,10 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
             val bitmap = binding.stickerView.createBitmap()
             emojiViewModel.bitmap = bitmap
             mSaveDialog.bitmap = bitmap
-            mSaveDialog.show(supportFragmentManager, mSaveDialog.tag)
+            nextAction {
+                mSaveDialog.show(supportFragmentManager, mSaveDialog.tag)
+            }
+            mFirebaseAnalytics?.logEvent("v_inter_ads_save_creative_emoji", null)
         }
     }
 
@@ -195,6 +242,28 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        loadBanner()
+        keyAds = mFirebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_INTER_CREATE_EMOJI)
+        if (keyAds.isEmpty()) {
+            keyAds = getString(R.string.inter_create_emoji)
+        }
+
+        if (mFirebaseRemoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_INTER_CREATE_EMOJI)) {
+            loadInterAds(keyAds)
+        }
+
+        mDialogPrepare.show(supportFragmentManager, mDialogPrepare.tag)
+        val countDownTimer: CountDownTimer = object : CountDownTimer(Constant.WAITING_TO_LOAD_BANNER, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+            }
+            override fun onFinish() {
+                mDialogPrepare.dismiss()
+            }
+        }
+        countDownTimer.start()
+    }
     override fun setupData() {
         getOptions()
         emojiViewModel = ViewModelProvider(this)[EmojiViewModel::class.java]
@@ -740,6 +809,95 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
             binding.stickerView.invalidate()
             binding.btnSave.isEnabled = false
         }
+    }
+
+
+    private fun loadBanner() {
+        val keyAdsBanner: String
+        val timeDelay: Long
+
+        if (DeviceUtils.checkInternetConnection(this) && mFirebaseRemoteConfig.getBoolean(
+                RemoteConfigKey.IS_SHOW_ADS_BANNER_CREATE_EMOJI)) {
+            val adConfig = mFirebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_BANNER_CREATE_EMOJI)
+            keyAdsBanner = adConfig.ifEmpty {
+                getString(R.string.banner_create_emoji)
+            }
+
+            val timeConfig = mFirebaseRemoteConfig.getLong(RemoteConfigKey.KEY_COLLAPSE_RELOAD_TIME)
+            timeDelay = if (timeConfig == 0L) {
+                20
+            } else {
+                timeConfig
+            }
+            BannerUtils.instance?.loadCollapsibleBanner(this, keyAdsBanner, timeDelay * 1000)
+        } else {
+            binding.rlBanner.gone()
+        }
+    }
+
+    fun nextAction(action:() -> Unit) {
+        if (mInterstitialAd != null) {
+            // Nếu quảng cáo đã tải xong, hiển thị quảng cáo và chuyển đến Activity mới sau khi quảng cáo kết thúc
+            mInterstitialAd?.fullScreenContentCallback =
+                object : com.google.android.gms.ads.FullScreenContentCallback() {
+                    override fun onAdDismissedFullScreenContent() {
+                        action()
+                    }
+
+                    override fun onAdFailedToShowFullScreenContent(adError: com.google.android.gms.ads.AdError) {
+                        Timber.tag(TAG).d("onAdFailedToShowFullScreenContent: ${adError.message}")
+                        action()
+                    }
+                }
+            mInterstitialAd?.show(this@EmojiMakerActivity)
+            loadInterAds(keyAds)
+        }else{
+            action()
+        }
+    }
+
+    //Ads
+    fun loadInterAds(keyAdsInter: String) {
+
+        InterstitialAd.load(
+            this,
+            keyAdsInter,
+            AdRequest.Builder().build(),
+            object : InterstitialAdLoadCallback() {
+                override fun onAdLoaded(interstitialAd: InterstitialAd) {
+                    mInterstitialAd = interstitialAd
+                    mFirebaseAnalytics?.logEvent("d_load_inter", null)
+
+                    mInterstitialAd?.onPaidEventListener =
+                        OnPaidEventListener { adValue -> // Lấy thông tin về nhà cung cấp quảng cáo
+                            val loadedAdapterResponseInfo: AdapterResponseInfo? =
+                                interstitialAd.responseInfo.loadedAdapterResponseInfo
+                            // Gửi thông tin doanh thu quảng cáo đến Adjust
+                            val adRevenue = AdjustAdRevenue(AdjustConfig.AD_REVENUE_ADMOB)
+                            val revenue = adValue.valueMicros.toDouble() / 1000000.0
+                            adRevenue.setRevenue(
+                                revenue,
+                                adValue.currencyCode
+                            )
+                            adRevenue.adRevenueNetwork = loadedAdapterResponseInfo?.adSourceName
+                            Adjust.trackAdRevenue(adRevenue)
+                            analytics = FirebaseAnalytics.getInstance(applicationContext)
+                            val params = Bundle()
+                            params.putString(FirebaseAnalytics.Param.AD_PLATFORM, "admob mediation")
+                            params.putString(FirebaseAnalytics.Param.AD_SOURCE, "AdMob")
+                            params.putString(FirebaseAnalytics.Param.AD_FORMAT, "Interstitial")
+                            params.putDouble(FirebaseAnalytics.Param.VALUE, revenue)
+                            params.putString(FirebaseAnalytics.Param.CURRENCY, "USD")
+                            analytics?.logEvent(FirebaseAnalytics.Event.AD_IMPRESSION, params)
+                        }
+                }
+
+                override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                    mInterstitialAd = null
+                    mFirebaseAnalytics?.logEvent("e_load_inter", null)
+                }
+            })
+
     }
 
     companion object {
