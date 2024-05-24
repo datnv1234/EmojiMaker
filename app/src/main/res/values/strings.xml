@@ -72,6 +72,7 @@
     <string name="create_more">Create More</string>
     <string name="english">English</string>
     <string name="this_function_is_not_supported_yet">This function is not supported yet!</string>
+    <string name="coming_soon" translatable="false">Coming soon</string>
     <string name="empty">Empty</string>
     <string name="you_don_t_have_any_package">You don\'t have any package</string>
 

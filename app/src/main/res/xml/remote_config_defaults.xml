@@ -50,6 +50,14 @@
     <value>ca-app-pub-3940256099942544/2247696110</value>
   </entry>
   <entry>
+    <key>key_ads_native_home</key>
+    <value>ca-app-pub-3940256099942544/2247696110</value>
+  </entry>
+  <entry>
+    <key>key_ads_native_settings</key>
+    <value>ca-app-pub-3940256099942544/2247696110</value>
+  </entry>
+  <entry>
     <key>key_ads_native_show_stickers</key>
     <value>ca-app-pub-3940256099942544/2247696110</value>
   </entry>
@@ -104,7 +112,15 @@
     <value>true</value>
   </entry>
   <entry>
+    <key>is_show_ads_native_home</key>
+    <value>true</value>
+  </entry>
+  <entry>
     <key>is_show_ads_native_my_creative</key>
+    <value>true</value>
+  </entry>
+  <entry>
+    <key>is_show_ads_native_settings</key>
     <value>true</value>
   </entry>
   <entry>

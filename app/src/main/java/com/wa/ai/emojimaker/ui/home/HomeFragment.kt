@@ -8,8 +8,10 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.View
+import com.google.android.gms.ads.nativead.NativeAdView
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.common.Constant
+import com.wa.ai.emojimaker.databinding.AdNativeVideoBinding
 import com.wa.ai.emojimaker.databinding.FragmentHomeBinding
 import com.wa.ai.emojimaker.ui.adapter.CategoryAdapter
 import com.wa.ai.emojimaker.ui.base.BaseBindingFragment
@@ -19,9 +21,11 @@ import com.wa.ai.emojimaker.ui.emojimaker.EmojiMakerActivity
 import com.wa.ai.emojimaker.ui.main.MainActivity
 import com.wa.ai.emojimaker.ui.showstickers.ShowStickersActivity
 import com.wa.ai.emojimaker.utils.AppUtils
+import com.wa.ai.emojimaker.utils.DeviceUtils
 import com.wa.ai.emojimaker.utils.FileUtils
 import com.wa.ai.emojimaker.utils.FileUtils.getUriForFile
 import com.wa.ai.emojimaker.utils.RemoteConfigKey
+import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils
 import com.wa.ai.emojimaker.utils.extention.invisible
 import com.wa.ai.emojimaker.utils.extention.visible
 import timber.log.Timber
@@ -166,6 +170,18 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
         super.onStart()
         setUpLoadInterAds()
 
+        if (mMainActivity.mFirebaseRemoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_HOME)) {
+            val adConfig = mMainActivity.mFirebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_NATIVE_HOME)
+            if (adConfig.isNotEmpty()) {
+                loadNativeAds(adConfig)
+            }
+            else {
+                loadNativeAds(getString(R.string.native_home))
+            }
+        } else {
+            binding.rlNative.visibility = View.GONE
+        }
+
         mDialogPrepare.show(parentFragmentManager, mDialogPrepare.tag)
         val countDownTimer: CountDownTimer = object : CountDownTimer(Constant.WAITING_TO_LOAD_BANNER, 1000) {
             override fun onTick(millisUntilFinished: Long) {
@@ -251,4 +267,26 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
         }
     }
 
+    private fun loadNativeAds(keyAds:String) {
+        if (!DeviceUtils.checkInternetConnection(requireContext())) binding.rlNative.visibility = View.GONE
+        this.let {
+            NativeAdsUtils.instance.loadNativeAds(
+                requireContext(),
+                keyAds
+            ) { nativeAds ->
+                if (nativeAds != null && isAdded && isVisible) {
+                    //binding.frNativeAds.removeAllViews()
+                    val adNativeVideoBinding = AdNativeVideoBinding.inflate(layoutInflater)
+                    NativeAdsUtils.instance.populateNativeAdVideoView(
+                        nativeAds,
+                        adNativeVideoBinding.root as NativeAdView
+                    )
+                    binding.frNativeAds.addView(adNativeVideoBinding.root)
+                } else {
+                    binding.rlNative.visibility = View.GONE
+                }
+            }
+        }
+
+    }
 }

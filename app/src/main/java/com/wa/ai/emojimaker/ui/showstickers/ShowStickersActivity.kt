@@ -123,7 +123,7 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
                     mFirebaseAnalytics?.logEvent("v_inter_ads_add_telegram_creative", null)
                 }
                 binding.btnAddToWhatsapp.setOnSafeClick {
-                    toast(getString(R.string.this_function_is_not_supported_yet))
+                    toast(getString(R.string.coming_soon))
                 }
                 binding.btnDownload.setOnSafeClick {
                     if (AppUtils.checkPermission(this)) {
@@ -153,7 +153,7 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
         super.onStart()
         setUpLoadInterAds()
         if (mFirebaseRemoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_SHOW_STICKERS)) {
-            val keyAds = mFirebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_NATIVE_LANGUAGE)
+            val keyAds = mFirebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_NATIVE_SHOW_STICKERS)
             if (keyAds.isNotEmpty()) {
                 loadNativeAds(keyAds)
             } else {

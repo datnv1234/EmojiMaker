@@ -8,15 +8,19 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.google.android.gms.ads.nativead.NativeAdView
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.common.Constant
+import com.wa.ai.emojimaker.databinding.AdNativeVideoBinding
 import com.wa.ai.emojimaker.databinding.FragmentSettingsBinding
 import com.wa.ai.emojimaker.ui.base.BaseBindingFragment
 import com.wa.ai.emojimaker.ui.dialog.DialogRating
 import com.wa.ai.emojimaker.ui.main.MainActivity
 import com.wa.ai.emojimaker.ui.multilang.MultiLangActivity
+import com.wa.ai.emojimaker.utils.DeviceUtils
 import com.wa.ai.emojimaker.utils.RemoteConfigKey
+import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils
 import com.wa.ai.emojimaker.utils.extention.gone
 import com.wa.ai.emojimaker.utils.extention.hideSystemUI
 
@@ -102,6 +106,18 @@ class SettingsFragment : BaseBindingFragment<FragmentSettingsBinding, SettingsVi
     override fun onStart() {
         super.onStart()
         setUpLoadInterAds()
+
+        if (mMainActivity.mFirebaseRemoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_SETTINGS)) {
+            val adConfig = mMainActivity.mFirebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_NATIVE_SETTINGS)
+            if (adConfig.isNotEmpty()) {
+                loadNativeAds(adConfig)
+            }
+            else {
+                loadNativeAds(getString(R.string.native_settings))
+            }
+        } else {
+            binding.rlNative.visibility = View.GONE
+        }
     }
 
     private fun setUpLoadInterAds() {
@@ -112,6 +128,29 @@ class SettingsFragment : BaseBindingFragment<FragmentSettingsBinding, SettingsVi
         if (mMainActivity.mFirebaseRemoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_INTER_SETTINGS)) {
             mMainActivity.loadInterAds(mMainActivity.keyAds)
         }
+    }
+
+    private fun loadNativeAds(keyAds:String) {
+        if (!DeviceUtils.checkInternetConnection(requireContext())) binding.rlNative.visibility = View.GONE
+        this.let {
+            NativeAdsUtils.instance.loadNativeAds(
+                requireContext(),
+                keyAds
+            ) { nativeAds ->
+                if (nativeAds != null && isAdded && isVisible) {
+                    //binding.frNativeAds.removeAllViews()
+                    val adNativeVideoBinding = AdNativeVideoBinding.inflate(layoutInflater)
+                    NativeAdsUtils.instance.populateNativeAdVideoView(
+                        nativeAds,
+                        adNativeVideoBinding.root as NativeAdView
+                    )
+                    binding.frNativeAds.addView(adNativeVideoBinding.root)
+                } else {
+                    binding.rlNative.visibility = View.GONE
+                }
+            }
+        }
+
     }
 
 }

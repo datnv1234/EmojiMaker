@@ -18,20 +18,15 @@ object RemoteConfigKey {
 
     const val IS_SHOW_ADS_NATIVE_INTRO = "is_show_ads_native_intro"
     const val IS_SHOW_ADS_NATIVE_LANGUAGE = "is_show_ads_native_language"
+    const val IS_SHOW_ADS_NATIVE_HOME = "is_show_ads_native_home"
     const val IS_SHOW_ADS_NATIVE_MY_CREATIVE = "is_show_ads_native_my_creative"
+    const val IS_SHOW_ADS_NATIVE_SETTINGS = "is_show_ads_native_settings"
     const val IS_SHOW_ADS_NATIVE_SHOW_STICKERS = "is_show_ads_native_show_stickers"
 
-
-    const val IS_SHOW_ADS_NATIVE_CONNECT_TO_TV = "is_show_ads_native_connect_to_tv"
-    const val IS_SHOW_ADS_NATIVE_PERMISSION = "is_show_ads_native_permission"
 
     const val IS_SHOW_ADS_BANNER_MAIN = "is_show_ads_banner_main"
     const val IS_SHOW_ADS_BANNER_CREATE_EMOJI = "is_show_ads_banner_create_emoji"
     const val IS_SHOW_ADS_BANNER_SHOW_STICKERS = "is_show_ads_banner_show_stickers"
-
-
-
-
 
 
     // Inter
@@ -45,7 +40,9 @@ object RemoteConfigKey {
     // Native
     const val KEY_ADS_NATIVE_INTRO = "key_ads_native_intro"
     const val KEY_ADS_NATIVE_LANGUAGE = "key_ads_native_language"
+    const val KEY_ADS_NATIVE_HOME = "key_ads_native_home"
     const val KEY_ADS_NATIVE_MY_CREATIVE = "key_ads_native_my_creative"
+    const val KEY_ADS_NATIVE_SETTINGS = "key_ads_native_settings"
     const val KEY_ADS_NATIVE_SHOW_STICKERS = "key_ads_native_show_stickers"
 
     // Banner

@@ -87,12 +87,15 @@
                     android:background="@drawable/bg_button_social_green"
                     android:foreground="?android:selectableItemBackground"
                     android:gravity="center"
+                    android:clickable="true"
                     android:orientation="horizontal"
-                    android:paddingVertical="16dp">
+                    android:paddingVertical="16dp"
+                    android:focusable="true">
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:clickable="false"
                         android:layout_marginEnd="12dp"
                         android:src="@drawable/ic_whatsapp"
                         android:contentDescription="@string/icon_button" />
@@ -101,6 +104,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/add_to_whatsapp"
+                        android:clickable="false"
                         android:textColor="@color/white"
                         android:textSize="@dimen/_16ssp" />
                 </LinearLayout>
