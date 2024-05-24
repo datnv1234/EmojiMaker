@@ -2,7 +2,6 @@ package com.wa.ai.emojimaker.ui.adapter
 
 import android.content.Context
 import android.widget.PopupMenu
-import android.widget.Toast
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.recyclerview.widget.DiffUtil
 import com.wa.ai.emojimaker.R

@@ -6,7 +6,7 @@ import com.wa.ai.emojimaker.utils.sticker.TextSticker
 
 /**
  * Developed by
- * @author Elad Finish
+ * @author Wa
  */
 
 const val UNDERLINE = Paint.UNDERLINE_TEXT_FLAG

@@ -20,7 +20,6 @@ import android.os.Environment
 import android.os.Parcelable
 import android.provider.OpenableColumns
 import android.text.InputType
-import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.widget.EditText

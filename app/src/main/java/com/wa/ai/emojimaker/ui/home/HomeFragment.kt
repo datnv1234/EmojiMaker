@@ -26,7 +26,6 @@ import com.wa.ai.emojimaker.utils.FileUtils
 import com.wa.ai.emojimaker.utils.FileUtils.getUriForFile
 import com.wa.ai.emojimaker.utils.RemoteConfigKey
 import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils
-import com.wa.ai.emojimaker.utils.extention.invisible
 import com.wa.ai.emojimaker.utils.extention.visible
 import timber.log.Timber
 import java.io.File

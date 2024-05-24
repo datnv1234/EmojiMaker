@@ -2,10 +2,8 @@ package com.wa.ai.emojimaker.utils
 
 import android.Manifest
 import android.app.Activity
-import android.app.DownloadManager
 import android.content.ActivityNotFoundException
 import android.content.Context
-import android.content.Context.DOWNLOAD_SERVICE
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -14,7 +12,6 @@ import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Environment
 import android.os.Parcelable
-import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -26,7 +23,6 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
-import java.util.Random
 import kotlin.jvm.internal.Intrinsics
 
 object AppUtils {
@@ -62,31 +58,6 @@ object AppUtils {
             Toast.makeText(
                 context,
                 "Failed to share image",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
-    }
-
-    fun importToTelegram(context: Context, list: List<Uri>) {
-        Intrinsics.checkNotNullParameter(context, "context")
-        Intrinsics.checkNotNullParameter(list, "uriList")
-        val arrayList: ArrayList<Parcelable> = ArrayList<Parcelable>(list)
-        val it: Iterator<*> = arrayList.iterator()
-        Intrinsics.checkNotNullExpressionValue(it, "list.iterator()")
-        while (it.hasNext()) {
-            context.grantUriPermission("org.telegram.messenger", it.next() as Uri?, 3)
-        }
-        val intent = Intent("org.telegram.messenger.CREATE_STICKER_PACK")
-        intent.putParcelableArrayListExtra("android.intent.extra.STREAM", arrayList)
-        intent.putExtra("IMPORTER", context.packageName)
-        intent.setFlags(268435457)
-        intent.setType("image/*")
-        try {
-            context.startActivity(intent)
-        } catch (unused: ActivityNotFoundException) {
-            Toast.makeText(
-                context,
-                context.getString(R.string.no_app_found),
                 Toast.LENGTH_SHORT
             ).show()
         }

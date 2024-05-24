@@ -3,22 +3,16 @@ package com.wa.ai.emojimaker.ui.mycreative
 import android.content.Context
 import android.content.ContextWrapper
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.wa.ai.emojimaker.common.Constant
-import com.wa.ai.emojimaker.common.Constant.TAG
-import com.wa.ai.emojimaker.data.model.BitmapSticker
 import com.wa.ai.emojimaker.data.model.PackageModel
 import com.wa.ai.emojimaker.ui.base.BaseViewModel
 import com.wa.ai.emojimaker.utils.AppUtils.convertFileToBitmap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
-import java.io.FileInputStream
-import java.io.IOException
 
 
 class MyCreativeViewModel : BaseViewModel() {

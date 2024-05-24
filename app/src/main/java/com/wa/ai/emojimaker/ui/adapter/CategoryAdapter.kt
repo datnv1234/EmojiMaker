@@ -2,12 +2,10 @@ package com.wa.ai.emojimaker.ui.adapter
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import android.view.LayoutInflater
 import android.widget.ImageView
 import androidx.recyclerview.widget.DiffUtil
 import com.google.android.gms.ads.nativead.NativeAdView
-import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import com.wa.ai.emojimaker.R

@@ -5,7 +5,6 @@ import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.data.model.LanguageUI
 import com.wa.ai.emojimaker.databinding.ItemMultiLangBinding
 import com.wa.ai.emojimaker.ui.base.BaseBindingAdapterDiff
-import com.wa.ai.emojimaker.utils.extention.dpToPx
 import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 
 class MultiLangAdapter : BaseBindingAdapterDiff<LanguageUI, ItemMultiLangBinding>(

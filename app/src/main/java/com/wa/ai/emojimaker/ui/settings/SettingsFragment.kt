@@ -2,12 +2,8 @@ package com.wa.ai.emojimaker.ui.settings
 
 import android.content.Intent
 import android.net.Uri
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.wa.ai.emojimaker.R

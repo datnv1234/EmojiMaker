@@ -17,7 +17,6 @@ import com.wa.ai.emojimaker.ui.base.BaseBindingActivity
 import com.wa.ai.emojimaker.ui.main.MainActivity
 import com.wa.ai.emojimaker.utils.DeviceUtils
 import com.wa.ai.emojimaker.utils.RemoteConfigKey
-import com.wa.ai.emojimaker.utils.ads.BannerUtils
 import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils
 import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 import com.wa.ai.emojimaker.utils.extention.setStatusBarColor

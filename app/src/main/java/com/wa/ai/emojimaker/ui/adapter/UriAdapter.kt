@@ -1,13 +1,11 @@
 package com.wa.ai.emojimaker.ui.adapter
 
 import android.net.Uri
-import android.util.Log
 import android.widget.ImageView
 import androidx.recyclerview.widget.DiffUtil
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import com.wa.ai.emojimaker.R
-import com.wa.ai.emojimaker.common.Constant.TAG
 import com.wa.ai.emojimaker.data.model.StickerUri
 import com.wa.ai.emojimaker.databinding.ItemStickerBinding
 import com.wa.ai.emojimaker.ui.base.BaseBindingAdapterDiff

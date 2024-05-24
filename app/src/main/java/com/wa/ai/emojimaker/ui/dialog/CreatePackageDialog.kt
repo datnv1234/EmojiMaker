@@ -1,22 +1,15 @@
 package com.wa.ai.emojimaker.ui.dialog
 
-import android.content.DialogInterface
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.content.res.AppCompatResources
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.common.Constant
-import com.wa.ai.emojimaker.common.MessageEvent
 import com.wa.ai.emojimaker.data.model.PackageModel
-import com.wa.ai.emojimaker.databinding.DialogAddToPackageBinding
 import com.wa.ai.emojimaker.databinding.DialogCreatePackageBinding
-import com.wa.ai.emojimaker.evenbus.CreatePackageEvent
 import com.wa.ai.emojimaker.ui.base.BaseBindingDialogFragment
 import com.wa.ai.emojimaker.utils.DeviceUtils
 import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
-import org.greenrobot.eventbus.EventBus
-import java.io.File
 
 class CreatePackageDialog : BaseBindingDialogFragment<DialogCreatePackageBinding>() {
 
