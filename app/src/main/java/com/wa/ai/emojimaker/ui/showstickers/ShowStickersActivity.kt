@@ -391,6 +391,10 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
                 keyAds
             ) { nativeAds ->
                 if (nativeAds != null) {
+                    if (isDestroyed) {
+                        nativeAds.destroy()
+                        return@loadNativeAds
+                    }
                     //binding.frNativeAds.removeAllViews()
                     val adNativeVideoBinding = AdNativeVideoBinding.inflate(layoutInflater)
                     NativeAdsUtils.instance.populateNativeAdVideoView(
@@ -399,7 +403,7 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
                     )
                     binding.frNativeAds.addView(adNativeVideoBinding.root)
                 } else {
-                    binding.rlNative.visibility = View.GONE
+                    //binding.rlNative.visibility = View.GONE
                 }
             }
         }

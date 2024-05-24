@@ -81,7 +81,7 @@ class CategoryAdapter(val context: Context, val watchMoreClick: (category: Categ
                     )
                     holder.binding.frNativeAds.addView(adNativeVideoBinding.root)
                 } else {
-                    holder.binding.rlNative.gone()
+                    //holder.binding.rlNative.gone()
                 }
             }
         }

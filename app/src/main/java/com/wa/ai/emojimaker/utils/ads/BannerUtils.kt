@@ -184,9 +184,9 @@ class BannerUtils {
                 adView.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
                 adView.adListener = object : AdListener() {
                     override fun onAdFailedToLoad(loadAdError: LoadAdError) {
-                        Log.d(TAG, "onAdFailedToLoad: " + loadAdError.message)
-                        Log.d(TAG, "onAdFailedToLoad: " + loadAdError.domain)
-                        Log.d(TAG, "onAdFailedToLoad: " + loadAdError.code)
+//                        Log.d(TAG, "onAdFailedToLoad: " + loadAdError.message)
+//                        Log.d(TAG, "onAdFailedToLoad: " + loadAdError.domain)
+//                        Log.d(TAG, "onAdFailedToLoad: " + loadAdError.code)
                         containerShimmer.stopShimmer()
                         adContainer.gone()
                         containerShimmer.gone()

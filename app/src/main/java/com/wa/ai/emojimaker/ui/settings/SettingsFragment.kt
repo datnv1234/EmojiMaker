@@ -134,6 +134,10 @@ class SettingsFragment : BaseBindingFragment<FragmentSettingsBinding, SettingsVi
                 keyAds
             ) { nativeAds ->
                 if (nativeAds != null && isAdded && isVisible) {
+                    if (isDetached) {
+                        nativeAds.destroy()
+                        return@loadNativeAds
+                    }
                     //binding.frNativeAds.removeAllViews()
                     val adNativeVideoBinding = AdNativeVideoBinding.inflate(layoutInflater)
                     NativeAdsUtils.instance.populateNativeAdVideoView(
@@ -142,7 +146,7 @@ class SettingsFragment : BaseBindingFragment<FragmentSettingsBinding, SettingsVi
                     )
                     binding.frNativeAds.addView(adNativeVideoBinding.root)
                 } else {
-                    binding.rlNative.visibility = View.GONE
+                    //binding.rlNative.visibility = View.GONE
                 }
             }
         }

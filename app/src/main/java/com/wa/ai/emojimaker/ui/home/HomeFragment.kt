@@ -7,10 +7,13 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.util.Log
 import android.view.View
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.common.Constant
+import com.wa.ai.emojimaker.common.Constant.TAG
+import com.wa.ai.emojimaker.databinding.AdNativeContentBinding
 import com.wa.ai.emojimaker.databinding.AdNativeVideoBinding
 import com.wa.ai.emojimaker.databinding.FragmentHomeBinding
 import com.wa.ai.emojimaker.ui.adapter.CategoryAdapter
@@ -267,25 +270,35 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
     }
 
     private fun loadNativeAds(keyAds:String) {
+        var isOK = true
         if (!DeviceUtils.checkInternetConnection(requireContext())) binding.rlNative.visibility = View.GONE
         this.let {
             NativeAdsUtils.instance.loadNativeAds(
                 requireContext(),
                 keyAds
             ) { nativeAds ->
+
                 if (nativeAds != null && isAdded && isVisible) {
+                    if (isDetached) {
+                        nativeAds.destroy()
+                        return@loadNativeAds
+                    }
                     //binding.frNativeAds.removeAllViews()
-                    val adNativeVideoBinding = AdNativeVideoBinding.inflate(layoutInflater)
+                    val adNativeVideoBinding = AdNativeContentBinding.inflate(layoutInflater)
                     NativeAdsUtils.instance.populateNativeAdVideoView(
                         nativeAds,
                         adNativeVideoBinding.root as NativeAdView
                     )
                     binding.frNativeAds.addView(adNativeVideoBinding.root)
+                    Log.d(TAG, "loadNativeAds: ok")
                 } else {
-                    binding.rlNative.visibility = View.GONE
+                    isOK = false
+                    Log.d(TAG, "loadNativeAds: failed")
+                    //binding.rlNative.visibility = View.GONE
                 }
             }
         }
+        isOK = true
 
     }
 }

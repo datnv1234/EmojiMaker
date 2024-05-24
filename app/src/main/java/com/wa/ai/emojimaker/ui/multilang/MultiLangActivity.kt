@@ -2,6 +2,7 @@ package com.wa.ai.emojimaker.ui.multilang
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
@@ -115,6 +116,10 @@ class MultiLangActivity : BaseBindingActivity<ActivityMultiLangBinding, MultiLan
 				keyAds
 			) { nativeAds ->
 				if (nativeAds != null) {
+					if (isDestroyed) {
+						nativeAds.destroy()
+						return@loadNativeAds
+					}
 					//binding.frNativeAds.removeAllViews()
 					val adNativeVideoBinding = AdNativeVideoBinding.inflate(layoutInflater)
 					NativeAdsUtils.instance.populateNativeAdVideoView(
@@ -123,7 +128,8 @@ class MultiLangActivity : BaseBindingActivity<ActivityMultiLangBinding, MultiLan
 					)
 					binding.frNativeAds.addView(adNativeVideoBinding.root)
 				} else {
-					binding.rlNative.visibility = View.GONE
+//					Log.d(TAG, "loadNativeAds: failed")
+					//binding.rlNative.visibility = View.GONE
 				}
 			}
 		}

@@ -3,6 +3,7 @@ package com.wa.ai.emojimaker.utils.ads
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
@@ -15,6 +16,7 @@ import com.google.android.gms.ads.nativead.MediaView
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.wa.ai.emojimaker.R
+import com.wa.ai.emojimaker.common.Constant.TAG
 import com.wa.ai.emojimaker.databinding.AdNativeVideoBinding
 import com.wa.ai.emojimaker.utils.DeviceUtils
 import com.wa.ai.emojimaker.utils.extention.gone
@@ -37,10 +39,11 @@ class NativeAdsUtils {
                 }
 
                 override fun onAdLoaded() {
+                    Log.d(TAG, "onAdLoaded: ")
                     super.onAdLoaded()
                 }
             }).build()
-        adLoader.loadAd(AdRequest.Builder().build())
+        adLoader.loadAds(AdRequest.Builder().build(), 5)
     }
 
 

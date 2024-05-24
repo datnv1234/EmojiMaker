@@ -226,7 +226,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         binding.btnSave.setOnSafeClick {
             val bitmap = binding.stickerView.createBitmap()
             emojiViewModel.bitmap = bitmap
-            mSaveDialog.bitmap = bitmap
+            mSaveDialog.bitmap = emojiViewModel.bitmap
             nextAction(action = {
                 mSaveDialog.show(supportFragmentManager, mSaveDialog.tag)
             })
