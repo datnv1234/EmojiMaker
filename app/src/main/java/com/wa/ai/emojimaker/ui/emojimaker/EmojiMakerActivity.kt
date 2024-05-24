@@ -661,12 +661,12 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     override fun finish() {
         AlertDialog.Builder(this)
             .setIcon(android.R.drawable.ic_dialog_alert)
-            .setTitle("Confirm")
-            .setMessage("Are you sure you want to quit?")
-            .setPositiveButton("Yes") { _, _ ->
+            .setTitle(getString(R.string.confirm))
+            .setMessage(getString(R.string.are_you_sure_want_to_quit))
+            .setPositiveButton(getString(R.string.ok)) { _, _ ->
                 super.finish()
             }
-            .setNegativeButton("No", null)
+            .setNegativeButton(getString(R.string.no), null)
             .show()
     }
 

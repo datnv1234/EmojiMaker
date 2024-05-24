@@ -12,6 +12,7 @@
     <string name="inter_splash" translatable="false">ca-app-pub-3940256099942544/1033173712</string>
     <string name="inter_home_screen" translatable="false">ca-app-pub-3940256099942544/1033173712</string>
     <string name="inter_my_creative" translatable="false">ca-app-pub-3940256099942544/1033173712</string>
+    <string name="inter_settings" translatable="false">ca-app-pub-3940256099942544/1033173712</string>
     <string name="inter_create_emoji" translatable="false">ca-app-pub-3940256099942544/1033173712</string>
     <string name="inter_show_stickers" translatable="false">ca-app-pub-3940256099942544/1033173712</string>
 

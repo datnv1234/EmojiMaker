@@ -5,17 +5,10 @@ import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.content.Context
 import android.content.ContextWrapper
-import android.content.pm.PackageManager
-import android.graphics.Movie
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
-import android.util.Log
 import android.view.View
-import androidx.appcompat.app.AlertDialog
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import com.adjust.sdk.Adjust
 import com.adjust.sdk.AdjustAdRevenue
 import com.adjust.sdk.AdjustConfig
@@ -28,23 +21,17 @@ import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
-import com.wa.ai.emojimaker.App
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.common.Constant
-import com.wa.ai.emojimaker.common.Constant.PERMISSION_REQUEST_CODE
-import com.wa.ai.emojimaker.common.Constant.TAG
-import com.wa.ai.emojimaker.data.model.StickerUri
 import com.wa.ai.emojimaker.databinding.ActivityShowStickersBinding
 import com.wa.ai.emojimaker.databinding.AdNativeVideoBinding
 import com.wa.ai.emojimaker.ui.adapter.MadeStickerAdapter
-import com.wa.ai.emojimaker.ui.adapter.UriAdapter
 import com.wa.ai.emojimaker.ui.base.BaseBindingActivity
 import com.wa.ai.emojimaker.utils.AppUtils
 import com.wa.ai.emojimaker.utils.AppUtils.saveSticker
 import com.wa.ai.emojimaker.utils.DeviceUtils
 import com.wa.ai.emojimaker.utils.FileUtils
 import com.wa.ai.emojimaker.utils.FileUtils.copyFileToCache
-import com.wa.ai.emojimaker.utils.PermissionApp.requestPermission
 import com.wa.ai.emojimaker.utils.RemoteConfigKey
 import com.wa.ai.emojimaker.utils.ads.BannerUtils
 import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils
@@ -388,7 +375,7 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
     }
 
     private fun setUpLoadInterAds() {
-        keyAds = mFirebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_INTER_HOME_SCREEN)
+        keyAds = mFirebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_INTER_SHOW_STICKERS)
         if (keyAds.isEmpty()) {
             keyAds = getString(R.string.inter_show_stickers)
         }

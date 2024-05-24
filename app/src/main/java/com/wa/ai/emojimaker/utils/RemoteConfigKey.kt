@@ -11,6 +11,7 @@ object RemoteConfigKey {
     const val IS_SHOW_ADS_INTER_OPEN_APP= "is_show_ads_inter_open_app"
     const val IS_SHOW_ADS_INTER_HOME_SCREEN= "is_show_ads_inter_home_screen"
     const val IS_SHOW_ADS_INTER_MY_CREATIVE= "is_show_ads_inter_my_creative"
+    const val IS_SHOW_ADS_INTER_SETTINGS= "is_show_ads_inter_settings"
     const val IS_SHOW_ADS_INTER_CREATE_EMOJI= "is_show_ads_inter_create_emoji"
     const val IS_SHOW_ADS_INTER_SHOW_STICKERS= "is_show_ads_inter_show_stickers"
 
@@ -37,6 +38,7 @@ object RemoteConfigKey {
     const val KEY_ADS_INTER_OPEN_APP= "key_ads_inter_open_app"
     const val KEY_ADS_INTER_HOME_SCREEN= "key_ads_inter_home_screen"
     const val KEY_ADS_INTER_MY_CREATIVE= "key_ads_inter_my_creative"
+    const val KEY_ADS_INTER_SETTINGS= "key_ads_inter_settings"
     const val KEY_ADS_INTER_CREATE_EMOJI= "key_ads_inter_create_emoji"
     const val KEY_ADS_INTER_SHOW_STICKERS= "key_ads_inter_show_stickers"
 

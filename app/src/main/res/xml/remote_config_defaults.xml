@@ -25,6 +25,10 @@
     <value>ca-app-pub-3940256099942544/1033173712</value>
   </entry>
   <entry>
+    <key>key_ads_inter_settings</key>
+    <value>ca-app-pub-3940256099942544/1033173712</value>
+  </entry>
+  <entry>
     <key>key_ads_inter_create_emoji</key>
     <value>ca-app-pub-3940256099942544/1033173712</value>
   </entry>
@@ -75,6 +79,10 @@
   </entry>
   <entry>
     <key>is_show_ads_inter_my_creative</key>
+    <value>true</value>
+  </entry>
+  <entry>
+    <key>is_show_ads_inter_settings</key>
     <value>true</value>
   </entry>
   <entry>

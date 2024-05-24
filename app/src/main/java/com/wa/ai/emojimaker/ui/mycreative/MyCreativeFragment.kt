@@ -26,7 +26,7 @@ import com.wa.ai.emojimaker.utils.extention.visible
 @SuppressLint("NotifyDataSetChanged")
 class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCreativeViewModel>() {
 
-    lateinit var mMainActivity: MainActivity
+    private lateinit var mMainActivity: MainActivity
 
     private val sharePackageDialog : SharePackageDialog by lazy {
         SharePackageDialog().apply {
