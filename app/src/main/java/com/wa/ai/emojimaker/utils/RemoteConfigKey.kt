@@ -6,9 +6,9 @@ object RemoteConfigKey {
     const val KEY_COLLAPSE_RELOAD_TIME = "collapse_reload_time"
     const val KEY_DELAY_LOAD_ADS = "key_delay_load_ads"
 
-    const val SHOW_ADS_OPEN_APP = "show_ads_open_app"
+    const val IS_SHOW_ADS_OPEN_APP = "show_ads_open_app"
 
-    const val IS_SHOW_ADS_INTER_OPEN_APP= "is_show_ads_inter_open_app"
+    const val IS_SHOW_ADS_INTER_SPLASH= "is_show_ads_inter_splash"
     const val IS_SHOW_ADS_INTER_HOME_SCREEN= "is_show_ads_inter_home_screen"
     const val IS_SHOW_ADS_INTER_MY_CREATIVE= "is_show_ads_inter_my_creative"
     const val IS_SHOW_ADS_INTER_SETTINGS= "is_show_ads_inter_settings"
@@ -30,7 +30,7 @@ object RemoteConfigKey {
 
 
     // Inter
-    const val KEY_ADS_INTER_OPEN_APP= "key_ads_inter_open_app"
+    const val KEY_ADS_INTER_SPLASH= "key_ads_inter_splash"
     const val KEY_ADS_INTER_HOME_SCREEN= "key_ads_inter_home_screen"
     const val KEY_ADS_INTER_MY_CREATIVE= "key_ads_inter_my_creative"
     const val KEY_ADS_INTER_SETTINGS= "key_ads_inter_settings"

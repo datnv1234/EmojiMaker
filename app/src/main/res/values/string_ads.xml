@@ -24,7 +24,7 @@
     <!--    native-->
     <string name="native_intro" translatable="false">ca-app-pub-3621741958408545/4887637544</string>
     <string name="native_language" translatable="false">ca-app-pub-3621741958408545/1464479420</string>
-    <string name="native_categories" translatable="false">ca-app-pub-3621741958408545/4390025669</string>
+    <!--<string name="native_categories" translatable="false">ca-app-pub-3621741958408545/4390025669</string>-->
     <string name="native_home" translatable="false">ca-app-pub-3621741958408545/4812897183</string>
     <string name="native_my_creative" translatable="false">ca-app-pub-3621741958408545/9151397751</string>
     <string name="native_settings" translatable="false">ca-app-pub-3621741958408545/3574555870</string>

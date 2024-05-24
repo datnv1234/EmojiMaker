@@ -26,9 +26,7 @@
         android:theme="@style/Theme.AIEmojiMaker"
         android:usesCleartextTraffic="true"
         tools:replace="android:supportsRtl">
-        <activity
-            android:name=".ui.dialog.SaveSuccessDialog"
-            android:exported="false" />
+
         <activity
             android:name=".ui.showstickers.ShowStickersActivity"
             android:exported="false" />

@@ -193,8 +193,8 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
 
     private fun setUpLoadInterAds() {
         val firebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
-        if (firebaseRemoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_INTER_OPEN_APP)) {
-            val adConfig = firebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_INTER_OPEN_APP)
+        if (firebaseRemoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_INTER_SPLASH)) {
+            val adConfig = firebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_INTER_SPLASH)
             if (adConfig.isNotEmpty()) {
                 loadInterAdsSplash(adConfig)
             } else {

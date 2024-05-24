@@ -35,6 +35,10 @@ class NativeAdsUtils {
                     super.onAdFailedToLoad(p0)
                     adsLoadCallBack(null)
                 }
+
+                override fun onAdLoaded() {
+                    super.onAdLoaded()
+                }
             }).build()
         adLoader.loadAd(AdRequest.Builder().build())
     }

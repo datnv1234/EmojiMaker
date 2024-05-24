@@ -14,7 +14,7 @@ import com.wa.ai.emojimaker.App
 import com.wa.ai.emojimaker.R
 import java.util.Date
 
-class AppOpenAdsManager(private val myApplication: App):ActivityLifecycleCallbacks, DefaultLifecycleObserver {
+class AppOpenAdsManager(private val myApplication: App): ActivityLifecycleCallbacks, DefaultLifecycleObserver {
 
     private var appOpenAd: AppOpenAd? = null
     private var currentActivity:Activity? = null
