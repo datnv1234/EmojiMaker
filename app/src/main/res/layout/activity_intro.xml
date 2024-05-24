@@ -52,7 +52,7 @@
         <RelativeLayout
             android:id="@+id/rl_native"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_200sdp"
+            android:layout_height="@dimen/_180sdp"
             android:layout_marginTop="@dimen/_40sdp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintVertical_bias="1.0"

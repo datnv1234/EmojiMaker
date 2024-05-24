@@ -34,9 +34,9 @@ class CategoryAdapter(val context: Context, val watchMoreClick: (category: Categ
 }) {
     override fun onBindViewHolderBase(holder: BaseHolder<ItemCategoryBinding>, position: Int) {
         with(getItem(holder.adapterPosition)) {
-            if (this.category.equals("ads")) {
-                loadAd(holder, context, context.getString(R.string.native_categories))
-            } else {
+            /*if (this.category.equals("ads")) {
+                //loadAd(holder, context, context.getString(R.string.native_categories))
+            } else {*/
                 holder.binding.btnOption.setOnSafeClick {
                     optionClick(this.category.toString())
                 }
@@ -54,7 +54,7 @@ class CategoryAdapter(val context: Context, val watchMoreClick: (category: Categ
                     holder.binding.imgPreview3.setImageBitmap(avatar3)
                 if (avatar4 != null)
                     holder.binding.imgPreview4.setImageBitmap(avatar4)
-            }
+
         }
     }
     private fun loadAd(holder: BaseHolder<ItemCategoryBinding>, context: Context, keyAds:String) {
