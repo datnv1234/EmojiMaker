@@ -1,35 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
-<!--    adjust-->
-    <string name="adjust" translatable="false">ca-app-pub-3940256099942544~3347511713</string>
-<!--    app id-->
-    <string name="app_id" translatable="false">ca-app-pub-3940256099942544~3347511713</string>
+<resources>
+    <!--    adjust-->
+    <string name="adjust" translatable="false">kodcrge6hhq8</string>
+    <!--    app id-->
+    <string name="app_id" translatable="false">ca-app-pub-3621741958408545~6994926137</string>
 
-<!--    open app-->
-    <string name="open_app" translatable="false">ca-app-pub-3940256099942544/9257395921</string>
+    <!--    open app-->
+    <string name="open_app" translatable="false">ca-app-pub-3621741958408545/1013252974</string>
 
-<!--    inter-->
-    <string name="inter_splash" translatable="false">ca-app-pub-3940256099942544/1033173712</string>
-    <string name="inter_home_screen" translatable="false">ca-app-pub-3940256099942544/1033173712</string>
-    <string name="inter_my_creative" translatable="false">ca-app-pub-3940256099942544/1033173712</string>
-    <string name="inter_settings" translatable="false">ca-app-pub-3940256099942544/1033173712</string>
-    <string name="inter_create_emoji" translatable="false">ca-app-pub-3940256099942544/1033173712</string>
-    <string name="inter_show_stickers" translatable="false">ca-app-pub-3940256099942544/1033173712</string>
+    <!--    inter-->
+    <string name="inter_splash" translatable="false">ca-app-pub-3621741958408545/8029887771</string>
+    <string name="inter_home_screen" translatable="false">ca-app-pub-3621741958408545/7765082324</string>
+    <string name="inter_my_creative" translatable="false">ca-app-pub-3621741958408545/7040239736</string>
+    <string name="inter_settings" translatable="false">ca-app-pub-3621741958408545/7326098622</string>
+    <string name="inter_create_emoji" translatable="false">ca-app-pub-3621741958408545/7250077007</string>
+    <string name="inter_show_stickers" translatable="false">ca-app-pub-3621741958408545/8044283926</string>
 
-<!--    banner-->
-<!--    //<string name="banner_intro" translatable="false">ca-app-pub-3940256099942544/6300978111</string>-->
-    <string name="banner_main" translatable="false">ca-app-pub-3940256099942544/2014213617</string>
-    <string name="banner_create_emoji" translatable="false">ca-app-pub-3940256099942544/2014213617</string>
-    <string name="banner_show_stickers" translatable="false">ca-app-pub-3940256099942544/2014213617</string>
-<!--    <string name="banner_chromecast" translatable="false">ca-app-pub-3940256099942544/2014213617</string>-->
+    <!--    banner-->
+    <string name="banner_main" translatable="false">ca-app-pub-3621741958408545/3100994720</string>
+    <string name="banner_create_emoji" translatable="false">ca-app-pub-3621741958408545/6125978859</string>
+    <string name="banner_show_stickers" translatable="false">ca-app-pub-3621741958408545/6200719213</string>
 
-<!--    native-->
-    <string name="native_intro" translatable="false">ca-app-pub-3940256099942544/2247696110</string>
-    <string name="native_language" translatable="false">ca-app-pub-3940256099942544/2247696110</string>
-    <string name="native_categories" translatable="false">ca-app-pub-3940256099942544/2247696110</string>
-    <string name="native_home" translatable="false">ca-app-pub-3940256099942544/2247696110</string>
-    <string name="native_my_creative" translatable="false">ca-app-pub-3940256099942544/2247696110</string>
-    <string name="native_settings" translatable="false">ca-app-pub-3940256099942544/2247696110</string>
-    <string name="native_show_stickers" translatable="false">ca-app-pub-3940256099942544/2247696110</string>
-
+    <!--    native-->
+    <string name="native_intro" translatable="false">ca-app-pub-3621741958408545/4887637544</string>
+    <string name="native_language" translatable="false">ca-app-pub-3621741958408545/1464479420</string>
+    <string name="native_categories" translatable="false">ca-app-pub-3621741958408545/4390025669</string>
+    <string name="native_home" translatable="false">ca-app-pub-3621741958408545/4812897183</string>
+    <string name="native_my_creative" translatable="false">ca-app-pub-3621741958408545/9151397751</string>
+    <string name="native_settings" translatable="false">ca-app-pub-3621741958408545/3574555870</string>
+    <string name="native_show_stickers" translatable="false">ca-app-pub-3621741958408545/1763862321</string>
 </resources>
