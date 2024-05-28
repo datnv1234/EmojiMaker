@@ -103,6 +103,11 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
     }
 
     override fun setupData() {
+        mMainActivity = activity as MainActivity
+        if (mMainActivity.showLoading) {
+            mDialogPrepare.show(parentFragmentManager, mDialogPrepare.tag)
+            mMainActivity.showLoading = false
+        }
         viewModel.getItemSticker(requireContext())
         viewModel.stickerMutableLiveData.observe(this) {
             creativeAdapter.submitList(it.toMutableList())
@@ -115,7 +120,7 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
             }
         }
         binding.rvSticker.adapter = creativeAdapter
-        mMainActivity = activity as MainActivity
+
     }
 
     override fun onStart() {
@@ -133,15 +138,8 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
             binding.rlNative.gone()
         }
 
-        mDialogPrepare.show(parentFragmentManager, mDialogPrepare.tag)
-        val countDownTimer: CountDownTimer = object : CountDownTimer(Constant.WAITING_TO_LOAD_BANNER, 1000) {
-            override fun onTick(millisUntilFinished: Long) {
-            }
-            override fun onFinish() {
-                mDialogPrepare.dismiss()
-            }
-        }
-        countDownTimer.start()
+
+
 
     }
     override fun getViewModel(): Class<MyCreativeViewModel> = MyCreativeViewModel::class.java

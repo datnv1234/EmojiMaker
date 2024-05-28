@@ -159,13 +159,18 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
     }
 
     override fun setupData() {
+        mMainActivity = activity as MainActivity
+        if (mMainActivity.showLoading) {
+            mDialogPrepare.show(parentFragmentManager, mDialogPrepare.tag)
+            mMainActivity.showLoading = false
+        }
         viewModel.getCategoryList(requireContext())
         viewModel.categoriesMutableLiveData.observe(this) {
             categoryAdapter.submitList(it.toMutableList())
             Timber.e("$it")
         }
         binding.rvCategory.adapter = categoryAdapter
-        mMainActivity = activity as MainActivity
+
     }
 
     override fun onStart() {
@@ -184,15 +189,6 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
             binding.rlNative.visibility = View.GONE
         }
 
-        mDialogPrepare.show(parentFragmentManager, mDialogPrepare.tag)
-        val countDownTimer: CountDownTimer = object : CountDownTimer(Constant.WAITING_TO_LOAD_BANNER, 1000) {
-            override fun onTick(millisUntilFinished: Long) {
-            }
-            override fun onFinish() {
-                mDialogPrepare.dismiss()
-            }
-        }
-        countDownTimer.start()
     }
 
     private fun getUri(category: String) {

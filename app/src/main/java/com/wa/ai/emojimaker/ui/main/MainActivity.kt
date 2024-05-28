@@ -34,6 +34,7 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
     private var analytics: FirebaseAnalytics? = null
     var mFirebaseAnalytics: FirebaseAnalytics? = null
 
+    var showLoading = true
     override val layoutId: Int
         get() = R.layout.activity_main
 
