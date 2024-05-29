@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
@@ -191,6 +192,10 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
 
     }
 
+    private fun loadAds() {
+
+    }
+
     private fun getUri(category: String) {
         val cw = ContextWrapper(context)
         val directory: File = cw.getDir(Constant.INTERNAL_MY_CREATIVE_DIR, Context.MODE_PRIVATE)
@@ -230,11 +235,13 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
     private fun download(context: Context, category: String) {
         val assetManager = context.assets
         val listFile = assetManager.list("categories/$category/")
-
-        if (AppUtils.checkPermission(context)) {
-            AppUtils.requestPermissionAndContinue(requireActivity())
-            return
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            if (AppUtils.checkPermission(context)) {
+                AppUtils.requestPermissionAndContinue(requireActivity())
+                return
+            }
         }
+
         if (listFile != null) {                    //package's size > 0
             for (file in listFile) {
                 val inputStream1 = assetManager.open("categories/$category/$file")

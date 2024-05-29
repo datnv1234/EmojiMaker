@@ -5,6 +5,7 @@ import android.app.DownloadManager
 import android.content.Context
 import android.content.ContextWrapper
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.view.View
@@ -92,9 +93,11 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
                     mFirebaseAnalytics?.logEvent("v_inter_ads_add_telegram_category", null)
                 }
                 binding.btnDownload.setOnSafeClick {
-                    if (AppUtils.checkPermission(this)) {
-                        AppUtils.requestPermissionAndContinue(this)
-                        return@setOnSafeClick
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                        if (AppUtils.checkPermission(this)) {
+                            AppUtils.requestPermissionAndContinue(this)
+                            return@setOnSafeClick
+                        }
                     }
                     nextAction {
                         downloadStickerInCategory(category)
