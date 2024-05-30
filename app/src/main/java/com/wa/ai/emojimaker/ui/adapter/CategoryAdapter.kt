@@ -35,23 +35,24 @@ class CategoryAdapter(val context: Context, val watchMoreClick: (category: Categ
             /*if (this.category.equals("ads")) {
                 //loadAd(holder, context, context.getString(R.string.native_categories))
             } else {*/
-                holder.binding.btnOption.setOnSafeClick {
-                    optionClick(this.category.toString())
-                }
-                val text = "+" + (this.itemSize - 3).toString()
-                holder.binding.tvRemainingNumber.text = text
-                holder.binding.tvRemainingNumber.setOnSafeClick {
-                    watchMoreClick(this)
-                }
-                holder.binding.tvTitle.text = this.categoryName
-                if (avatar1 != null)
-                    holder.binding.imgPreview1.setImageBitmap(avatar1)
-                if (avatar2 != null)
-                    holder.binding.imgPreview2.setImageBitmap(avatar2)
-                if (avatar3 != null)
-                    holder.binding.imgPreview3.setImageBitmap(avatar3)
-                if (avatar4 != null)
-                    holder.binding.imgPreview4.setImageBitmap(avatar4)
+            if (this.itemSize == 0)    return
+            holder.binding.btnOption.setOnSafeClick {
+                optionClick(this.category.toString())
+            }
+            val text = "+" + (this.itemSize - 3).toString()
+            holder.binding.tvRemainingNumber.text = text
+            holder.binding.tvRemainingNumber.setOnSafeClick {
+                watchMoreClick(this)
+            }
+            holder.binding.tvTitle.text = this.categoryName
+            if (avatar1 != null)
+                holder.binding.imgPreview1.setImageBitmap(avatar1)
+            if (avatar2 != null)
+                holder.binding.imgPreview2.setImageBitmap(avatar2)
+            if (avatar3 != null)
+                holder.binding.imgPreview3.setImageBitmap(avatar3)
+            if (avatar4 != null)
+                holder.binding.imgPreview4.setImageBitmap(avatar4)
 
         }
     }

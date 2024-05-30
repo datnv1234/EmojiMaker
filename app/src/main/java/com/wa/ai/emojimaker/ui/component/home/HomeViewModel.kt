@@ -59,8 +59,8 @@ class HomeViewModel : BaseViewModel() {
     }
     private fun getCategory(assetManager: AssetManager, category: String, categoryName: String) : Category {
         val cate = Category(category, categoryName, 0)
-        val listFile = assetManager.list("categories/$category/")
-        cate.itemSize = listFile?.size!!
+        val listFile = assetManager.list("categories/$category/") ?: return cate
+        cate.itemSize = listFile.size
 
         val inputStream1 = assetManager.open("categories/$category/${listFile[0]}")
         val bitmap1 = BitmapFactory.decodeStream(inputStream1)
