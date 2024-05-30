@@ -2,7 +2,7 @@ package com.wa.ai.emojimaker.utils
 
 object RemoteConfigKey {
 
-
+    //unit: seconds
     const val KEY_COLLAPSE_RELOAD_TIME = "collapse_reload_time"
     const val KEY_DELAY_LOAD_ADS = "key_delay_load_ads"
 
