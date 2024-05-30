@@ -3,10 +3,12 @@ package com.wa.ai.emojimaker.ui.component.mycreative
 import android.content.Context
 import android.content.ContextWrapper
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.wa.ai.emojimaker.common.Constant
+import com.wa.ai.emojimaker.data.model.MadeStickerModel
 import com.wa.ai.emojimaker.data.model.PackageModel
 import com.wa.ai.emojimaker.ui.base.BaseViewModel
 import com.wa.ai.emojimaker.utils.AppUtils.convertFileToBitmap
@@ -16,9 +18,49 @@ import java.io.File
 
 
 class MyCreativeViewModel : BaseViewModel() {
-    private val _stickerMutableLiveData: MutableLiveData<List<PackageModel>> = MutableLiveData()
-    val stickerMutableLiveData: LiveData<List<PackageModel>>
+
+    private val listCategory = listOf(
+        "brainy_endeavors",
+        "cat_chic",
+        "couple_emoji",
+        "cute_girl",
+        "dog_diversity",
+        "emoji",
+        "funny_cat",
+        "funny_rat",
+        "orange_orchard",
+        "pet_pawtentials",
+        "quacking_quacks",
+        "sly_spirits",
+        "xiximi")
+
+    private val _packageMutableLiveData: MutableLiveData<List<PackageModel>> = MutableLiveData()
+    val packageMutableLiveData: LiveData<List<PackageModel>>
+        get() = _packageMutableLiveData
+
+    private val _stickerMutableLiveData: MutableLiveData<List<MadeStickerModel>> = MutableLiveData()
+    val stickerMutableLiveData: LiveData<List<MadeStickerModel>>
         get() = _stickerMutableLiveData
+
+    fun getStickers(context: Context) {
+        val category: String = listCategory.random()
+        val assetManager = context.assets
+        val listEntry = mutableListOf<MadeStickerModel>()
+        viewModelScope.launch(Dispatchers.IO) {
+            val listFile = assetManager.list("categories/$category/")
+
+            if (listFile != null) {
+                for ((i, file) in listFile.withIndex()) {
+                    val inputStream = assetManager.open("categories/$category/$file")
+                    val bitmap = BitmapFactory.decodeStream(inputStream)
+                    listEntry.add(MadeStickerModel(category, null, bitmap))
+                    _stickerMutableLiveData.postValue(listEntry)
+                    inputStream.close()
+                }
+            }
+            _stickerMutableLiveData.postValue(listEntry)
+        }
+    }
 
     fun getItemSticker(context: Context) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -40,7 +82,7 @@ class MyCreativeViewModel : BaseViewModel() {
                         listEntry.add(PackageModel(name, item?.size ?: 0, bitmap))
                     }
                 }
-                _stickerMutableLiveData.postValue(listEntry)
+                _packageMutableLiveData.postValue(listEntry)
             }
         }
     }

@@ -44,7 +44,7 @@ import java.io.File
 class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, ShowStickerViewModel>() {
 
     lateinit var keyAds: String
-    val mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
+    private val mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
 
     private var mInterstitialAd: InterstitialAd? = null
     private var analytics: FirebaseAnalytics? = null
@@ -52,7 +52,7 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
 
     private val cateStickerAdapter : MadeStickerAdapter by lazy {
         MadeStickerAdapter(itemClick = {
-            toast("Clicked")
+            //toast("Clicked")
         })
     }
 

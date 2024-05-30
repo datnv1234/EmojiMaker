@@ -10,8 +10,10 @@ import com.google.android.gms.ads.nativead.NativeAdView
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.common.Constant
 import com.wa.ai.emojimaker.databinding.AdNativeVideoBinding
+import com.wa.ai.emojimaker.databinding.AdNativeVideoHorizontalBinding
 import com.wa.ai.emojimaker.databinding.FragmentMyCreativeBinding
 import com.wa.ai.emojimaker.ui.adapter.CreativeAdapter
+import com.wa.ai.emojimaker.ui.adapter.MadeStickerAdapter
 import com.wa.ai.emojimaker.ui.base.BaseBindingFragment
 import com.wa.ai.emojimaker.ui.dialog.ConfirmDialog
 import com.wa.ai.emojimaker.ui.dialog.SharePackageDialog
@@ -28,6 +30,30 @@ import com.wa.ai.emojimaker.utils.extention.visible
 class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCreativeViewModel>() {
 
     private lateinit var mMainActivity: MainActivity
+
+    private val creativeAdapter: CreativeAdapter by lazy { CreativeAdapter(requireContext(), itemClick = {
+        val intent = Intent(requireContext(), ShowStickersActivity::class.java)
+        intent.putExtra("local", true)
+        intent.putExtra("category", it.id)
+        intent.putExtra("category_name", it.name)
+        intent.putExtra("category_size", it.itemSize)
+        mMainActivity.openNextScreen {
+            startActivity(intent)
+        }
+        mMainActivity.mFirebaseAnalytics?.logEvent("v_inter_ads_open_${it.name}", null)
+    }, optionClick = {
+        //sharePackageDialog.show(parentFragmentManager, sharePackageDialog.tag)
+    }, delete = {
+        deletePkgDialog.pkg = it.id
+        deletePkgDialog.show(parentFragmentManager, deletePkgDialog.tag)
+    })
+    }
+
+    private val stickerAdapter : MadeStickerAdapter by lazy {
+        MadeStickerAdapter(itemClick = {
+            //toast("Clicked")
+        })
+    }
 
     private val sharePackageDialog : SharePackageDialog by lazy {
         SharePackageDialog().apply {
@@ -57,24 +83,6 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
                 toast("Cannot download this category")
             }
         }
-    }
-
-    private val creativeAdapter: CreativeAdapter by lazy { CreativeAdapter(requireContext(), itemClick = {
-        val intent = Intent(requireContext(), ShowStickersActivity::class.java)
-        intent.putExtra("local", true)
-        intent.putExtra("category", it.id)
-        intent.putExtra("category_name", it.name)
-        intent.putExtra("category_size", it.itemSize)
-        mMainActivity.openNextScreen {
-            startActivity(intent)
-        }
-        mMainActivity.mFirebaseAnalytics?.logEvent("v_inter_ads_open_${it.name}", null)
-    }, optionClick = {
-        //sharePackageDialog.show(parentFragmentManager, sharePackageDialog.tag)
-    }, delete = {
-        deletePkgDialog.pkg = it.id
-        deletePkgDialog.show(parentFragmentManager, deletePkgDialog.tag)
-    })
     }
 
     private val deletePkgDialog: ConfirmDialog by lazy {
@@ -110,8 +118,10 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
             mDialogPrepare.show(parentFragmentManager, mDialogPrepare.tag)
             mMainActivity.showLoading = false
         }
+
+        //Get package list
         viewModel.getItemSticker(requireContext())
-        viewModel.stickerMutableLiveData.observe(this) {
+        viewModel.packageMutableLiveData.observe(this) {
             creativeAdapter.submitList(it.toMutableList())
             if (it.isEmpty()) {
                 binding.llEmpty.visible()
@@ -122,6 +132,13 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
             }
         }
         binding.rvSticker.adapter = creativeAdapter
+
+        //Get sticker list
+        viewModel.getStickers(requireContext())
+        viewModel.stickerMutableLiveData.observe(this) {
+            stickerAdapter.submitList(it.toMutableList())
+        }
+        binding.rvSeeMore.adapter = stickerAdapter
 
     }
 
@@ -178,7 +195,7 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
                         return@loadNativeAds
                     }
                     //binding.frNativeAds.removeAllViews()
-                    val adNativeVideoBinding = AdNativeVideoBinding.inflate(layoutInflater)
+                    val adNativeVideoBinding = AdNativeVideoHorizontalBinding.inflate(layoutInflater)
                     NativeAdsUtils.instance.populateNativeAdVideoView(
                         nativeAds,
                         adNativeVideoBinding.root as NativeAdView
