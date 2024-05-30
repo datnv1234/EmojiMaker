@@ -107,5 +107,7 @@
     <string name="no" translatable="false">No</string>
     <string name="you_may_also_like">You may also like:</string>
     <string name="see_more">See more</string>
+    <string name="create_package">Create package</string>
+    <string name="tap_here_to_create_new_package">Tap here to create new package</string>
 
 </resources>
