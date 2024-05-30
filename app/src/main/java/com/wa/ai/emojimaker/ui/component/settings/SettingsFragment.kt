@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import com.adjust.sdk.Adjust
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.wa.ai.emojimaker.R
@@ -87,9 +88,7 @@ class SettingsFragment : BaseBindingFragment<FragmentSettingsBinding, SettingsVi
         }
     }
 
-    override fun setupData() {
-        mMainActivity = activity as MainActivity
-    }
+
 
     override val layoutId: Int
         get() = R.layout.fragment_settings
@@ -99,8 +98,21 @@ class SettingsFragment : BaseBindingFragment<FragmentSettingsBinding, SettingsVi
 
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun setupData() {
+        mMainActivity = activity as MainActivity
+        loadAds()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Adjust.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Adjust.onPause()
+    }
+    private fun loadAds() {
         setUpLoadInterAds()
 
         if (mMainActivity.mFirebaseRemoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_SETTINGS)) {

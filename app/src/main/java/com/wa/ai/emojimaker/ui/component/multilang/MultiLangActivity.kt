@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import com.adjust.sdk.Adjust
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.wa.ai.emojimaker.R
@@ -53,6 +54,15 @@ class MultiLangActivity : BaseBindingActivity<ActivityMultiLangBinding, MultiLan
 	}
 
 	override fun setupData() {
+		val firebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
+		if (firebaseRemoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_LANGUAGE)) {
+			val keyAds = firebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_NATIVE_LANGUAGE)
+			if (keyAds.isNotEmpty()) {
+				loadNativeAds(keyAds)
+			} else {
+				loadNativeAds(getString(R.string.native_language))
+			}
+		}
 		viewModel.getListLanguage()
 		viewModel.languageLiveData.observe(this) {
 			multiLangAdapter.submitList(it)
@@ -63,18 +73,16 @@ class MultiLangActivity : BaseBindingActivity<ActivityMultiLangBinding, MultiLan
 		}
 	}
 
-	override fun onStart() {
-		super.onStart()
-		val firebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
-		if (firebaseRemoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_LANGUAGE)) {
-			val keyAds = firebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_NATIVE_LANGUAGE)
-			if (keyAds.isNotEmpty()) {
-				loadNativeAds(keyAds)
-			} else {
-				loadNativeAds(getString(R.string.native_language))
-			}
-		}
+	override fun onResume() {
+		super.onResume()
+		Adjust.onResume()
 	}
+
+	override fun onPause() {
+		super.onPause()
+		Adjust.onPause()
+	}
+
 	private fun initAction() {
 
 	}

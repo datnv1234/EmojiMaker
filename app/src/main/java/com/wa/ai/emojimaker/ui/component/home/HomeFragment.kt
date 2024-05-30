@@ -10,12 +10,14 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
 import android.view.View
+import com.adjust.sdk.Adjust
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.common.Constant
 import com.wa.ai.emojimaker.common.Constant.TAG
 import com.wa.ai.emojimaker.databinding.AdNativeContentBinding
 import com.wa.ai.emojimaker.databinding.AdNativeVideoBinding
+import com.wa.ai.emojimaker.databinding.AdNativeVideoHorizontalBinding
 import com.wa.ai.emojimaker.databinding.FragmentHomeBinding
 import com.wa.ai.emojimaker.ui.adapter.CategoryAdapter
 import com.wa.ai.emojimaker.ui.base.BaseBindingFragment
@@ -161,6 +163,7 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
 
     override fun setupData() {
         mMainActivity = activity as MainActivity
+        loadAds()
         if (mMainActivity.showLoading) {
             mDialogPrepare.show(parentFragmentManager, mDialogPrepare.tag)
             mMainActivity.showLoading = false
@@ -174,8 +177,17 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
 
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onResume() {
+        super.onResume()
+        Adjust.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Adjust.onPause()
+    }
+
+    private fun loadAds() {
         setUpLoadInterAds()
 
         if (mMainActivity.mFirebaseRemoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_HOME)) {
@@ -189,11 +201,6 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
         } else {
             binding.rlNative.visibility = View.GONE
         }
-
-    }
-
-    private fun loadAds() {
-
     }
 
     private fun getUri(category: String) {
@@ -273,7 +280,6 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
     }
 
     private fun loadNativeAds(keyAds:String) {
-        var isOK = true
         if (!DeviceUtils.checkInternetConnection(requireContext())) binding.rlNative.visibility = View.GONE
         this.let {
             NativeAdsUtils.instance.loadNativeAds(
@@ -287,21 +293,17 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
                         return@loadNativeAds
                     }
                     //binding.frNativeAds.removeAllViews()
-                    val adNativeVideoBinding = AdNativeContentBinding.inflate(layoutInflater)
+                    val adNativeVideoBinding = AdNativeVideoHorizontalBinding.inflate(layoutInflater)
                     NativeAdsUtils.instance.populateNativeAdVideoView(
                         nativeAds,
                         adNativeVideoBinding.root as NativeAdView
                     )
                     binding.frNativeAds.addView(adNativeVideoBinding.root)
-                    Log.d(TAG, "loadNativeAds: ok")
                 } else {
-                    isOK = false
-                    Log.d(TAG, "loadNativeAds: failed")
                     //binding.rlNative.visibility = View.GONE
                 }
             }
         }
-        isOK = true
 
     }
 }

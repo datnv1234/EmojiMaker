@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.View
+import com.adjust.sdk.Adjust
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.common.Constant
@@ -104,6 +105,7 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
 
     override fun setupData() {
         mMainActivity = activity as MainActivity
+        loadAds()
         if (mMainActivity.showLoading) {
             mDialogPrepare.show(parentFragmentManager, mDialogPrepare.tag)
             mMainActivity.showLoading = false
@@ -123,8 +125,17 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
 
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onResume() {
+        super.onResume()
+        Adjust.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Adjust.onPause()
+    }
+
+    private fun loadAds() {
         setUpLoadInterAds()
 
         if (mMainActivity.mFirebaseRemoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_MY_CREATIVE)) {
@@ -137,11 +148,8 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
         } else {
             binding.rlNative.gone()
         }
-
-
-
-
     }
+
     override fun getViewModel(): Class<MyCreativeViewModel> = MyCreativeViewModel::class.java
     override fun registerOnBackPress() {
 

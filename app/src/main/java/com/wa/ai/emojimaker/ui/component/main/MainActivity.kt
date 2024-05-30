@@ -57,6 +57,16 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
         loadBanner()
     }
 
+    override fun onResume() {
+        super.onResume()
+        Adjust.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Adjust.onPause()
+    }
+
     /*override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>,
@@ -161,7 +171,4 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
             })
 
     }
-
-
-
 }

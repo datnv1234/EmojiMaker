@@ -43,10 +43,6 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
 
     override fun getViewModel(): Class<SplashViewModel> = SplashViewModel::class.java
 
-    override fun onStart() {
-        super.onStart()
-        setUpLoadInterAds()
-    }
     override fun setupView(savedInstanceState: Bundle?) {
         setStatusBarColor("#11141A")
         viewModel.fetchTokenRemoteConfig()
@@ -83,6 +79,7 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
     }
 
     override fun setupData() {
+        setUpLoadInterAds()
         viewModel.typeNextScreen.observe(this) { type ->
             with(type) {
                 when (this) {
@@ -141,6 +138,16 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
                 finish()
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Adjust.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Adjust.onPause()
     }
 
     private fun openMainActivity() {

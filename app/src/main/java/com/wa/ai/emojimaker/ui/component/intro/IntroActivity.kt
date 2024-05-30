@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
+import com.adjust.sdk.Adjust
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.wa.ai.emojimaker.R
@@ -40,14 +41,6 @@ class IntroActivity : BaseBindingActivity<ActivityIntroBinding, IntroViewModel>(
     }
 
     override fun setupData() {
-        viewModel.getIntro(this)
-        viewModel.introMutableLiveData.observe(this) {
-            introAdapter.submitList(it.toMutableList())
-        }
-    }
-
-    override fun onStart() {
-        super.onStart()
         mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
         if (mFirebaseRemoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_INTRO)) {
             val adConfig = mFirebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_NATIVE_INTRO)
@@ -61,7 +54,22 @@ class IntroActivity : BaseBindingActivity<ActivityIntroBinding, IntroViewModel>(
             binding.rlNative.visibility = View.GONE
         }
 
+        viewModel.getIntro(this)
+        viewModel.introMutableLiveData.observe(this) {
+            introAdapter.submitList(it.toMutableList())
+        }
     }
+
+    override fun onResume() {
+        super.onResume()
+        Adjust.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Adjust.onPause()
+    }
+
     private fun startMainActivity() {
         Intent(this@IntroActivity, MainActivity::class.java).apply {
             startActivity(this)

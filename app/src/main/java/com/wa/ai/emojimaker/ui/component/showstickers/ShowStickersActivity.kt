@@ -25,6 +25,7 @@ import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.common.Constant
 import com.wa.ai.emojimaker.databinding.ActivityShowStickersBinding
 import com.wa.ai.emojimaker.databinding.AdNativeVideoBinding
+import com.wa.ai.emojimaker.databinding.AdNativeVideoHorizontalBinding
 import com.wa.ai.emojimaker.ui.adapter.MadeStickerAdapter
 import com.wa.ai.emojimaker.ui.base.BaseBindingActivity
 import com.wa.ai.emojimaker.utils.AppUtils
@@ -148,11 +149,21 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
     }
 
     override fun setupData() {
-        loadBanner()
+        loadAds()
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onResume() {
+        super.onResume()
+        Adjust.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Adjust.onPause()
+    }
+
+    private fun loadAds() {
+        loadBanner()
         setUpLoadInterAds()
         if (mFirebaseRemoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_SHOW_STICKERS)) {
             val keyAds = mFirebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_NATIVE_SHOW_STICKERS)
@@ -399,7 +410,7 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
                         return@loadNativeAds
                     }
                     //binding.frNativeAds.removeAllViews()
-                    val adNativeVideoBinding = AdNativeVideoBinding.inflate(layoutInflater)
+                    val adNativeVideoBinding = AdNativeVideoHorizontalBinding.inflate(layoutInflater)
                     NativeAdsUtils.instance.populateNativeAdVideoView(
                         nativeAds,
                         adNativeVideoBinding.root as NativeAdView
