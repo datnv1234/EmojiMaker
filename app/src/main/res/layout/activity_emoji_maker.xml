@@ -2,8 +2,7 @@
 <layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:theme="@style/AIEmojiMaker.FullscreenContainer">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <data class=".databinding.ActivityEmojiMakerBinding">
         <variable name="viewModel" type="com.wa.ai.emojimaker.utils.sticker.StickerViewModel" />
     </data>
