@@ -1,4 +1,4 @@
-package com.wa.ai.emojimaker.ui.multilang
+package com.wa.ai.emojimaker.ui.component.multilang
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

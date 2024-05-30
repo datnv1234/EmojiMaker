@@ -14,7 +14,7 @@
         android:orientation="vertical"
         android:tag="layout/activity_new_screen_emoji_0"
         android:background="@drawable/bg"
-        tools:context=".ui.emojimaker.EmojiMakerActivity">
+        tools:context=".ui.component.emojimaker.EmojiMakerActivity">
         <RelativeLayout
             android:id="@+id/rl_header"
             android:layout_width="match_parent"

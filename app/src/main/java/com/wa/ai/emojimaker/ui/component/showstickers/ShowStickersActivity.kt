@@ -1,4 +1,4 @@
-package com.wa.ai.emojimaker.ui.showstickers
+package com.wa.ai.emojimaker.ui.component.showstickers
 
 import android.annotation.SuppressLint
 import android.app.DownloadManager

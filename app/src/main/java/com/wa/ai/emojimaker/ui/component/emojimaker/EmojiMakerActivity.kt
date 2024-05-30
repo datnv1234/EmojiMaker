@@ -1,4 +1,4 @@
-package com.wa.ai.emojimaker.ui.emojimaker
+package com.wa.ai.emojimaker.ui.component.emojimaker
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -56,7 +56,7 @@ import com.wa.ai.emojimaker.ui.dialog.CreatePackageDialog
 import com.wa.ai.emojimaker.ui.dialog.SaveStickerDialog
 import com.wa.ai.emojimaker.ui.dialog.SaveSuccessDialog
 import com.wa.ai.emojimaker.ui.dialog.WaitingDialog
-import com.wa.ai.emojimaker.ui.main.MainActivity
+import com.wa.ai.emojimaker.ui.component.main.MainActivity
 import com.wa.ai.emojimaker.utils.AppUtils
 import com.wa.ai.emojimaker.utils.DeviceUtils
 import com.wa.ai.emojimaker.utils.RemoteConfigKey

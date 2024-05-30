@@ -1,4 +1,4 @@
-package com.wa.ai.emojimaker.ui.settings
+package com.wa.ai.emojimaker.ui.component.settings
 
 import android.content.Intent
 import android.net.Uri
@@ -12,8 +12,8 @@ import com.wa.ai.emojimaker.databinding.AdNativeVideoBinding
 import com.wa.ai.emojimaker.databinding.FragmentSettingsBinding
 import com.wa.ai.emojimaker.ui.base.BaseBindingFragment
 import com.wa.ai.emojimaker.ui.dialog.DialogRating
-import com.wa.ai.emojimaker.ui.main.MainActivity
-import com.wa.ai.emojimaker.ui.multilang.MultiLangActivity
+import com.wa.ai.emojimaker.ui.component.main.MainActivity
+import com.wa.ai.emojimaker.ui.component.multilang.MultiLangActivity
 import com.wa.ai.emojimaker.utils.DeviceUtils
 import com.wa.ai.emojimaker.utils.RemoteConfigKey
 import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils

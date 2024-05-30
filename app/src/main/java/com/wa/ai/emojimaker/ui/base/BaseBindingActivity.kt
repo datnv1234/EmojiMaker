@@ -16,6 +16,7 @@ import androidx.core.view.WindowCompat
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.ViewModelProvider
+import com.adjust.sdk.Adjust
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.ui.dialog.PermissionDialog
 import com.wa.ai.emojimaker.utils.PermissionApp
@@ -56,6 +57,10 @@ abstract class BaseBindingActivity<B : ViewDataBinding, VM : BaseViewModel> : Ba
         toast?.cancel()
     }
 
+    override fun onResume() {
+        super.onResume()
+        Adjust.onResume()
+    }
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
         return !isDispatchTouchEvent || super.dispatchTouchEvent(ev)
     }

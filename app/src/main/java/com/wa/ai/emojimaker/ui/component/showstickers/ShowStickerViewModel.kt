@@ -1,4 +1,4 @@
-package com.wa.ai.emojimaker.ui.showstickers
+package com.wa.ai.emojimaker.ui.component.showstickers
 
 import android.content.Context
 import android.content.ContextWrapper

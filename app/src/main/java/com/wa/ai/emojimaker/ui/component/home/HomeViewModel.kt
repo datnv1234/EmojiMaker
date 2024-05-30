@@ -1,4 +1,4 @@
-package com.wa.ai.emojimaker.ui.home
+package com.wa.ai.emojimaker.ui.component.home
 
 import android.content.Context
 import android.content.res.AssetManager

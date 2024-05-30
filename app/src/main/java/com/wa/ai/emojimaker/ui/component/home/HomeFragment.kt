@@ -1,4 +1,4 @@
-package com.wa.ai.emojimaker.ui.home
+package com.wa.ai.emojimaker.ui.component.home
 
 import android.content.ContentResolver
 import android.content.Context
@@ -21,9 +21,9 @@ import com.wa.ai.emojimaker.ui.adapter.CategoryAdapter
 import com.wa.ai.emojimaker.ui.base.BaseBindingFragment
 import com.wa.ai.emojimaker.ui.dialog.SharePackageDialog
 import com.wa.ai.emojimaker.ui.dialog.WaitingDialog
-import com.wa.ai.emojimaker.ui.emojimaker.EmojiMakerActivity
-import com.wa.ai.emojimaker.ui.main.MainActivity
-import com.wa.ai.emojimaker.ui.showstickers.ShowStickersActivity
+import com.wa.ai.emojimaker.ui.component.emojimaker.EmojiMakerActivity
+import com.wa.ai.emojimaker.ui.component.main.MainActivity
+import com.wa.ai.emojimaker.ui.component.showstickers.ShowStickersActivity
 import com.wa.ai.emojimaker.utils.AppUtils
 import com.wa.ai.emojimaker.utils.DeviceUtils
 import com.wa.ai.emojimaker.utils.FileUtils

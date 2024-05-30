@@ -1,4 +1,4 @@
-package com.wa.ai.emojimaker.ui.main
+package com.wa.ai.emojimaker.ui.component.main
 
 import android.os.Bundle
 import androidx.appcompat.widget.Toolbar

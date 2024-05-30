@@ -1,4 +1,4 @@
-package com.wa.ai.emojimaker.ui.splash
+package com.wa.ai.emojimaker.ui.component.splash
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

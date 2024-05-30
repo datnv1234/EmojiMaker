@@ -1,4 +1,4 @@
-package com.wa.ai.emojimaker.ui.intro
+package com.wa.ai.emojimaker.ui.component.intro
 
 import android.content.Context
 import androidx.lifecycle.LiveData

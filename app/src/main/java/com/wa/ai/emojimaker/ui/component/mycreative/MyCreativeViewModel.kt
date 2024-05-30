@@ -1,4 +1,4 @@
-package com.wa.ai.emojimaker.ui.mycreative
+package com.wa.ai.emojimaker.ui.component.mycreative
 
 import android.content.Context
 import android.content.ContextWrapper

@@ -1,4 +1,4 @@
-package com.wa.ai.emojimaker.ui.mycreative
+package com.wa.ai.emojimaker.ui.component.mycreative
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -15,8 +15,8 @@ import com.wa.ai.emojimaker.ui.base.BaseBindingFragment
 import com.wa.ai.emojimaker.ui.dialog.ConfirmDialog
 import com.wa.ai.emojimaker.ui.dialog.SharePackageDialog
 import com.wa.ai.emojimaker.ui.dialog.WaitingDialog
-import com.wa.ai.emojimaker.ui.main.MainActivity
-import com.wa.ai.emojimaker.ui.showstickers.ShowStickersActivity
+import com.wa.ai.emojimaker.ui.component.main.MainActivity
+import com.wa.ai.emojimaker.ui.component.showstickers.ShowStickersActivity
 import com.wa.ai.emojimaker.utils.DeviceUtils
 import com.wa.ai.emojimaker.utils.RemoteConfigKey
 import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils

@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingHorizontal="16dp"
-        tools:context=".ui.mycreative.MyCreativeFragment">
+        tools:context=".ui.component.mycreative.MyCreativeFragment">
         <RelativeLayout
             android:id="@+id/rl_native"
             android:layout_width="match_parent"

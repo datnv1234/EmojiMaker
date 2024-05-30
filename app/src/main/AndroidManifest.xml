@@ -28,16 +28,16 @@
         tools:replace="android:supportsRtl">
 
         <activity
-            android:name=".ui.showstickers.ShowStickersActivity"
+            android:name=".ui.component.showstickers.ShowStickersActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.emojimaker.EmojiMakerActivity"
+            android:name=".ui.component.emojimaker.EmojiMakerActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="false"
             android:label="@string/title_activity_emoji_maker"
             android:theme="@style/Theme.AIEmojiMaker.Fullscreen" />
         <activity
-            android:name=".ui.splash.SplashActivity"
+            android:name=".ui.component.splash.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -46,13 +46,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.multilang.MultiLangActivity"
+            android:name=".ui.component.multilang.MultiLangActivity"
             android:exported="true" />
         <activity
-            android:name=".ui.intro.IntroActivity"
+            android:name=".ui.component.intro.IntroActivity"
             android:exported="true" />
         <activity
-            android:name=".ui.main.MainActivity"
+            android:name=".ui.component.main.MainActivity"
             android:exported="true" />
 
         <meta-data

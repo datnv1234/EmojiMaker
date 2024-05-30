@@ -1,4 +1,4 @@
-package com.wa.ai.emojimaker.ui.splash
+package com.wa.ai.emojimaker.ui.component.splash
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -20,9 +20,9 @@ import com.wa.ai.emojimaker.common.Constant
 import com.wa.ai.emojimaker.data.local.SharedPreferenceHelper
 import com.wa.ai.emojimaker.databinding.ActivitySplashBinding
 import com.wa.ai.emojimaker.ui.base.BaseBindingActivity
-import com.wa.ai.emojimaker.ui.intro.IntroActivity
-import com.wa.ai.emojimaker.ui.main.MainActivity
-import com.wa.ai.emojimaker.ui.multilang.MultiLangActivity
+import com.wa.ai.emojimaker.ui.component.intro.IntroActivity
+import com.wa.ai.emojimaker.ui.component.main.MainActivity
+import com.wa.ai.emojimaker.ui.component.multilang.MultiLangActivity
 import com.wa.ai.emojimaker.utils.RemoteConfigKey
 import com.wa.ai.emojimaker.utils.extention.isGrantNotificationPermission
 import com.wa.ai.emojimaker.utils.extention.setStatusBarColor

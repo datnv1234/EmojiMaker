@@ -1,4 +1,4 @@
-package com.wa.ai.emojimaker.ui.multilang
+package com.wa.ai.emojimaker.ui.component.multilang
 
 import android.content.Intent
 import android.os.Bundle
@@ -12,8 +12,8 @@ import com.wa.ai.emojimaker.databinding.ActivityMultiLangBinding
 import com.wa.ai.emojimaker.databinding.AdNativeVideoBinding
 import com.wa.ai.emojimaker.ui.adapter.MultiLangAdapter
 import com.wa.ai.emojimaker.ui.base.BaseBindingActivity
-import com.wa.ai.emojimaker.ui.intro.IntroActivity
-import com.wa.ai.emojimaker.ui.main.MainActivity
+import com.wa.ai.emojimaker.ui.component.intro.IntroActivity
+import com.wa.ai.emojimaker.ui.component.main.MainActivity
 import com.wa.ai.emojimaker.utils.DeviceUtils
 import com.wa.ai.emojimaker.utils.RemoteConfigKey
 import com.wa.ai.emojimaker.utils.SystemUtil

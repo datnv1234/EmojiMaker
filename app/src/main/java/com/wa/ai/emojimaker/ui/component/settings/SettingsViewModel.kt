@@ -1,4 +1,4 @@
-package com.wa.ai.emojimaker.ui.settings
+package com.wa.ai.emojimaker.ui.component.settings
 
 import com.wa.ai.emojimaker.ui.base.BaseViewModel
 
