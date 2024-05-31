@@ -32,7 +32,7 @@
             android:id="@+id/app_name"
             android:layout_width="@dimen/_198sdp"
             android:layout_height="@dimen/_37sdp"
-            android:src="@drawable/img_app_ame"
+            android:src="@drawable/img_app_name"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/title"

@@ -20,6 +20,7 @@ import com.wa.ai.emojimaker.ui.dialog.SharePackageDialog
 import com.wa.ai.emojimaker.ui.dialog.WaitingDialog
 import com.wa.ai.emojimaker.ui.component.main.MainActivity
 import com.wa.ai.emojimaker.ui.component.showstickers.ShowStickersActivity
+import com.wa.ai.emojimaker.ui.dialog.CreatePackageDialog
 import com.wa.ai.emojimaker.utils.DeviceUtils
 import com.wa.ai.emojimaker.utils.RemoteConfigKey
 import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils
@@ -84,6 +85,10 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
                 toast("Cannot download this category")
             }
         }
+    }
+
+    private val createPackage: CreatePackageDialog by lazy {
+        CreatePackageDialog()
     }
 
     private val deletePkgDialog: ConfirmDialog by lazy {

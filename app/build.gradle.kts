@@ -97,6 +97,7 @@ dependencies {
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation("androidx.datastore:datastore-preferences-core-jvm:1.1.1")
 
     //noinspection LifecycleAnnotationProcessorWithJava8
     kapt("androidx.lifecycle:lifecycle-compiler:2.7.0")
@@ -111,8 +112,12 @@ dependencies {
     //Hilt
     implementation("com.google.dagger:hilt-android:2.51.1")
 
-    //Firebase
-    implementation("com.google.firebase:firebase-crashlytics:18.6.3")
+    // firebase
+    implementation(platform("com.google.firebase:firebase-bom:31.2.3"))
+    implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation("com.google.firebase:firebase-messaging-ktx")
+    implementation("com.google.firebase:firebase-crashlytics-ktx")
+    implementation("com.google.firebase:firebase-config-ktx")
     implementation ("com.google.firebase:firebase-storage:21.0.0")
 
     kapt("com.google.dagger:hilt-android-compiler:2.51.1")
@@ -128,14 +133,11 @@ dependencies {
 
     // Ads
     implementation("com.facebook.shimmer:shimmer:0.5.0")
-    implementation("com.google.firebase:firebase-config-ktx:21.6.3")
     implementation("com.google.android.ump:user-messaging-platform:2.2.0")
     implementation("androidx.window:window:1.2.0")
 
     //noinspection GradleDependency
-    implementation("com.google.android.gms:play-services-measurement-api:21.5.1")
-    implementation(platform("com.google.firebase:firebase-bom:32.7.4"))
-    implementation("com.google.firebase:firebase-analytics")
+//    implementation("com.google.android.gms:play-services-measurement-api:21.5.1")
 
     //Adjust
     implementation("com.adjust.sdk:adjust-android:4.38.3")

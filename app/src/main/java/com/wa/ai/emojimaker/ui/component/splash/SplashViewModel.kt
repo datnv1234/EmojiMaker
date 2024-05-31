@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.wa.ai.emojimaker.common.Constant
 import com.wa.ai.emojimaker.data.local.SharedPreferenceHelper
-import com.wa.ai.emojimaker.service.RemoteConfigService
 import com.wa.ai.emojimaker.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -14,12 +13,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SplashViewModel @Inject constructor(
-    private val remoteConfigService: RemoteConfigService
 ) : BaseViewModel() {
 
-    fun fetchTokenRemoteConfig(): Boolean {
-        return remoteConfigService.fetchAndSaveForceUpdate()
-    }
 
     private val _typeNextScreen: MutableLiveData<Int> = MutableLiveData()
     val typeNextScreen: LiveData<Int>

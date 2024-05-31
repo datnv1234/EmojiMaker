@@ -4,12 +4,6 @@ import android.app.Application
 import android.content.IntentFilter
 import android.content.res.Configuration
 import android.net.ConnectivityManager
-import androidx.datastore.core.DataStore
-import androidx.datastore.core.handlers.ReplaceFileCorruptionHandler
-import androidx.datastore.preferences.core.PreferenceDataStoreFactory
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.emptyPreferences
-import androidx.datastore.preferences.preferencesDataStoreFile
 import com.adjust.sdk.Adjust
 import com.adjust.sdk.AdjustConfig
 import com.adjust.sdk.LogLevel
@@ -49,13 +43,6 @@ class App : Application() {
         initLog()
         mNetworkReceiver = NetworkChangeReceiver()
         registerNetworkBroadcastForNougat()
-        providePreferenceDataStore = PreferenceDataStoreFactory.create(
-            corruptionHandler = ReplaceFileCorruptionHandler { ex ->
-                Timber.e("datnv: ex: $ex")
-                emptyPreferences()
-            },
-            produceFile = { instance.preferencesDataStoreFile("user_settings") }
-        )
 
         loadConfig()
         initTrackingAdjust()
@@ -102,7 +89,6 @@ class App : Application() {
         var isLoop = false
 
         lateinit var instance: App
-        lateinit var providePreferenceDataStore: DataStore<Preferences>
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {

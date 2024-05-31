@@ -130,6 +130,19 @@ object DeviceUtils {
     }
 
     @JvmStatic
+    fun getInternalDir(context: Context, folder: String, packageName: String) : File?{
+        val cw = ContextWrapper(context)
+        // Path to /data/data/your_app/app_data/imageDir
+        val internalStorage: File = cw.getDir(folder, Context.MODE_PRIVATE)
+        val mPackage = File(internalStorage, packageName)
+//        if (mPackage.exists()) {
+//            return null
+//        }
+        mPackage.mkdir()
+        return mPackage
+    }
+
+    @JvmStatic
     fun mkInternalDir(context: Context, folder: String, packageName: String) : File?{
         val cw = ContextWrapper(context)
         // Path to /data/data/your_app/app_data/imageDir

@@ -13,9 +13,8 @@ import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 
 class CreatePackageDialog : BaseBindingDialogFragment<DialogCreatePackageBinding>() {
 
-    lateinit var bitmap: Bitmap
-    lateinit var confirm: ((pkg : PackageModel) -> Unit)
-    private var isCreatePackage = false
+    var bitmap: Bitmap? =  null
+    var confirm: ((pkg : PackageModel) -> Unit)? = null
     override val layoutId: Int
         get() = R.layout.dialog_create_package
 
@@ -35,12 +34,10 @@ class CreatePackageDialog : BaseBindingDialogFragment<DialogCreatePackageBinding
             if ( path == null) {
                 toast(getString(R.string.package_existed))
             } else {
-                //Save
-                isCreatePackage = true
 
                 //EventBus.getDefault().post(CreatePackageEvent(mPackage, path))
 
-                confirm.invoke(mPackage)
+                confirm?.invoke(mPackage)
                 dismiss()
             }
         }

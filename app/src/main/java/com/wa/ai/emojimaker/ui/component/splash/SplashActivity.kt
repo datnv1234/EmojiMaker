@@ -45,7 +45,6 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
 
     override fun setupView(savedInstanceState: Bundle?) {
         setStatusBarColor("#11141A")
-        viewModel.fetchTokenRemoteConfig()
         binding.imgLaunch.postDelayed(
             {
                 openNextScreen()
