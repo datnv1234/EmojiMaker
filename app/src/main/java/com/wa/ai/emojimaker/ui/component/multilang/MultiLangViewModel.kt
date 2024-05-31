@@ -31,24 +31,24 @@ class MultiLangViewModel : BaseViewModel() {
         val language1 = LanguageUI(
             name = "English",
             code = "en",
-            avatar = R.drawable.img_english,
+            avatar = R.drawable.flag_english,
         )
         val language2 = LanguageUI(
-            name = "Spanish", code = "es", avatar = R.drawable.img_spanish,
+            name = "Spanish", code = "es", avatar = R.drawable.flag_es,
         )
         val language3 = LanguageUI(
-            name = "French", code = "fr", avatar = R.drawable.img_french,
+            name = "French", code = "fr", avatar = R.drawable.flag_french,
         )
         val language4 = LanguageUI(
             name = "Hindi",
             code = "hi",
-            avatar = R.drawable.img_india,
+            avatar = R.drawable.flag_india,
         )
         val language5 = LanguageUI(
-            name = "Turkish", code = "pt", avatar = R.drawable.img_portuguese,
+            name = "Turkish", code = "pt", avatar = R.drawable.flag_pt,
         )
         val language6 = LanguageUI(
-            name = "Vietnamese", code = "vi", avatar = R.drawable.img_vietnam,
+            name = "Vietnamese", code = "vi", avatar = R.drawable.flag_vietnam,
         )
         listLanguageDefault.add(language1)
         listLanguageDefault.add(language2)

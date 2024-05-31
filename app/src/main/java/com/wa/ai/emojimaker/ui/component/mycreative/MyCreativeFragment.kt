@@ -152,6 +152,7 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
     override fun onResume() {
         super.onResume()
         Adjust.onResume()
+        mMainActivity.binding.titleToolbar.text = title
     }
 
     override fun onPause() {

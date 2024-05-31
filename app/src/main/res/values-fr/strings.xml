@@ -99,4 +99,10 @@
     <string name="request_permission">Demander la permission</string>
     <string name="permission_to_access_storage">Permission d\'accéder au stockage</string>
     <string name="are_you_sure_want_to_quit">Êtes vous sûr de vouloir quitter?</string>
+
+    <string name="you_may_also_like">Vous pourriez aussi aimer :</string>
+    <string name="see_more">Voir plus</string>
+    <string name="create_package">Créer un paquet</string>
+    <string name="tap_here_to_create_new_package">Appuyez ici pour créer un nouveau paquet</string>
+    <string name="please_try_again">Veuillez réessayer !</string>
 </resources>

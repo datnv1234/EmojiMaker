@@ -38,7 +38,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:text="@string/save"
-                android:textSize="@dimen/_12ssp"
+                android:textSize="@dimen/_9ssp"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:enabled="false"
@@ -46,15 +46,12 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/_20ssp"
+                android:textSize="@dimen/_16ssp"
                 android:textColor="#252E40"
                 android:text="@string/Create_Emoji"
                 android:layout_centerVertical="true"
                 android:gravity="center"
-                android:fontFamily="@font/poppins_semibold"
-                android:layout_marginHorizontal="16dp"
-                android:layout_toStartOf="@+id/btnSave"
-                android:layout_toEndOf="@+id/iv_back"/>
+                android:fontFamily="@font/poppins_semibold"/>
         </RelativeLayout>
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_height="0dp"
@@ -66,7 +63,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 app:layout_constraintGuide_percent="0.56"/>
-            <RelativeLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/rl_emoji"
                 android:layout_width="match_parent"
                 android:layout_height="400dp"
@@ -78,6 +75,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
+                    app:layout_constraintDimensionRatio="1:1"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:activeIcons="@={viewModel.activeIcons}"
                     app:bringToFrontCurrentSticker="true"
                     app:canvasMatrix="@{viewModel.canvasMatrix}"
@@ -113,7 +115,8 @@
                     android:background="@drawable/border_circle_bg_white"
                     android:visibility="gone"
                     android:layout_marginBottom="16dp"
-                    android:layout_alignParentBottom="true"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     android:layout_marginStart="16dp">
                     <ImageView
                         android:id="@+id/iv_lock_emoji"
@@ -130,8 +133,8 @@
                     android:background="@drawable/border_circle_bg_white"
                     android:visibility="gone"
                     android:layout_marginBottom="16dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentBottom="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     android:layout_marginEnd="16dp">
                     <ImageView
                         android:id="@+id/iv_delete_emoji"
@@ -141,7 +144,7 @@
                         android:layout_centerInParent="true"
                         android:contentDescription="@string/todo" />
                 </RelativeLayout>
-            </RelativeLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
             <RelativeLayout
                 android:id="@+id/ll_options"
                 android:layout_width="match_parent"

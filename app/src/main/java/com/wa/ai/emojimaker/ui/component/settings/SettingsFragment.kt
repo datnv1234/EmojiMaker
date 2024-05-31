@@ -106,6 +106,7 @@ class SettingsFragment : BaseBindingFragment<FragmentSettingsBinding, SettingsVi
     override fun onResume() {
         super.onResume()
         Adjust.onResume()
+        mMainActivity.binding.titleToolbar.text = title
     }
 
     override fun onPause() {

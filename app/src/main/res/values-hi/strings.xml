@@ -100,4 +100,10 @@
     <string name="permission_to_access_storage">स्टोरेज तक पहुंच की अनुमति</string>
 
     <string name="are_you_sure_want_to_quit">क्या आप वाकई छोड़ना चाहते हैं?</string>
+
+    <string name="you_may_also_like">आपको यह भी पसंद आ सकता है:</string>
+    <string name="see_more">और देखें</string>
+    <string name="create_package">पैकेज बनाएं</string>
+    <string name="tap_here_to_create_new_package">नया पैकेज बनाने के लिए यहाँ टैप करें</string>
+    <string name="please_try_again">कृपया पुन: प्रयास करें!</string>
 </resources>

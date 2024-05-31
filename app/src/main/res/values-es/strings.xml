@@ -100,4 +100,10 @@
     <string name="permission_to_access_storage">Permiso para acceder al almacenamiento</string>
 
     <string name="are_you_sure_want_to_quit">¿Estás segura de querer dejar de fumar?</string>
+
+    <string name="you_may_also_like">También te puede gustar:</string>
+    <string name="see_more">Ver más</string>
+    <string name="create_package">Crear paquete</string>
+    <string name="tap_here_to_create_new_package">Toca aquí para crear un nuevo paquete</string>
+    <string name="please_try_again">¡Por favor, inténtalo de nuevo!</string>
 </resources>

@@ -38,6 +38,7 @@
                 android:id="@+id/rdSelectPackage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:buttonTint="@color/button_checked_color"
                 android:clickable="false"
                 android:checked="true"/>
         </LinearLayout>

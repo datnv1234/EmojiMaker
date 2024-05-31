@@ -17,10 +17,10 @@
 
         <ImageView
             android:id="@+id/img_language"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/_25sdp"
+            android:layout_height="@dimen/_25sdp"
             android:layout_marginStart="16dp"
-            android:src="@drawable/img_french"
+            android:src="@drawable/flag_english"
             tools:ignore="ContentDescription" />
 
         <TextView
@@ -37,6 +37,7 @@
             android:id="@+id/radio_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:buttonTint="@color/button_checked_color"
             android:clickable="false"
             android:checked="false"/>
     </LinearLayout>

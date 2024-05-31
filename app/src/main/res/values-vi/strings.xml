@@ -100,4 +100,10 @@
     <string name="permission_to_access_storage">Quyền truy cập lưu trữ</string>
 
     <string name="are_you_sure_want_to_quit">Bạn có chắc chắn muốn thoát?</string>
+
+    <string name="you_may_also_like">Bạn cũng có thể thích:</string>
+    <string name="see_more">Xem thêm</string>
+    <string name="create_package">Tạo gói</string>
+    <string name="tap_here_to_create_new_package">Nhấn vào đây để tạo gói mới</string>
+    <string name="please_try_again">Vui lòng thử lại!</string>
 </resources>

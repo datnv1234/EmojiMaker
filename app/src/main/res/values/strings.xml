@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">AI emoji maker</string>
+    <string name="app_name" translatable="false">AI Emoji Maker</string>
     <string name="unable_to_access_the_internet_please_visit_connection_wifi_settings">Unable to access the internet please visit connection wifi settings</string>
     <string name="title_intro_1">Welcome to Emoji Stitch</string>
     <string name="title_intro_2">Embark on your sticker journey</string>

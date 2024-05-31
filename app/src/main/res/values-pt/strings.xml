@@ -100,4 +100,10 @@
     <string name="permission_to_access_storage">Permissão para acessar armazenamento</string>
 
     <string name="are_you_sure_want_to_quit">Você tem certeza que quer sair?</string>
+
+    <string name="you_may_also_like">Você também pode gostar:</string>
+    <string name="see_more">Ver mais</string>
+    <string name="create_package">Criar pacote</string>
+    <string name="tap_here_to_create_new_package">Toque aqui para criar um novo pacote</string>
+    <string name="please_try_again">Por favor, tente novamente!</string>
 </resources>
