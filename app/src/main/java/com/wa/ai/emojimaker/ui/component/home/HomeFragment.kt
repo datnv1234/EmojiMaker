@@ -122,9 +122,7 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
     }
 
     private val mDialogPrepare: WaitingDialog by lazy {
-        WaitingDialog(getString(R.string.loading_stickers)).apply {
-            action = {}
-        }
+        WaitingDialog(getString(R.string.loading_stickers))
     }
 
     override fun getViewModel(): Class<HomeViewModel> = HomeViewModel::class.java

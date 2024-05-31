@@ -109,5 +109,6 @@
     <string name="see_more">See more</string>
     <string name="create_package">Create package</string>
     <string name="tap_here_to_create_new_package">Tap here to create new package</string>
+    <string name="please_try_again">Please try again!</string>
 
 </resources>

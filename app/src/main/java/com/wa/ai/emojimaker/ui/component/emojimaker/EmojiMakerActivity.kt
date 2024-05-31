@@ -106,16 +106,25 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
 
             download = {
                 nextAction(action = {
-                    AppUtils.saveSticker(this@EmojiMakerActivity, bitmap, "creative")
+                    if (bitmap != null) {
+                        AppUtils.saveSticker(this@EmojiMakerActivity, bitmap!!, "creative")
+                        toast("Downloaded!")
+                    } else {
+                        toast(getString(R.string.please_try_again))
+                    }
                     //download(bitmap)
-                    toast("Downloaded!")
+
                 })
                 mFirebaseAnalytics?.logEvent("v_inter_ads_download_creative_emoji", null)
             }
 
             share = {
                 nextAction(action = {
-                    share(this.bitmap)
+                    if (this.bitmap != null) {
+                        share(this.bitmap!!)
+                    } else {
+                        toast(getString(R.string.please_try_again))
+                    }
                 })
                 mFirebaseAnalytics?.logEvent("v_inter_ads_share_creative_emoji", null)
             }

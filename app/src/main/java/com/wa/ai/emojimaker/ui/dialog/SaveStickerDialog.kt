@@ -10,7 +10,7 @@ import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 
 class SaveStickerDialog : BaseBindingDialogFragment<DialogSaveBinding>() {
 
-    lateinit var bitmap: Bitmap
+    var bitmap: Bitmap? = null
     var addToPackage: ((binding : DialogSaveBinding) -> Unit)? = null
     var download: ((binding : DialogSaveBinding) -> Unit)? = null
     var share: ((binding : DialogSaveBinding) -> Unit)? = null
@@ -21,7 +21,9 @@ class SaveStickerDialog : BaseBindingDialogFragment<DialogSaveBinding>() {
 
     override fun onCreatedView(view: View?, savedInstanceState: Bundle?) {
         setUp()
-        binding.imgPreview.setImageBitmap(bitmap)
+        if (bitmap != null) {
+            binding.imgPreview.setImageBitmap(bitmap)
+        }
     }
 
     private fun setUp() {

@@ -17,9 +17,10 @@ class PermissionDialog : BaseBindingDialogFragment<DialogPermissionBinding>() {
 
     private fun setUp() {
         isCancelable = false
-        binding.btnOkPermission.setOnClickListener { v ->
+        binding.btnOkPermission.setOnClickListener {
             clickOkPermission?.invoke()
+            this@PermissionDialog.dismiss()
         }
-        binding.btnCancelSetting.setOnClickListener { v -> dismiss() }
+        binding.btnCancelSetting.setOnClickListener { dismiss() }
     }
 }

@@ -29,14 +29,17 @@
 
         <activity
             android:name=".ui.component.showstickers.ShowStickersActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".ui.component.emojimaker.EmojiMakerActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
             android:exported="false"
             android:label="@string/title_activity_emoji_maker"/>
         <activity
             android:name=".ui.component.splash.SplashActivity"
+            android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -46,12 +49,15 @@
         </activity>
         <activity
             android:name=".ui.component.multilang.MultiLangActivity"
+            android:screenOrientation="portrait"
             android:exported="true" />
         <activity
             android:name=".ui.component.intro.IntroActivity"
+            android:screenOrientation="portrait"
             android:exported="true" />
         <activity
             android:name=".ui.component.main.MainActivity"
+            android:screenOrientation="portrait"
             android:exported="true" />
 
         <meta-data

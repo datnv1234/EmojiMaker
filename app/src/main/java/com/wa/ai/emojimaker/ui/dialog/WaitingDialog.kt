@@ -8,9 +8,9 @@ import com.wa.ai.emojimaker.common.Constant
 import com.wa.ai.emojimaker.databinding.DialogWaitingDialogBinding
 import com.wa.ai.emojimaker.ui.base.BaseBindingDialogFragment
 
-class WaitingDialog(val des: String) : BaseBindingDialogFragment<DialogWaitingDialogBinding>() {
+class WaitingDialog(private val des: String) : BaseBindingDialogFragment<DialogWaitingDialogBinding>() {
 
-    lateinit var action: () -> Unit
+    var action: (() -> Unit)? = null
     override val layoutId: Int
         get() = R.layout.dialog_waiting_dialog
 
@@ -22,8 +22,8 @@ class WaitingDialog(val des: String) : BaseBindingDialogFragment<DialogWaitingDi
             }
 
             override fun onFinish() {
-                dismiss()
-                action.invoke()
+                action?.invoke()
+                this@WaitingDialog.dismiss()
                 //startActivity(intent)
             }
         }
