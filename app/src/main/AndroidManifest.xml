@@ -34,8 +34,7 @@
             android:name=".ui.component.emojimaker.EmojiMakerActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="false"
-            android:label="@string/title_activity_emoji_maker"
-            android:theme="@style/Theme.AIEmojiMaker" />
+            android:label="@string/title_activity_emoji_maker"/>
         <activity
             android:name=".ui.component.splash.SplashActivity"
             android:exported="true">

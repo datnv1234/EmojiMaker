@@ -42,7 +42,7 @@ class HomeViewModel : BaseViewModel() {
             val listEntry = mutableListOf<Category>()
             listEntry.add(getCategory(assetManager,"cat_chic", "Cat Chic"))
             listEntry.add(getCategory(assetManager, "orange_orchard", "Orange Orchard"))
-            listEntry.add(getCategory(assetManager, "funny_cat", "Funny rat"))
+            listEntry.add(getCategory(assetManager, "funny_rat", "Funny rat"))
             listEntry.add(getCategory(assetManager, "dog_diversity", "Dog Diversity"))
             listEntry.add(getCategory(assetManager, "pet_pawtentials", "Pet Pawtentials"))
             listEntry.add(getCategory(assetManager, "sly_spirits", "Sly Spirits"))

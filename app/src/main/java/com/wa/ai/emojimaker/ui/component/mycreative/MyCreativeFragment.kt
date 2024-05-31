@@ -24,6 +24,7 @@ import com.wa.ai.emojimaker.utils.DeviceUtils
 import com.wa.ai.emojimaker.utils.RemoteConfigKey
 import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils
 import com.wa.ai.emojimaker.utils.extention.gone
+import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 import com.wa.ai.emojimaker.utils.extention.visible
 
 @SuppressLint("NotifyDataSetChanged")
@@ -139,7 +140,13 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
             stickerAdapter.submitList(it.toMutableList())
         }
         binding.rvSeeMore.adapter = stickerAdapter
-
+        binding.btnSeeMore.setOnSafeClick {
+            val intent = Intent(requireContext(), ShowStickersActivity::class.java)
+            intent.putExtra("category", viewModel.category)
+            intent.putExtra("category_name", Constant.categories[viewModel.category])
+            intent.putExtra("category_size", viewModel.categorySize)
+            startActivity(intent)
+        }
     }
 
     override fun onResume() {

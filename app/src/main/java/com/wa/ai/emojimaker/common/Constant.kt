@@ -86,4 +86,19 @@ object Constant {
 
     const val CREATE_STICKER_DELAY = 3000L
 
+    //Category
+    val categories = mapOf(
+        "cat_chic" to "Cat Chic",
+        "orange_orchard" to "Orange Orchard",
+        "funny_rat" to "Funny rat",
+        "pet_pawtentials" to "Pet Pawtentials",
+        "dog_diversity" to "Dog Diversity",
+        "sly_spirits" to "Sly Spirits",
+        "xiximi" to "Xiximi",
+        "funny_cat" to "Funny Cat",
+        "quacking_quacks" to "Quacking Quacks",
+        "emoji" to "Emoji",
+        "brainy_endeavors" to "Brainy Endeavors",
+        "couple_emoji" to "Couple emoji",
+        "cute_girl" to "Cute girl")
 }

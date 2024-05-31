@@ -19,6 +19,8 @@ import java.io.File
 
 class MyCreativeViewModel : BaseViewModel() {
 
+    var category: String? = null
+    var categorySize: Int = 0
     private val listCategory = listOf(
         "brainy_endeavors",
         "cat_chic",
@@ -43,7 +45,7 @@ class MyCreativeViewModel : BaseViewModel() {
         get() = _stickerMutableLiveData
 
     fun getStickers(context: Context) {
-        val category: String = listCategory.random()
+        category = listCategory.random()
         val assetManager = context.assets
         val listEntry = mutableListOf<MadeStickerModel>()
         viewModelScope.launch(Dispatchers.IO) {
@@ -58,6 +60,7 @@ class MyCreativeViewModel : BaseViewModel() {
                     inputStream.close()
                 }
             }
+            categorySize = listEntry.size
             _stickerMutableLiveData.postValue(listEntry)
         }
     }
