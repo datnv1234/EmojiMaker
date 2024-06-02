@@ -19,23 +19,4 @@ class AppModule {
         return PreferenceManager.getDefaultSharedPreferences(context)
     }
 
-
-//    @Singleton
-//    @Provides
-//    fun provideNotificationHelper(application: Application): NotificationHelper {
-//        return NotificationHelper()
-//    }
-
-//    @Provides
-//    @Singleton
-//    fun provideRoomDb3(context: Application): ReflectTVDatabase {
-//        return Room.databaseBuilder(
-//            context,
-//            ReflectTVDatabase::class.java,
-//            Constant.DATABASE_NAME
-//        )
-//            .allowMainThreadQueries()
-//            .build()
-//    }
-
 }

@@ -65,7 +65,7 @@ class MyCreativeViewModel : BaseViewModel() {
         }
     }
 
-    fun getItemSticker(context: Context) {
+    fun getPackage(context: Context) {
         viewModelScope.launch(Dispatchers.IO) {
             val listEntry = mutableListOf<PackageModel>()
             val cw = ContextWrapper(context)
@@ -88,6 +88,16 @@ class MyCreativeViewModel : BaseViewModel() {
                 _packageMutableLiveData.postValue(listEntry)
             }
         }
+    }
+
+    fun addPackage(pkg: PackageModel) {
+        val listEntry = mutableListOf<PackageModel>()
+        packageMutableLiveData.value?.let {
+            listEntry.addAll(it)
+        }
+
+        listEntry.add(pkg)
+        _packageMutableLiveData.postValue(listEntry)
     }
 
 

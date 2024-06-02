@@ -87,8 +87,12 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
         }
     }
 
-    private val createPackage: CreatePackageDialog by lazy {
-        CreatePackageDialog()
+    private val createPackageDialog: CreatePackageDialog by lazy {
+        CreatePackageDialog().apply {
+            confirm = {
+                viewModel.addPackage(it)
+            }
+        }
     }
 
     private val deletePkgDialog: ConfirmDialog by lazy {
@@ -114,6 +118,9 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
 
 
     override fun onCreatedView(view: View?, savedInstanceState: Bundle?) {
+        binding.btnAddPackage.setOnSafeClick {
+            createPackageDialog.show(parentFragmentManager, createPackageDialog.tag)
+        }
 
     }
 
@@ -126,7 +133,7 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
         }
 
         //Get package list
-        viewModel.getItemSticker(requireContext())
+        viewModel.getPackage(requireContext())
         viewModel.packageMutableLiveData.observe(this) {
             creativeAdapter.submitList(it.toMutableList())
             if (it.isEmpty()) {

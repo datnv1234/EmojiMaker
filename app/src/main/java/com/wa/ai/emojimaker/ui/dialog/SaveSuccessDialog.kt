@@ -22,12 +22,12 @@ class SaveSuccessDialog(val bitmap: Bitmap) : BaseBindingDialogFragment<DialogSa
     private fun setUp() {
         binding.imgPreview.setImageBitmap(bitmap)
         binding.btnHome.setOnSafeClick {
-            dismiss()
             home.invoke()
+            this@SaveSuccessDialog.dismiss()
         }
         binding.btnCreateMore.setOnSafeClick {
-            dismiss()
             createMore.invoke()
+            this@SaveSuccessDialog.dismiss()
         }
     }
 
