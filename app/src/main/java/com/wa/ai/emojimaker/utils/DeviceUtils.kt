@@ -103,7 +103,7 @@ object DeviceUtils {
         bitmapImage: Bitmap,
         fileName: String = "${System.currentTimeMillis()}.png"
     ): String? {
-        val mPackage = mkInternalDir(context, folder, packageName) ?: return null
+        val mPackage = getInternalDir(context, folder, packageName) ?: return null
         // Tạo tệp lưu trữ ảnh
         val path = File(mPackage, fileName)
         saveToInternalStorage(path, bitmapImage)
@@ -135,9 +135,7 @@ object DeviceUtils {
         // Path to /data/data/your_app/app_data/imageDir
         val internalStorage: File = cw.getDir(folder, Context.MODE_PRIVATE)
         val mPackage = File(internalStorage, packageName)
-//        if (mPackage.exists()) {
-//            return null
-//        }
+
         mPackage.mkdir()
         return mPackage
     }
@@ -148,9 +146,9 @@ object DeviceUtils {
         // Path to /data/data/your_app/app_data/imageDir
         val internalStorage: File = cw.getDir(folder, Context.MODE_PRIVATE)
         val mPackage = File(internalStorage, packageName)
-//        if (mPackage.exists()) {
-//            return null
-//        }
+        if (mPackage.exists()) {
+            return null
+        }
         mPackage.mkdir()
         return mPackage
     }
