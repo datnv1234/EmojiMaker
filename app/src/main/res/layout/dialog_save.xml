@@ -39,7 +39,6 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="@dimen/_16sdp"
                 android:orientation="vertical"
                 android:background="@drawable/bg_dialog"
                 app:layout_constraintBottom_toBottomOf="parent">
@@ -60,6 +59,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:paddingHorizontal="@dimen/_12sdp"
                     android:orientation="horizontal"
                     android:gravity="center_horizontal"
                     android:baselineAligned="false">
@@ -112,7 +112,8 @@
                     android:id="@+id/btnAddToPackage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginVertical="@dimen/_16sdp"
+                    android:layout_marginHorizontal="@dimen/_12sdp"
+                    android:layout_marginVertical="@dimen/_12sdp"
                     android:paddingVertical="16dp"
                     android:gravity="center"
                     android:background="@drawable/bg_button_blue"
@@ -131,6 +132,19 @@
                         android:textColor="@color/white"
                         android:textSize="@dimen/_16ssp"/>
                 </LinearLayout>
+                <RelativeLayout
+                    android:id="@+id/rl_native"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_160sdp"
+                    app:layout_goneMarginTop="@dimen/_4sdp">
+                    <FrameLayout
+                        android:id="@+id/fr_native_ads"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <include layout="@layout/ads_native_shimmer" />
+                    </FrameLayout>
+                </RelativeLayout>
 
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
