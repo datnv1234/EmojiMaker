@@ -1,7 +1,10 @@
 package com.wa.ai.emojimaker.ui.component.main
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.adjust.sdk.Adjust
@@ -15,7 +18,13 @@ import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.play.core.appupdate.AppUpdateManager
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.install.InstallStateUpdatedListener
 import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.InstallStatus
+import com.google.android.play.core.install.model.UpdateAvailability
+import com.google.android.play.core.ktx.isFlexibleUpdateAllowed
+import com.google.android.play.core.ktx.isImmediateUpdateAllowed
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.wa.ai.emojimaker.R
@@ -26,9 +35,10 @@ import com.wa.ai.emojimaker.utils.RemoteConfigKey
 import com.wa.ai.emojimaker.utils.ads.BannerUtils
 import com.wa.ai.emojimaker.utils.extention.gone
 import com.wa.ai.emojimaker.utils.extention.setFullScreen
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
-
 
     private val REQUEST_CODE_UPDATE = 1001
     private lateinit var appUpdateManager: AppUpdateManager
@@ -45,6 +55,15 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
         get() = R.layout.activity_main
 
     override fun getViewModel(): Class<MainViewModel> = MainViewModel::class.java
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        appUpdateManager = AppUpdateManagerFactory.create(applicationContext)
+        if (updateType == AppUpdateType.FLEXIBLE){
+            appUpdateManager.registerListener(installStateUpdateListener)
+        }
+        checkForAppUpdates()
+    }
 
     override fun setupView(savedInstanceState: Bundle?) {
         setUpDialogPermission()
@@ -67,6 +86,19 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
     override fun onResume() {
         super.onResume()
         Adjust.onResume()
+
+        if (updateType == AppUpdateType.IMMEDIATE){
+            appUpdateManager.appUpdateInfo.addOnSuccessListener { info ->
+                if (info.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS){
+                    appUpdateManager.startUpdateFlowForResult(
+                        info,
+                        AppUpdateType.FLEXIBLE,
+                        this,
+                        REQUEST_CODE_UPDATE
+                    )
+                }
+            }
+        }
     }
 
     override fun onPause() {
@@ -74,23 +106,52 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
         Adjust.onPause()
     }
 
-    /*override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray,
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == WRITE_REQUEST_CODE) {
-            if (grantResults.isNotEmpty()) {
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                } else if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                    permissionDialog?.show(supportFragmentManager, "permissionDialog")
-                }
+    private fun checkForAppUpdates() {
+        appUpdateManager.appUpdateInfo.addOnSuccessListener { info ->
+            val isUpdateAvailable = info.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+            val isUpdateAllowed = when (updateType) {
+                AppUpdateType.FLEXIBLE -> info.isFlexibleUpdateAllowed
+                AppUpdateType.IMMEDIATE -> info.isImmediateUpdateAllowed
+                else -> false
+            }
+            if (isUpdateAvailable && isUpdateAllowed) {
+                appUpdateManager.startUpdateFlowForResult(
+                    info,
+                    updateType,
+                    this,
+                    REQUEST_CODE_UPDATE
+                )
             }
         }
-    }*/
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODE_UPDATE){
+            if (resultCode != RESULT_OK){
+                Toast.makeText(this,"Something went wrong !", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        if (updateType == AppUpdateType.FLEXIBLE){
+            appUpdateManager.unregisterListener(installStateUpdateListener)
+        }
+    }
 
+    private val installStateUpdateListener = InstallStateUpdatedListener{state ->
+        if (state.installStatus() == InstallStatus.DOWNLOADED){
+            Toast.makeText(
+                applicationContext,
+                "Download successful. Restarting app in 5 seconds.",
+                Toast.LENGTH_LONG
+            ).show()
+            lifecycleScope.launch {
+                delay(5000)
+                appUpdateManager.completeUpdate()
+            }
+        }
+    }
 
     private fun loadBanner() {
         val keyAdsBanner: String

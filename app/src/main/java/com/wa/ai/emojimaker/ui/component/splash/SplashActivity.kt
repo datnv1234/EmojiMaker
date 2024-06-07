@@ -44,10 +44,6 @@ import kotlinx.coroutines.withContext
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewModel>() {
 
-    private val REQUEST_CODE_UPDATE = 1000
-    private lateinit var appUpdateManager: AppUpdateManager
-    private val updateType = AppUpdateType.IMMEDIATE
-
     val bundle = Bundle()
     private var mInterstitialAd: InterstitialAd? = null
     private var analytics: FirebaseAnalytics? = null
@@ -61,13 +57,6 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         MobileAds.initialize(this)
-
-        appUpdateManager = AppUpdateManagerFactory.create(applicationContext)
-        if (updateType == AppUpdateType.FLEXIBLE){
-            appUpdateManager.registerListener(installStateUpdateListener)
-        }
-        checkForAppUpdates()
-
     }
     override fun setupView(savedInstanceState: Bundle?) {
         setStatusBarColor("#11141A")
@@ -168,71 +157,11 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
     override fun onResume() {
         super.onResume()
         Adjust.onResume()
-
-        if (updateType == AppUpdateType.IMMEDIATE){
-            appUpdateManager.appUpdateInfo.addOnSuccessListener { info ->
-                if (info.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS){
-                    appUpdateManager.startUpdateFlowForResult(
-                        info,
-                        AppUpdateType.FLEXIBLE,
-                        this,
-                        REQUEST_CODE_UPDATE
-                    )
-                }
-            }
-        }
     }
 
     override fun onPause() {
         super.onPause()
         Adjust.onPause()
-    }
-
-    private fun checkForAppUpdates() {
-        appUpdateManager.appUpdateInfo.addOnSuccessListener { info ->
-            val isUpdateAvailable = info.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
-            val isUpdateAllowed = when (updateType) {
-                AppUpdateType.FLEXIBLE -> info.isFlexibleUpdateAllowed
-                AppUpdateType.IMMEDIATE -> info.isImmediateUpdateAllowed
-                else -> false
-            }
-            if (isUpdateAvailable && isUpdateAllowed) {
-                appUpdateManager.startUpdateFlowForResult(
-                    info,
-                    updateType,
-                    this,
-                    REQUEST_CODE_UPDATE
-                )
-            }
-        }
-    }
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE_UPDATE){
-            if (resultCode != RESULT_OK){
-                Toast.makeText(this,"Something went wrong !", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-    override fun onDestroy() {
-        super.onDestroy()
-        if (updateType == AppUpdateType.FLEXIBLE){
-            appUpdateManager.unregisterListener(installStateUpdateListener)
-        }
-    }
-
-    private val installStateUpdateListener = InstallStateUpdatedListener{state ->
-        if (state.installStatus() == InstallStatus.DOWNLOADED){
-            Toast.makeText(
-                applicationContext,
-                "Download successful. Restarting app in 5 seconds.",
-                Toast.LENGTH_LONG
-            ).show()
-            lifecycleScope.launch {
-                delay(5000)
-                appUpdateManager.completeUpdate()
-            }
-        }
     }
 
     private fun openMainActivity() {

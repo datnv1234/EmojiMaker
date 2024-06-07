@@ -81,6 +81,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
 
     lateinit var keyAds: String
     private val mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
+    var isFinishImmediately = false
 
     private var mInterstitialAd: InterstitialAd? = null
     private var analytics: FirebaseAnalytics? = null
@@ -173,8 +174,9 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         SaveSuccessDialog().apply {
             home = {
                 nextAction(action = {
+                    isFinishImmediately = true
+                    finish()
                     startActivity(Intent(this@EmojiMakerActivity, MainActivity::class.java))
-                    finishAffinity()
                 }, reloadAd = false)
 
             }
@@ -646,6 +648,9 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     }
 
     override fun finish() {
+        if (isFinishImmediately) {
+            super.finish()
+        }
         AlertDialog.Builder(this)
             .setIcon(android.R.drawable.ic_dialog_alert)
             .setTitle(getString(R.string.confirm))
