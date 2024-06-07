@@ -14,6 +14,8 @@ import com.google.android.gms.ads.OnPaidEventListener
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.play.core.appupdate.AppUpdateManager
+import com.google.android.play.core.install.model.AppUpdateType
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.wa.ai.emojimaker.R
@@ -26,6 +28,11 @@ import com.wa.ai.emojimaker.utils.extention.gone
 import com.wa.ai.emojimaker.utils.extention.setFullScreen
 
 class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
+
+
+    private val REQUEST_CODE_UPDATE = 1001
+    private lateinit var appUpdateManager: AppUpdateManager
+    private val updateType = AppUpdateType.IMMEDIATE
 
     lateinit var keyAds: String
     val mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance()

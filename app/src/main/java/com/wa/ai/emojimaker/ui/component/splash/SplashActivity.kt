@@ -3,6 +3,7 @@ package com.wa.ai.emojimaker.ui.component.splash
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import com.adjust.sdk.Adjust
 import com.adjust.sdk.AdjustAdRevenue
@@ -14,6 +15,14 @@ import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.OnPaidEventListener
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
+import com.google.android.play.core.appupdate.AppUpdateManager
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.install.InstallStateUpdatedListener
+import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.InstallStatus
+import com.google.android.play.core.install.model.UpdateAvailability
+import com.google.android.play.core.ktx.isFlexibleUpdateAllowed
+import com.google.android.play.core.ktx.isImmediateUpdateAllowed
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.wa.ai.emojimaker.R
@@ -28,11 +37,16 @@ import com.wa.ai.emojimaker.utils.RemoteConfigKey
 import com.wa.ai.emojimaker.utils.extention.isGrantNotificationPermission
 import com.wa.ai.emojimaker.utils.extention.setStatusBarColor
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewModel>() {
+
+    private val REQUEST_CODE_UPDATE = 1000
+    private lateinit var appUpdateManager: AppUpdateManager
+    private val updateType = AppUpdateType.IMMEDIATE
 
     val bundle = Bundle()
     private var mInterstitialAd: InterstitialAd? = null
@@ -47,6 +61,13 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         MobileAds.initialize(this)
+
+        appUpdateManager = AppUpdateManagerFactory.create(applicationContext)
+        if (updateType == AppUpdateType.FLEXIBLE){
+            appUpdateManager.registerListener(installStateUpdateListener)
+        }
+        checkForAppUpdates()
+
     }
     override fun setupView(savedInstanceState: Bundle?) {
         setStatusBarColor("#11141A")
@@ -147,11 +168,71 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
     override fun onResume() {
         super.onResume()
         Adjust.onResume()
+
+        if (updateType == AppUpdateType.IMMEDIATE){
+            appUpdateManager.appUpdateInfo.addOnSuccessListener { info ->
+                if (info.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS){
+                    appUpdateManager.startUpdateFlowForResult(
+                        info,
+                        AppUpdateType.FLEXIBLE,
+                        this,
+                        REQUEST_CODE_UPDATE
+                    )
+                }
+            }
+        }
     }
 
     override fun onPause() {
         super.onPause()
         Adjust.onPause()
+    }
+
+    private fun checkForAppUpdates() {
+        appUpdateManager.appUpdateInfo.addOnSuccessListener { info ->
+            val isUpdateAvailable = info.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+            val isUpdateAllowed = when (updateType) {
+                AppUpdateType.FLEXIBLE -> info.isFlexibleUpdateAllowed
+                AppUpdateType.IMMEDIATE -> info.isImmediateUpdateAllowed
+                else -> false
+            }
+            if (isUpdateAvailable && isUpdateAllowed) {
+                appUpdateManager.startUpdateFlowForResult(
+                    info,
+                    updateType,
+                    this,
+                    REQUEST_CODE_UPDATE
+                )
+            }
+        }
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODE_UPDATE){
+            if (resultCode != RESULT_OK){
+                Toast.makeText(this,"Something went wrong !", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        if (updateType == AppUpdateType.FLEXIBLE){
+            appUpdateManager.unregisterListener(installStateUpdateListener)
+        }
+    }
+
+    private val installStateUpdateListener = InstallStateUpdatedListener{state ->
+        if (state.installStatus() == InstallStatus.DOWNLOADED){
+            Toast.makeText(
+                applicationContext,
+                "Download successful. Restarting app in 5 seconds.",
+                Toast.LENGTH_LONG
+            ).show()
+            lifecycleScope.launch {
+                delay(5000)
+                appUpdateManager.completeUpdate()
+            }
+        }
     }
 
     private fun openMainActivity() {
