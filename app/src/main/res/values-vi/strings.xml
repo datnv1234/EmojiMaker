@@ -106,4 +106,6 @@
     <string name="create_package">Tạo gói</string>
     <string name="tap_here_to_create_new_package">Nhấn vào đây để tạo gói mới</string>
     <string name="please_try_again">Vui lòng thử lại!</string>
+    <string name="are_you_sure">Bạn có chắc không?</string>
+
 </resources>

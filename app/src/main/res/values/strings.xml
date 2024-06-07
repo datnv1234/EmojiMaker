@@ -111,4 +111,6 @@
     <string name="tap_here_to_create_new_package">Tap here to create new package</string>
     <string name="please_try_again">Please try again!</string>
 
+    <string name="are_you_sure">Are you sure?</string>
+
 </resources>

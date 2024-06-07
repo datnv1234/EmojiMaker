@@ -37,22 +37,23 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
     private lateinit var mMainActivity: MainActivity
     private lateinit var mMainViewModel: MainViewModel
 
-    private val creativeAdapter: CreativeAdapter by lazy { CreativeAdapter(requireContext(), itemClick = {
-        val intent = Intent(requireContext(), ShowStickersActivity::class.java)
-        intent.putExtra("local", true)
-        intent.putExtra("category", it.id)
-        intent.putExtra("category_name", it.name)
-        intent.putExtra("category_size", it.itemSize)
-        mMainActivity.openNextScreen {
-            startActivity(intent)
-        }
-        mMainActivity.mFirebaseAnalytics?.logEvent("v_inter_ads_open_${it.name}", null)
-    }, optionClick = {
+    private val creativeAdapter: CreativeAdapter by lazy {
+        CreativeAdapter(requireContext(), itemClick = {
+            val intent = Intent(requireContext(), ShowStickersActivity::class.java)
+            intent.putExtra("local", true)
+            intent.putExtra("category", it.id)
+            intent.putExtra("category_name", it.name)
+            intent.putExtra("category_size", it.itemSize)
+            mMainActivity.openNextScreen {
+                startActivity(intent)
+            }
+            mMainActivity.mFirebaseAnalytics?.logEvent("v_inter_ads_open_${it.name}", null)
+        }, optionClick = {
         //sharePackageDialog.show(parentFragmentManager, sharePackageDialog.tag)
-    }, delete = {
-        deletePkgDialog.pkg = it.id
-        deletePkgDialog.show(parentFragmentManager, deletePkgDialog.tag)
-    })
+        }, delete = {
+            deletePkgDialog.pkg = it
+            deletePkgDialog.show(parentFragmentManager, deletePkgDialog.tag)
+        })
     }
 
     private val stickerAdapter : MadeStickerAdapter by lazy {
@@ -102,8 +103,8 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
     private val deletePkgDialog: ConfirmDialog by lazy {
         ConfirmDialog(getString(R.string.delete), getString(R.string.delete)).apply {
              confirm = { pkg ->
-                 DeviceUtils.deletePackage(requireContext(), Constant.INTERNAL_MY_CREATIVE_DIR, pkg)
-                 creativeAdapter.notifyDataSetChanged()
+                 DeviceUtils.deletePackage(requireContext(), Constant.INTERNAL_MY_CREATIVE_DIR, pkg.id)
+                 viewModel.removePackage(pkg)
              }
         }
     }

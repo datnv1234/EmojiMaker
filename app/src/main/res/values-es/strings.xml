@@ -106,4 +106,6 @@
     <string name="create_package">Crear paquete</string>
     <string name="tap_here_to_create_new_package">Toca aquí para crear un nuevo paquete</string>
     <string name="please_try_again">¡Por favor, inténtalo de nuevo!</string>
+    <string name="are_you_sure">¿Estás seguro?</string>
+
 </resources>

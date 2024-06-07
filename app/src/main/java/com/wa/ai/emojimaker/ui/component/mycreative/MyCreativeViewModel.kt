@@ -54,7 +54,16 @@ class MyCreativeViewModel : BaseViewModel() {
             listEntry.addAll(it)
         }
 
-        listEntry.add(pkg)
+        listEntry.add(0, pkg)
+        _packageMutableLiveData.postValue(listEntry)
+    }
+
+    fun removePackage(pkg: PackageModel) {
+        val listEntry = mutableListOf<PackageModel>()
+        packageMutableLiveData.value?.let {
+            listEntry.addAll(it)
+        }
+        listEntry.remove(pkg)
         _packageMutableLiveData.postValue(listEntry)
     }
 

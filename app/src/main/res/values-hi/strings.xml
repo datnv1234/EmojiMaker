@@ -106,4 +106,6 @@
     <string name="create_package">पैकेज बनाएं</string>
     <string name="tap_here_to_create_new_package">नया पैकेज बनाने के लिए यहाँ टैप करें</string>
     <string name="please_try_again">कृपया पुन: प्रयास करें!</string>
+    <string name="are_you_sure">क्या आपको यकीन है?</string>
+
 </resources>

@@ -47,8 +47,8 @@ class CreativeAdapter (
         with(getItem(holder.adapterPosition)) {
             holder.binding.apply {
                 // Set View
-                if (avatar != null) {
-                    imgSticker.setImageBitmap(avatar)
+                if (this@with.avatar != null) {
+                    imgSticker.setImageBitmap(this@with.avatar)
                 }
                 tvCategory.text = name
                 tvQuantity.text = itemSize.toString()
