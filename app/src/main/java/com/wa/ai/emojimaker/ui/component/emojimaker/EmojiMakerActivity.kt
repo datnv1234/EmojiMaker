@@ -15,7 +15,6 @@ import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.os.Environment
 import android.os.Parcelable
 import android.provider.OpenableColumns
@@ -43,7 +42,6 @@ import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.wa.ai.emojimaker.R
-import com.wa.ai.emojimaker.common.Constant
 import com.wa.ai.emojimaker.common.Constant.INTERNAL_MY_CREATIVE_DIR
 import com.wa.ai.emojimaker.common.Constant.TAG
 import com.wa.ai.emojimaker.data.model.ItemOptionUI
@@ -55,7 +53,6 @@ import com.wa.ai.emojimaker.ui.dialog.AddToPackageDialog
 import com.wa.ai.emojimaker.ui.dialog.CreatePackageDialog
 import com.wa.ai.emojimaker.ui.dialog.SaveStickerDialog
 import com.wa.ai.emojimaker.ui.dialog.SaveSuccessDialog
-import com.wa.ai.emojimaker.ui.dialog.WaitingDialog
 import com.wa.ai.emojimaker.ui.component.main.MainActivity
 import com.wa.ai.emojimaker.utils.AppUtils
 import com.wa.ai.emojimaker.utils.DeviceUtils
@@ -89,7 +86,6 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     private var analytics: FirebaseAnalytics? = null
     var mFirebaseAnalytics: FirebaseAnalytics? = null
 
-    private val optionList = ArrayList<ItemOptionUI>()
     private lateinit var emojiViewModel: EmojiViewModel
     private val pagerIconAdapter: PagerIconAdapter by lazy { PagerIconAdapter(itemClick = {
         doAddSticker(it)
@@ -106,27 +102,19 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
 
             download = {
                 nextAction(action = {
-                    if (bitmap != null) {
-                        AppUtils.saveSticker(this@EmojiMakerActivity, bitmap!!, "creative")
-                        toast("Downloaded!")
-                    } else {
-                        toast(getString(R.string.please_try_again))
+                    emojiViewModel.bitmapMutableLiveData.value?.let { it1 ->
+                        AppUtils.saveSticker(this@EmojiMakerActivity,
+                            it1, "creative")
                     }
-                    //download(bitmap)
-
+                    toast("Downloaded!")
                 })
                 mFirebaseAnalytics?.logEvent("v_inter_ads_download_creative_emoji", null)
             }
 
             share = {
-                nextAction(action = {
-                    if (this.bitmap != null) {
-                        share(this.bitmap!!)
-                    } else {
-                        toast(getString(R.string.please_try_again))
-                    }
-                })
-                mFirebaseAnalytics?.logEvent("v_inter_ads_share_creative_emoji", null)
+                emojiViewModel.bitmapMutableLiveData.value?.let {
+                    it1 -> share(it1)
+                }
             }
         }
     }
@@ -140,13 +128,16 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
                 } else {
                     nextAction(action = {
                         mSaveDialog.dismiss()
-                        DeviceUtils.saveToPackage(
-                            this@EmojiMakerActivity,
-                            INTERNAL_MY_CREATIVE_DIR,
-                            packageName = it.id,
-                            bitmapImage = emojiViewModel.bitmap
-                        )
-                        mDialogWaiting.show(supportFragmentManager, mDialogWaiting.tag)
+                        emojiViewModel.bitmapMutableLiveData.value?.let { it1 ->
+                            DeviceUtils.saveToPackage(
+                                this@EmojiMakerActivity,
+                                INTERNAL_MY_CREATIVE_DIR,
+                                packageName = it.id,
+                                bitmapImage = it1
+                            )
+                        }
+                        //mDialogWaiting.show(supportFragmentManager, mDialogWaiting.tag)
+                        mSaveSuccessDialog.show(supportFragmentManager, mSaveSuccessDialog.tag)
                     })
                     mFirebaseAnalytics?.logEvent("v_inter_ads_save_creative_emoji", null)
                 }
@@ -165,13 +156,16 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
                 mAddToPackageDialog.dismiss()
                 mSaveDialog.dismiss()
                 nextAction(action = {
-                    DeviceUtils.saveToPackage(
-                        this@EmojiMakerActivity,
-                        INTERNAL_MY_CREATIVE_DIR,
-                        packageName = pkg.id,
-                        bitmapImage = emojiViewModel.bitmap
-                    )
-                    mDialogWaiting.show(supportFragmentManager, mDialogWaiting.tag)
+                    emojiViewModel.bitmapMutableLiveData.value?.let {
+                        DeviceUtils.saveToPackage(
+                            this@EmojiMakerActivity,
+                            INTERNAL_MY_CREATIVE_DIR,
+                            packageName = pkg.id,
+                            bitmapImage = it
+                        )
+                    }
+                    //mDialogWaiting.show(supportFragmentManager, mDialogWaiting.tag)
+                    mSaveSuccessDialog.show(supportFragmentManager, mSaveSuccessDialog.tag)
                 })
                 mFirebaseAnalytics?.logEvent("v_inter_ads_save_creative_emoji", null)
 
@@ -179,22 +173,8 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         }
     }
 
-    private val mDialogWaiting: WaitingDialog by lazy {
-        WaitingDialog(getString(R.string.creating_sticker)).apply {
-            action = {
-                mSaveSuccessDialog.show(supportFragmentManager, mSaveSuccessDialog.tag)
-            }
-        }
-    }
-
-    private val mDialogPrepare: WaitingDialog by lazy {
-        WaitingDialog(getString(R.string.preparing_workplace)).apply {
-            action = {}
-        }
-    }
-
     private val mSaveSuccessDialog: SaveSuccessDialog by lazy {
-        SaveSuccessDialog(emojiViewModel.bitmap).apply {
+        SaveSuccessDialog().apply {
             home = {
                 nextAction(action = {
                     startActivity(Intent(this@EmojiMakerActivity, MainActivity::class.java))
@@ -234,8 +214,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
 
         binding.btnSave.setOnSafeClick {
             val bitmap = binding.stickerView.createBitmap()
-            emojiViewModel.bitmap = bitmap
-            mSaveDialog.bitmap = emojiViewModel.bitmap
+            emojiViewModel.setBitmap(bitmap)
             nextAction(action = {
                 mSaveDialog.show(supportFragmentManager, mSaveDialog.tag)
             })
@@ -267,26 +246,17 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
             loadInterAds(keyAds)
         }
 
-        mDialogPrepare.show(supportFragmentManager, mDialogPrepare.tag)
-        val countDownTimer: CountDownTimer = object : CountDownTimer(Constant.WAITING_TO_LOAD_BANNER, 1000) {
-            override fun onTick(millisUntilFinished: Long) {
-            }
-            override fun onFinish() {
-                mDialogPrepare.dismiss()
-            }
-        }
-        countDownTimer.start()
+        //mDialogPrepare.show(supportFragmentManager, mDialogPrepare.tag)
     }
     override fun setupData() {
-        getOptions()
         emojiViewModel = ViewModelProvider(this)[EmojiViewModel::class.java]
         emojiViewModel.getItemOption(this)
+        emojiViewModel.getOptions()
         emojiViewModel.optionMutableLiveData.observe(this) {
             pagerIconAdapter.submitList(it.toMutableList())
         }
-        val optionAdapter = OptionAdapter(this, optionList, itemClick = {
+        val optionAdapter = OptionAdapter(this, emojiViewModel.optionList, itemClick = {
             binding.vpIcon.setCurrentItem(it, true)
-
         })
 
         binding.rvOptions.adapter = optionAdapter
@@ -711,19 +681,6 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         }
     }
 
-    private fun getOptions() {
-        optionList.add(ItemOptionUI("face", R.drawable.ic_face))
-        optionList.add(ItemOptionUI("eyes", R.drawable.ic_eyes))
-        optionList.add(ItemOptionUI("nose", R.drawable.ic_nose))
-        optionList.add(ItemOptionUI("mouth", R.drawable.ic_mouth))
-        optionList.add(ItemOptionUI("brow", R.drawable.ic_brow))
-        optionList.add(ItemOptionUI("beard", R.drawable.ic_beard))
-        optionList.add(ItemOptionUI("glass", R.drawable.ic_glass))
-        optionList.add(ItemOptionUI("hair", R.drawable.ic_hair))
-        optionList.add(ItemOptionUI("hat", R.drawable.ic_hat))
-        optionList.add(ItemOptionUI("hand", R.drawable.ic_hand))
-        optionList.add(ItemOptionUI("accessories", R.drawable.ic_accessory))
-    }
 
     internal class FetchImageFromLinkTask(val text: String, val context: EmojiMakerActivity) :
         AsyncTask<Void, Void, Void>() {
@@ -848,13 +805,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
                 getString(R.string.banner_create_emoji)
             }
 
-            val timeConfig = mFirebaseRemoteConfig.getLong(RemoteConfigKey.KEY_COLLAPSE_RELOAD_TIME)
-            timeDelay = if (timeConfig == 0L) {
-                20
-            } else {
-                timeConfig
-            }
-            BannerUtils.instance?.loadCollapsibleBanner(this, keyAdsBanner, timeDelay * 1000)
+            BannerUtils.instance?.loadCollapsibleBanner(this, keyAdsBanner)
         } else {
             binding.rlBanner.gone()
         }

@@ -59,9 +59,9 @@ class HomeViewModel : BaseViewModel() {
     }
     private fun getCategory(assetManager: AssetManager, category: String, categoryName: String) : Category {
         val cate = Category(category, categoryName, 0)
-        val listFile = assetManager.list("categories/$category/") ?: return cate
+        val listFile = assetManager.list("categories/$category") ?: return cate
         cate.itemSize = listFile.size
-
+        if (listFile.isEmpty()) return cate
         val inputStream1 = assetManager.open("categories/$category/${listFile[0]}")
         val bitmap1 = BitmapFactory.decodeStream(inputStream1)
         cate.avatar1 = bitmap1

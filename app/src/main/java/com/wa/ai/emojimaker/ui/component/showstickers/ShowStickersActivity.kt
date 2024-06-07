@@ -205,7 +205,7 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
 
     private fun downloadStickerInCategory(category: String) {
         val assetManager = this.assets
-        val listFile = assetManager.list("categories/$category/")
+        val listFile = assetManager.list("categories/$category")
         if (listFile != null) {                    //package's size > 0
             for (file in listFile) {
                 val inputStream1 = assetManager.open("categories/$category/$file")
@@ -259,7 +259,7 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
     private fun getStickerUriInCategory(category: String) {
         viewModel.stickerUri.clear()
         val assetManager = this.assets
-        val listFile = assetManager.list("categories/$category/")
+        val listFile = assetManager.list("categories/$category")
         if (listFile != null) {                    //package's size > 0
             for (file in listFile) {
                 val inputStream1 = assetManager.open("categories/$category/$file")
@@ -302,7 +302,6 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
 
     private fun loadBanner() {
         val keyAdsBanner: String
-        val timeDelay: Long
 
         if (DeviceUtils.checkInternetConnection(this) && mFirebaseRemoteConfig.getBoolean(
                 RemoteConfigKey.IS_SHOW_ADS_BANNER_SHOW_STICKERS)) {
@@ -311,13 +310,7 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
                 getString(R.string.banner_show_stickers)
             }
 
-            val timeConfig = mFirebaseRemoteConfig.getLong(RemoteConfigKey.KEY_COLLAPSE_RELOAD_TIME)
-            timeDelay = if (timeConfig == 0L) {
-                20
-            } else {
-                timeConfig
-            }
-            BannerUtils.instance?.loadCollapsibleBanner(this, keyAdsBanner, timeDelay * 1000)
+            BannerUtils.instance?.loadCollapsibleBanner(this, keyAdsBanner)
         } else {
             binding.rlBanner.gone()
         }

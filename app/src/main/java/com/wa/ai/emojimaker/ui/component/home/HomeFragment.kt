@@ -8,21 +8,16 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.util.Log
 import android.view.View
 import com.adjust.sdk.Adjust
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.common.Constant
-import com.wa.ai.emojimaker.common.Constant.TAG
-import com.wa.ai.emojimaker.databinding.AdNativeContentBinding
-import com.wa.ai.emojimaker.databinding.AdNativeVideoBinding
 import com.wa.ai.emojimaker.databinding.AdNativeVideoHorizontalBinding
 import com.wa.ai.emojimaker.databinding.FragmentHomeBinding
 import com.wa.ai.emojimaker.ui.adapter.CategoryAdapter
 import com.wa.ai.emojimaker.ui.base.BaseBindingFragment
 import com.wa.ai.emojimaker.ui.dialog.SharePackageDialog
-import com.wa.ai.emojimaker.ui.dialog.WaitingDialog
 import com.wa.ai.emojimaker.ui.component.emojimaker.EmojiMakerActivity
 import com.wa.ai.emojimaker.ui.component.main.MainActivity
 import com.wa.ai.emojimaker.ui.component.showstickers.ShowStickersActivity
@@ -53,7 +48,7 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
             addToTelegram = { cate ->
                 viewModel.stickerUri.clear()
                 val assetManager = requireContext().assets
-                val listFile = assetManager.list("categories/$cate/")
+                val listFile = assetManager.list("categories/$cate")
                 if (listFile != null) {                    //package's size > 0
                     for (file in listFile) {
                         val inputStream1 = assetManager.open("categories/$cate/$file")
@@ -75,7 +70,7 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
             share = { cate ->
                 viewModel.stickerUri.clear()
                 val assetManager = requireContext().assets
-                val listFile = assetManager.list("categories/$cate/")
+                val listFile = assetManager.list("categories/$cate")
                 if (listFile != null) {                    //package's size > 0
                     for (file in listFile) {
                         val inputStream1 = assetManager.open("categories/$cate/$file")
@@ -121,10 +116,6 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
         })
     }
 
-    private val mDialogPrepare: WaitingDialog by lazy {
-        WaitingDialog(getString(R.string.loading_stickers))
-    }
-
     override fun getViewModel(): Class<HomeViewModel> = HomeViewModel::class.java
     override fun registerOnBackPress() {
     }
@@ -162,10 +153,7 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
     override fun setupData() {
         mMainActivity = activity as MainActivity
         loadAds()
-        if (mMainActivity.showLoading) {
-            mDialogPrepare.show(parentFragmentManager, mDialogPrepare.tag)
-            mMainActivity.showLoading = false
-        }
+
         viewModel.getCategoryList(requireContext())
         viewModel.categoriesMutableLiveData.observe(this) {
             categoryAdapter.submitList(it.toMutableList())
@@ -240,7 +228,7 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
 
     private fun download(context: Context, category: String) {
         val assetManager = context.assets
-        val listFile = assetManager.list("categories/$category/")
+        val listFile = assetManager.list("categories/$category")
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             if (AppUtils.checkPermission(context)) {
                 AppUtils.requestPermissionAndContinue(requireActivity())

@@ -23,7 +23,7 @@ class WaitingDialog(private val des: String) : BaseBindingDialogFragment<DialogW
 
             override fun onFinish() {
                 action?.invoke()
-                this@WaitingDialog.dismiss()
+                dismiss()
                 //startActivity(intent)
             }
         }

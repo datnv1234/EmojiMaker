@@ -70,7 +70,7 @@ class ShowStickerViewModel : BaseViewModel() {
         val assetManager = context.assets
         val listEntry = mutableListOf<MadeStickerModel>()
         viewModelScope.launch(Dispatchers.IO) {
-            val listFile = assetManager.list("categories/$category/")
+            val listFile = assetManager.list("categories/$category")
 
             if (listFile != null) {
                 for ((i, file) in listFile.withIndex()) {

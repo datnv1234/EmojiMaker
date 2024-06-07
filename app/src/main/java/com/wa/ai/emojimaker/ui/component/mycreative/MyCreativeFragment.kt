@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.View
+import androidx.lifecycle.ViewModelProvider
 import com.adjust.sdk.Adjust
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.wa.ai.emojimaker.R
@@ -17,8 +18,8 @@ import com.wa.ai.emojimaker.ui.adapter.MadeStickerAdapter
 import com.wa.ai.emojimaker.ui.base.BaseBindingFragment
 import com.wa.ai.emojimaker.ui.dialog.ConfirmDialog
 import com.wa.ai.emojimaker.ui.dialog.SharePackageDialog
-import com.wa.ai.emojimaker.ui.dialog.WaitingDialog
 import com.wa.ai.emojimaker.ui.component.main.MainActivity
+import com.wa.ai.emojimaker.ui.component.main.MainViewModel
 import com.wa.ai.emojimaker.ui.component.showstickers.ShowStickersActivity
 import com.wa.ai.emojimaker.ui.dialog.CreatePackageDialog
 import com.wa.ai.emojimaker.utils.DeviceUtils
@@ -32,6 +33,7 @@ import com.wa.ai.emojimaker.utils.extention.visible
 class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCreativeViewModel>() {
 
     private lateinit var mMainActivity: MainActivity
+    private lateinit var mMainViewModel: MainViewModel
 
     private val creativeAdapter: CreativeAdapter by lazy { CreativeAdapter(requireContext(), itemClick = {
         val intent = Intent(requireContext(), ShowStickersActivity::class.java)
@@ -104,12 +106,6 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
         }
     }
 
-    private val mDialogPrepare: WaitingDialog by lazy {
-        WaitingDialog(getString(R.string.loading_stickers)).apply {
-            action = {}
-        }
-    }
-
     override val layoutId: Int
         get() = R.layout.fragment_my_creative
 
@@ -126,11 +122,8 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
 
     override fun setupData() {
         mMainActivity = activity as MainActivity
+        mMainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
         loadAds()
-        if (mMainActivity.showLoading) {
-            mDialogPrepare.show(parentFragmentManager, mDialogPrepare.tag)
-            mMainActivity.showLoading = false
-        }
 
         //Get package list
         viewModel.getPackage(requireContext())
@@ -147,16 +140,15 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
         binding.rvSticker.adapter = creativeAdapter
 
         //Get sticker list
-        viewModel.getStickers(requireContext())
-        viewModel.stickerMutableLiveData.observe(this) {
+        mMainViewModel.stickerMutableLiveData.observe(this) {
             stickerAdapter.submitList(it.toMutableList())
         }
         binding.rvSeeMore.adapter = stickerAdapter
         binding.btnSeeMore.setOnSafeClick {
             val intent = Intent(requireContext(), ShowStickersActivity::class.java)
-            intent.putExtra("category", viewModel.category)
-            intent.putExtra("category_name", Constant.categories[viewModel.category])
-            intent.putExtra("category_size", viewModel.categorySize)
+            intent.putExtra("category", mMainViewModel.category)
+            intent.putExtra("category_name", Constant.categories[mMainViewModel.category])
+            intent.putExtra("category_size", mMainViewModel.categorySize)
             startActivity(intent)
         }
     }

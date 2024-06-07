@@ -67,7 +67,7 @@ class BannerUtils {
     }
 
     //Load CollapsibleBanner in activity
-    fun loadCollapsibleBanner(mActivity: Activity, id: String, timeDelay: Long) {
+    fun loadCollapsibleBanner(mActivity: Activity, id: String) {
         val adContainer = mActivity.findViewById<FrameLayout>(R.id.banner_container)
         val containerShimmer =
             mActivity.findViewById<ShimmerFrameLayout>(R.id.shimmer_container_banner)
@@ -80,8 +80,7 @@ class BannerUtils {
                 id,
                 adContainer,
                 containerShimmer,
-                false, BANNER_INLINE_LARGE_STYLE,
-                timeDelay
+                false, BANNER_INLINE_LARGE_STYLE
             )
         }
     }

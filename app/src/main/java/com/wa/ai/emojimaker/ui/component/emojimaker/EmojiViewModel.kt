@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.wa.ai.emojimaker.R
+import com.wa.ai.emojimaker.data.model.ItemOptionUI
 import com.wa.ai.emojimaker.data.model.PagerIconUI
 import com.wa.ai.emojimaker.data.model.PieceSticker
 import com.wa.ai.emojimaker.ui.base.BaseViewModel
@@ -17,7 +18,11 @@ import kotlinx.coroutines.launch
 
 class EmojiViewModel : BaseViewModel() {
 
-    lateinit var bitmap: Bitmap
+    val optionList = ArrayList<ItemOptionUI>()
+
+    private val _bitmapMutableLiveData: MutableLiveData<Bitmap> = MutableLiveData()
+    val bitmapMutableLiveData: LiveData<Bitmap>
+        get() = _bitmapMutableLiveData
 
     private val _optionMutableLiveData: MutableLiveData<List<PagerIconUI>> = MutableLiveData()
     val optionMutableLiveData: LiveData<List<PagerIconUI>>
@@ -34,6 +39,25 @@ class EmojiViewModel : BaseViewModel() {
     private val pieceOfHat = mutableListOf<PieceSticker>()
     private val pieceOfMouth = mutableListOf<PieceSticker>()
     private val pieceOfNose = mutableListOf<PieceSticker>()
+
+    fun setBitmap(bitmap: Bitmap) {
+        _bitmapMutableLiveData.postValue(bitmap)
+    }
+
+    fun getOptions() {
+        optionList.add(ItemOptionUI("face", R.drawable.ic_face))
+        optionList.add(ItemOptionUI("eyes", R.drawable.ic_eyes))
+        optionList.add(ItemOptionUI("nose", R.drawable.ic_nose))
+        optionList.add(ItemOptionUI("mouth", R.drawable.ic_mouth))
+        optionList.add(ItemOptionUI("brow", R.drawable.ic_brow))
+        optionList.add(ItemOptionUI("beard", R.drawable.ic_beard))
+        optionList.add(ItemOptionUI("glass", R.drawable.ic_glass))
+        optionList.add(ItemOptionUI("hair", R.drawable.ic_hair))
+        optionList.add(ItemOptionUI("hat", R.drawable.ic_hat))
+        optionList.add(ItemOptionUI("hand", R.drawable.ic_hand))
+        optionList.add(ItemOptionUI("accessories", R.drawable.ic_accessory))
+    }
+
 
     fun getItemOption(context: Context) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -108,7 +132,7 @@ class EmojiViewModel : BaseViewModel() {
     }
 
     private fun getFile(assetManager: AssetManager, category: String, list: MutableList<PieceSticker>) {
-        val listFile = assetManager.list("item_options/$category/")
+        val listFile = assetManager.list("item_options/$category")
         if (listFile != null) {
             for (file in listFile) {
                 val inputStream = assetManager.open("item_options/$category/$file")

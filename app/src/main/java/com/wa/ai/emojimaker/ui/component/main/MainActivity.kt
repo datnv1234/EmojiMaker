@@ -34,7 +34,6 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
     private var analytics: FirebaseAnalytics? = null
     var mFirebaseAnalytics: FirebaseAnalytics? = null
 
-    var showLoading = true
     override val layoutId: Int
         get() = R.layout.activity_main
 
@@ -55,6 +54,7 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
 
     override fun setupData() {
         loadBanner()
+        viewModel.getStickers(this)
     }
 
     override fun onResume() {
@@ -95,14 +95,7 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
             keyAdsBanner = adConfig.ifEmpty {
                 getString(R.string.banner_main)
             }
-
-            val timeConfig = mFirebaseRemoteConfig.getLong(RemoteConfigKey.KEY_COLLAPSE_RELOAD_TIME)
-            timeDelay = if (timeConfig == 0L) {
-                20
-            } else {
-                timeConfig
-            }
-            BannerUtils.instance?.loadCollapsibleBanner(this, keyAdsBanner, timeDelay * 1000)
+            BannerUtils.instance?.loadCollapsibleBanner(this, keyAdsBanner)
         } else {
             binding.rlBanner.gone()
         }
