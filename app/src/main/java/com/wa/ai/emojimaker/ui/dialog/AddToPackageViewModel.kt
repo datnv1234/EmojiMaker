@@ -43,4 +43,13 @@ class AddToPackageViewModel : BaseViewModel() {
             _packageMutableLiveData.postValue(listEntry)
         }
     }
+
+    fun newPackage(packageModel: PackageModel) {
+        val listEntry = mutableListOf<PackageModel>()
+        if (_packageMutableLiveData.value != null) {
+            listEntry.addAll(_packageMutableLiveData.value!!)
+        }
+        listEntry.add(0, packageModel)
+        _packageMutableLiveData.postValue(listEntry)
+    }
 }

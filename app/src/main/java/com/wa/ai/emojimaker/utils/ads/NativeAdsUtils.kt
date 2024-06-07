@@ -39,7 +39,7 @@ class NativeAdsUtils {
                 }
 
                 override fun onAdLoaded() {
-                    Log.d(TAG, "onAdLoaded: ")
+                    //Log.d(TAG, "onAdLoaded: ")
                     super.onAdLoaded()
                 }
             }).build()

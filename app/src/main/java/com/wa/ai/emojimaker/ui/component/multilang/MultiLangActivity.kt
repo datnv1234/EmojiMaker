@@ -2,6 +2,7 @@ package com.wa.ai.emojimaker.ui.component.multilang
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.util.Log
 import android.view.View
 import com.adjust.sdk.Adjust
@@ -25,6 +26,8 @@ import com.wa.ai.emojimaker.utils.extention.visible
 
 class MultiLangActivity : BaseBindingActivity<ActivityMultiLangBinding, MultiLangViewModel>() {
 
+	private var isLoadNativeDone = false
+
 	private var type: Int = 0
 	private var currentPosLanguage = 0
 	private var oldCode = "en"
@@ -46,6 +49,7 @@ class MultiLangActivity : BaseBindingActivity<ActivityMultiLangBinding, MultiLan
 	override fun getViewModel(): Class<MultiLangViewModel> = MultiLangViewModel::class.java
 
 	override fun setupView(savedInstanceState: Bundle?) {
+
 		type = intent.getIntExtra(Constant.TYPE_LANG, 0)
 		oldCode = SystemUtil.getPreLanguage(this)
 		code = oldCode
@@ -58,9 +62,9 @@ class MultiLangActivity : BaseBindingActivity<ActivityMultiLangBinding, MultiLan
 		if (firebaseRemoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_LANGUAGE)) {
 			val keyAds = firebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_NATIVE_LANGUAGE)
 			if (keyAds.isNotEmpty()) {
-				loadNativeAds(keyAds)
+				loadNativeUntilDone(keyAds)
 			} else {
-				loadNativeAds(getString(R.string.native_language))
+				loadNativeUntilDone(getString(R.string.native_language))
 			}
 		}
 		viewModel.getListLanguage()
@@ -71,6 +75,19 @@ class MultiLangActivity : BaseBindingActivity<ActivityMultiLangBinding, MultiLan
 				multiLangAdapter.newPosition = pos
 			}
 		}
+	}
+
+	private fun loadNativeUntilDone(adConfig: String) {
+		val countDownTimer: CountDownTimer = object : CountDownTimer(25000, 5000) {
+			override fun onTick(millisUntilFinished: Long) {
+				if (!isLoadNativeDone) {
+					loadNativeAds(adConfig)
+				}
+			}
+			override fun onFinish() {
+			}
+		}
+		countDownTimer.start()
 	}
 
 	override fun onResume() {
@@ -135,6 +152,7 @@ class MultiLangActivity : BaseBindingActivity<ActivityMultiLangBinding, MultiLan
 						adNativeVideoBinding.root as NativeAdView
 					)
 					binding.frNativeAds.addView(adNativeVideoBinding.root)
+					isLoadNativeDone = true
 				} else {
 //					Log.d(TAG, "loadNativeAds: failed")
 					//binding.rlNative.visibility = View.GONE

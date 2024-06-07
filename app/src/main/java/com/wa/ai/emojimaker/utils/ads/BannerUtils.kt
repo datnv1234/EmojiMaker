@@ -192,7 +192,7 @@ class BannerUtils {
                     }
 
                     override fun onAdLoaded() {
-                        Log.d(TAG, "onAdLoaded: ")
+                        //Log.d(TAG, "onAdLoaded: ")
                         containerShimmer.stopShimmer()
                         containerShimmer.gone()
                         adContainer.visible()

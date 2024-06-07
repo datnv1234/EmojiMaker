@@ -3,6 +3,7 @@ package com.wa.ai.emojimaker.ui.component.settings
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.view.View
 import com.adjust.sdk.Adjust
 import com.google.android.gms.ads.nativead.NativeAdView
@@ -22,6 +23,8 @@ import com.wa.ai.emojimaker.utils.extention.gone
 import com.wa.ai.emojimaker.utils.extention.hideSystemUI
 
 class SettingsFragment : BaseBindingFragment<FragmentSettingsBinding, SettingsViewModel>() {
+
+    private var isLoadNativeDone = false
 
     private lateinit var mMainActivity: MainActivity
     private val ratingDialog: DialogRating by lazy {
@@ -119,14 +122,27 @@ class SettingsFragment : BaseBindingFragment<FragmentSettingsBinding, SettingsVi
         if (mMainActivity.mFirebaseRemoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_SETTINGS)) {
             val adConfig = mMainActivity.mFirebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_NATIVE_SETTINGS)
             if (adConfig.isNotEmpty()) {
-                loadNativeAds(adConfig)
+                loadNativeUntilDone(adConfig)
             }
             else {
-                loadNativeAds(getString(R.string.native_settings))
+                loadNativeUntilDone(getString(R.string.native_settings))
             }
         } else {
             binding.rlNative.visibility = View.GONE
         }
+    }
+
+    private fun loadNativeUntilDone(adConfig: String) {
+        val countDownTimer: CountDownTimer = object : CountDownTimer(25000, 5000) {
+            override fun onTick(millisUntilFinished: Long) {
+                if (!isLoadNativeDone) {
+                    loadNativeAds(adConfig)
+                }
+            }
+            override fun onFinish() {
+            }
+        }
+        countDownTimer.start()
     }
 
     private fun setUpLoadInterAds() {
@@ -158,6 +174,7 @@ class SettingsFragment : BaseBindingFragment<FragmentSettingsBinding, SettingsVi
                         adNativeVideoBinding.root as NativeAdView
                     )
                     binding.frNativeAds.addView(adNativeVideoBinding.root)
+                    isLoadNativeDone = true
                 } else {
                     //binding.rlNative.visibility = View.GONE
                 }

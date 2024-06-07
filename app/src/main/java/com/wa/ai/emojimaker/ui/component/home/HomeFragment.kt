@@ -33,6 +33,8 @@ import java.io.File
 
 class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
 
+    private var isLoadNativeDone = false
+
     private val CREATE_STICKER_PACK_ACTION = "org.telegram.messenger.CREATE_STICKER_PACK"
     private val CREATE_STICKER_PACK_EMOJIS_EXTRA = "STICKER_EMOJIS"
     private val CREATE_STICKER_PACK_IMPORTER_EXTRA = "IMPORTER"
@@ -132,14 +134,8 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
             }
             mMainActivity.mFirebaseAnalytics?.logEvent("v_inter_ads_create_sticker", null)
         }
-        val timeConfig = mMainActivity.mFirebaseRemoteConfig.getLong(RemoteConfigKey.KEY_COLLAPSE_RELOAD_TIME)
-        val timeDelay = if (timeConfig == 0L) {
-            3000L
-        } else {
-            timeConfig
-        }
 
-        val countDownTimer: CountDownTimer = object : CountDownTimer(timeDelay, 1000) {
+        val countDownTimer: CountDownTimer = object : CountDownTimer(2000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
 
             }
@@ -180,14 +176,27 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
         if (mMainActivity.mFirebaseRemoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_HOME)) {
             val adConfig = mMainActivity.mFirebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_NATIVE_HOME)
             if (adConfig.isNotEmpty()) {
-                loadNativeAds(adConfig)
+                loadNativeUntilDone(adConfig)
             }
             else {
-                loadNativeAds(getString(R.string.native_home))
+                loadNativeUntilDone(getString(R.string.native_home))
             }
         } else {
             binding.rlNative.visibility = View.GONE
         }
+    }
+
+    private fun loadNativeUntilDone(adConfig: String) {
+        val countDownTimer: CountDownTimer = object : CountDownTimer(25000, 5000) {
+            override fun onTick(millisUntilFinished: Long) {
+                if (!isLoadNativeDone) {
+                    loadNativeAds(adConfig)
+                }
+            }
+            override fun onFinish() {
+            }
+        }
+        countDownTimer.start()
     }
 
     private fun getUri(category: String) {
@@ -286,6 +295,7 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
                         adNativeVideoBinding.root as NativeAdView
                     )
                     binding.frNativeAds.addView(adNativeVideoBinding.root)
+                    isLoadNativeDone = true
                 } else {
                     //binding.rlNative.visibility = View.GONE
                 }

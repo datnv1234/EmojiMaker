@@ -44,7 +44,6 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="@dimen/_16sdp"
                 android:paddingTop="24dp"
                 android:background="@drawable/bg_dialog"
                 android:orientation="vertical"
@@ -61,6 +60,7 @@
                     android:id="@+id/btnCreateNewPackage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:paddingHorizontal="@dimen/_12sdp"
                     android:layout_marginBottom="@dimen/_12sdp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
@@ -83,6 +83,7 @@
                     android:id="@+id/rvPackage"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_150sdp"
+                    android:paddingHorizontal="@dimen/_12sdp"
                     android:maxLength="@dimen/_80sdp"
                     app:layout_constraintHeight_max="@dimen/_200sdp"
                     android:orientation="vertical"
@@ -94,6 +95,7 @@
                     android:id="@+id/btnSave"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:paddingHorizontal="@dimen/_12sdp"
                     android:layout_marginVertical="12dp"
                     android:gravity="center"
                     android:background="@drawable/bg_button_default"
@@ -102,7 +104,21 @@
                     android:text="@string/save"
                     android:textColor="@color/white"
                     android:foreground="?android:attr/selectableItemBackground"/>
+                <RelativeLayout
+                    android:id="@+id/rl_native"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_160sdp"
+                    app:layout_goneMarginTop="@dimen/_4sdp">
+                    <FrameLayout
+                        android:id="@+id/fr_native_ads"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <include layout="@layout/ads_native_shimmer" />
+                    </FrameLayout>
+                </RelativeLayout>
             </LinearLayout>
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -10,7 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingHorizontal="16dp"
+        android:paddingHorizontal="@dimen/_12sdp"
         tools:context=".ui.component.mycreative.MyCreativeFragment">
         <RelativeLayout
             android:id="@+id/rl_native"

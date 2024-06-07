@@ -12,7 +12,7 @@ import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 
 class SaveStickerDialog : BaseBindingDialogFragment<DialogSaveBinding>() {
 
-    var addToPackage: ((binding : DialogSaveBinding) -> Unit)? = null
+    var addToPackage: (() -> Unit)? = null
     var download: ((binding : DialogSaveBinding) -> Unit)? = null
     var share: ((binding : DialogSaveBinding) -> Unit)? = null
 
@@ -35,13 +35,16 @@ class SaveStickerDialog : BaseBindingDialogFragment<DialogSaveBinding>() {
     private fun setUp() {
         isCancelable = false
         binding.btnAddToPackage.setOnSafeClick {
-            addToPackage?.invoke(binding)
+            addToPackage?.invoke()
+            dismiss()
         }
         binding.btnDownload.setOnSafeClick {
             download?.invoke(binding)
+            dismiss()
         }
         binding.btnShare.setOnSafeClick {
             share?.invoke(binding)
+            dismiss()
         }
         binding.btnClose.setOnSafeClick {
             dismiss()

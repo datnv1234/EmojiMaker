@@ -7,6 +7,7 @@ import android.content.ContextWrapper
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.os.Environment
 import android.view.View
 import com.adjust.sdk.Adjust
@@ -42,6 +43,8 @@ import java.io.File
 
 
 class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, ShowStickerViewModel>() {
+
+    private var isLoadNativeDone = false
 
     lateinit var keyAds: String
     private val mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
@@ -168,12 +171,26 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
         if (mFirebaseRemoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_SHOW_STICKERS)) {
             val keyAds = mFirebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_NATIVE_SHOW_STICKERS)
             if (keyAds.isNotEmpty()) {
-                loadNativeAds(keyAds)
+                loadNativeUntilDone(keyAds)
             } else {
-                loadNativeAds(getString(R.string.native_show_stickers))
+                loadNativeUntilDone(getString(R.string.native_show_stickers))
             }
         }
     }
+
+    private fun loadNativeUntilDone(adConfig: String) {
+        val countDownTimer: CountDownTimer = object : CountDownTimer(25000, 5000) {
+            override fun onTick(millisUntilFinished: Long) {
+                if (!isLoadNativeDone) {
+                    loadNativeAds(adConfig)
+                }
+            }
+            override fun onFinish() {
+            }
+        }
+        countDownTimer.start()
+    }
+
     private fun performImageDownload(imageUrl: Uri?) {
         val request = DownloadManager.Request(imageUrl)
         request.setAllowedNetworkTypes(
@@ -318,7 +335,6 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
 
     fun nextAction(action:() -> Unit) {
         if (mInterstitialAd != null) {
-            // Nếu quảng cáo đã tải xong, hiển thị quảng cáo và chuyển đến Activity mới sau khi quảng cáo kết thúc
             mInterstitialAd?.fullScreenContentCallback =
                 object : com.google.android.gms.ads.FullScreenContentCallback() {
                     override fun onAdDismissedFullScreenContent() {
@@ -409,6 +425,7 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
                         adNativeVideoBinding.root as NativeAdView
                     )
                     binding.frNativeAds.addView(adNativeVideoBinding.root)
+                    isLoadNativeDone = true
                 } else {
                     //binding.rlNative.visibility = View.GONE
                 }

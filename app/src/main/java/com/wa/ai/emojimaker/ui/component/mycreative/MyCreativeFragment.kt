@@ -32,6 +32,8 @@ import com.wa.ai.emojimaker.utils.extention.visible
 @SuppressLint("NotifyDataSetChanged")
 class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCreativeViewModel>() {
 
+    private var isLoadNativeDone = false
+
     private lateinit var mMainActivity: MainActivity
     private lateinit var mMainViewModel: MainViewModel
 
@@ -170,14 +172,28 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
         if (mMainActivity.mFirebaseRemoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_MY_CREATIVE)) {
             val keyAds = mMainActivity.mFirebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_NATIVE_MY_CREATIVE)
             if (keyAds.isNotEmpty()) {
-                loadNativeAds(keyAds)
+                loadNativeUntilDone(keyAds)
             } else {
-                loadNativeAds(getString(R.string.native_my_creative))
+                loadNativeUntilDone(getString(R.string.native_my_creative))
             }
         } else {
             binding.rlNative.gone()
         }
     }
+
+    private fun loadNativeUntilDone(adConfig: String) {
+        val countDownTimer: CountDownTimer = object : CountDownTimer(25000, 5000) {
+            override fun onTick(millisUntilFinished: Long) {
+                if (!isLoadNativeDone) {
+                    loadNativeAds(adConfig)
+                }
+            }
+            override fun onFinish() {
+            }
+        }
+        countDownTimer.start()
+    }
+
 
     override fun getViewModel(): Class<MyCreativeViewModel> = MyCreativeViewModel::class.java
     override fun registerOnBackPress() {
@@ -213,6 +229,7 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
                         adNativeVideoBinding.root as NativeAdView
                     )
                     binding.frNativeAds.addView(adNativeVideoBinding.root)
+                    isLoadNativeDone = true
                 } else {
                     //binding.rlNative.visibility = View.GONE
                 }

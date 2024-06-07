@@ -105,6 +105,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
                     emojiViewModel.bitmapMutableLiveData.value?.let { it1 ->
                         AppUtils.saveSticker(this@EmojiMakerActivity,
                             it1, "creative")
+                        mSaveSuccessDialog.show(supportFragmentManager, mSaveSuccessDialog.tag)
                     }
                     toast("Downloaded!")
                 })
@@ -122,12 +123,10 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     private val mAddToPackageDialog : AddToPackageDialog by lazy {
         AddToPackageDialog().apply {
             save = {
-                //
                 if (it == null) {
                     toast(getString(R.string.please_input_package_name))
                 } else {
                     nextAction(action = {
-                        mSaveDialog.dismiss()
                         emojiViewModel.bitmapMutableLiveData.value?.let { it1 ->
                             DeviceUtils.saveToPackage(
                                 this@EmojiMakerActivity,
@@ -136,7 +135,6 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
                                 bitmapImage = it1
                             )
                         }
-                        //mDialogWaiting.show(supportFragmentManager, mDialogWaiting.tag)
                         mSaveSuccessDialog.show(supportFragmentManager, mSaveSuccessDialog.tag)
                     })
                     mFirebaseAnalytics?.logEvent("v_inter_ads_save_creative_emoji", null)
@@ -153,8 +151,6 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     private val mCreatePackageDialog : CreatePackageDialog by lazy {
         CreatePackageDialog().apply {
             confirm = { pkg ->
-                mAddToPackageDialog.dismiss()
-                mSaveDialog.dismiss()
                 nextAction(action = {
                     emojiViewModel.bitmapMutableLiveData.value?.let {
                         DeviceUtils.saveToPackage(
