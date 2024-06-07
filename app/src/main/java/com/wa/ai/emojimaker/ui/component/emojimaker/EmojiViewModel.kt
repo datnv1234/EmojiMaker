@@ -44,7 +44,7 @@ class EmojiViewModel : BaseViewModel() {
         _bitmapMutableLiveData.postValue(bitmap)
     }
 
-    fun getOptions() {
+    private fun getOptions() {
         optionList.add(ItemOptionUI("face", R.drawable.ic_face))
         optionList.add(ItemOptionUI("eyes", R.drawable.ic_eyes))
         optionList.add(ItemOptionUI("nose", R.drawable.ic_nose))
@@ -61,6 +61,7 @@ class EmojiViewModel : BaseViewModel() {
 
     fun getItemOption(context: Context) {
         viewModelScope.launch(Dispatchers.IO) {
+            getOptions()
             getPieceSticker(context)
             val listOptionEntity = mutableListOf<PagerIconUI>()
             val titles = listOf(
@@ -137,8 +138,10 @@ class EmojiViewModel : BaseViewModel() {
             for (file in listFile) {
                 val inputStream = assetManager.open("item_options/$category/$file")
                 val bitmap = BitmapFactory.decodeStream(inputStream)
-                list.add(PieceSticker(bitmap))
-                inputStream.close()
+                if (bitmap != null) {
+                    list.add(PieceSticker(bitmap))
+                    inputStream.close()
+                }
             }
         }
     }

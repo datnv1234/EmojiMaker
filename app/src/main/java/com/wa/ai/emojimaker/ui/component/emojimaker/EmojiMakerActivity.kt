@@ -212,10 +212,10 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         intent.type = null // Don't run again if rotated/etc.
         setUpViewPager()
 
-        binding.btnSave.setOnSafeClick {
+        binding.btnSave.setOnSafeClick(1000) {
             val bitmap = binding.stickerView.createBitmap()
-            emojiViewModel.setBitmap(bitmap)
             nextAction(action = {
+                emojiViewModel.setBitmap(bitmap)
                 mSaveDialog.show(supportFragmentManager, mSaveDialog.tag)
             })
             mFirebaseAnalytics?.logEvent("v_inter_ads_save_creative_emoji", null)
@@ -251,7 +251,6 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     override fun setupData() {
         emojiViewModel = ViewModelProvider(this)[EmojiViewModel::class.java]
         emojiViewModel.getItemOption(this)
-        emojiViewModel.getOptions()
         emojiViewModel.optionMutableLiveData.observe(this) {
             pagerIconAdapter.submitList(it.toMutableList())
         }

@@ -10,6 +10,7 @@ import com.adjust.sdk.AdjustConfig
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdapterResponseInfo
 import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.OnPaidEventListener
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
@@ -43,6 +44,10 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
 
     override fun getViewModel(): Class<SplashViewModel> = SplashViewModel::class.java
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        MobileAds.initialize(this)
+    }
     override fun setupView(savedInstanceState: Bundle?) {
         setStatusBarColor("#11141A")
         binding.imgLaunch.postDelayed(
