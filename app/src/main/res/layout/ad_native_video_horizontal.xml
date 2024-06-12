@@ -98,10 +98,10 @@
                 <TextView
                     android:id="@+id/ad_call_to_action"
                     android:layout_width="fill_parent"
-                    android:layout_height="@dimen/_35sdp"
+                    android:layout_height="@dimen/_39sdp"
                     android:layout_marginHorizontal="@dimen/_10sdp"
                     android:background="@drawable/background_round_8"
-                    android:backgroundTint="@color/color_2A699F"
+                    android:backgroundTint="@color/color_6993FF"
                     android:gravity="center"
                     android:text="@string/install"
                     android:textAllCaps="false"
@@ -112,7 +112,7 @@
 
             <TextView
                 style="@style/AppTheme.Ads"
-                android:backgroundTint="@color/color_2A699F" />
+                android:backgroundTint="@color/color_6993FF" />
 
         </RelativeLayout>
 
