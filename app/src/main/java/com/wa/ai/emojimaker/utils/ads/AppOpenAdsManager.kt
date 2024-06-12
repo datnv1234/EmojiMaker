@@ -8,10 +8,13 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.FullScreenContentCallback
+import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.appopen.AppOpenAd
 import com.google.android.gms.ads.appopen.AppOpenAd.AppOpenAdLoadCallback
 import com.wa.ai.emojimaker.App
 import com.wa.ai.emojimaker.R
+import com.wa.ai.emojimaker.common.Constant.ADS
+import timber.log.Timber
 import java.util.Date
 
 class AppOpenAdsManager(private val myApplication: App): ActivityLifecycleCallbacks, DefaultLifecycleObserver {
@@ -40,23 +43,32 @@ class AppOpenAdsManager(private val myApplication: App): ActivityLifecycleCallba
         return appOpenAd != null && wasLoadTimeLessThanNHoursAgo()
     }
 
+    var loadAdsCount = 0
     private fun fetchAd(){
         if (isAdAvailable()){
             return
         }
-        val loadCallbacks = object  : AppOpenAdLoadCallback(){
-            override fun onAdLoaded(appOpenAd: AppOpenAd) {
-                super.onAdLoaded(appOpenAd)
-                this@AppOpenAdsManager.appOpenAd = appOpenAd
-                loadTime = Date().time
-            }
-        }
-        val request = AdRequest.Builder().build()
         AppOpenAd.load(
             myApplication,
             currentActivity!!.getString(R.string.open_app),
-            request,
-            loadCallbacks
+            AdRequest.Builder().build(),
+            object : AppOpenAdLoadCallback() {
+                override fun onAdFailedToLoad(appOpenAd: LoadAdError) {
+                    super.onAdFailedToLoad(appOpenAd)
+                    Timber.tag(ADS).d("onAdFailedToShowFullScreenContent: ${appOpenAd.message}")
+                    Timber.tag(ADS).d("onAdFailedToShowFullScreenContent: ${appOpenAd.code}")
+                    Timber.tag(ADS).d("onAdFailedToShowFullScreenContent: ${appOpenAd.cause}")
+                    if (loadAdsCount < 5) {
+                        fetchAd()
+                        loadAdsCount++
+                    }
+                }
+                override fun onAdLoaded(appOpenAd: AppOpenAd) {
+                    super.onAdLoaded(appOpenAd)
+                    this@AppOpenAdsManager.appOpenAd = appOpenAd
+                    loadTime = Date().time
+                }
+            }
         )
     }
 
@@ -74,7 +86,7 @@ class AppOpenAdsManager(private val myApplication: App): ActivityLifecycleCallba
                 }
             }
             appOpenAd!!.show(currentActivity!!)
-        }else{
+        } else {
             fetchAd()
         }
     }
