@@ -10,15 +10,12 @@ import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.data.model.PackageModel
 import com.wa.ai.emojimaker.databinding.AdNativeVideoBinding
 import com.wa.ai.emojimaker.databinding.DialogAddToPackageBinding
-import com.wa.ai.emojimaker.evenbus.CreatePackageEvent
 import com.wa.ai.emojimaker.ui.adapter.PackageAdapter
 import com.wa.ai.emojimaker.ui.base.BaseBindingDialogFragment
 import com.wa.ai.emojimaker.utils.DeviceUtils
 import com.wa.ai.emojimaker.utils.RemoteConfigKey
 import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils
 import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 
 class AddToPackageDialog : BaseBindingDialogFragment<DialogAddToPackageBinding>() {
 
@@ -121,10 +118,5 @@ class AddToPackageDialog : BaseBindingDialogFragment<DialogAddToPackageBinding>(
                 }
             }
         }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onCreatePackageEvent(event: CreatePackageEvent) {
-        dismiss()
     }
 }

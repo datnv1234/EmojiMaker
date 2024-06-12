@@ -33,7 +33,7 @@ import com.wa.ai.emojimaker.utils.extention.visible
 class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCreativeViewModel>() {
 
     private var isLoadNativeDone = false
-
+    private lateinit var keyAdsNative: String
     private lateinit var mMainActivity: MainActivity
     private lateinit var mMainViewModel: MainViewModel
 
@@ -109,6 +109,16 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
         }
     }
 
+    val countDownTimer: CountDownTimer = object : CountDownTimer(25000, 5000) {
+        override fun onTick(millisUntilFinished: Long) {
+            if (!isLoadNativeDone) {
+                loadNativeAds(keyAdsNative)
+            }
+        }
+        override fun onFinish() {
+        }
+    }
+
     override val layoutId: Int
         get() = R.layout.fragment_my_creative
 
@@ -167,31 +177,24 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
         Adjust.onPause()
     }
 
+    override fun onDetach() {
+        super.onDetach()
+        countDownTimer.cancel()
+    }
+
     private fun loadAds() {
         setUpLoadInterAds()
+        keyAdsNative = mMainActivity.mFirebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_NATIVE_MY_CREATIVE)
+
 
         if (mMainActivity.mFirebaseRemoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_MY_CREATIVE)) {
-            val keyAds = mMainActivity.mFirebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_NATIVE_MY_CREATIVE)
-            if (keyAds.isNotEmpty()) {
-                loadNativeUntilDone(keyAds)
-            } else {
-                loadNativeUntilDone(getString(R.string.native_my_creative))
-            }
+            loadNativeUntilDone()
         } else {
             binding.rlNative.gone()
         }
     }
 
-    private fun loadNativeUntilDone(adConfig: String) {
-        val countDownTimer: CountDownTimer = object : CountDownTimer(25000, 5000) {
-            override fun onTick(millisUntilFinished: Long) {
-                if (!isLoadNativeDone) {
-                    loadNativeAds(adConfig)
-                }
-            }
-            override fun onFinish() {
-            }
-        }
+    private fun loadNativeUntilDone() {
         countDownTimer.start()
     }
 

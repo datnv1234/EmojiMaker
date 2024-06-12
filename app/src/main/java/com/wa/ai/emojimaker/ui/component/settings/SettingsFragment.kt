@@ -25,7 +25,7 @@ import com.wa.ai.emojimaker.utils.extention.hideSystemUI
 class SettingsFragment : BaseBindingFragment<FragmentSettingsBinding, SettingsViewModel>() {
 
     private var isLoadNativeDone = false
-
+    private lateinit var keyAdsNative: String
     private lateinit var mMainActivity: MainActivity
     private val ratingDialog: DialogRating by lazy {
         DialogRating().apply {
@@ -48,6 +48,15 @@ class SettingsFragment : BaseBindingFragment<FragmentSettingsBinding, SettingsVi
 
     private lateinit var mFirebaseRemoteConfig: FirebaseRemoteConfig
 
+    val countDownTimer: CountDownTimer = object : CountDownTimer(20000, 5000) {
+        override fun onTick(millisUntilFinished: Long) {
+            if (!isLoadNativeDone) {
+                loadNativeAds(keyAdsNative)
+            }
+        }
+        override fun onFinish() {
+        }
+    }
 
     override val title: String
         get() = getString(R.string.settings)
@@ -116,32 +125,23 @@ class SettingsFragment : BaseBindingFragment<FragmentSettingsBinding, SettingsVi
         super.onPause()
         Adjust.onPause()
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        countDownTimer.cancel()
+    }
     private fun loadAds() {
         setUpLoadInterAds()
-
+        keyAdsNative = mMainActivity.mFirebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_NATIVE_SETTINGS)
         if (mMainActivity.mFirebaseRemoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_SETTINGS)) {
-            val adConfig = mMainActivity.mFirebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_NATIVE_SETTINGS)
-            if (adConfig.isNotEmpty()) {
-                loadNativeUntilDone(adConfig)
-            }
-            else {
-                loadNativeUntilDone(getString(R.string.native_settings))
-            }
+            loadNativeUntilDone()
         } else {
             binding.rlNative.visibility = View.GONE
         }
     }
 
-    private fun loadNativeUntilDone(adConfig: String) {
-        val countDownTimer: CountDownTimer = object : CountDownTimer(25000, 5000) {
-            override fun onTick(millisUntilFinished: Long) {
-                if (!isLoadNativeDone) {
-                    loadNativeAds(adConfig)
-                }
-            }
-            override fun onFinish() {
-            }
-        }
+    private fun loadNativeUntilDone() {
+
         countDownTimer.start()
     }
 

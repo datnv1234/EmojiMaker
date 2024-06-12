@@ -34,12 +34,22 @@ import java.io.File
 class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
 
     private var isLoadNativeDone = false
-
+    private lateinit var keyAdsNative: String
     private val CREATE_STICKER_PACK_ACTION = "org.telegram.messenger.CREATE_STICKER_PACK"
     private val CREATE_STICKER_PACK_EMOJIS_EXTRA = "STICKER_EMOJIS"
     private val CREATE_STICKER_PACK_IMPORTER_EXTRA = "IMPORTER"
 
     lateinit var mMainActivity: MainActivity
+
+    val countDownTimer: CountDownTimer = object : CountDownTimer(25000, 5000) {
+        override fun onTick(millisUntilFinished: Long) {
+            if (!isLoadNativeDone) {
+                loadNativeAds(keyAdsNative)
+            }
+        }
+        override fun onFinish() {
+        }
+    }
 
     private val sharePackageDialog : SharePackageDialog by lazy {
         SharePackageDialog().apply {
@@ -134,16 +144,6 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
             }
             mMainActivity.mFirebaseAnalytics?.logEvent("v_inter_ads_create_sticker", null)
         }
-
-        val countDownTimer: CountDownTimer = object : CountDownTimer(2000, 1000) {
-            override fun onTick(millisUntilFinished: Long) {
-
-            }
-            override fun onFinish() {
-                binding.rvCategory.visible()
-            }
-        }
-        countDownTimer.start()
     }
 
     override fun setupData() {
@@ -170,32 +170,23 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
         Adjust.onPause()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        countDownTimer.cancel()
+    }
+
     private fun loadAds() {
         setUpLoadInterAds()
-
+        keyAdsNative = mMainActivity.mFirebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_NATIVE_HOME)
         if (mMainActivity.mFirebaseRemoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_HOME)) {
-            val adConfig = mMainActivity.mFirebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_NATIVE_HOME)
-            if (adConfig.isNotEmpty()) {
-                loadNativeUntilDone(adConfig)
-            }
-            else {
-                loadNativeUntilDone(getString(R.string.native_home))
-            }
+            loadNativeUntilDone()
         } else {
             binding.rlNative.visibility = View.GONE
         }
     }
 
-    private fun loadNativeUntilDone(adConfig: String) {
-        val countDownTimer: CountDownTimer = object : CountDownTimer(25000, 5000) {
-            override fun onTick(millisUntilFinished: Long) {
-                if (!isLoadNativeDone) {
-                    loadNativeAds(adConfig)
-                }
-            }
-            override fun onFinish() {
-            }
-        }
+    private fun loadNativeUntilDone() {
+
         countDownTimer.start()
     }
 
