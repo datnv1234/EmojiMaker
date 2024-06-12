@@ -37,6 +37,7 @@ class MultiLangActivity : BaseBindingActivity<ActivityMultiLangBinding, MultiLan
 	private val multiLangAdapter: MultiLangAdapter by lazy {
 		MultiLangAdapter().apply {
 			callBack = { pos, item ->
+				binding.btnChooseLang.visible()
 				code = item.code ?: code
 				currentPosLanguage = pos
 			}
@@ -108,8 +109,7 @@ class MultiLangActivity : BaseBindingActivity<ActivityMultiLangBinding, MultiLan
 			Constant.TYPE_LANGUAGE_SPLASH -> {
 				val isFirstRun = SharedPreferenceHelper.getBoolean("isFirstRun", true)
 				binding.imgBack.invisible()
-				binding.imgChooseLang.visible()
-				binding.imgChooseLang.setOnClickListener {
+				binding.btnChooseLang.setOnClickListener {
 					SystemUtil.changeLang(code.ifEmpty { oldCode }, this)
 					if (isFirstRun) {
 						gotoIntroActivity()
@@ -122,7 +122,6 @@ class MultiLangActivity : BaseBindingActivity<ActivityMultiLangBinding, MultiLan
 
 			Constant.TYPE_LANGUAGE_SETTING -> {
 				binding.imgBack.visible()
-				binding.imgChooseLang.invisible()
 				binding.imgBack.setOnClickListener {
 					if (oldCode != code) {
 						SystemUtil.changeLang(code.ifEmpty { oldCode }, this)
