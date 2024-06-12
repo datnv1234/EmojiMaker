@@ -2,6 +2,7 @@ package com.wa.ai.emojimaker.ui.component.main
 
 import android.content.Context
 import android.graphics.BitmapFactory
+import android.os.CountDownTimer
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -14,6 +15,7 @@ class MainViewModel : BaseViewModel() {
 
     var category: String? = null
     var categorySize: Int = 0
+    private var timerReloadBanner : CountDownTimer? = null
 
     private val listCategory = listOf(
         "brainy_endeavors",
@@ -33,6 +35,32 @@ class MainViewModel : BaseViewModel() {
     private val _stickerMutableLiveData: MutableLiveData<List<MadeStickerModel>> = MutableLiveData()
     val stickerMutableLiveData: LiveData<List<MadeStickerModel>>
         get() = _stickerMutableLiveData
+
+    private val _loadBanner: MutableLiveData<Boolean> = MutableLiveData()
+    val loadBanner: LiveData<Boolean>
+        get() = _loadBanner
+
+    private fun createCountDownTimerReloadBanner(time: Long): CountDownTimer {
+        return object : CountDownTimer(time, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+            }
+
+            override fun onFinish() {
+                _loadBanner.postValue(true)
+            }
+        }
+    }
+
+
+    fun starTimeCountReloadBanner(time: Long) {
+        kotlin.runCatching {
+            timerReloadBanner?.cancel()
+            timerReloadBanner = createCountDownTimerReloadBanner(time)
+            timerReloadBanner?.start()
+        }.onFailure {
+            it.printStackTrace()
+        }
+    }
 
     fun getStickers(context: Context) {
         category = listCategory.random()

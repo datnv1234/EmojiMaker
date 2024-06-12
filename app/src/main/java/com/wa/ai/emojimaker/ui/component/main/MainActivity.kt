@@ -48,12 +48,13 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
     private lateinit var appUpdateManager: AppUpdateManager
     private val updateType = AppUpdateType.IMMEDIATE
 
-    private var keyAdInter: String = ""
+    private var keyAdInter: String = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_INTER_HOME_SCREEN)
+    private val interDelay = FirebaseRemoteConfig.getInstance().getLong(RemoteConfigKey.INTER_DELAY)
+    private val keyAdsBanner = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_MAIN)
 
     private var mInterstitialAd: InterstitialAd? = null
     private var analytics: FirebaseAnalytics? = null
     var mFirebaseAnalytics: FirebaseAnalytics? = null
-    private val interDelay = FirebaseRemoteConfig.getInstance().getLong(RemoteConfigKey.INTER_DELAY)
 
     override val layoutId: Int
         get() = R.layout.activity_main
@@ -83,9 +84,17 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
     }
 
     override fun setupData() {
-        keyAdInter = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_INTER_HOME_SCREEN)
-        loadBanner()
         viewModel.getStickers(this)
+        val isShowBanner = FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_BANNER_MAIN)
+        if (!isShowBanner) {
+            binding.rlBanner.gone()
+        } else {
+            loadBanner()
+            viewModel.loadBanner.observe(this) {
+                loadBanner()
+            }
+        }
+
     }
 
     override fun onResume() {
@@ -159,13 +168,8 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
     }
 
     private fun loadBanner() {
-        val keyAdsBanner = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_MAIN)
-
-        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_BANNER_MAIN)) {
-            BannerUtils.instance?.loadCollapsibleBanner(this, keyAdsBanner)
-        } else {
-            binding.rlBanner.gone()
-        }
+        viewModel.starTimeCountReloadBanner(20000)
+        BannerUtils.instance?.loadCollapsibleBanner(this, keyAdsBanner)
     }
 
     fun openNextScreen(action:() -> Unit) {
