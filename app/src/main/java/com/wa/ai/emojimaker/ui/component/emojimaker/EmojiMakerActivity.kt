@@ -41,10 +41,12 @@ import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import com.wa.ai.emojimaker.App
 import com.wa.ai.emojimaker.R
+import com.wa.ai.emojimaker.common.Constant
+import com.wa.ai.emojimaker.common.Constant.ADS
 import com.wa.ai.emojimaker.common.Constant.INTERNAL_MY_CREATIVE_DIR
 import com.wa.ai.emojimaker.common.Constant.TAG
-import com.wa.ai.emojimaker.data.model.ItemOptionUI
 import com.wa.ai.emojimaker.databinding.ActivityEmojiMakerBinding
 import com.wa.ai.emojimaker.ui.adapter.OptionAdapter
 import com.wa.ai.emojimaker.ui.adapter.PagerIconAdapter
@@ -74,14 +76,17 @@ import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 
 
 class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, StickerViewModel>() {
 
-    lateinit var keyAds: String
-    private val mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
     private var isFinishImmediately = false
+
+    private var keyInter = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_INTER_CREATE_EMOJI)
+    private val keyBanner = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_CREATE_EMOJI)
+    private val interDelay = FirebaseRemoteConfig.getInstance().getLong(RemoteConfigKey.INTER_DELAY)
 
     private var mInterstitialAd: InterstitialAd? = null
     private var analytics: FirebaseAnalytics? = null
@@ -177,7 +182,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
                     isFinishImmediately = true
                     finish()
                     startActivity(Intent(this@EmojiMakerActivity, MainActivity::class.java))
-                }, reloadAd = false)
+                })
 
             }
             createMore = {
@@ -235,16 +240,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     override fun onStart() {
         super.onStart()
         loadBanner()
-        keyAds = mFirebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_INTER_CREATE_EMOJI)
-        if (keyAds.isEmpty()) {
-            keyAds = getString(R.string.inter_create_emoji)
-        }
-
-        if (mFirebaseRemoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_INTER_CREATE_EMOJI)) {
-            loadInterAds(keyAds)
-        }
-
-        //mDialogPrepare.show(supportFragmentManager, mDialogPrepare.tag)
+        loadInterAds()
     }
     override fun setupData() {
         emojiViewModel = ViewModelProvider(this)[EmojiViewModel::class.java]
@@ -658,7 +654,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
             .setPositiveButton(getString(R.string.ok)) { _, _ ->
                 nextAction(action = {
                     super.finish()
-                }, reloadAd = false)
+                })
 
             }
             .setNegativeButton(getString(R.string.no), null)
@@ -795,28 +791,21 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
 
 
     private fun loadBanner() {
-        val keyAdsBanner: String
-        val timeDelay: Long
-
-        if (DeviceUtils.checkInternetConnection(this) && mFirebaseRemoteConfig.getBoolean(
-                RemoteConfigKey.IS_SHOW_ADS_BANNER_CREATE_EMOJI)) {
-            val adConfig = mFirebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_BANNER_CREATE_EMOJI)
-            keyAdsBanner = adConfig.ifEmpty {
-                getString(R.string.banner_create_emoji)
-            }
-
-            BannerUtils.instance?.loadCollapsibleBanner(this, keyAdsBanner)
+        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_BANNER_CREATE_EMOJI)) {
+            BannerUtils.instance?.loadCollapsibleBanner(this, keyBanner)
         } else {
             binding.rlBanner.gone()
         }
     }
 
-    fun nextAction(action:() -> Unit, reloadAd: Boolean = true) {
-        if (mInterstitialAd != null) {
+    private fun nextAction(action:() -> Unit) {
+        val isShowAd = (Date().time - App.adTimeStamp) > interDelay
+        if (isShowAd && mInterstitialAd != null) {
             // Nếu quảng cáo đã tải xong, hiển thị quảng cáo và chuyển đến Activity mới sau khi quảng cáo kết thúc
             mInterstitialAd?.fullScreenContentCallback =
                 object : com.google.android.gms.ads.FullScreenContentCallback() {
                     override fun onAdDismissedFullScreenContent() {
+                        App.adTimeStamp = Date().time
                         action()
                     }
 
@@ -826,20 +815,32 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
                     }
                 }
             mInterstitialAd?.show(this@EmojiMakerActivity)
-            if(reloadAd) loadInterAds(keyAds)
+            loadInterAds()
         }else{
             action()
         }
     }
 
     //Ads
-    fun loadInterAds(keyAdsInter: String) {
+    var loadInterCount = 0
+    private fun loadInterAds() {
 
         InterstitialAd.load(
             this,
-            keyAdsInter,
+            keyInter,
             AdRequest.Builder().build(),
             object : InterstitialAdLoadCallback() {
+
+                override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                    mInterstitialAd = null
+                    Timber.tag(ADS).d("onAdFailedToShowFullScreenContent: ${loadAdError.message}")
+                    Timber.tag(ADS).d("onAdFailedToShowFullScreenContent: ${loadAdError.cause}")
+                    if (loadInterCount < 3) {
+                        loadInterAds()
+                        loadInterCount++
+                    } else
+                        loadInterCount = 0
+                }
                 override fun onAdLoaded(interstitialAd: InterstitialAd) {
                     mInterstitialAd = interstitialAd
                     mFirebaseAnalytics?.logEvent("d_load_inter", null)
@@ -866,11 +867,6 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
                             params.putString(FirebaseAnalytics.Param.CURRENCY, "USD")
                             analytics?.logEvent(FirebaseAnalytics.Event.AD_IMPRESSION, params)
                         }
-                }
-
-                override fun onAdFailedToLoad(loadAdError: LoadAdError) {
-                    mInterstitialAd = null
-                    mFirebaseAnalytics?.logEvent("e_load_inter", null)
                 }
             })
 

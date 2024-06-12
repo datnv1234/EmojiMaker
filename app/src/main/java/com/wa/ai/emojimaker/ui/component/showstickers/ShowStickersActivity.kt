@@ -156,6 +156,11 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
     }
 
     override fun setupData() {
+
+    }
+
+    override fun onStart() {
+        super.onStart()
         loadAds()
     }
 
