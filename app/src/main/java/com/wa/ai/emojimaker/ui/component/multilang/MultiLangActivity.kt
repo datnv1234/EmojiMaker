@@ -26,7 +26,7 @@ import com.wa.ai.emojimaker.utils.extention.visible
 class MultiLangActivity : BaseBindingActivity<ActivityMultiLangBinding, MultiLangViewModel>() {
 
 	private var isLoadNativeDone = false
-	private var nativeConfig = ""
+	private var keynative = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_LANGUAGE)
 
 
 	private var type: Int = 0
@@ -59,9 +59,7 @@ class MultiLangActivity : BaseBindingActivity<ActivityMultiLangBinding, MultiLan
 	}
 
 	override fun setupData() {
-		val firebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
-		nativeConfig = firebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_NATIVE_LANGUAGE)
-		if (firebaseRemoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_LANGUAGE)) {
+		if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_LANGUAGE)) {
 			loadNativeUntilDone()
 		}
 
@@ -74,13 +72,14 @@ class MultiLangActivity : BaseBindingActivity<ActivityMultiLangBinding, MultiLan
 	val countDownTimer: CountDownTimer = object : CountDownTimer(25000, 5000) {
 		override fun onTick(millisUntilFinished: Long) {
 			if (!isLoadNativeDone) {
-				loadNativeAds(nativeConfig)
+				loadNativeAds()
 			}
 		}
 		override fun onFinish() {
 		}
 	}
 	private fun loadNativeUntilDone() {
+		loadNativeAds()
 		countDownTimer.start()
 	}
 
@@ -140,12 +139,12 @@ class MultiLangActivity : BaseBindingActivity<ActivityMultiLangBinding, MultiLan
 		finish()
 	}
 
-	private fun loadNativeAds(keyAds:String) {
+	private fun loadNativeAds() {
 		if (!DeviceUtils.checkInternetConnection(applicationContext)) binding.rlNative.visibility = View.GONE
 		this.let {
 			NativeAdsUtils.instance.loadNativeAds(
 				applicationContext,
-				keyAds
+				keynative
 			) { nativeAds ->
 				if (nativeAds != null) {
 					//binding.frNativeAds.removeAllViews()

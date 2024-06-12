@@ -2,6 +2,7 @@ package com.wa.ai.emojimaker.ui.component.intro
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.view.View
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
@@ -27,10 +28,21 @@ import kotlinx.coroutines.withContext
 
 class IntroActivity : BaseBindingActivity<ActivityIntroBinding, IntroViewModel>() {
 
+    private var isLoadNativeDone = false
     private val introAdapter: IntroAdapter by lazy { IntroAdapter() }
-    private lateinit var mFirebaseRemoteConfig : FirebaseRemoteConfig
+    private val keyNative = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_INTRO)
     override val layoutId: Int
         get() = R.layout.activity_intro
+
+    val countDownTimer: CountDownTimer = object : CountDownTimer(25000, 5000) {
+        override fun onTick(millisUntilFinished: Long) {
+            if (!isLoadNativeDone) {
+                loadNativeAds()
+            }
+        }
+        override fun onFinish() {
+        }
+    }
 
     override fun getViewModel(): Class<IntroViewModel> = IntroViewModel::class.java
 
@@ -41,15 +53,9 @@ class IntroActivity : BaseBindingActivity<ActivityIntroBinding, IntroViewModel>(
     }
 
     override fun setupData() {
-        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
-        if (mFirebaseRemoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_INTRO)) {
-            val adConfig = mFirebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_NATIVE_INTRO)
-            if (adConfig.isNotEmpty()) {
-                loadNativeAds(adConfig)
-            }
-            else {
-                loadNativeAds(getString(R.string.native_intro))
-            }
+
+        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_INTRO)) {
+            loadNativeUntilDone()
         } else {
             binding.rlNative.visibility = View.GONE
         }
@@ -68,6 +74,16 @@ class IntroActivity : BaseBindingActivity<ActivityIntroBinding, IntroViewModel>(
     override fun onPause() {
         super.onPause()
         Adjust.onPause()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        countDownTimer.cancel()
+    }
+
+    private fun loadNativeUntilDone() {
+        loadNativeAds()
+        countDownTimer.start()
     }
 
     private fun startMainActivity() {
@@ -123,19 +139,14 @@ class IntroActivity : BaseBindingActivity<ActivityIntroBinding, IntroViewModel>(
         }
     }
 
-    private fun loadNativeAds(keyAds:String) {
+    private fun loadNativeAds() {
         if (!DeviceUtils.checkInternetConnection(applicationContext)) binding.rlNative.visibility = View.GONE
         this.let {
             NativeAdsUtils.instance.loadNativeAds(
                 applicationContext,
-                keyAds
+                keyNative
             ) { nativeAds ->
                 if (nativeAds != null) {
-                    if (isDestroyed) {
-                        nativeAds.destroy()
-                        return@loadNativeAds
-                    }
-                    //binding.frNativeAds.removeAllViews()
                     val adNativeVideoBinding = AdNativeVideoBinding.inflate(layoutInflater)
                     NativeAdsUtils.instance.populateNativeAdVideoView(
                         nativeAds,
