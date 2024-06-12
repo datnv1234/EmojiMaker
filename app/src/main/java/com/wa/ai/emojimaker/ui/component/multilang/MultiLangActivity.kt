@@ -23,7 +23,6 @@ import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils
 import com.wa.ai.emojimaker.utils.extention.invisible
 import com.wa.ai.emojimaker.utils.extention.visible
 
-
 class MultiLangActivity : BaseBindingActivity<ActivityMultiLangBinding, MultiLangViewModel>() {
 
 	private var isLoadNativeDone = false
@@ -66,7 +65,7 @@ class MultiLangActivity : BaseBindingActivity<ActivityMultiLangBinding, MultiLan
 		}
 
 		viewModel.getListLanguage()
-		viewModel.languageLiveData.observe(this) {
+		viewModel.languageLiveData.observe(this) { it ->
 			multiLangAdapter.submitList(it)
 			it.indexOfFirst { it.code == code }.let { pos ->
 				currentPosLanguage = pos
@@ -126,7 +125,7 @@ class MultiLangActivity : BaseBindingActivity<ActivityMultiLangBinding, MultiLan
 				binding.imgChooseLang.invisible()
 				binding.imgBack.setOnClickListener {
 					if (oldCode != code) {
-						SystemUtil.changeLang(if (code.isNotEmpty()) code else oldCode, this)
+						SystemUtil.changeLang(code.ifEmpty { oldCode }, this)
 						val i = Intent(this, MainActivity::class.java)
 						i.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
 						startActivity(i)
@@ -154,10 +153,6 @@ class MultiLangActivity : BaseBindingActivity<ActivityMultiLangBinding, MultiLan
 				keyAds
 			) { nativeAds ->
 				if (nativeAds != null) {
-					if (isDestroyed) {
-						nativeAds.destroy()
-						return@loadNativeAds
-					}
 					//binding.frNativeAds.removeAllViews()
 					val adNativeVideoBinding = AdNativeVideoBinding.inflate(layoutInflater)
 					NativeAdsUtils.instance.populateNativeAdVideoView(
