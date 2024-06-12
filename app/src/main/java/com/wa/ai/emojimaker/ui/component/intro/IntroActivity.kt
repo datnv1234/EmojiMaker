@@ -153,6 +153,7 @@ class IntroActivity : BaseBindingActivity<ActivityIntroBinding, IntroViewModel>(
                         adNativeVideoBinding.root as NativeAdView
                     )
                     binding.frNativeAds.addView(adNativeVideoBinding.root)
+                    isLoadNativeDone = true
                 } else {
                     //binding.rlNative.visibility = View.GONE
                 }
