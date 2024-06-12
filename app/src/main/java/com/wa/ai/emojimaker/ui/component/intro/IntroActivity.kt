@@ -71,6 +71,9 @@ class IntroActivity : BaseBindingActivity<ActivityIntroBinding, IntroViewModel>(
     }
 
     private fun startMainActivity() {
+        getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit()
+            .putBoolean("isFirstRun", false).apply()
+        SharedPreferenceHelper.storeBoolean("isFirstRun", false)
         Intent(this@IntroActivity, MainActivity::class.java).apply {
             startActivity(this)
             finish()
@@ -87,7 +90,7 @@ class IntroActivity : BaseBindingActivity<ActivityIntroBinding, IntroViewModel>(
                         lifecycleScope.launch(Dispatchers.IO) {
                             SharedPreferenceHelper.storeInt(
                                 Constant.KEY_FIRST_SHOW_INTRO,
-                                Constant.TYPE_SHOW_PERMISSION
+                                Constant.TYPE_SHOW_LANGUAGE_ACT
                             )
 
                             withContext(Dispatchers.Main) {

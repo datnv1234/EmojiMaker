@@ -15,19 +15,4 @@ import javax.inject.Inject
 class SplashViewModel @Inject constructor(
 ) : BaseViewModel() {
 
-
-    private val _typeNextScreen: MutableLiveData<Int> = MutableLiveData()
-    val typeNextScreen: LiveData<Int>
-        get() = _typeNextScreen
-
-
-    fun getTypeNextScreen() = viewModelScope.launch(Dispatchers.IO) {
-        _typeNextScreen.postValue(
-            SharedPreferenceHelper.getInt(
-                Constant.KEY_FIRST_SHOW_INTRO,
-                Constant.TYPE_SHOW_LANGUAGE_ACT
-            )
-        )
-    }
-
 }

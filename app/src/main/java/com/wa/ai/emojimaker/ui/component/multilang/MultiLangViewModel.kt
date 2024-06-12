@@ -4,8 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.wa.ai.emojimaker.R
-import com.wa.ai.emojimaker.common.Constant
-import com.wa.ai.emojimaker.data.local.SharedPreferenceHelper
 import com.wa.ai.emojimaker.data.model.LanguageUI
 import com.wa.ai.emojimaker.ui.base.BaseViewModel
 import com.wa.ai.emojimaker.ui.base.toMutableList
@@ -58,13 +56,4 @@ class MultiLangViewModel : BaseViewModel() {
         listLanguageDefault.add(language6)
         _languageLiveData.postValue(listLanguageDefault)
     }
-
-    fun saveFirstKeyIntro() =
-        viewModelScope.launch(Dispatchers.IO) {
-            SharedPreferenceHelper.storeInt(
-                Constant.KEY_FIRST_SHOW_INTRO,
-                Constant.TYPE_SHOW_INTRO_ACT
-            )
-        }
-
 }

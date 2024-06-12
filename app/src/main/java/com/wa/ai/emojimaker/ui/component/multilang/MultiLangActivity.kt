@@ -3,13 +3,13 @@ package com.wa.ai.emojimaker.ui.component.multilang
 import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.util.Log
 import android.view.View
 import com.adjust.sdk.Adjust
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.common.Constant
+import com.wa.ai.emojimaker.data.local.SharedPreferenceHelper
 import com.wa.ai.emojimaker.databinding.ActivityMultiLangBinding
 import com.wa.ai.emojimaker.databinding.AdNativeVideoBinding
 import com.wa.ai.emojimaker.ui.adapter.MultiLangAdapter
@@ -27,6 +27,8 @@ import com.wa.ai.emojimaker.utils.extention.visible
 class MultiLangActivity : BaseBindingActivity<ActivityMultiLangBinding, MultiLangViewModel>() {
 
 	private var isLoadNativeDone = false
+	private var nativeConfig = ""
+
 
 	private var type: Int = 0
 	private var currentPosLanguage = 0
@@ -54,19 +56,15 @@ class MultiLangActivity : BaseBindingActivity<ActivityMultiLangBinding, MultiLan
 		oldCode = SystemUtil.getPreLanguage(this)
 		code = oldCode
 		updateUIForType(type)
-		initAction()
 	}
 
 	override fun setupData() {
 		val firebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
+		nativeConfig = firebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_NATIVE_LANGUAGE)
 		if (firebaseRemoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_LANGUAGE)) {
-			val keyAds = firebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_NATIVE_LANGUAGE)
-			if (keyAds.isNotEmpty()) {
-				loadNativeUntilDone(keyAds)
-			} else {
-				loadNativeUntilDone(getString(R.string.native_language))
-			}
+			loadNativeUntilDone()
 		}
+
 		viewModel.getListLanguage()
 		viewModel.languageLiveData.observe(this) {
 			multiLangAdapter.submitList(it)
@@ -77,16 +75,16 @@ class MultiLangActivity : BaseBindingActivity<ActivityMultiLangBinding, MultiLan
 		}
 	}
 
-	private fun loadNativeUntilDone(adConfig: String) {
-		val countDownTimer: CountDownTimer = object : CountDownTimer(25000, 5000) {
-			override fun onTick(millisUntilFinished: Long) {
-				if (!isLoadNativeDone) {
-					loadNativeAds(adConfig)
-				}
-			}
-			override fun onFinish() {
+	val countDownTimer: CountDownTimer = object : CountDownTimer(25000, 5000) {
+		override fun onTick(millisUntilFinished: Long) {
+			if (!isLoadNativeDone) {
+				loadNativeAds(nativeConfig)
 			}
 		}
+		override fun onFinish() {
+		}
+	}
+	private fun loadNativeUntilDone() {
 		countDownTimer.start()
 	}
 
@@ -100,19 +98,25 @@ class MultiLangActivity : BaseBindingActivity<ActivityMultiLangBinding, MultiLan
 		Adjust.onPause()
 	}
 
-	private fun initAction() {
-
+	override fun onDestroy() {
+		super.onDestroy()
+		countDownTimer.cancel()
 	}
 
 	private fun updateUIForType(type: Int) {
+
 		when (type) {
 			Constant.TYPE_LANGUAGE_SPLASH -> {
+				val isFirstRun = SharedPreferenceHelper.getBoolean("isFirstRun", true)
 				binding.imgBack.invisible()
 				binding.imgChooseLang.visible()
 				binding.imgChooseLang.setOnClickListener {
-					viewModel.saveFirstKeyIntro()
 					SystemUtil.changeLang(code.ifEmpty { oldCode }, this)
-					startActivity(Intent(this, IntroActivity::class.java))
+					if (isFirstRun) {
+						gotoIntroActivity()
+					} else {
+						gotoMainActivity()
+					}
 					finish()
 				}
 			}
@@ -131,6 +135,15 @@ class MultiLangActivity : BaseBindingActivity<ActivityMultiLangBinding, MultiLan
 				}
 			}
 		}
+	}
+
+	private fun gotoIntroActivity() {
+		startActivity(Intent(this, IntroActivity::class.java))
+		finish()
+	}
+	private fun gotoMainActivity() {
+		startActivity(Intent(this, MainActivity::class.java))
+		finish()
 	}
 
 	private fun loadNativeAds(keyAds:String) {
