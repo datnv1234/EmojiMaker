@@ -35,7 +35,7 @@ import com.wa.ai.emojimaker.utils.extention.visible
 class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCreativeViewModel>() {
 
     private var isLoadNativeDone = false
-    private var keyAdsNative = ""
+    private var keyAdsNative = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_MY_CREATIVE)
 
     private lateinit var mMainActivity: MainActivity
     private lateinit var mMainViewModel: MainViewModel
@@ -170,16 +170,13 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
         Adjust.onPause()
     }
     override fun onDestroy() {
-        Log.d("datnv", "onDestroy: ")
         super.onDestroy()
         countDownTimer.cancel()
     }
 
     private fun loadAds() {
         setUpLoadInterAds()
-        val firebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
-        keyAdsNative = firebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_NATIVE_MY_CREATIVE)
-        if (firebaseRemoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_MY_CREATIVE)) {
+        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_MY_CREATIVE)) {
             loadNativeUntilDone()
         } else {
             binding.rlNative.gone()
@@ -189,13 +186,14 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
     val countDownTimer: CountDownTimer = object : CountDownTimer(25000, 5000) {
         override fun onTick(millisUntilFinished: Long) {
             if (!isLoadNativeDone) {
-                loadNativeAds(keyAdsNative)
+                loadNativeAds()
             }
         }
         override fun onFinish() {
         }
     }
     private fun loadNativeUntilDone() {
+        loadNativeAds()
         countDownTimer.start()
     }
 
@@ -211,15 +209,14 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
         }
     }
 
-    private fun loadNativeAds(keyAds:String) {
+    private fun loadNativeAds() {
         if (!DeviceUtils.checkInternetConnection(requireContext())) binding.rlNative.visibility = View.GONE
         this.let {
             NativeAdsUtils.instance.loadNativeAds(
                 requireContext(),
-                keyAds
+                keyAdsNative
             ) { nativeAds ->
                 if (nativeAds != null && isAdded && isVisible) {
-                    //binding.frNativeAds.removeAllViews()
                     val adNativeVideoBinding = AdNativeVideoHorizontalBinding.inflate(layoutInflater)
                     NativeAdsUtils.instance.populateNativeAdVideoView(
                         nativeAds,

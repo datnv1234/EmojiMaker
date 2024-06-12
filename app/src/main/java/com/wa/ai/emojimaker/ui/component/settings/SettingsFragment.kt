@@ -25,8 +25,10 @@ import com.wa.ai.emojimaker.utils.extention.hideSystemUI
 class SettingsFragment : BaseBindingFragment<FragmentSettingsBinding, SettingsViewModel>() {
 
     private var isLoadNativeDone = false
-    private lateinit var keyAdsNative: String
+    private val keyAdsNative = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_SETTINGS)
+
     private lateinit var mMainActivity: MainActivity
+
     private val ratingDialog: DialogRating by lazy {
         DialogRating().apply {
             onRating = {
@@ -46,12 +48,10 @@ class SettingsFragment : BaseBindingFragment<FragmentSettingsBinding, SettingsVi
         }
     }
 
-    private lateinit var mFirebaseRemoteConfig: FirebaseRemoteConfig
-
     val countDownTimer: CountDownTimer = object : CountDownTimer(20000, 5000) {
         override fun onTick(millisUntilFinished: Long) {
             if (!isLoadNativeDone) {
-                loadNativeAds(keyAdsNative)
+                loadNativeAds()
             }
         }
         override fun onFinish() {
@@ -132,7 +132,7 @@ class SettingsFragment : BaseBindingFragment<FragmentSettingsBinding, SettingsVi
     }
     private fun loadAds() {
         setUpLoadInterAds()
-        keyAdsNative = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_SETTINGS)
+
         if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_SETTINGS)) {
             loadNativeUntilDone()
         } else {
@@ -141,6 +141,7 @@ class SettingsFragment : BaseBindingFragment<FragmentSettingsBinding, SettingsVi
     }
 
     private fun loadNativeUntilDone() {
+        loadNativeAds()
         countDownTimer.start()
     }
 
@@ -150,12 +151,12 @@ class SettingsFragment : BaseBindingFragment<FragmentSettingsBinding, SettingsVi
         }
     }
 
-    private fun loadNativeAds(keyAds:String) {
+    private fun loadNativeAds() {
         if (!DeviceUtils.checkInternetConnection(requireContext())) binding.rlNative.visibility = View.GONE
         this.let {
             NativeAdsUtils.instance.loadNativeAds(
                 requireContext(),
-                keyAds
+                keyAdsNative
             ) { nativeAds ->
                 if (nativeAds != null && isAdded && isVisible) {
                     if (isDetached) {
