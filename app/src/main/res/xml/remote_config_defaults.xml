@@ -12,6 +12,11 @@
   </entry>
 
   <entry>
+    <key>banner_reload</key>
+    <value>20000</value>
+  </entry>
+
+  <entry>
     <key>key_delay_load_ads</key>
     <value>3000</value>
   </entry>

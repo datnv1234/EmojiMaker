@@ -51,6 +51,7 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
     private var keyAdInter: String = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_INTER_HOME_SCREEN)
     private val interDelay = FirebaseRemoteConfig.getInstance().getLong(RemoteConfigKey.INTER_DELAY)
     private val keyAdsBanner = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_MAIN)
+    private val bannerReload = FirebaseRemoteConfig.getInstance().getLong(RemoteConfigKey.BANNER_RELOAD)
 
     private var mInterstitialAd: InterstitialAd? = null
     private var analytics: FirebaseAnalytics? = null
@@ -90,11 +91,10 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
             binding.rlBanner.gone()
         } else {
             loadBanner()
-            viewModel.loadBanner.observe(this) {
-                loadBanner()
-            }
         }
-
+        viewModel.loadBanner.observe(this) {
+            loadBanner()
+        }
     }
 
     override fun onResume() {
@@ -168,7 +168,7 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
     }
 
     private fun loadBanner() {
-        viewModel.starTimeCountReloadBanner(20000)
+        viewModel.starTimeCountReloadBanner(bannerReload)
         BannerUtils.instance?.loadCollapsibleBanner(this, keyAdsBanner)
     }
 

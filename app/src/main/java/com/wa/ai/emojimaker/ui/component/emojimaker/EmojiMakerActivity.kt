@@ -87,6 +87,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     private var keyInter = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_INTER_CREATE_EMOJI)
     private val keyBanner = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_CREATE_EMOJI)
     private val interDelay = FirebaseRemoteConfig.getInstance().getLong(RemoteConfigKey.INTER_DELAY)
+    private val bannerReload = FirebaseRemoteConfig.getInstance().getLong(RemoteConfigKey.BANNER_RELOAD)
 
     private var mInterstitialAd: InterstitialAd? = null
     private var analytics: FirebaseAnalytics? = null
@@ -239,7 +240,14 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
 
     override fun onStart() {
         super.onStart()
-        loadBanner()
+        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_BANNER_CREATE_EMOJI)) {
+            loadBanner()
+        } else {
+            binding.rlBanner.gone()
+        }
+        emojiViewModel.loadBanner.observe(this) {
+            loadBanner()
+        }
         loadInterAds()
     }
     override fun setupData() {
@@ -791,11 +799,8 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
 
 
     private fun loadBanner() {
-        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_BANNER_CREATE_EMOJI)) {
-            BannerUtils.instance?.loadCollapsibleBanner(this, keyBanner)
-        } else {
-            binding.rlBanner.gone()
-        }
+        emojiViewModel.starTimeCountReloadBanner(bannerReload)
+        BannerUtils.instance?.loadCollapsibleBanner(this, keyBanner)
     }
 
     private fun nextAction(action:() -> Unit) {

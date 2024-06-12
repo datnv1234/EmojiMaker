@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.AssetManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.os.CountDownTimer
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -18,6 +19,7 @@ import kotlinx.coroutines.launch
 
 class EmojiViewModel : BaseViewModel() {
 
+    private var timerReloadBanner : CountDownTimer? = null
     val optionList = ArrayList<ItemOptionUI>()
 
     private val _bitmapMutableLiveData: MutableLiveData<Bitmap> = MutableLiveData()
@@ -39,6 +41,30 @@ class EmojiViewModel : BaseViewModel() {
     private val pieceOfHat = mutableListOf<PieceSticker>()
     private val pieceOfMouth = mutableListOf<PieceSticker>()
     private val pieceOfNose = mutableListOf<PieceSticker>()
+
+    private val _loadBanner: MutableLiveData<Boolean> = MutableLiveData()
+    val loadBanner: LiveData<Boolean>
+        get() = _loadBanner
+
+    private fun createCountDownTimerReloadBanner(time: Long): CountDownTimer {
+        return object : CountDownTimer(time, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+            }
+
+            override fun onFinish() {
+                _loadBanner.postValue(true)
+            }
+        }
+    }
+    fun starTimeCountReloadBanner(time: Long) {
+        kotlin.runCatching {
+            timerReloadBanner?.cancel()
+            timerReloadBanner = createCountDownTimerReloadBanner(time)
+            timerReloadBanner?.start()
+        }.onFailure {
+            it.printStackTrace()
+        }
+    }
 
     fun setBitmap(bitmap: Bitmap) {
         _bitmapMutableLiveData.postValue(bitmap)

@@ -52,6 +52,7 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
     private val keyNative = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_SHOW_STICKERS)
     private val keyBanner = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_SHOW_STICKERS)
     private val interDelay = FirebaseRemoteConfig.getInstance().getLong(RemoteConfigKey.INTER_DELAY)
+    private val bannerReload = FirebaseRemoteConfig.getInstance().getLong(RemoteConfigKey.BANNER_RELOAD)
 
     private var mInterstitialAd: InterstitialAd? = null
     private var analytics: FirebaseAnalytics? = null
@@ -175,11 +176,18 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
     }
 
     private fun loadAds() {
-        loadBanner()
+        val isShowBanner = FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_BANNER_SHOW_STICKERS)
+        if (!isShowBanner) {
+            binding.rlBanner.gone()
+        } else {
+            loadBanner()
+        }
+        viewModel.loadBanner.observe(this) {
+            loadBanner()
+        }
         setUpLoadInterAds()
         if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_SHOW_STICKERS)) {
             loadNativeUntilDone(keyNative)
-
         }
     }
 
@@ -323,11 +331,8 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
     }
 
     private fun loadBanner() {
-        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_BANNER_SHOW_STICKERS)) {
-            BannerUtils.instance?.loadCollapsibleBanner(this, keyBanner)
-        } else {
-            binding.rlBanner.gone()
-        }
+        viewModel.starTimeCountReloadBanner(bannerReload)
+        BannerUtils.instance?.loadCollapsibleBanner(this, keyBanner)
     }
 
     private fun nextAction(action:() -> Unit) {

@@ -5,6 +5,7 @@ import android.content.ContextWrapper
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.CountDownTimer
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -20,6 +21,7 @@ class ShowStickerViewModel : BaseViewModel() {
 
     var stickerUri = ArrayList<Uri>()
     var stickerBitmaps = ArrayList<Bitmap>()
+    private var timerReloadBanner : CountDownTimer? = null
 
     private val _stickersMutableLiveData: MutableLiveData<List<MadeStickerModel>> = MutableLiveData()
     private val _localStickerMutableLiveData: MutableLiveData<List<MadeStickerModel>> = MutableLiveData()
@@ -29,6 +31,32 @@ class ShowStickerViewModel : BaseViewModel() {
 
     val localStickerMutableLiveData: LiveData<List<MadeStickerModel>>
         get() = _localStickerMutableLiveData
+
+    private val _loadBanner: MutableLiveData<Boolean> = MutableLiveData()
+    val loadBanner: LiveData<Boolean>
+        get() = _loadBanner
+
+    private fun createCountDownTimerReloadBanner(time: Long): CountDownTimer {
+        return object : CountDownTimer(time, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+            }
+
+            override fun onFinish() {
+                _loadBanner.postValue(true)
+            }
+        }
+    }
+
+
+    fun starTimeCountReloadBanner(time: Long) {
+        kotlin.runCatching {
+            timerReloadBanner?.cancel()
+            timerReloadBanner = createCountDownTimerReloadBanner(time)
+            timerReloadBanner?.start()
+        }.onFailure {
+            it.printStackTrace()
+        }
+    }
 
     fun getLocalSticker(context: Context, category: String, size: Int) {
 

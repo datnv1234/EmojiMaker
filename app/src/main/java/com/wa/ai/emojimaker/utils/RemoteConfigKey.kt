@@ -6,6 +6,7 @@ object RemoteConfigKey {
     const val KEY_COLLAPSE_RELOAD_TIME = "collapse_reload_time"
     const val KEY_DELAY_LOAD_ADS = "key_delay_load_ads"
     const val INTER_DELAY = "inter_delay"
+    const val BANNER_RELOAD = "banner_reload"
     const val IS_SHOW_ADS_OPEN_APP = "show_ads_open_app"
 
     const val IS_SHOW_ADS_INTER_SPLASH= "is_show_ads_inter_splash"
