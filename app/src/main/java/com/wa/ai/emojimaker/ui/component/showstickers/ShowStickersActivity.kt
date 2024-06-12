@@ -22,10 +22,10 @@ import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import com.wa.ai.emojimaker.App
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.common.Constant
 import com.wa.ai.emojimaker.databinding.ActivityShowStickersBinding
-import com.wa.ai.emojimaker.databinding.AdNativeVideoBinding
 import com.wa.ai.emojimaker.databinding.AdNativeVideoHorizontalBinding
 import com.wa.ai.emojimaker.ui.adapter.MadeStickerAdapter
 import com.wa.ai.emojimaker.ui.base.BaseBindingActivity
@@ -39,15 +39,19 @@ import com.wa.ai.emojimaker.utils.ads.BannerUtils
 import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils
 import com.wa.ai.emojimaker.utils.extention.gone
 import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
+import timber.log.Timber
 import java.io.File
+import java.util.Date
 
 
 class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, ShowStickerViewModel>() {
 
     private var isLoadNativeDone = false
 
-    lateinit var keyAds: String
-    private val mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
+    private var keyInter = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_INTER_SHOW_STICKERS)
+    private val keyNative = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_SHOW_STICKERS)
+    private val keyBanner = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_SHOW_STICKERS)
+    private val interDelay = FirebaseRemoteConfig.getInstance().getLong(RemoteConfigKey.INTER_DELAY)
 
     private var mInterstitialAd: InterstitialAd? = null
     private var analytics: FirebaseAnalytics? = null
@@ -168,13 +172,9 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
     private fun loadAds() {
         loadBanner()
         setUpLoadInterAds()
-        if (mFirebaseRemoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_SHOW_STICKERS)) {
-            val keyAds = mFirebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_NATIVE_SHOW_STICKERS)
-            if (keyAds.isNotEmpty()) {
-                loadNativeUntilDone(keyAds)
-            } else {
-                loadNativeUntilDone(getString(R.string.native_show_stickers))
-            }
+        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_SHOW_STICKERS)) {
+            loadNativeUntilDone(keyNative)
+
         }
     }
 
@@ -318,28 +318,21 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
     }
 
     private fun loadBanner() {
-        val keyAdsBanner: String
-
-        if (DeviceUtils.checkInternetConnection(this) && mFirebaseRemoteConfig.getBoolean(
-                RemoteConfigKey.IS_SHOW_ADS_BANNER_SHOW_STICKERS)) {
-            val adConfig = mFirebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_BANNER_SHOW_STICKERS)
-            keyAdsBanner = adConfig.ifEmpty {
-                getString(R.string.banner_show_stickers)
-            }
-
-            BannerUtils.instance?.loadCollapsibleBanner(this, keyAdsBanner)
+        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_BANNER_SHOW_STICKERS)) {
+            BannerUtils.instance?.loadCollapsibleBanner(this, keyBanner)
         } else {
             binding.rlBanner.gone()
         }
     }
 
-    fun nextAction(action:() -> Unit) {
-        if (mInterstitialAd != null) {
+    private fun nextAction(action:() -> Unit) {
+        val isShowAd = (Date().time - App.adTimeStamp) > interDelay
+        if (isShowAd && mInterstitialAd != null) {
             mInterstitialAd?.fullScreenContentCallback =
                 object : com.google.android.gms.ads.FullScreenContentCallback() {
                     override fun onAdDismissedFullScreenContent() {
+                        App.adTimeStamp = Date().time
                         action()
-                        loadInterAds(keyAds)
                     }
 
                     override fun onAdFailedToShowFullScreenContent(adError: com.google.android.gms.ads.AdError) {
@@ -347,19 +340,31 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
                     }
                 }
             mInterstitialAd?.show(this@ShowStickersActivity)
+            loadInterAds()
         }else{
             action()
         }
     }
 
     //Ads
-    fun loadInterAds(keyAdsInter: String) {
-
+    var loadInterCount = 0
+    private fun loadInterAds() {
         InterstitialAd.load(
             this,
-            keyAdsInter,
+            keyInter,
             AdRequest.Builder().build(),
             object : InterstitialAdLoadCallback() {
+                override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                    mInterstitialAd = null
+                    Timber.tag(Constant.ADS).d("onAdFailedToShowFullScreenContent: ${loadAdError.message}")
+                    Timber.tag(Constant.ADS).d("onAdFailedToShowFullScreenContent: ${loadAdError.cause}")
+                    if (loadInterCount < 3) {
+                        loadInterAds()
+                        loadInterCount++
+                    } else
+                        loadInterCount = 0
+                }
+
                 override fun onAdLoaded(interstitialAd: InterstitialAd) {
                     mInterstitialAd = interstitialAd
                     mFirebaseAnalytics?.logEvent("d_load_inter", null)
@@ -388,21 +393,14 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
                         }
                 }
 
-                override fun onAdFailedToLoad(loadAdError: LoadAdError) {
-                    mInterstitialAd = null
-                    mFirebaseAnalytics?.logEvent("e_load_inter", null)
-                }
+
             })
 
     }
 
     private fun setUpLoadInterAds() {
-        keyAds = mFirebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_INTER_SHOW_STICKERS)
-        if (keyAds.isEmpty()) {
-            keyAds = getString(R.string.inter_show_stickers)
-        }
-        if (mFirebaseRemoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_INTER_SHOW_STICKERS)) {
-            loadInterAds(keyAds)
+        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_INTER_SHOW_STICKERS)) {
+            loadInterAds()
         }
     }
 
@@ -414,10 +412,6 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
                 keyAds
             ) { nativeAds ->
                 if (nativeAds != null) {
-                    if (isDestroyed) {
-                        nativeAds.destroy()
-                        return@loadNativeAds
-                    }
                     //binding.frNativeAds.removeAllViews()
                     val adNativeVideoBinding = AdNativeVideoHorizontalBinding.inflate(layoutInflater)
                     NativeAdsUtils.instance.populateNativeAdVideoView(

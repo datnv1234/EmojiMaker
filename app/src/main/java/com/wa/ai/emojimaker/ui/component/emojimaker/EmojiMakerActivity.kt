@@ -81,7 +81,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
 
     lateinit var keyAds: String
     private val mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
-    var isFinishImmediately = false
+    private var isFinishImmediately = false
 
     private var mInterstitialAd: InterstitialAd? = null
     private var analytics: FirebaseAnalytics? = null
