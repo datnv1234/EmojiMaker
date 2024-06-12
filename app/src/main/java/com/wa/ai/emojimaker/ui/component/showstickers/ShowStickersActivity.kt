@@ -175,6 +175,11 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
         Adjust.onPause()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        countDownTimer.cancel()
+    }
+
     private fun loadAds() {
         val isShowBanner = FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_BANNER_SHOW_STICKERS)
         if (!isShowBanner) {
@@ -187,20 +192,20 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
         }
         setUpLoadInterAds()
         if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_SHOW_STICKERS)) {
-            loadNativeUntilDone(keyNative)
+            loadNativeUntilDone()
         }
     }
-
-    private fun loadNativeUntilDone(adConfig: String) {
-        val countDownTimer: CountDownTimer = object : CountDownTimer(25000, 5000) {
-            override fun onTick(millisUntilFinished: Long) {
-                if (!isLoadNativeDone) {
-                    loadNativeAds(adConfig)
-                }
-            }
-            override fun onFinish() {
+    val countDownTimer: CountDownTimer = object : CountDownTimer(25000, 5000) {
+        override fun onTick(millisUntilFinished: Long) {
+            if (!isLoadNativeDone) {
+                loadNativeAds()
             }
         }
+        override fun onFinish() {
+        }
+    }
+    private fun loadNativeUntilDone() {
+        loadNativeAds()
         countDownTimer.start()
     }
 
@@ -414,12 +419,12 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
         }
     }
 
-    private fun loadNativeAds(keyAds:String) {
+    private fun loadNativeAds() {
         if (!DeviceUtils.checkInternetConnection(applicationContext)) binding.rlNative.visibility = View.GONE
         this.let {
             NativeAdsUtils.instance.loadNativeAds(
                 applicationContext,
-                keyAds
+                keyNative
             ) { nativeAds ->
                 if (nativeAds != null) {
                     //binding.frNativeAds.removeAllViews()
