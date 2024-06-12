@@ -111,10 +111,9 @@
                 <LinearLayout
                     android:id="@+id/btnAddToPackage"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/_43sdp"
                     android:layout_marginHorizontal="@dimen/_12sdp"
                     android:layout_marginVertical="@dimen/_12sdp"
-                    android:paddingVertical="16dp"
                     android:gravity="center"
                     android:background="@drawable/bg_button_blue"
                     android:orientation="horizontal">
@@ -129,8 +128,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/add_to_package"
                         android:gravity="center_vertical"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/_16ssp"/>
+                        android:textColor="@color/white"/>
                 </LinearLayout>
                 <RelativeLayout
                     android:id="@+id/rl_native"
