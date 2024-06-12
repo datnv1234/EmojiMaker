@@ -1,5 +1,6 @@
 package com.wa.ai.emojimaker.ui.dialog
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.View
@@ -17,7 +18,7 @@ import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 class SharePackageDialog: BaseBindingDialogFragment<DialogShareBinding>() {
 
     private var isLoadNativeDone = false
-
+    private var nativeConfig = ""
     var category: String? = null
     var addToWhatsapp: ((category: String) -> Unit)? = null
     var addToTelegram: ((category: String) -> Unit)? = null
@@ -27,17 +28,12 @@ class SharePackageDialog: BaseBindingDialogFragment<DialogShareBinding>() {
     override val layoutId: Int
         get() = R.layout.dialog_share
 
-    private val mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
 
     override fun onCreatedView(view: View?, savedInstanceState: Bundle?) {
-        if (mFirebaseRemoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_MY_CREATIVE)) {
-            val adConfig = mFirebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_NATIVE_MY_CREATIVE)
-            if (adConfig.isNotEmpty()) {
-                loadNativeUntilDone(adConfig)
-            }
-            else {
-                loadNativeUntilDone(getString(R.string.native_my_creative))
-            }
+        val firebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
+        if (firebaseRemoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_MY_CREATIVE)) {
+            nativeConfig = firebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_NATIVE_MY_CREATIVE)
+            loadNativeUntilDone()
         } else {
             binding.rlNative.visibility = View.GONE
         }
@@ -45,17 +41,22 @@ class SharePackageDialog: BaseBindingDialogFragment<DialogShareBinding>() {
         setup()
     }
 
-    private fun loadNativeUntilDone(adConfig: String) {
-        val countDownTimer: CountDownTimer = object : CountDownTimer(25000, 5000) {
-            override fun onTick(millisUntilFinished: Long) {
-                if (!isLoadNativeDone) {
-                    loadNativeAds(adConfig)
-                }
-            }
-            override fun onFinish() {
+    val countDownTimer: CountDownTimer = object : CountDownTimer(25000, 5000) {
+        override fun onTick(millisUntilFinished: Long) {
+            if (!isLoadNativeDone) {
+                loadNativeAds(nativeConfig)
             }
         }
+        override fun onFinish() {
+        }
+    }
+    private fun loadNativeUntilDone() {
         countDownTimer.start()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        countDownTimer.cancel()
     }
 
     private fun setup() {
