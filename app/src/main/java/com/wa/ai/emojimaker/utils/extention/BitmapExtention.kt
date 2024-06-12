@@ -30,7 +30,7 @@ fun Bitmap.blurImage(mContext: Context, radius: Float, ratio: Int): Bitmap? {
         val mInBitmap =
             Bitmap.createScaledBitmap(this, this.width / ratio, this.height / ratio, true)
         val mOutBitmap = Bitmap.createBitmap(
-            mInBitmap!!.width, mInBitmap.height, mInBitmap.config
+            mInBitmap.width, mInBitmap.height, mInBitmap.config
         )
         val mRenderScript = RenderScript.create(mContext)
         val input = Allocation.createFromBitmap(mRenderScript, mInBitmap)

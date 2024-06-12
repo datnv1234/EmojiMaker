@@ -25,7 +25,8 @@ class ConfirmDialog(val title: String, val action: String) : BaseBindingDialogFr
         binding.tvTitle.text = text
         binding.btnOK.text = action
         binding.btnOK.setOnSafeClick {
-            confirm.invoke(pkg!!)
+            if (pkg != null)
+                confirm.invoke(pkg!!)
             dismiss()
         }
         binding.btnCancel.setOnSafeClick {

@@ -77,11 +77,13 @@ class SharePackageDialog: BaseBindingDialogFragment<DialogShareBinding>() {
         }
 
         binding.btnShare.setOnSafeClick {
-            share?.invoke(category!!)
+            if (category != null)
+                share?.invoke(category!!)
         }
 
         binding.btnDownload.setOnSafeClick {
-            download?.invoke(category!!)
+            if (category != null)
+                download?.invoke(category!!)
         }
     }
 

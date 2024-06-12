@@ -314,12 +314,13 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         if (hasPermission(Manifest.permission.INTERNET)
             && hasPermission(Manifest.permission.ACCESS_NETWORK_STATE))
         {
-            val text = intent.getStringExtra(Intent.EXTRA_TEXT)!!
-            if (!isValidUrl(text)) {
-                Toast.makeText(this, "Invalid link", Toast.LENGTH_LONG).show()
+            val text = intent.getStringExtra(Intent.EXTRA_TEXT)
+            if (text != null) {
+                if (!isValidUrl(text)) {
+                    Toast.makeText(this, "Invalid link", Toast.LENGTH_LONG).show()
+                }
+                FetchImageFromLinkTask(text, this).execute()
             }
-
-            FetchImageFromLinkTask(text, this).execute()
         }
     }
 
@@ -497,11 +498,16 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     }
 
     private fun cropAll() {
-        viewModel.stickers.value!!.forEach {
-            (it as? DrawableSticker)?.cropDestructively(resources)
+        kotlin.runCatching {
+            viewModel.stickers.value!!.forEach {
+                (it as? DrawableSticker)?.cropDestructively(resources)
+            }
+            binding.stickerView.invalidate()
+            Toast.makeText(this, "Cropped all images.", Toast.LENGTH_SHORT).show()
+        }.onFailure {
+            it.printStackTrace()
         }
-        binding.stickerView.invalidate()
-        Toast.makeText(this, "Cropped all images.", Toast.LENGTH_SHORT).show()
+
     }
 
     private fun addSticker() {
@@ -546,14 +552,14 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_OK) {
+        if (resultCode == Activity.RESULT_OK && data != null && data.data != null) {
             when (requestCode) {
                 INTENT_PICK_IMAGE -> {
-                    val selectedImage = data!!.data!!
+                    val selectedImage = data.data!!
                     doAddSticker(selectedImage)
                 }
                 INTENT_PICK_SAVED_FILE -> {
-                    val selectedFile = data!!.data!!
+                    val selectedFile = data.data!!
                     doLoad(selectedFile)
                 }
             }
