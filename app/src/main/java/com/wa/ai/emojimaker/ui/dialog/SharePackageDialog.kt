@@ -13,6 +13,7 @@ import com.wa.ai.emojimaker.ui.base.BaseBindingDialogFragment
 import com.wa.ai.emojimaker.utils.DeviceUtils
 import com.wa.ai.emojimaker.utils.RemoteConfigKey
 import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils
+import com.wa.ai.emojimaker.utils.extention.gone
 import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 
 class SharePackageDialog: BaseBindingDialogFragment<DialogShareBinding>() {
@@ -28,29 +29,28 @@ class SharePackageDialog: BaseBindingDialogFragment<DialogShareBinding>() {
     override val layoutId: Int
         get() = R.layout.dialog_share
 
-
-    override fun onCreatedView(view: View?, savedInstanceState: Bundle?) {
-        val firebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
-        if (firebaseRemoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_MY_CREATIVE)) {
-            nativeConfig = firebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_NATIVE_MY_CREATIVE)
-            loadNativeUntilDone()
-        } else {
-            binding.rlNative.visibility = View.GONE
-        }
-
-        setup()
-    }
-
+    private val keyNative = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_MY_CREATIVE)
     val countDownTimer: CountDownTimer = object : CountDownTimer(25000, 5000) {
         override fun onTick(millisUntilFinished: Long) {
             if (!isLoadNativeDone) {
-                loadNativeAds(nativeConfig)
+                loadNativeAds()
             }
         }
         override fun onFinish() {
         }
     }
+    override fun onCreatedView(view: View?, savedInstanceState: Bundle?) {
+        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_DIALOG)) {
+            loadNativeUntilDone()
+        } else {
+            binding.rlNative.gone()
+        }
+
+        setup()
+    }
+
     private fun loadNativeUntilDone() {
+        loadNativeAds()
         countDownTimer.start()
     }
 
@@ -85,20 +85,15 @@ class SharePackageDialog: BaseBindingDialogFragment<DialogShareBinding>() {
         }
     }
 
-    private fun loadNativeAds(keyAds:String) {
-        if (!DeviceUtils.checkInternetConnection(requireContext())) binding.rlNative.visibility = View.GONE
+    private fun loadNativeAds() {
+        if (!DeviceUtils.checkInternetConnection(requireContext())) binding.rlNative.gone()
         this.let {
             NativeAdsUtils.instance.loadNativeAds(
                 requireContext(),
-                keyAds
+                keyNative
             ) { nativeAds ->
 
                 if (nativeAds != null && isAdded && isVisible) {
-                    if (isDetached) {
-                        nativeAds.destroy()
-                        return@loadNativeAds
-                    }
-                    //binding.frNativeAds.removeAllViews()
                     val adNativeVideoBinding = AdNativeVideoBinding.inflate(layoutInflater)
                     NativeAdsUtils.instance.populateNativeAdVideoView(
                         nativeAds,

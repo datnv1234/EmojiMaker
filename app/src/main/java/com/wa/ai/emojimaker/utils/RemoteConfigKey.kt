@@ -9,6 +9,8 @@ object RemoteConfigKey {
     const val BANNER_RELOAD = "banner_reload"
     const val IS_SHOW_ADS_OPEN_APP = "show_ads_open_app"
 
+    const val IS_SHOW_ADS_NATIVE_DIALOG = "is_show_ads_native_dialog"
+
     const val IS_SHOW_ADS_INTER_SPLASH= "is_show_ads_inter_splash"
     const val IS_SHOW_ADS_INTER_HOME_SCREEN= "is_show_ads_inter_home_screen"
     const val IS_SHOW_ADS_INTER_MY_CREATIVE= "is_show_ads_inter_my_creative"
@@ -16,14 +18,12 @@ object RemoteConfigKey {
     const val IS_SHOW_ADS_INTER_CREATE_EMOJI= "is_show_ads_inter_create_emoji"
     const val IS_SHOW_ADS_INTER_SHOW_STICKERS= "is_show_ads_inter_show_stickers"
 
-
     const val IS_SHOW_ADS_NATIVE_INTRO = "is_show_ads_native_intro"
     const val IS_SHOW_ADS_NATIVE_LANGUAGE = "is_show_ads_native_language"
     const val IS_SHOW_ADS_NATIVE_HOME = "is_show_ads_native_home"
     const val IS_SHOW_ADS_NATIVE_MY_CREATIVE = "is_show_ads_native_my_creative"
     const val IS_SHOW_ADS_NATIVE_SETTINGS = "is_show_ads_native_settings"
     const val IS_SHOW_ADS_NATIVE_SHOW_STICKERS = "is_show_ads_native_show_stickers"
-
 
     const val IS_SHOW_ADS_BANNER_MAIN = "is_show_ads_banner_main"
     const val IS_SHOW_ADS_BANNER_CREATE_EMOJI = "is_show_ads_banner_create_emoji"

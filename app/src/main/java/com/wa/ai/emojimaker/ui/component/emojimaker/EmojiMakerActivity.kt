@@ -874,7 +874,6 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
                         }
                 }
             })
-
     }
 
     companion object {

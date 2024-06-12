@@ -84,7 +84,10 @@
     <value>ca-app-pub-3621741958408545/6200719213</value>
   </entry>
 
-
+  <entry>
+    <key>is_show_ads_native_dialog</key>
+    <value>true</value>
+  </entry>
 
   <entry>
     <key>is_show_ads_inter_splash</key>

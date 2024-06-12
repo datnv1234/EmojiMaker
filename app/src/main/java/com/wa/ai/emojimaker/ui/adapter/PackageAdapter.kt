@@ -42,11 +42,11 @@ class PackageAdapter : BaseBindingAdapterDiff<PackageModel, ItemPackageBinding>(
             holder.binding.tvPackageName.text = this.name
             holder.binding.apply {
 
-                rdSelectPackage.isChecked = holder.adapterPosition == newPosition
-                root.setOnSafeClick {
-                    callBack(position, this@with)
-                    newPosition = holder.adapterPosition
-                }
+            rdSelectPackage.isChecked = holder.adapterPosition == newPosition
+            root.setOnSafeClick {
+                callBack(position, this@with)
+                newPosition = holder.adapterPosition
+            }
             }
         }
 

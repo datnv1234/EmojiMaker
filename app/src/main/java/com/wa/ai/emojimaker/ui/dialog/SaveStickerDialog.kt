@@ -14,6 +14,7 @@ import com.wa.ai.emojimaker.ui.component.emojimaker.EmojiViewModel
 import com.wa.ai.emojimaker.utils.DeviceUtils
 import com.wa.ai.emojimaker.utils.RemoteConfigKey
 import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils
+import com.wa.ai.emojimaker.utils.extention.gone
 import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 
 class SaveStickerDialog : BaseBindingDialogFragment<DialogSaveBinding>() {
@@ -28,17 +29,22 @@ class SaveStickerDialog : BaseBindingDialogFragment<DialogSaveBinding>() {
         get() = R.layout.dialog_save
 
     private val mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
+    private val keyNative = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_MY_CREATIVE)
+    val countDownTimer: CountDownTimer = object : CountDownTimer(25000, 5000) {
+        override fun onTick(millisUntilFinished: Long) {
+            if (!isLoadNativeDone) {
+                loadNativeAds()
+            }
+        }
+        override fun onFinish() {
+        }
+    }
+
     override fun onCreatedView(view: View?, savedInstanceState: Bundle?) {
-        if (mFirebaseRemoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_MY_CREATIVE)) {
-            val adConfig = mFirebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_NATIVE_MY_CREATIVE)
-            if (adConfig.isNotEmpty()) {
-                loadNativeUntilDone(adConfig)
-            }
-            else {
-                loadNativeUntilDone(getString(R.string.native_my_creative))
-            }
+        if (mFirebaseRemoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_DIALOG)) {
+            loadNativeUntilDone()
         } else {
-            binding.rlNative.visibility = View.GONE
+            binding.rlNative.gone()
         }
 
         setUp()
@@ -51,17 +57,13 @@ class SaveStickerDialog : BaseBindingDialogFragment<DialogSaveBinding>() {
             binding.imgPreview.setImageBitmap(bitmap)
         }*/
     }
+    override fun onDestroy() {
+        super.onDestroy()
+        countDownTimer.cancel()
+    }
 
-    private fun loadNativeUntilDone(adConfig: String) {
-        val countDownTimer: CountDownTimer = object : CountDownTimer(25000, 5000) {
-            override fun onTick(millisUntilFinished: Long) {
-                if (!isLoadNativeDone) {
-                    loadNativeAds(adConfig)
-                }
-            }
-            override fun onFinish() {
-            }
-        }
+    private fun loadNativeUntilDone() {
+        loadNativeAds()
         countDownTimer.start()
     }
 
@@ -87,12 +89,12 @@ class SaveStickerDialog : BaseBindingDialogFragment<DialogSaveBinding>() {
         }
     }
 
-    private fun loadNativeAds(keyAds:String) {
+    private fun loadNativeAds() {
         if (!DeviceUtils.checkInternetConnection(requireContext())) binding.rlNative.visibility = View.GONE
         this.let {
             NativeAdsUtils.instance.loadNativeAds(
                 requireContext(),
-                keyAds
+                keyNative
             ) { nativeAds ->
 
                 if (nativeAds != null && isAdded && isVisible) {
