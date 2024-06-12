@@ -68,10 +68,6 @@ class MultiLangActivity : BaseBindingActivity<ActivityMultiLangBinding, MultiLan
 		viewModel.getListLanguage()
 		viewModel.languageLiveData.observe(this) { it ->
 			multiLangAdapter.submitList(it)
-			it.indexOfFirst { it.code == code }.let { pos ->
-				currentPosLanguage = pos
-				multiLangAdapter.newPosition = pos
-			}
 		}
 	}
 
