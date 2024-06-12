@@ -27,7 +27,9 @@ import com.google.android.play.core.ktx.isFlexibleUpdateAllowed
 import com.google.android.play.core.ktx.isImmediateUpdateAllowed
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import com.wa.ai.emojimaker.App
 import com.wa.ai.emojimaker.R
+import com.wa.ai.emojimaker.common.Constant.ADS
 import com.wa.ai.emojimaker.databinding.ActivityMainBinding
 import com.wa.ai.emojimaker.ui.base.BaseBindingActivity
 import com.wa.ai.emojimaker.utils.DeviceUtils
@@ -37,6 +39,8 @@ import com.wa.ai.emojimaker.utils.extention.gone
 import com.wa.ai.emojimaker.utils.extention.setFullScreen
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
+import java.util.Date
 
 class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
 
@@ -44,12 +48,12 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
     private lateinit var appUpdateManager: AppUpdateManager
     private val updateType = AppUpdateType.IMMEDIATE
 
-    lateinit var keyAds: String
-    val mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
+    private var keyAdInter: String = ""
 
     private var mInterstitialAd: InterstitialAd? = null
     private var analytics: FirebaseAnalytics? = null
     var mFirebaseAnalytics: FirebaseAnalytics? = null
+    private val interDelay = FirebaseRemoteConfig.getInstance().getLong(RemoteConfigKey.INTER_DELAY)
 
     override val layoutId: Int
         get() = R.layout.activity_main
@@ -79,6 +83,7 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
     }
 
     override fun setupData() {
+        keyAdInter = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_INTER_HOME_SCREEN)
         loadBanner()
         viewModel.getStickers(this)
     }
@@ -154,15 +159,9 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
     }
 
     private fun loadBanner() {
-        val keyAdsBanner: String
-        val timeDelay: Long
+        val keyAdsBanner = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_MAIN)
 
-        if (DeviceUtils.checkInternetConnection(this) && mFirebaseRemoteConfig.getBoolean(
-                RemoteConfigKey.IS_SHOW_ADS_BANNER_MAIN)) {
-            val adConfig = mFirebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_BANNER_MAIN)
-            keyAdsBanner = adConfig.ifEmpty {
-                getString(R.string.banner_main)
-            }
+        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_BANNER_MAIN)) {
             BannerUtils.instance?.loadCollapsibleBanner(this, keyAdsBanner)
         } else {
             binding.rlBanner.gone()
@@ -170,11 +169,13 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
     }
 
     fun openNextScreen(action:() -> Unit) {
-        if (mInterstitialAd != null) {
+        val isShowAd = (Date().time - App.adTimeStamp) > interDelay
+        if (isShowAd && mInterstitialAd != null) {
             // Nếu quảng cáo đã tải xong, hiển thị quảng cáo và chuyển đến Activity mới sau khi quảng cáo kết thúc
             mInterstitialAd?.fullScreenContentCallback =
                 object : com.google.android.gms.ads.FullScreenContentCallback() {
                     override fun onAdDismissedFullScreenContent() {
+                        App.adTimeStamp = Date().time
                         action()
                     }
 
@@ -183,20 +184,30 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
                     }
                 }
             mInterstitialAd?.show(this@MainActivity)
-            loadInterAds(keyAds)
+            loadInterAds()
         }else{
             action()
         }
     }
 
-    //Ads
-    fun loadInterAds(keyAdsInter: String) {
-
+    var loadInterCount = 0
+    fun loadInterAds() {
         InterstitialAd.load(
             this,
-            keyAdsInter,
+            keyAdInter,
             AdRequest.Builder().build(),
             object : InterstitialAdLoadCallback() {
+                override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                    mInterstitialAd = null
+                    Timber.tag(ADS).d("onAdFailedToShowFullScreenContent: ${loadAdError.message}")
+                    Timber.tag(ADS).d("onAdFailedToShowFullScreenContent: ${loadAdError.cause}")
+                    if (loadInterCount < 3) {
+                        loadInterAds()
+                        loadInterCount++
+                    } else
+                        loadInterCount = 0
+                }
+
                 override fun onAdLoaded(interstitialAd: InterstitialAd) {
                     mInterstitialAd = interstitialAd
                     mFirebaseAnalytics?.logEvent("d_load_inter", null)
@@ -224,12 +235,6 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
                             analytics?.logEvent(FirebaseAnalytics.Event.AD_IMPRESSION, params)
                         }
                 }
-
-                override fun onAdFailedToLoad(loadAdError: LoadAdError) {
-                    mInterstitialAd = null
-                    mFirebaseAnalytics?.logEvent("e_load_inter", null)
-                }
             })
-
     }
 }

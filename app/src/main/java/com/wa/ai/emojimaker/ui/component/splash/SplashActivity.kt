@@ -16,6 +16,7 @@ import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import com.wa.ai.emojimaker.App
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.common.Constant
 import com.wa.ai.emojimaker.databinding.ActivitySplashBinding
@@ -23,6 +24,7 @@ import com.wa.ai.emojimaker.ui.base.BaseBindingActivity
 import com.wa.ai.emojimaker.ui.component.multilang.MultiLangActivity
 import com.wa.ai.emojimaker.utils.RemoteConfigKey
 import com.wa.ai.emojimaker.utils.extention.setStatusBarColor
+import java.util.Date
 
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewModel>() {
@@ -66,6 +68,7 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
             mInterstitialAd?.fullScreenContentCallback =
                 object : com.google.android.gms.ads.FullScreenContentCallback() {
                     override fun onAdDismissedFullScreenContent() {
+                        App.adTimeStamp = Date().time
                         openChooseLanguageActivity()
                         finish()
                     }

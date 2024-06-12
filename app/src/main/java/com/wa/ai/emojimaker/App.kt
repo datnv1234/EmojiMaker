@@ -12,6 +12,7 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import com.wa.ai.emojimaker.data.local.SharedPreferenceHelper
 import com.wa.ai.emojimaker.service.receiver.NetworkChangeReceiver
 import com.wa.ai.emojimaker.utils.MyDebugTree
+import com.wa.ai.emojimaker.utils.RemoteConfigKey
 import com.wa.ai.emojimaker.utils.SystemUtil
 import com.wa.ai.emojimaker.utils.ads.AppOpenAdsManager
 import dagger.hilt.android.HiltAndroidApp
@@ -84,16 +85,16 @@ class App : Application() {
         Timber.plant(MyDebugTree())
     }
 
-    companion object {
-        var forceUpdate: Boolean = false
-        var isLoop = false
 
-        lateinit var instance: App
-    }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         SystemUtil.setLocale(this)
     }
 
+    companion object {
+        var adTimeStamp: Long = 0L
+        var forceUpdate: Boolean = false
+        lateinit var instance: App
+    }
 }

@@ -132,8 +132,8 @@ class SettingsFragment : BaseBindingFragment<FragmentSettingsBinding, SettingsVi
     }
     private fun loadAds() {
         setUpLoadInterAds()
-        keyAdsNative = mMainActivity.mFirebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_NATIVE_SETTINGS)
-        if (mMainActivity.mFirebaseRemoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_SETTINGS)) {
+        keyAdsNative = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_SETTINGS)
+        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_SETTINGS)) {
             loadNativeUntilDone()
         } else {
             binding.rlNative.visibility = View.GONE
@@ -141,17 +141,12 @@ class SettingsFragment : BaseBindingFragment<FragmentSettingsBinding, SettingsVi
     }
 
     private fun loadNativeUntilDone() {
-
         countDownTimer.start()
     }
 
     private fun setUpLoadInterAds() {
-        mMainActivity.keyAds = mMainActivity.mFirebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_INTER_SETTINGS)
-        if (mMainActivity.keyAds.isEmpty()) {
-            mMainActivity.keyAds = getString(R.string.inter_settings)
-        }
-        if (mMainActivity.mFirebaseRemoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_INTER_SETTINGS)) {
-            mMainActivity.loadInterAds(mMainActivity.keyAds)
+        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_INTER_SETTINGS)) {
+            mMainActivity.loadInterAds()
         }
     }
 

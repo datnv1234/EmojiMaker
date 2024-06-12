@@ -4,10 +4,12 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.util.Log
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import com.adjust.sdk.Adjust
 import com.google.android.gms.ads.nativead.NativeAdView
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.common.Constant
 import com.wa.ai.emojimaker.databinding.AdNativeVideoBinding
@@ -33,7 +35,8 @@ import com.wa.ai.emojimaker.utils.extention.visible
 class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCreativeViewModel>() {
 
     private var isLoadNativeDone = false
-    private lateinit var keyAdsNative: String
+    private var keyAdsNative = ""
+
     private lateinit var mMainActivity: MainActivity
     private lateinit var mMainViewModel: MainViewModel
 
@@ -109,16 +112,6 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
         }
     }
 
-    val countDownTimer: CountDownTimer = object : CountDownTimer(25000, 5000) {
-        override fun onTick(millisUntilFinished: Long) {
-            if (!isLoadNativeDone) {
-                loadNativeAds(keyAdsNative)
-            }
-        }
-        override fun onFinish() {
-        }
-    }
-
     override val layoutId: Int
         get() = R.layout.fragment_my_creative
 
@@ -176,24 +169,32 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
         super.onPause()
         Adjust.onPause()
     }
-
-    override fun onDetach() {
-        super.onDetach()
+    override fun onDestroy() {
+        Log.d("datnv", "onDestroy: ")
+        super.onDestroy()
         countDownTimer.cancel()
     }
 
     private fun loadAds() {
         setUpLoadInterAds()
-        keyAdsNative = mMainActivity.mFirebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_NATIVE_MY_CREATIVE)
-
-
-        if (mMainActivity.mFirebaseRemoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_MY_CREATIVE)) {
+        val firebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
+        keyAdsNative = firebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_NATIVE_MY_CREATIVE)
+        if (firebaseRemoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_MY_CREATIVE)) {
             loadNativeUntilDone()
         } else {
             binding.rlNative.gone()
         }
     }
 
+    val countDownTimer: CountDownTimer = object : CountDownTimer(25000, 5000) {
+        override fun onTick(millisUntilFinished: Long) {
+            if (!isLoadNativeDone) {
+                loadNativeAds(keyAdsNative)
+            }
+        }
+        override fun onFinish() {
+        }
+    }
     private fun loadNativeUntilDone() {
         countDownTimer.start()
     }
@@ -205,12 +206,8 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
     }
 
     private fun setUpLoadInterAds() {
-        mMainActivity.keyAds = mMainActivity.mFirebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_INTER_MY_CREATIVE)
-        if (mMainActivity.keyAds.isEmpty()) {
-            mMainActivity.keyAds = getString(R.string.inter_my_creative)
-        }
-        if (mMainActivity.mFirebaseRemoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_INTER_MY_CREATIVE)) {
-            mMainActivity.loadInterAds(mMainActivity.keyAds)
+        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_INTER_MY_CREATIVE)) {
+            mMainActivity.loadInterAds()
         }
     }
 
@@ -222,10 +219,6 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
                 keyAds
             ) { nativeAds ->
                 if (nativeAds != null && isAdded && isVisible) {
-                    if (isDetached) {
-                        nativeAds.destroy()
-                        return@loadNativeAds
-                    }
                     //binding.frNativeAds.removeAllViews()
                     val adNativeVideoBinding = AdNativeVideoHorizontalBinding.inflate(layoutInflater)
                     NativeAdsUtils.instance.populateNativeAdVideoView(
