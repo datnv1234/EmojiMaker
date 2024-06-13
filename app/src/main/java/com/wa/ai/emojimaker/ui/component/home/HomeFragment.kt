@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.View
+import androidx.lifecycle.ViewModelProvider
 import com.adjust.sdk.Adjust
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
@@ -21,6 +22,7 @@ import com.wa.ai.emojimaker.ui.base.BaseBindingFragment
 import com.wa.ai.emojimaker.ui.dialog.SharePackageDialog
 import com.wa.ai.emojimaker.ui.component.emojimaker.EmojiMakerActivity
 import com.wa.ai.emojimaker.ui.component.main.MainActivity
+import com.wa.ai.emojimaker.ui.component.main.MainViewModel
 import com.wa.ai.emojimaker.ui.component.showstickers.ShowStickersActivity
 import com.wa.ai.emojimaker.utils.AppUtils
 import com.wa.ai.emojimaker.utils.DeviceUtils
@@ -33,15 +35,13 @@ import timber.log.Timber
 import java.io.File
 
 class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
+//
+//    private val CREATE_STICKER_PACK_ACTION = "org.telegram.messenger.CREATE_STICKER_PACK"
+//    private val CREATE_STICKER_PACK_EMOJIS_EXTRA = "STICKER_EMOJIS"
+//    private val CREATE_STICKER_PACK_IMPORTER_EXTRA = "IMPORTER"
 
-    private var isLoadNativeDone = false
-    private var keyAdsNative = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_HOME)
-
-    private val CREATE_STICKER_PACK_ACTION = "org.telegram.messenger.CREATE_STICKER_PACK"
-    private val CREATE_STICKER_PACK_EMOJIS_EXTRA = "STICKER_EMOJIS"
-    private val CREATE_STICKER_PACK_IMPORTER_EXTRA = "IMPORTER"
-
-    lateinit var mMainActivity: MainActivity
+    private lateinit var mMainActivity: MainActivity
+    private lateinit var mMainViewModel: MainViewModel
 
     private val sharePackageDialog : SharePackageDialog by lazy {
         SharePackageDialog().apply {
@@ -140,10 +140,10 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
 
     override fun setupData() {
         mMainActivity = activity as MainActivity
+        mMainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
 
-
-        viewModel.getCategoryList(requireContext())
-        viewModel.categoriesMutableLiveData.observe(this) {
+        //viewModel.getCategoryList(requireContext())
+        mMainViewModel.categoriesMutableLiveData.observe(this) {
             categoryAdapter.submitList(it.toMutableList())
             Timber.e("$it")
         }
@@ -167,35 +167,16 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
         Adjust.onPause()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        countDownTimer.cancel()
-    }
-
     private fun loadAds() {
         setUpLoadInterAds()
         if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_HOME)) {
-            loadNativeUntilDone()
+            loadNativeAds()
         } else {
             binding.rlNative.gone()
         }
     }
 
-    val countDownTimer: CountDownTimer = object : CountDownTimer(25000, 5000) {
-        override fun onTick(millisUntilFinished: Long) {
-            if (!isLoadNativeDone) {
-                loadNativeAds()
-            }
-        }
-        override fun onFinish() {
-        }
-    }
-    private fun loadNativeUntilDone() {
-        loadNativeAds()
-        countDownTimer.start()
-    }
-
-    private fun getUri(category: String) {
+    /*private fun getUri(category: String) {
         val cw = ContextWrapper(context)
         val directory: File = cw.getDir(Constant.INTERNAL_MY_CREATIVE_DIR, Context.MODE_PRIVATE)
         val files = directory.listFiles()      // Get packages
@@ -212,24 +193,24 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
                 }
             }
         }
-    }
-    private fun getRawUri(filename: String): Uri {
-        return Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + requireContext().packageName + "/raw/" + filename)
-    }
+    }*/
+//    private fun getRawUri(filename: String): Uri {
+//        return Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + requireContext().packageName + "/raw/" + filename)
+//    }
 
-    private fun doImport(stickers: java.util.ArrayList<Uri>, emojis: java.util.ArrayList<String>) {
-        val intent = Intent(CREATE_STICKER_PACK_ACTION)
-        intent.putExtra(Intent.EXTRA_STREAM, stickers)
-        intent.putExtra(CREATE_STICKER_PACK_IMPORTER_EXTRA, requireContext().packageName)
-        intent.putExtra(CREATE_STICKER_PACK_EMOJIS_EXTRA, emojis)
-        intent.setType("image/*")
-        try {
-            startActivity(intent)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            //no activity to handle intent
-        }
-    }
+//    private fun doImport(stickers: java.util.ArrayList<Uri>, emojis: java.util.ArrayList<String>) {
+//        val intent = Intent(CREATE_STICKER_PACK_ACTION)
+//        intent.putExtra(Intent.EXTRA_STREAM, stickers)
+//        intent.putExtra(CREATE_STICKER_PACK_IMPORTER_EXTRA, requireContext().packageName)
+//        intent.putExtra(CREATE_STICKER_PACK_EMOJIS_EXTRA, emojis)
+//        intent.setType("image/*")
+//        try {
+//            startActivity(intent)
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//            //no activity to handle intent
+//        }
+//    }
 
     private fun download(context: Context, category: String) {
         val assetManager = context.assets
@@ -272,7 +253,7 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
         this.let {
             NativeAdsUtils.instance.loadNativeAds(
                 requireContext(),
-                keyAdsNative
+                mMainActivity.keyAdsNativeHome
             ) { nativeAds ->
 
                 if (nativeAds != null && isAdded && isVisible) {
@@ -287,7 +268,6 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
                         adNativeVideoBinding.root as NativeAdView
                     )
                     binding.frNativeAds.addView(adNativeVideoBinding.root)
-                    isLoadNativeDone = true
                 } else {
                     //binding.rlNative.visibility = View.GONE
                 }

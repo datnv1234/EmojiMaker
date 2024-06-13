@@ -53,6 +53,11 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
     private val keyAdsBanner = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_MAIN)
     private val bannerReload = FirebaseRemoteConfig.getInstance().getLong(RemoteConfigKey.BANNER_RELOAD)
 
+
+    val keyAdsNativeSettings = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_SETTINGS)
+    var keyAdsNativeMyCreative = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_MY_CREATIVE)
+    var keyAdsNativeHome = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_HOME)
+
     private var mInterstitialAd: InterstitialAd? = null
     private var analytics: FirebaseAnalytics? = null
     var mFirebaseAnalytics: FirebaseAnalytics? = null
@@ -86,6 +91,8 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
 
     override fun setupData() {
         viewModel.getStickers(this)
+        viewModel.getCategoryList(this)
+        viewModel.getPackage(this)
         val isShowBanner = FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_BANNER_MAIN)
         if (!isShowBanner) {
             binding.rlBanner.gone()

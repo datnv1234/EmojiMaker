@@ -34,8 +34,7 @@ import com.wa.ai.emojimaker.utils.extention.visible
 @SuppressLint("NotifyDataSetChanged")
 class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCreativeViewModel>() {
 
-    private var isLoadNativeDone = false
-    private var keyAdsNative = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_MY_CREATIVE)
+
 
     private lateinit var mMainActivity: MainActivity
     private lateinit var mMainViewModel: MainViewModel
@@ -65,7 +64,7 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
         })
     }
 
-    private val sharePackageDialog : SharePackageDialog by lazy {
+    /*private val sharePackageDialog : SharePackageDialog by lazy {
         SharePackageDialog().apply {
             addToWhatsapp = {
                 toast(getString(R.string.coming_soon))
@@ -73,32 +72,32 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
 
             addToTelegram = {
                 toast(getString(R.string.this_function_is_not_supported_yet))
-                /*if (viewModel.stickerUri.size != 0) {
+                *//*if (viewModel.stickerUri.size != 0) {
                     AppUtils.importToTelegram(requireContext(), viewModel.stickerUri.toList())
                 } else {
                     toast("Please wait..!")
-                }*/
+                }*//*
             }
 
             share = {
                 toast(getString(R.string.this_function_is_not_supported_yet))
-                /*if (viewModel.stickerUri.size != 0) {
+                *//*if (viewModel.stickerUri.size != 0) {
                     AppUtils.shareMultipleImages(requireContext(), viewModel.stickerUri.toList())
                 } else {
                     toast("Please wait..!")
-                }*/
+                }*//*
             }
 
             download = {
                 toast("Cannot download this category")
             }
         }
-    }
+    }*/
 
     private val createPackageDialog: CreatePackageDialog by lazy {
         CreatePackageDialog().apply {
             confirm = {
-                viewModel.addPackage(it)
+                mMainViewModel.addPackage(it)
             }
         }
     }
@@ -107,7 +106,7 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
         ConfirmDialog(getString(R.string.delete), getString(R.string.delete)).apply {
              confirm = { pkg ->
                  DeviceUtils.deletePackage(requireContext(), Constant.INTERNAL_MY_CREATIVE_DIR, pkg.id)
-                 viewModel.removePackage(pkg)
+                 mMainViewModel.removePackage(pkg)
              }
         }
     }
@@ -130,10 +129,7 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
         mMainActivity = activity as MainActivity
         mMainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
 
-
-        //Get package list
-        viewModel.getPackage(requireContext())
-        viewModel.packageMutableLiveData.observe(this) {
+        mMainViewModel.packageMutableLiveData.observe(this) {
             creativeAdapter.submitList(it.toMutableList())
             if (it.isEmpty()) {
                 binding.llEmpty.visible()
@@ -174,34 +170,15 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
         super.onPause()
         Adjust.onPause()
     }
-    override fun onDestroy() {
-        super.onDestroy()
-        countDownTimer.cancel()
-    }
 
     private fun loadAds() {
         setUpLoadInterAds()
         if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_MY_CREATIVE)) {
-            loadNativeUntilDone()
+            loadNativeAds()
         } else {
             binding.rlNative.gone()
         }
     }
-
-    val countDownTimer: CountDownTimer = object : CountDownTimer(25000, 5000) {
-        override fun onTick(millisUntilFinished: Long) {
-            if (!isLoadNativeDone) {
-                loadNativeAds()
-            }
-        }
-        override fun onFinish() {
-        }
-    }
-    private fun loadNativeUntilDone() {
-        loadNativeAds()
-        countDownTimer.start()
-    }
-
 
     override fun getViewModel(): Class<MyCreativeViewModel> = MyCreativeViewModel::class.java
     override fun registerOnBackPress() {
@@ -219,7 +196,7 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
         this.let {
             NativeAdsUtils.instance.loadNativeAds(
                 requireContext(),
-                keyAdsNative
+                mMainActivity.keyAdsNativeMyCreative
             ) { nativeAds ->
                 if (nativeAds != null && isAdded && isVisible) {
                     val adNativeVideoBinding = AdNativeVideoHorizontalBinding.inflate(layoutInflater)
@@ -228,7 +205,6 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
                         adNativeVideoBinding.root as NativeAdView
                     )
                     binding.frNativeAds.addView(adNativeVideoBinding.root)
-                    isLoadNativeDone = true
                 } else {
                     //binding.rlNative.visibility = View.GONE
                 }

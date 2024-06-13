@@ -24,9 +24,6 @@ import com.wa.ai.emojimaker.utils.extention.hideSystemUI
 
 class SettingsFragment : BaseBindingFragment<FragmentSettingsBinding, SettingsViewModel>() {
 
-    private var isLoadNativeDone = false
-    private val keyAdsNative = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_SETTINGS)
-
     private lateinit var mMainActivity: MainActivity
 
     private val ratingDialog: DialogRating by lazy {
@@ -45,16 +42,6 @@ class SettingsFragment : BaseBindingFragment<FragmentSettingsBinding, SettingsVi
             onDismiss = {
                 activity?.hideSystemUI()
             }
-        }
-    }
-
-    val countDownTimer: CountDownTimer = object : CountDownTimer(20000, 5000) {
-        override fun onTick(millisUntilFinished: Long) {
-            if (!isLoadNativeDone) {
-                loadNativeAds()
-            }
-        }
-        override fun onFinish() {
         }
     }
 
@@ -100,8 +87,6 @@ class SettingsFragment : BaseBindingFragment<FragmentSettingsBinding, SettingsVi
         }
     }
 
-
-
     override val layoutId: Int
         get() = R.layout.fragment_settings
 
@@ -130,23 +115,14 @@ class SettingsFragment : BaseBindingFragment<FragmentSettingsBinding, SettingsVi
         Adjust.onPause()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        countDownTimer.cancel()
-    }
     private fun loadAds() {
         setUpLoadInterAds()
 
         if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_SETTINGS)) {
-            loadNativeUntilDone()
+            loadNativeAds()
         } else {
             binding.rlNative.visibility = View.GONE
         }
-    }
-
-    private fun loadNativeUntilDone() {
-        loadNativeAds()
-        countDownTimer.start()
     }
 
     private fun setUpLoadInterAds() {
@@ -160,7 +136,7 @@ class SettingsFragment : BaseBindingFragment<FragmentSettingsBinding, SettingsVi
         this.let {
             NativeAdsUtils.instance.loadNativeAds(
                 requireContext(),
-                keyAdsNative
+                mMainActivity.keyAdsNativeSettings
             ) { nativeAds ->
                 if (nativeAds != null && isAdded && isVisible) {
                     if (isDetached) {
@@ -174,9 +150,8 @@ class SettingsFragment : BaseBindingFragment<FragmentSettingsBinding, SettingsVi
                         adNativeVideoBinding.root as NativeAdView
                     )
                     binding.frNativeAds.addView(adNativeVideoBinding.root)
-                    isLoadNativeDone = true
                 } else {
-                    //binding.rlNative.visibility = View.GONE
+
                 }
             }
         }
