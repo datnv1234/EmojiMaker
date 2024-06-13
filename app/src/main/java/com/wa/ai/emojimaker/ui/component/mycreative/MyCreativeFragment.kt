@@ -129,7 +129,7 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
     override fun setupData() {
         mMainActivity = activity as MainActivity
         mMainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
-        loadAds()
+
 
         //Get package list
         viewModel.getPackage(requireContext())
@@ -157,6 +157,11 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
             intent.putExtra("category_size", mMainViewModel.categorySize)
             startActivity(intent)
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        loadAds()
     }
 
     override fun onResume() {

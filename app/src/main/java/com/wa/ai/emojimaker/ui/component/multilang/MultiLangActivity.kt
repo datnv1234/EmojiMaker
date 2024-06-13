@@ -117,7 +117,7 @@ class MultiLangActivity : BaseBindingActivity<ActivityMultiLangBinding, MultiLan
 
 			Constant.TYPE_LANGUAGE_SETTING -> {
 				binding.imgBack.visible()
-				binding.imgBack.setOnClickListener {
+				binding.btnChooseLang.setOnClickListener {
 					if (oldCode != code) {
 						SystemUtil.changeLang(code.ifEmpty { oldCode }, this)
 						val i = Intent(this, MainActivity::class.java)

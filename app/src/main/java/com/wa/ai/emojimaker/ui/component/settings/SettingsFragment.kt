@@ -112,6 +112,10 @@ class SettingsFragment : BaseBindingFragment<FragmentSettingsBinding, SettingsVi
 
     override fun setupData() {
         mMainActivity = activity as MainActivity
+    }
+
+    override fun onStart() {
+        super.onStart()
         loadAds()
     }
 

@@ -53,7 +53,7 @@ class BannerUtils {
         val containerShimmer =
             mActivity.findViewById<ShimmerFrameLayout>(R.id.shimmer_container_banner)
         if (!isShowAllAds || !DeviceUtils.checkInternetConnection(mActivity)) {
-            adContainer.gone()
+            //adContainer.gone()
             containerShimmer.gone()
         } else {
             loadBanner(
@@ -72,7 +72,8 @@ class BannerUtils {
         val containerShimmer =
             mActivity.findViewById<ShimmerFrameLayout>(R.id.shimmer_container_banner)
         if (!isShowAllAds || !DeviceUtils.checkInternetConnection(mActivity)) {
-            adContainer.gone()
+            //adContainer.gone()
+            Log.d(TAG, "!isShowAllAds: ")
             containerShimmer.gone()
         } else {
             loadCollapsibleBanner(
@@ -118,7 +119,7 @@ class BannerUtils {
                 adView.adListener = object : AdListener() {
                     override fun onAdFailedToLoad(loadAdError: LoadAdError) {
                         containerShimmer.stopShimmer()
-                        adContainer.gone()
+                        //adContainer.gone()
                         containerShimmer.gone()
                     }
 
@@ -156,6 +157,7 @@ class BannerUtils {
             containerShimmer.visible()
             containerShimmer.startShimmer()
             try {
+                Log.d(TAG, "loadCollapsibleBanner: ")
                 val adView = AdView(mActivity)
                 adView.adUnitId = id
                 adContainer.addView(adView)
@@ -183,16 +185,16 @@ class BannerUtils {
                 adView.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
                 adView.adListener = object : AdListener() {
                     override fun onAdFailedToLoad(loadAdError: LoadAdError) {
-//                        Log.d(TAG, "onAdFailedToLoad: " + loadAdError.message)
-//                        Log.d(TAG, "onAdFailedToLoad: " + loadAdError.domain)
-//                        Log.d(TAG, "onAdFailedToLoad: " + loadAdError.code)
-                        containerShimmer.stopShimmer()
-                        adContainer.gone()
-                        containerShimmer.gone()
+                        Log.d(TAG, "onAdFailedToLoad: " + loadAdError.message)
+                        Log.d(TAG, "onAdFailedToLoad: " + loadAdError.domain)
+                        Log.d(TAG, "onAdFailedToLoad: " + loadAdError.code)
+                        //containerShimmer.stopShimmer()
+                        //adContainer.gone()
+                        //containerShimmer.gone()
                     }
 
                     override fun onAdLoaded() {
-                        //Log.d(TAG, "onAdLoaded: ")
+                        Log.d(TAG, "onAdLoaded: ")
                         containerShimmer.stopShimmer()
                         containerShimmer.gone()
                         adContainer.visible()

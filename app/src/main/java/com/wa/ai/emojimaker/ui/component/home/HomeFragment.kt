@@ -140,7 +140,7 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
 
     override fun setupData() {
         mMainActivity = activity as MainActivity
-        loadAds()
+
 
         viewModel.getCategoryList(requireContext())
         viewModel.categoriesMutableLiveData.observe(this) {
@@ -155,6 +155,11 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
         super.onResume()
         Adjust.onResume()
         mMainActivity.binding.titleToolbar.text = title
+    }
+
+    override fun onStart() {
+        super.onStart()
+        loadAds()
     }
 
     override fun onPause() {

@@ -43,7 +43,7 @@ class NativeAdsUtils {
                     super.onAdLoaded()
                 }
             }).build()
-        adLoader.loadAds(AdRequest.Builder().build(), 5)
+        adLoader.loadAd(AdRequest.Builder().build())
     }
 
 
