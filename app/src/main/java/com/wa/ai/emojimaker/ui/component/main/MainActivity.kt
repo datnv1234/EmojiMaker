@@ -93,11 +93,10 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
         viewModel.getStickers(this)
         viewModel.getCategoryList(this)
         viewModel.getPackage(this)
-        val isShowBanner = FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_BANNER_MAIN)
-        if (!isShowBanner) {
-            binding.rlBanner.gone()
-        } else {
+        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_BANNER_MAIN)) {
             loadBanner()
+        } else {
+            binding.rlBanner.gone()
         }
         viewModel.loadBanner.observe(this) {
             loadBanner()
@@ -215,12 +214,12 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
                     if (loadInterCount < 3) {
                         loadInterAds()
                         loadInterCount++
-                    } else
-                        loadInterCount = 0
+                    }
                 }
 
                 override fun onAdLoaded(interstitialAd: InterstitialAd) {
                     mInterstitialAd = interstitialAd
+                    loadInterCount = 0
                     mFirebaseAnalytics?.logEvent("d_load_inter", null)
 
                     mInterstitialAd?.onPaidEventListener =

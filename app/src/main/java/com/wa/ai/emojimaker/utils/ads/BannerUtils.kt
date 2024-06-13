@@ -29,6 +29,7 @@ import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.common.Constant.TAG
 import com.wa.ai.emojimaker.utils.DeviceUtils
 import com.wa.ai.emojimaker.utils.extention.gone
+import com.wa.ai.emojimaker.utils.extention.invisible
 import com.wa.ai.emojimaker.utils.extention.visible
 
 
@@ -154,7 +155,7 @@ class BannerUtils {
         timeDelay: Long = 2000
     ) {
         Handler(Looper.getMainLooper()).postDelayed({
-            containerShimmer.visible()
+            //containerShimmer.visible()
             containerShimmer.startShimmer()
             try {
                 Log.d(TAG, "loadCollapsibleBanner: ")
@@ -188,9 +189,9 @@ class BannerUtils {
                         Log.d(TAG, "onAdFailedToLoad: " + loadAdError.message)
                         Log.d(TAG, "onAdFailedToLoad: " + loadAdError.domain)
                         Log.d(TAG, "onAdFailedToLoad: " + loadAdError.code)
-                        //containerShimmer.stopShimmer()
+                        containerShimmer.stopShimmer()
                         //adContainer.gone()
-                        //containerShimmer.gone()
+                        containerShimmer.invisible()
                     }
 
                     override fun onAdLoaded() {

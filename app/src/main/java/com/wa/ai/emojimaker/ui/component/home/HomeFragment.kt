@@ -1,20 +1,15 @@
 package com.wa.ai.emojimaker.ui.component.home
 
-import android.content.ContentResolver
 import android.content.Context
-import android.content.ContextWrapper
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import com.adjust.sdk.Adjust
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.wa.ai.emojimaker.R
-import com.wa.ai.emojimaker.common.Constant
 import com.wa.ai.emojimaker.databinding.AdNativeVideoHorizontalBinding
 import com.wa.ai.emojimaker.databinding.FragmentHomeBinding
 import com.wa.ai.emojimaker.ui.adapter.CategoryAdapter
@@ -32,7 +27,6 @@ import com.wa.ai.emojimaker.utils.RemoteConfigKey
 import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils
 import com.wa.ai.emojimaker.utils.extention.gone
 import timber.log.Timber
-import java.io.File
 
 class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
 //

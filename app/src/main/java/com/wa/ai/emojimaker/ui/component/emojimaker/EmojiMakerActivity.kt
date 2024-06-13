@@ -849,11 +849,11 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
                     if (loadInterCount < 3) {
                         loadInterAds()
                         loadInterCount++
-                    } else
-                        loadInterCount = 0
+                    }
                 }
                 override fun onAdLoaded(interstitialAd: InterstitialAd) {
                     mInterstitialAd = interstitialAd
+                    loadInterCount = 0
                     mFirebaseAnalytics?.logEvent("d_load_inter", null)
 
                     mInterstitialAd?.onPaidEventListener =
