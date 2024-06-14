@@ -1,7 +1,10 @@
 package com.wa.ai.emojimaker.ui.component.main
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
+import android.view.WindowMetrics
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.lifecycleScope
@@ -10,7 +13,10 @@ import androidx.navigation.ui.setupWithNavController
 import com.adjust.sdk.Adjust
 import com.adjust.sdk.AdjustAdRevenue
 import com.adjust.sdk.AdjustConfig
+import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.AdapterResponseInfo
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.OnPaidEventListener
@@ -34,8 +40,8 @@ import com.wa.ai.emojimaker.databinding.ActivityMainBinding
 import com.wa.ai.emojimaker.ui.base.BaseBindingActivity
 import com.wa.ai.emojimaker.utils.DeviceUtils
 import com.wa.ai.emojimaker.utils.RemoteConfigKey
+import com.wa.ai.emojimaker.utils.ads.BannerListener
 import com.wa.ai.emojimaker.utils.ads.BannerUtils
-import com.wa.ai.emojimaker.utils.extention.gone
 import com.wa.ai.emojimaker.utils.extention.setFullScreen
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -53,17 +59,30 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
     private val keyAdsBanner = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_MAIN)
     private val bannerReload = FirebaseRemoteConfig.getInstance().getLong(RemoteConfigKey.BANNER_RELOAD)
 
-
     val keyAdsNativeSettings = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_SETTINGS)
     var keyAdsNativeMyCreative = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_MY_CREATIVE)
     var keyAdsNativeHome = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_HOME)
 
     private var mInterstitialAd: InterstitialAd? = null
-    private var analytics: FirebaseAnalytics? = null
+    //private var analytics: FirebaseAnalytics? = null
     var mFirebaseAnalytics: FirebaseAnalytics? = null
 
     override val layoutId: Int
         get() = R.layout.activity_main
+
+    private val adWidth: Int
+        get() {
+            val displayMetrics = resources.displayMetrics
+            val adWidthPixels =
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    val windowMetrics: WindowMetrics = this.windowManager.currentWindowMetrics
+                    windowMetrics.bounds.width()
+                } else {
+                    displayMetrics.widthPixels
+                }
+            val density = displayMetrics.density
+            return (adWidthPixels / density).toInt()
+        }
 
     override fun getViewModel(): Class<MainViewModel> = MainViewModel::class.java
 
@@ -91,16 +110,15 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
 
     override fun setupData() {
         viewModel.getStickers(this)
+
         viewModel.getCategoryList(this)
+        addBannerAds()
+        loadBannerAds()
+
         viewModel.getPackage(this)
-        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_BANNER_MAIN)) {
-            loadBanner()
-        } else {
-            binding.rlBanner.gone()
-        }
-        viewModel.loadBanner.observe(this) {
-            loadBanner()
-        }
+
+        loadBanner()
+        loadInterAds()
     }
 
     override fun onResume() {
@@ -235,16 +253,69 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
                             )
                             adRevenue.adRevenueNetwork = loadedAdapterResponseInfo?.adSourceName
                             Adjust.trackAdRevenue(adRevenue)
-                            analytics = FirebaseAnalytics.getInstance(applicationContext)
                             val params = Bundle()
                             params.putString(FirebaseAnalytics.Param.AD_PLATFORM, "admob mediation")
                             params.putString(FirebaseAnalytics.Param.AD_SOURCE, "AdMob")
                             params.putString(FirebaseAnalytics.Param.AD_FORMAT, "Interstitial")
                             params.putDouble(FirebaseAnalytics.Param.VALUE, revenue)
                             params.putString(FirebaseAnalytics.Param.CURRENCY, "USD")
-                            analytics?.logEvent(FirebaseAnalytics.Event.AD_IMPRESSION, params)
+                            FirebaseAnalytics.getInstance(applicationContext).logEvent(FirebaseAnalytics.Event.AD_IMPRESSION, params)
                         }
                 }
             })
+    }
+
+    private fun addBannerAds() {
+        // Loop through the items array and place a new banner ad in every ith position in
+        // the items List.
+        var i = 0
+        while (i <= viewModel.categories.size) {
+            val adView = AdView(this)
+            adView.setAdSize(AdSize.getCurrentOrientationInlineAdaptiveBannerAdSize(this, adWidth))
+            adView.adUnitId = "ca-app-pub-3940256099942544/1039341195"
+            viewModel.categories.add(i, adView)
+            i += ITEMS_PER_AD
+        }
+        Log.d("TAG", "addBannerAds: ")
+    }
+
+    private fun loadBannerAds() {
+        // Load the first banner ad in the items list (subsequent ads will be loaded automatically
+        // in sequence).
+        loadBannerAd(0)
+    }
+
+    private fun loadBannerAd(index: Int) {
+        if (index >= viewModel.categories.size) {
+            return
+        }
+        val item =
+            viewModel.categories[index] as? AdView
+                ?: throw ClassCastException("Expected item at index $index to be a banner ad ad.")
+
+        item.adListener =
+            object : AdListener() {
+                override fun onAdLoaded() {
+                    super.onAdLoaded()
+                    loadBannerAd(index + ITEMS_PER_AD)
+                }
+
+                override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                    val error =
+                        String.format(
+                            "domain: %s, code: %d, message: %s",
+                            loadAdError.domain,
+                            loadAdError.code,
+                            loadAdError.message,
+                        )
+                    Timber.tag(ADS).e(error)
+                    loadBannerAd(index + ITEMS_PER_AD)
+                }
+            }
+        item.loadAd(AdRequest.Builder().build())
+    }
+
+    companion object {
+        const val ITEMS_PER_AD = 8
     }
 }

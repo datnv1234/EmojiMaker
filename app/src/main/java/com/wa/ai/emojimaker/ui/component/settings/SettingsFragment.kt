@@ -116,7 +116,7 @@ class SettingsFragment : BaseBindingFragment<FragmentSettingsBinding, SettingsVi
     }
 
     private fun loadAds() {
-        setUpLoadInterAds()
+        //setUpLoadInterAds()
 
         if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_SETTINGS)) {
             loadNativeAds()

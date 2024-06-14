@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import com.adjust.sdk.Adjust
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
@@ -13,6 +14,7 @@ import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.databinding.AdNativeVideoHorizontalBinding
 import com.wa.ai.emojimaker.databinding.FragmentHomeBinding
 import com.wa.ai.emojimaker.ui.adapter.CategoryAdapter
+import com.wa.ai.emojimaker.ui.adapter.HomeAdapter
 import com.wa.ai.emojimaker.ui.base.BaseBindingFragment
 import com.wa.ai.emojimaker.ui.dialog.SharePackageDialog
 import com.wa.ai.emojimaker.ui.component.emojimaker.EmojiMakerActivity
@@ -114,6 +116,8 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
         })
     }
 
+
+
     override fun getViewModel(): Class<HomeViewModel> = HomeViewModel::class.java
     override fun registerOnBackPress() {
     }
@@ -137,11 +141,8 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
         mMainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
 
         //viewModel.getCategoryList(requireContext())
-        mMainViewModel.categoriesMutableLiveData.observe(this) {
-            categoryAdapter.submitList(it.toMutableList())
-            Timber.e("$it")
-        }
-        binding.rvCategory.adapter = categoryAdapter
+        val adapter: RecyclerView.Adapter<RecyclerView.ViewHolder> = HomeAdapter(requireContext(), mMainViewModel.categories)
+        binding.rvCategory.adapter = adapter
 
     }
 

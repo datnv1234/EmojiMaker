@@ -34,8 +34,6 @@ import com.wa.ai.emojimaker.utils.extention.visible
 @SuppressLint("NotifyDataSetChanged")
 class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCreativeViewModel>() {
 
-
-
     private lateinit var mMainActivity: MainActivity
     private lateinit var mMainViewModel: MainViewModel
 
@@ -172,12 +170,7 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
     }
 
     private fun loadAds() {
-        setUpLoadInterAds()
-        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_MY_CREATIVE)) {
-            loadNativeAds()
-        } else {
-            binding.rlNative.gone()
-        }
+        //setUpLoadInterAds()
     }
 
     override fun getViewModel(): Class<MyCreativeViewModel> = MyCreativeViewModel::class.java
@@ -189,28 +182,6 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
         if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_INTER_MY_CREATIVE)) {
             mMainActivity.loadInterAds()
         }
-    }
-
-    private fun loadNativeAds() {
-        if (!DeviceUtils.checkInternetConnection(requireContext())) binding.rlNative.visibility = View.GONE
-        this.let {
-            NativeAdsUtils.instance.loadNativeAds(
-                requireContext(),
-                mMainActivity.keyAdsNativeMyCreative
-            ) { nativeAds ->
-                if (nativeAds != null && isAdded && isVisible) {
-                    val adNativeVideoBinding = AdNativeVideoHorizontalBinding.inflate(layoutInflater)
-                    NativeAdsUtils.instance.populateNativeAdVideoView(
-                        nativeAds,
-                        adNativeVideoBinding.root as NativeAdView
-                    )
-                    binding.frNativeAds.addView(adNativeVideoBinding.root)
-                } else {
-                    //binding.rlNative.visibility = View.GONE
-                }
-            }
-        }
-
     }
 
 }

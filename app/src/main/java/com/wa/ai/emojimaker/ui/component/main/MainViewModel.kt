@@ -9,6 +9,8 @@ import android.os.CountDownTimer
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
 import com.wa.ai.emojimaker.common.Constant
 import com.wa.ai.emojimaker.data.model.Category
 import com.wa.ai.emojimaker.data.model.MadeStickerModel
@@ -47,10 +49,7 @@ class MainViewModel : BaseViewModel() {
     private val _loadBanner: MutableLiveData<Boolean> = MutableLiveData()
     val loadBanner: LiveData<Boolean>
         get() = _loadBanner
-
-    private val _categoriesMutableLiveData: MutableLiveData<List<Category>> = MutableLiveData()
-    val categoriesMutableLiveData: LiveData<List<Category>>
-        get() = _categoriesMutableLiveData
+    val categories: MutableList<Any> = ArrayList()
 
     private val _packageMutableLiveData: MutableLiveData<List<PackageModel>> = MutableLiveData()
     val packageMutableLiveData: LiveData<List<PackageModel>>
@@ -58,25 +57,23 @@ class MainViewModel : BaseViewModel() {
 
     fun getCategoryList(context: Context) {
         val assetManager = context.assets
-        viewModelScope.launch(Dispatchers.IO) {
-            val listEntry = mutableListOf<Category>()
-            listEntry.add(getCategory(assetManager,"cat_chic", "Cat Chic"))
-            listEntry.add(getCategory(assetManager, "orange_orchard", "Orange Orchard"))
-            listEntry.add(getCategory(assetManager, "funny_rat", "Funny rat"))
-            listEntry.add(getCategory(assetManager, "dog_diversity", "Dog Diversity"))
-            listEntry.add(getCategory(assetManager, "pet_pawtentials", "Pet Pawtentials"))
-            listEntry.add(getCategory(assetManager, "sly_spirits", "Sly Spirits"))
-            listEntry.add(getCategory(assetManager, "xiximi", "Xiximi"))
-            listEntry.add(getCategory(assetManager, "funny_cat", "Funny Cat"))
-            listEntry.add(getCategory(assetManager, "quacking_quacks", "Quacking Quacks"))
-            listEntry.add(getCategory(assetManager, "emoji", "Emoji"))
-            listEntry.add(getCategory(assetManager, "brainy_endeavors", "Brainy Endeavors"))
-            listEntry.add(getCategory(assetManager, "couple_emoji", "Couple emoji"))
-            listEntry.add(getCategory(assetManager, "cute_girl", "Cute girl"))
 
-            _categoriesMutableLiveData.postValue(listEntry)
-        }
+            categories.add(getCategory(assetManager,"cat_chic", "Cat Chic"))
+            categories.add(getCategory(assetManager, "orange_orchard", "Orange Orchard"))
+            categories.add(getCategory(assetManager, "funny_rat", "Funny rat"))
+            categories.add(getCategory(assetManager, "dog_diversity", "Dog Diversity"))
+            categories.add(getCategory(assetManager, "pet_pawtentials", "Pet Pawtentials"))
+            categories.add(getCategory(assetManager, "sly_spirits", "Sly Spirits"))
+            categories.add(getCategory(assetManager, "xiximi", "Xiximi"))
+            categories.add(getCategory(assetManager, "funny_cat", "Funny Cat"))
+            categories.add(getCategory(assetManager, "quacking_quacks", "Quacking Quacks"))
+            categories.add(getCategory(assetManager, "emoji", "Emoji"))
+            categories.add(getCategory(assetManager, "brainy_endeavors", "Brainy Endeavors"))
+            categories.add(getCategory(assetManager, "couple_emoji", "Couple emoji"))
+            categories.add(getCategory(assetManager, "cute_girl", "Cute girl"))
+
     }
+
     private fun getCategory(assetManager: AssetManager, category: String, categoryName: String) : Category {
         val cate = Category(category, categoryName, 0)
         val listFile = assetManager.list("categories/$category") ?: return cate
