@@ -14,11 +14,17 @@ import com.wa.ai.emojimaker.data.model.MadeStickerModel
 import com.wa.ai.emojimaker.ui.base.BaseViewModel
 import com.wa.ai.emojimaker.utils.AppUtils
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import java.io.File
 
 class ShowStickerViewModel : BaseViewModel() {
 
+    override fun onCleared() {
+        super.onCleared()
+        viewModelScope.cancel()
+    }
+    
     var stickerUri = ArrayList<Uri>()
     var stickerBitmaps = ArrayList<Bitmap>()
     private var timerReloadBanner : CountDownTimer? = null

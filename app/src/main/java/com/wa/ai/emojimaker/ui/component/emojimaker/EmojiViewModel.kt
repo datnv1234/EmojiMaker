@@ -14,6 +14,7 @@ import com.wa.ai.emojimaker.data.model.PagerIconUI
 import com.wa.ai.emojimaker.data.model.PieceSticker
 import com.wa.ai.emojimaker.ui.base.BaseViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
 
@@ -46,6 +47,10 @@ class EmojiViewModel : BaseViewModel() {
     val loadBanner: LiveData<Boolean>
         get() = _loadBanner
 
+    override fun onCleared() {
+        super.onCleared()
+        viewModelScope.cancel()
+    }
     private fun createCountDownTimerReloadBanner(time: Long): CountDownTimer {
         return object : CountDownTimer(time, 1000) {
             override fun onTick(millisUntilFinished: Long) {

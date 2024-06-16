@@ -11,10 +11,17 @@ import com.wa.ai.emojimaker.data.model.PackageModel
 import com.wa.ai.emojimaker.ui.base.BaseViewModel
 import com.wa.ai.emojimaker.utils.AppUtils.convertFileToBitmap
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import java.io.File
 
 class AddToPackageViewModel : BaseViewModel() {
+
+    override fun onCleared() {
+        super.onCleared()
+        viewModelScope.cancel()
+    }
+
     private val _packageMutableLiveData: MutableLiveData<List<PackageModel>> = MutableLiveData()
     val packageMutableLiveData: LiveData<List<PackageModel>>
         get() = _packageMutableLiveData

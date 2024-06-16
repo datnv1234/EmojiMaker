@@ -8,6 +8,7 @@ import com.wa.ai.emojimaker.data.model.LanguageUI
 import com.wa.ai.emojimaker.ui.base.BaseViewModel
 import com.wa.ai.emojimaker.ui.base.toMutableList
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
 class MultiLangViewModel : BaseViewModel() {
@@ -23,6 +24,10 @@ class MultiLangViewModel : BaseViewModel() {
         }
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        viewModelScope.cancel()
+    }
 
     fun getListLanguage() = viewModelScope.launch(Dispatchers.IO) {
         val listLanguageDefault = mutableListOf<LanguageUI>()

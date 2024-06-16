@@ -18,6 +18,7 @@ import com.wa.ai.emojimaker.data.model.PackageModel
 import com.wa.ai.emojimaker.ui.base.BaseViewModel
 import com.wa.ai.emojimaker.utils.AppUtils
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import java.io.File
 
@@ -55,23 +56,28 @@ class MainViewModel : BaseViewModel() {
     val packageMutableLiveData: LiveData<List<PackageModel>>
         get() = _packageMutableLiveData
 
+    override fun onCleared() {
+        super.onCleared()
+        viewModelScope.cancel()
+    }
+
     fun getCategoryList(context: Context) {
         val assetManager = context.assets
-
-            categories.add(getCategory(assetManager,"cat_chic", "Cat Chic"))
-            categories.add(getCategory(assetManager, "orange_orchard", "Orange Orchard"))
-            categories.add(getCategory(assetManager, "funny_rat", "Funny rat"))
-            categories.add(getCategory(assetManager, "dog_diversity", "Dog Diversity"))
-            categories.add(getCategory(assetManager, "pet_pawtentials", "Pet Pawtentials"))
-            categories.add(getCategory(assetManager, "sly_spirits", "Sly Spirits"))
-            categories.add(getCategory(assetManager, "xiximi", "Xiximi"))
-            categories.add(getCategory(assetManager, "funny_cat", "Funny Cat"))
-            categories.add(getCategory(assetManager, "quacking_quacks", "Quacking Quacks"))
-            categories.add(getCategory(assetManager, "emoji", "Emoji"))
-            categories.add(getCategory(assetManager, "brainy_endeavors", "Brainy Endeavors"))
-            categories.add(getCategory(assetManager, "couple_emoji", "Couple emoji"))
-            categories.add(getCategory(assetManager, "cute_girl", "Cute girl"))
-
+            viewModelScope.launch {
+                categories.add(getCategory(assetManager, "cat_chic", "Cat Chic"))
+                categories.add(getCategory(assetManager, "orange_orchard", "Orange Orchard"))
+                categories.add(getCategory(assetManager, "funny_rat", "Funny rat"))
+                categories.add(getCategory(assetManager, "dog_diversity", "Dog Diversity"))
+                categories.add(getCategory(assetManager, "pet_pawtentials", "Pet Pawtentials"))
+                categories.add(getCategory(assetManager, "sly_spirits", "Sly Spirits"))
+                categories.add(getCategory(assetManager, "xiximi", "Xiximi"))
+                categories.add(getCategory(assetManager, "funny_cat", "Funny Cat"))
+                categories.add(getCategory(assetManager, "quacking_quacks", "Quacking Quacks"))
+                categories.add(getCategory(assetManager, "emoji", "Emoji"))
+                categories.add(getCategory(assetManager, "brainy_endeavors", "Brainy Endeavors"))
+                categories.add(getCategory(assetManager, "couple_emoji", "Couple emoji"))
+                categories.add(getCategory(assetManager, "cute_girl", "Cute girl"))
+            }
     }
 
     private fun getCategory(assetManager: AssetManager, category: String, categoryName: String) : Category {

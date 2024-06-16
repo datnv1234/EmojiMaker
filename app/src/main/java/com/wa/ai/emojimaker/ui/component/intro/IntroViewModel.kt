@@ -8,6 +8,7 @@ import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.data.model.IntroUI
 import com.wa.ai.emojimaker.ui.base.BaseViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
 class IntroViewModel : BaseViewModel() {
@@ -15,6 +16,11 @@ class IntroViewModel : BaseViewModel() {
     val introMutableLiveData: LiveData<List<IntroUI>>
         get() = _introMutableLiveData
 
+    override fun onCleared() {
+        super.onCleared()
+        viewModelScope.cancel()
+    }
+    
     fun getIntro(context: Context) {
         viewModelScope.launch(Dispatchers.IO) {
             val listIntroEntity = mutableListOf<IntroUI>()
