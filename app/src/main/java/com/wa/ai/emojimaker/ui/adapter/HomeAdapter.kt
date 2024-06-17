@@ -15,11 +15,10 @@ import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.data.model.Category
 import com.wa.ai.emojimaker.ui.component.main.MainActivity
 
-internal class HomeAdapter(// An Activity's Context.
+internal class HomeAdapter(
     private val context: Context,
-    // The list of banner ads and menu items.
     private val recyclerViewItems: List<Any>
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+) : RecyclerView.Adapter<ViewHolder>() {
 
     inner class ItemViewHolder internal constructor(view: View) : ViewHolder(view) {
         val title: TextView
@@ -46,8 +45,9 @@ internal class HomeAdapter(// An Activity's Context.
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (position % MainActivity.ITEMS_PER_AD == 0) BANNER_AD_VIEW_TYPE
-        else ITEM_VIEW_TYPE
+//        return if (position % MainActivity.ITEMS_PER_AD == 0) BANNER_AD_VIEW_TYPE
+//        else ITEM_VIEW_TYPE
+        return ITEM_VIEW_TYPE
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

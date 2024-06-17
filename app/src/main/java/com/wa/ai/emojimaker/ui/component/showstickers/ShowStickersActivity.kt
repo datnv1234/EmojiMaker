@@ -250,6 +250,7 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
                     inputStream1,
                     file
                 )), category)
+                inputStream1.close()
             }
             toast(getString(R.string.download_done))
         } else {

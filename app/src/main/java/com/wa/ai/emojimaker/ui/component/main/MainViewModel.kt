@@ -2,15 +2,12 @@ package com.wa.ai.emojimaker.ui.component.main
 
 import android.content.Context
 import android.content.ContextWrapper
-import android.content.res.AssetManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.CountDownTimer
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.ads.AdSize
-import com.google.android.gms.ads.AdView
 import com.wa.ai.emojimaker.common.Constant
 import com.wa.ai.emojimaker.data.model.Category
 import com.wa.ai.emojimaker.data.model.MadeStickerModel
@@ -59,28 +56,29 @@ class MainViewModel : BaseViewModel() {
     override fun onCleared() {
         super.onCleared()
         viewModelScope.cancel()
+        timerReloadBanner?.cancel()
     }
 
     fun getCategoryList(context: Context) {
-        val assetManager = context.assets
-            viewModelScope.launch {
-                categories.add(getCategory(assetManager, "cat_chic", "Cat Chic"))
-                categories.add(getCategory(assetManager, "orange_orchard", "Orange Orchard"))
-                categories.add(getCategory(assetManager, "funny_rat", "Funny rat"))
-                categories.add(getCategory(assetManager, "dog_diversity", "Dog Diversity"))
-                categories.add(getCategory(assetManager, "pet_pawtentials", "Pet Pawtentials"))
-                categories.add(getCategory(assetManager, "sly_spirits", "Sly Spirits"))
-                categories.add(getCategory(assetManager, "xiximi", "Xiximi"))
-                categories.add(getCategory(assetManager, "funny_cat", "Funny Cat"))
-                categories.add(getCategory(assetManager, "quacking_quacks", "Quacking Quacks"))
-                categories.add(getCategory(assetManager, "emoji", "Emoji"))
-                categories.add(getCategory(assetManager, "brainy_endeavors", "Brainy Endeavors"))
-                categories.add(getCategory(assetManager, "couple_emoji", "Couple emoji"))
-                categories.add(getCategory(assetManager, "cute_girl", "Cute girl"))
-            }
+        viewModelScope.launch {
+            categories.add(getCategory(context, "cat_chic", "Cat Chic"))
+            categories.add(getCategory(context, "orange_orchard", "Orange Orchard"))
+            categories.add(getCategory(context, "funny_rat", "Funny rat"))
+            categories.add(getCategory(context, "dog_diversity", "Dog Diversity"))
+            categories.add(getCategory(context, "pet_pawtentials", "Pet Pawtentials"))
+            categories.add(getCategory(context, "sly_spirits", "Sly Spirits"))
+            categories.add(getCategory(context, "xiximi", "Xiximi"))
+            categories.add(getCategory(context, "funny_cat", "Funny Cat"))
+            categories.add(getCategory(context, "quacking_quacks", "Quacking Quacks"))
+            categories.add(getCategory(context, "emoji", "Emoji"))
+            categories.add(getCategory(context, "brainy_endeavors", "Brainy Endeavors"))
+            categories.add(getCategory(context, "couple_emoji", "Couple emoji"))
+            categories.add(getCategory(context, "cute_girl", "Cute girl"))
+        }
     }
 
-    private fun getCategory(assetManager: AssetManager, category: String, categoryName: String) : Category {
+    private fun getCategory(context: Context, category: String, categoryName: String) : Category {
+        val assetManager = context.assets
         val cate = Category(category, categoryName, 0)
         val listFile = assetManager.list("categories/$category") ?: return cate
         cate.itemSize = listFile.size

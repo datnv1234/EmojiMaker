@@ -98,7 +98,7 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
             }
         }
     }
-    private val categoryAdapter : CategoryAdapter by lazy {
+   /* private val categoryAdapter : CategoryAdapter by lazy {
         CategoryAdapter(requireContext(), optionClick = {
             //getUri(it)
             sharePackageDialog.category = it
@@ -114,8 +114,7 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
             }
             mMainActivity.mFirebaseAnalytics?.logEvent("v_inter_ads_open_$it", null)
         })
-    }
-
+    }*/
 
 
     override fun getViewModel(): Class<HomeViewModel> = HomeViewModel::class.java
@@ -230,6 +229,7 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
                         )
                     ), category
                 )
+                inputStream1.close()
             }
             toast(getString(R.string.download_done))
         } else {

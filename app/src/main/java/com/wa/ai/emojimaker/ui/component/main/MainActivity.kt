@@ -112,12 +112,14 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
         viewModel.getStickers(this)
 
         viewModel.getCategoryList(this)
-        addBannerAds()
-        loadBannerAds()
+//        addBannerAds()
+        //loadBannerAds()
 
         viewModel.getPackage(this)
-
         loadBanner()
+//        viewModel.loadBanner.observe(this) {
+//            loadBanner()
+//        }
         loadInterAds()
     }
 

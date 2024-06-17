@@ -19,6 +19,7 @@ import android.os.Environment
 import android.os.Parcelable
 import android.provider.OpenableColumns
 import android.text.InputType
+import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.widget.EditText
@@ -85,7 +86,8 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     private var isFinishImmediately = false
 
     private var keyInter = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_INTER_CREATE_EMOJI)
-    private val keyBanner = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_CREATE_EMOJI)
+//    private val keyBanner = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_CREATE_EMOJI)
+    private val keyBanner = "ca-app-pub-3940256099942544/2014213617"
     private val interDelay = FirebaseRemoteConfig.getInstance().getLong(RemoteConfigKey.INTER_DELAY)
     private val bannerReload = FirebaseRemoteConfig.getInstance().getLong(RemoteConfigKey.BANNER_RELOAD)
 
@@ -245,9 +247,9 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         } else {
             binding.rlBanner.gone()
         }
-        emojiViewModel.loadBanner.observe(this) {
-            loadBanner()
-        }
+//        emojiViewModel.loadBanner.observe(this) {
+//            loadBanner()
+//        }
         loadInterAds()
     }
     override fun setupData() {
@@ -675,6 +677,11 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
             .show()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(TAG, "onDestroy: ")
+    }
+
     private fun hasPermission(permission: String) =
         ActivityCompat.checkSelfPermission(
             this,
@@ -805,7 +812,8 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
 
 
     private fun loadBanner() {
-        emojiViewModel.starTimeCountReloadBanner(bannerReload)
+
+        //emojiViewModel.starTimeCountReloadBanner(bannerReload)
         BannerUtils.instance?.loadCollapsibleBanner(this, keyBanner)
     }
 

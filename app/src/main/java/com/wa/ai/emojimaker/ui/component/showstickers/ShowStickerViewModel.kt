@@ -23,10 +23,11 @@ class ShowStickerViewModel : BaseViewModel() {
     override fun onCleared() {
         super.onCleared()
         viewModelScope.cancel()
+        timerReloadBanner?.cancel()
+        stickerUri.clear()
     }
     
     var stickerUri = ArrayList<Uri>()
-    var stickerBitmaps = ArrayList<Bitmap>()
     private var timerReloadBanner : CountDownTimer? = null
 
     private val _stickersMutableLiveData: MutableLiveData<List<MadeStickerModel>> = MutableLiveData()

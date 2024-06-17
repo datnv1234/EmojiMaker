@@ -5,6 +5,7 @@ import android.content.res.AssetManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.CountDownTimer
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -17,8 +18,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
-
 class EmojiViewModel : BaseViewModel() {
+
+    override fun onCleared() {
+        super.onCleared()
+        viewModelScope.cancel()
+        timerReloadBanner?.cancel()
+        clearData()
+        optionList.clear()
+    }
 
     private var timerReloadBanner : CountDownTimer? = null
     val optionList = ArrayList<ItemOptionUI>()
@@ -47,10 +55,7 @@ class EmojiViewModel : BaseViewModel() {
     val loadBanner: LiveData<Boolean>
         get() = _loadBanner
 
-    override fun onCleared() {
-        super.onCleared()
-        viewModelScope.cancel()
-    }
+
     private fun createCountDownTimerReloadBanner(time: Long): CountDownTimer {
         return object : CountDownTimer(time, 1000) {
             override fun onTick(millisUntilFinished: Long) {
@@ -70,6 +75,7 @@ class EmojiViewModel : BaseViewModel() {
             it.printStackTrace()
         }
     }
+
 
     fun setBitmap(bitmap: Bitmap) {
         _bitmapMutableLiveData.postValue(bitmap)
@@ -171,9 +177,23 @@ class EmojiViewModel : BaseViewModel() {
                 val bitmap = BitmapFactory.decodeStream(inputStream)
                 if (bitmap != null) {
                     list.add(PieceSticker(bitmap))
-                    inputStream.close()
                 }
+                inputStream.close()
             }
         }
+    }
+
+    private fun clearData() {
+        pieceOfAccessories.clear()
+        pieceOfBeard.clear()
+        pieceOfBrow.clear()
+        pieceOfEyes.clear()
+        pieceOfFace.clear()
+        pieceOfGlass.clear()
+        pieceOfHair.clear()
+        pieceOfHand.clear()
+        pieceOfHat.clear()
+        pieceOfMouth.clear()
+        pieceOfNose.clear()
     }
 }
