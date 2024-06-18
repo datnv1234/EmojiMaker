@@ -3,30 +3,23 @@ package com.wa.ai.emojimaker.ui.component.mycreative
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.os.CountDownTimer
-import android.util.Log
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import com.adjust.sdk.Adjust
-import com.google.android.gms.ads.nativead.NativeAdView
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.common.Constant
-import com.wa.ai.emojimaker.databinding.AdNativeVideoBinding
-import com.wa.ai.emojimaker.databinding.AdNativeVideoHorizontalBinding
 import com.wa.ai.emojimaker.databinding.FragmentMyCreativeBinding
 import com.wa.ai.emojimaker.ui.adapter.CreativeAdapter
 import com.wa.ai.emojimaker.ui.adapter.MadeStickerAdapter
 import com.wa.ai.emojimaker.ui.base.BaseBindingFragment
 import com.wa.ai.emojimaker.ui.dialog.ConfirmDialog
-import com.wa.ai.emojimaker.ui.dialog.SharePackageDialog
 import com.wa.ai.emojimaker.ui.component.main.MainActivity
 import com.wa.ai.emojimaker.ui.component.main.MainViewModel
 import com.wa.ai.emojimaker.ui.component.showstickers.ShowStickersActivity
 import com.wa.ai.emojimaker.ui.dialog.CreatePackageDialog
 import com.wa.ai.emojimaker.utils.DeviceUtils
 import com.wa.ai.emojimaker.utils.RemoteConfigKey
-import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils
 import com.wa.ai.emojimaker.utils.extention.gone
 import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 import com.wa.ai.emojimaker.utils.extention.visible
@@ -52,7 +45,8 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
         //sharePackageDialog.show(parentFragmentManager, sharePackageDialog.tag)
         }, delete = {
             deletePkgDialog.pkg = it
-            deletePkgDialog.show(parentFragmentManager, deletePkgDialog.tag)
+            if (!deletePkgDialog.isAdded)
+                deletePkgDialog.show(parentFragmentManager, deletePkgDialog.tag)
         })
     }
 
@@ -118,7 +112,8 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
 
     override fun onCreatedView(view: View?, savedInstanceState: Bundle?) {
         binding.btnAddPackage.setOnSafeClick {
-            createPackageDialog.show(parentFragmentManager, createPackageDialog.tag)
+            if (!createPackageDialog.isAdded)
+                createPackageDialog.show(parentFragmentManager, createPackageDialog.tag)
         }
 
     }

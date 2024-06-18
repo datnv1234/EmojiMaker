@@ -87,8 +87,6 @@ class IntroActivity : BaseBindingActivity<ActivityIntroBinding, IntroViewModel>(
     }
 
     private fun startMainActivity() {
-        getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit()
-            .putBoolean("isFirstRun", false).apply()
         SharedPreferenceHelper.storeBoolean("isFirstRun", false)
         Intent(this@IntroActivity, MainActivity::class.java).apply {
             startActivity(this)
@@ -155,7 +153,7 @@ class IntroActivity : BaseBindingActivity<ActivityIntroBinding, IntroViewModel>(
                     binding.frNativeAds.addView(adNativeVideoBinding.root)
                     isLoadNativeDone = true
                 } else {
-                    //binding.rlNative.visibility = View.GONE
+                    binding.rlNative.visibility = View.GONE
                 }
             }
         }

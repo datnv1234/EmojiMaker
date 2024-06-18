@@ -272,7 +272,7 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
                     )
                     binding.frNativeAds.addView(adNativeVideoBinding.root)
                 } else {
-                    //binding.rlNative.visibility = View.GONE
+                    binding.rlNative.visibility = View.GONE
                 }
             }
         }

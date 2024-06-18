@@ -151,7 +151,7 @@ class SettingsFragment : BaseBindingFragment<FragmentSettingsBinding, SettingsVi
                     )
                     binding.frNativeAds.addView(adNativeVideoBinding.root)
                 } else {
-
+                    binding.rlNative.visibility = View.GONE
                 }
             }
         }

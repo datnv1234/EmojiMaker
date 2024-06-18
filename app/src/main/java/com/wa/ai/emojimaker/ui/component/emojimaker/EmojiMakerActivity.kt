@@ -86,8 +86,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     private var isFinishImmediately = false
 
     private var keyInter = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_INTER_CREATE_EMOJI)
-//    private val keyBanner = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_CREATE_EMOJI)
-    private val keyBanner = "ca-app-pub-3940256099942544/2014213617"
+    private val keyBanner = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_CREATE_EMOJI)
     private val interDelay = FirebaseRemoteConfig.getInstance().getLong(RemoteConfigKey.INTER_DELAY)
     private val bannerReload = FirebaseRemoteConfig.getInstance().getLong(RemoteConfigKey.BANNER_RELOAD)
 
@@ -106,7 +105,8 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     private val mSaveDialog : SaveStickerDialog by lazy {
         SaveStickerDialog().apply {
             addToPackage= {
-                mAddToPackageDialog.show(supportFragmentManager, mAddToPackageDialog.tag)
+                if (!mAddToPackageDialog.isAdded)
+                    mAddToPackageDialog.show(supportFragmentManager, mAddToPackageDialog.tag)
             }
 
             download = {
@@ -114,7 +114,8 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
                     emojiViewModel.bitmapMutableLiveData.value?.let { it1 ->
                         AppUtils.saveSticker(this@EmojiMakerActivity,
                             it1, "creative")
-                        mSaveSuccessDialog.show(supportFragmentManager, mSaveSuccessDialog.tag)
+                        if (!mSaveSuccessDialog.isAdded)
+                            mSaveSuccessDialog.show(supportFragmentManager, mSaveSuccessDialog.tag)
                     }
                     toast("Downloaded!")
                 })
@@ -144,14 +145,16 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
                                 bitmapImage = it1
                             )
                         }
-                        mSaveSuccessDialog.show(supportFragmentManager, mSaveSuccessDialog.tag)
+                        if (!mSaveSuccessDialog.isAdded)
+                            mSaveSuccessDialog.show(supportFragmentManager, mSaveSuccessDialog.tag)
                     })
                     mFirebaseAnalytics?.logEvent("v_inter_ads_save_creative_emoji", null)
                 }
             }
 
             createNewPackage = {
-                mCreatePackageDialog.show(supportFragmentManager, mCreatePackageDialog.tag)
+                if (!mCreatePackageDialog.isAdded)
+                    mCreatePackageDialog.show(supportFragmentManager, mCreatePackageDialog.tag)
             }
 
         }
@@ -170,7 +173,8 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
                         )
                     }
                     //mDialogWaiting.show(supportFragmentManager, mDialogWaiting.tag)
-                    mSaveSuccessDialog.show(supportFragmentManager, mSaveSuccessDialog.tag)
+                    if (!mSaveSuccessDialog.isAdded)
+                        mSaveSuccessDialog.show(supportFragmentManager, mSaveSuccessDialog.tag)
                 })
                 mFirebaseAnalytics?.logEvent("v_inter_ads_save_creative_emoji", null)
 
@@ -222,7 +226,8 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
             val bitmap = binding.stickerView.createBitmap()
             nextAction(action = {
                 emojiViewModel.setBitmap(bitmap)
-                mSaveDialog.show(supportFragmentManager, mSaveDialog.tag)
+                if (!mSaveDialog.isAdded)
+                    mSaveDialog.show(supportFragmentManager, mSaveDialog.tag)
             })
             mFirebaseAnalytics?.logEvent("v_inter_ads_save_creative_emoji", null)
         }

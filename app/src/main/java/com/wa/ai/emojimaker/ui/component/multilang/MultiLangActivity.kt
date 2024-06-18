@@ -3,6 +3,7 @@ package com.wa.ai.emojimaker.ui.component.multilang
 import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.util.Log
 import android.view.View
 import com.adjust.sdk.Adjust
 import com.google.android.gms.ads.nativead.NativeAdView
@@ -157,7 +158,7 @@ class MultiLangActivity : BaseBindingActivity<ActivityMultiLangBinding, MultiLan
 					isLoadNativeDone = true
 				} else {
 //					Log.d(TAG, "loadNativeAds: failed")
-					//binding.rlNative.visibility = View.GONE
+					binding.rlNative.visibility = View.GONE
 				}
 			}
 		}
