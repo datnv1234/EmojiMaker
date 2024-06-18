@@ -22,7 +22,6 @@ class EmojiViewModel : BaseViewModel() {
         super.onCleared()
         viewModelScope.cancel()
         timerReloadBanner?.cancel()
-        clearData()
         optionList.clear()
     }
 
@@ -52,7 +51,6 @@ class EmojiViewModel : BaseViewModel() {
     private val _loadBanner: MutableLiveData<Boolean> = MutableLiveData()
     val loadBanner: LiveData<Boolean>
         get() = _loadBanner
-
 
     private fun createCountDownTimerReloadBanner(time: Long): CountDownTimer {
         return object : CountDownTimer(time, 1000) {
@@ -179,17 +177,4 @@ class EmojiViewModel : BaseViewModel() {
         }
     }
 
-    private fun clearData() {
-        pieceOfAccessories.clear()
-        pieceOfBeard.clear()
-        pieceOfBrow.clear()
-        pieceOfEyes.clear()
-        pieceOfFace.clear()
-        pieceOfGlass.clear()
-        pieceOfHair.clear()
-        pieceOfHand.clear()
-        pieceOfHat.clear()
-        pieceOfMouth.clear()
-        pieceOfNose.clear()
-    }
 }

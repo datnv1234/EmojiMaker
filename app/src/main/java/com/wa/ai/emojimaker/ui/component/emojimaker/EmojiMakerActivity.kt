@@ -247,9 +247,9 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         } else {
             binding.rlBanner.gone()
         }
-//        emojiViewModel.loadBanner.observe(this) {
-//            loadBanner()
-//        }
+        emojiViewModel.loadBanner.observe(this) {
+            loadBanner()
+        }
         loadInterAds()
     }
     override fun setupData() {
@@ -810,10 +810,8 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         }
     }
 
-
     private fun loadBanner() {
-
-        //emojiViewModel.starTimeCountReloadBanner(bannerReload)
+        emojiViewModel.starTimeCountReloadBanner(bannerReload)
         BannerUtils.instance?.loadCollapsibleBanner(this, keyBanner)
     }
 

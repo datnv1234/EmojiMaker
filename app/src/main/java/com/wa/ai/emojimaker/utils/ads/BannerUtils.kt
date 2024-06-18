@@ -161,7 +161,7 @@ class BannerUtils {
                 Log.d(TAG, "loadCollapsibleBanner: ")
                 val adView = AdView(mActivity)
                 adView.adUnitId = id
-                adContainer.addView(adView)
+                //adContainer.addView(adView)
                 val adSize: AdSize = getAdSize(mActivity, useInlineAdaptive, inlineStyle)
                 val adHeight: Int = if (useInlineAdaptive && inlineStyle.equals(
                         BANNER_INLINE_SMALL_STYLE,
@@ -190,7 +190,7 @@ class BannerUtils {
                         Log.d(TAG, "onAdFailedToLoad: " + loadAdError.domain)
                         Log.d(TAG, "onAdFailedToLoad: " + loadAdError.code)
                         containerShimmer.stopShimmer()
-                        //adContainer.gone()
+                        adContainer.gone()
                         containerShimmer.invisible()
                     }
 
@@ -199,6 +199,8 @@ class BannerUtils {
                         containerShimmer.stopShimmer()
                         containerShimmer.gone()
                         adContainer.visible()
+                        adContainer.removeAllViews()
+                        adContainer.addView(adView)
                         adView.onPaidEventListener = OnPaidEventListener { adValue: AdValue ->
                         }
                     }
