@@ -9,13 +9,71 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.wa.ai.emojimaker.common.Constant
 import com.wa.ai.emojimaker.data.model.MadeStickerModel
+import com.wa.ai.emojimaker.data.model.Sticker
+import com.wa.ai.emojimaker.data.model.StickerPackView
+import com.wa.ai.emojimaker.data.model.StickerView
 import com.wa.ai.emojimaker.ui.base.BaseViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import java.io.File
 
 class ShowStickerViewModel : BaseViewModel() {
+
+    var _stickers = MutableLiveData<List<StickerPackView>>()
+
+
+    fun getStickerPackView(context: Context, category: String) {
+
+        val assetManager = context.assets
+        val listEntry = mutableListOf<Sticker>()
+        viewModelScope.launch(Dispatchers.IO) {
+            assetManager.list("categories/$category")?.forEach {
+                listEntry.add(
+                    Sticker(
+                        null, imageFile = "file:///android_asset/categories/$category/$it", null
+                    )
+                )
+            }
+
+            val cw = ContextWrapper(context)
+            val directory: File = cw.getDir(Constant.INTERNAL_MY_CREATIVE_DIR, Context.MODE_PRIVATE)
+            val files = directory.listFiles()      // Get packages
+            if (files != null) {                    //package's size > 0
+                for (file in files) {
+                    if (file.isDirectory && file.name.equals(category)) {
+                        file.listFiles()?.forEach {
+                            listEntry.add(
+                                Sticker(
+                                   null, "https://aruppi.jeluchu.xyz/res/stickers/1/01_alpi_aruppi.webp", null
+                                )
+                            )
+                        }
+                        break
+                    }
+                }
+            }
+            val stickerPackView = StickerPackView(
+                androidPlayStoreLink = "https://play.google.com/store/apps/details?id=com.wa.ai.emojimaker",
+                iosAppStoreLink = null,
+                publisherEmail = "datnv@wayfustudio.com",
+                privacyPolicyWebsite = null,
+                licenseAgreementWebsite = null,
+                telegram_url = "",
+                identifier = 1,
+                name = "Alpi Powers",
+                publisher = "Alpi",
+                publisherWebsite = "https://t.me/addstickers/AruppiPowers",
+                animatedStickerPack = false,
+                stickers = listEntry,
+                trayImageFile = ""
+            )
+            val list = mutableListOf<StickerPackView>()
+            list.add(stickerPackView)
+            _stickers.postValue(list)
+        }
+    }
 
     override fun onCleared() {
         super.onCleared()

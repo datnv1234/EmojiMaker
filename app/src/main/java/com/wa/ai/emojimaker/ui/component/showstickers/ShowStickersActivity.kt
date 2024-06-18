@@ -31,6 +31,7 @@ import com.wa.ai.emojimaker.common.Constant
 import com.wa.ai.emojimaker.common.Constant.EXTRA_STICKER_PACK_AUTHORITY
 import com.wa.ai.emojimaker.common.Constant.EXTRA_STICKER_PACK_ID
 import com.wa.ai.emojimaker.common.Constant.EXTRA_STICKER_PACK_NAME
+import com.wa.ai.emojimaker.common.sharedprefs.SharedPrefsHelpers
 import com.wa.ai.emojimaker.databinding.ActivityShowStickersBinding
 import com.wa.ai.emojimaker.databinding.AdNativeVideoHorizontalBinding
 import com.wa.ai.emojimaker.ui.adapter.MadeStickerAdapter
@@ -53,6 +54,7 @@ import java.util.Date
 class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, ShowStickerViewModel>() {
 
     private var isLoadNativeDone = false
+    private val preferences by lazy { SharedPrefsHelpers() }
 
     private var keyInter = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_INTER_SHOW_STICKERS)
     private val keyNative = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_SHOW_STICKERS)
@@ -83,19 +85,26 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
 
     @SuppressLint("NotifyDataSetChanged")
     override fun setupView(savedInstanceState: Bundle?) {
+
+
         binding.btnBack.setOnSafeClick {
             finish()
         }
         val isCreative = intent.getBooleanExtra("local", false)
-        val category = intent.getStringExtra("category")
+        val category = intent.getStringExtra("category") ?: ""
         val categoryName = intent.getStringExtra("category_name")
+
+        //viewModel.getStickerPackView(this, category = category)
+        viewModel._stickers.observe(this) {
+            //preferences.saveObjectsList("sticker_packs", it)
+        }
         binding.tvTitle.text = categoryName
         binding.btnAddToWhatsapp.setOnSafeClick {
             val intent = Intent().apply {
                 action = "com.whatsapp.intent.action.ENABLE_STICKER_PACK"
-                putExtra(EXTRA_STICKER_PACK_ID, category)
+                putExtra(EXTRA_STICKER_PACK_ID, "1")
                 putExtra(EXTRA_STICKER_PACK_AUTHORITY, BuildConfig.CONTENT_PROVIDER_AUTHORITY)
-                putExtra(EXTRA_STICKER_PACK_NAME, categoryName)
+                putExtra(EXTRA_STICKER_PACK_NAME, "Alpi Powers")
             }
             try {
                 startActivityForResult(intent, 200)
@@ -151,9 +160,7 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
                     }
                     mFirebaseAnalytics?.logEvent("v_inter_ads_add_telegram_creative", null)
                 }
-                binding.btnAddToWhatsapp.setOnSafeClick {
-                    toast(getString(R.string.coming_soon))
-                }
+
                 binding.btnDownload.setOnSafeClick {
                     if (AppUtils.checkPermission(this)) {
                         AppUtils.requestPermissionAndContinue(this)
