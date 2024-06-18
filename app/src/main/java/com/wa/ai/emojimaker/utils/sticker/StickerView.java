@@ -213,7 +213,7 @@ public class StickerView extends FrameLayout {
     protected void drawStickers(Canvas canvas) {
         for (int i = 0; i < stickers.size(); i++) {
             Sticker sticker = stickers.get(i);
-            Log.d("datnv", "drawStickers: " + stickers.size());
+            //Log.d("datnv", "drawStickers: " + stickers.size());
             if (sticker != null) {
                 if (sticker.isVisible()) {
                     sticker.draw(canvas);

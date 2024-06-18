@@ -3,9 +3,7 @@ package com.wa.ai.emojimaker.ui.component.emojimaker
 import android.content.Context
 import android.content.res.AssetManager
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.CountDownTimer
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -176,21 +174,8 @@ class EmojiViewModel : BaseViewModel() {
         category: String,
         list: MutableList<PieceSticker>
     ) {
-        val listFile = assetManager.list("item_options/$category")
-
-        if (listFile != null) {
-            listFile.forEach {
-                    Log.d("datnv", "getFile: " + it)
-                    list.add(PieceSticker(category, it))
-                }
-//            for (file in listFile) {
-//                val inputStream = assetManager.open("item_options/$category/$file")
-//                val bitmap = BitmapFactory.decodeStream(inputStream)
-//                if (bitmap != null) {
-//                    list.add(PieceSticker())
-//                }
-//                inputStream.close()
-//            }
+        assetManager.list("item_options/$category")?.forEach {
+            list.add(PieceSticker(category, it))
         }
     }
 

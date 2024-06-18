@@ -1,6 +1,5 @@
 package com.wa.ai.emojimaker.ui.dialog
 
-import android.content.DialogInterface
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.View
@@ -19,7 +18,6 @@ import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 class SharePackageDialog: BaseBindingDialogFragment<DialogShareBinding>() {
 
     private var isLoadNativeDone = false
-    private var nativeConfig = ""
     var category: String? = null
     var addToWhatsapp: ((category: String) -> Unit)? = null
     var addToTelegram: ((category: String) -> Unit)? = null

@@ -6,18 +6,25 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import com.bumptech.glide.Glide
 import com.google.android.gms.ads.AdView
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.data.model.Category
 import com.wa.ai.emojimaker.ui.component.main.MainActivity
+import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 
 internal class HomeAdapter(
     private val context: Context,
-    private val recyclerViewItems: List<Any>
+    private val recyclerViewItems: List<Any>,
+    val watchMoreClick: (category: Category) -> Unit,
+    val optionClick: (category: String) -> Unit
 ) : RecyclerView.Adapter<ViewHolder>() {
 
     inner class ItemViewHolder internal constructor(view: View) : ViewHolder(view) {
@@ -27,6 +34,8 @@ internal class HomeAdapter(
         val img3: ImageView
         val img4: ImageView
         val remainingNumber: TextView
+        val btnOption: ImageButton
+        val btnOpenCategory: ConstraintLayout
 
         init {
             title = view.findViewById(R.id.tvTitle)
@@ -35,6 +44,8 @@ internal class HomeAdapter(
             img3 = view.findViewById(R.id.imgPreview3)
             img4 = view.findViewById(R.id.imgPreview4)
             remainingNumber = view.findViewById(R.id.tvRemainingNumber)
+            btnOption = view.findViewById(R.id.btnOption)
+            btnOpenCategory = view.findViewById(R.id.btnOpenItem)
         }
     }
 
@@ -72,18 +83,38 @@ internal class HomeAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         when (getItemViewType(position)) {
             ITEM_VIEW_TYPE -> {
+
                 val itemHolder = holder as ItemViewHolder
                 val categoryItem = recyclerViewItems[position] as Category
-
                 val text = "+" + (categoryItem.itemSize - 3).toString()
 
-                // Add the menu item details to the menu item view.
-                itemHolder.title.text = categoryItem.categoryName
-                itemHolder.img1.setImageBitmap(categoryItem.avatar1)
-                itemHolder.img2.setImageBitmap(categoryItem.avatar2)
-                itemHolder.img3.setImageBitmap(categoryItem.avatar3)
-                itemHolder.img4.setImageBitmap(categoryItem.avatar4)
-                itemHolder.remainingNumber.text = text
+                itemHolder.apply {
+                    btnOption.setOnSafeClick {
+                        optionClick(categoryItem.category)
+                    }
+                    btnOpenCategory.setOnSafeClick {
+                        watchMoreClick(categoryItem)
+                    }
+                    title.text = categoryItem.categoryName
+                    remainingNumber.text = text
+
+                    Glide.with(context).load(
+                        "file:///android_asset/categories/${categoryItem.category}/" +
+                                categoryItem.avatar1
+                    ).into(img1)
+                    Glide.with(context).load(
+                        "file:///android_asset/categories/${categoryItem.category}/" +
+                                categoryItem.avatar2
+                    ).into(img2)
+                    Glide.with(context).load(
+                        "file:///android_asset/categories/${categoryItem.category}/" +
+                                categoryItem.avatar3
+                    ).into(img3)
+                    Glide.with(context).load(
+                        "file:///android_asset/categories/${categoryItem.category}/" +
+                                categoryItem.avatar4
+                    ).into(img4)
+                }
             }
             else -> {
                 val bannerHolder = holder as AdViewHolder

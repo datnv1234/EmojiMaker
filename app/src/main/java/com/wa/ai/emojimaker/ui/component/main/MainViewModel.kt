@@ -3,7 +3,6 @@ package com.wa.ai.emojimaker.ui.component.main
 import android.content.Context
 import android.content.ContextWrapper
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.CountDownTimer
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -21,8 +20,7 @@ import java.io.File
 
 class MainViewModel : BaseViewModel() {
 
-    var category: String? = null
-    var categorySize: Int = 0
+    var suggestCategory: String? = null
     private var timerReloadBanner : CountDownTimer? = null
 
     private val listCategory = listOf(
@@ -59,7 +57,7 @@ class MainViewModel : BaseViewModel() {
         timerReloadBanner?.cancel()
     }
 
-    fun getCategoryList(context: Context) {
+    fun getCategories(context: Context) {
         viewModelScope.launch {
             categories.add(getCategory(context, "cat_chic", "Cat Chic"))
             categories.add(getCategory(context, "orange_orchard", "Orange Orchard"))
@@ -81,24 +79,14 @@ class MainViewModel : BaseViewModel() {
         val assetManager = context.assets
         val cate = Category(category, categoryName, 0)
         val listFile = assetManager.list("categories/$category") ?: return cate
+
         cate.itemSize = listFile.size
         if (listFile.isEmpty()) return cate
-        val inputStream1 = assetManager.open("categories/$category/${listFile[0]}")
-        val bitmap1 = BitmapFactory.decodeStream(inputStream1)
-        cate.avatar1 = bitmap1
-        inputStream1.close()
-        val inputStream2 = assetManager.open("categories/$category/${listFile[1]}")
-        val bitmap2 = BitmapFactory.decodeStream(inputStream2)
-        cate.avatar2 = bitmap2
-        inputStream2.close()
-        val inputStream3 = assetManager.open("categories/$category/${listFile[2]}")
-        val bitmap3 = BitmapFactory.decodeStream(inputStream3)
-        cate.avatar3 = bitmap3
-        inputStream3.close()
-        val inputStream4 = assetManager.open("categories/$category/${listFile[3]}")
-        val bitmap4 = BitmapFactory.decodeStream(inputStream4)
-        cate.avatar4 = bitmap4
-        inputStream4.close()
+
+        cate.avatar1 = listFile[0]
+        cate.avatar2 = listFile[1]
+        cate.avatar3 = listFile[2]
+        cate.avatar4 = listFile[3]
         return cate
     }
 
@@ -124,23 +112,20 @@ class MainViewModel : BaseViewModel() {
         }
     }
 
-    fun getStickers(context: Context) {
-        category = listCategory.random()
+    fun getSuggestStickers(context: Context) {
+        suggestCategory = listCategory.random()
         val assetManager = context.assets
         val listEntry = mutableListOf<MadeStickerModel>()
         viewModelScope.launch(Dispatchers.IO) {
-            val listFile = assetManager.list("categories/$category")
-
-            if (listFile != null) {
-                for (file in listFile) {
-                    val inputStream = assetManager.open("categories/$category/$file")
-                    val bitmap = BitmapFactory.decodeStream(inputStream)
-                    listEntry.add(MadeStickerModel(category, null, bitmap))
-                    _stickerMutableLiveData.postValue(listEntry)
-                    inputStream.close()
-                }
+            assetManager.list("categories/$suggestCategory")?.forEach {
+                listEntry.add(
+                    MadeStickerModel(
+                        it,
+                        suggestCategory,
+                        path = "file:///android_asset/categories/$suggestCategory/$it"
+                    )
+                )
             }
-            categorySize = listEntry.size
             _stickerMutableLiveData.postValue(listEntry)
         }
     }

@@ -5,10 +5,12 @@
 
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/btnOpenItem"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/_12sdp"
         android:layout_marginBottom="@dimen/_9sdp"
+        android:foreground="?android:selectableItemBackground"
         android:background="@drawable/bg_category">
         <LinearLayout
             android:id="@+id/llData"

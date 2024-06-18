@@ -39,7 +39,7 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
     private lateinit var mMainActivity: MainActivity
     private lateinit var mMainViewModel: MainViewModel
 
-    private val sharePackageDialog : SharePackageDialog by lazy {
+    private val sharePackageDialog: SharePackageDialog by lazy {
         SharePackageDialog().apply {
             addToWhatsapp = {
                 toast(getString(R.string.coming_soon))
@@ -53,7 +53,8 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
                     for (file in listFile) {
                         val inputStream1 = assetManager.open("categories/$cate/$file")
                         viewModel.stickerUri.add(
-                            getUriForFile(requireContext(),
+                            getUriForFile(
+                                requireContext(),
                                 FileUtils.copyAssetFileToCache(requireContext(), inputStream1, file)
                             )
                         )
@@ -75,7 +76,8 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
                     for (file in listFile) {
                         val inputStream1 = assetManager.open("categories/$cate/$file")
                         viewModel.stickerUri.add(
-                            getUriForFile(requireContext(),
+                            getUriForFile(
+                                requireContext(),
                                 FileUtils.copyAssetFileToCache(requireContext(), inputStream1, file)
                             )
                         )
@@ -84,7 +86,10 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
                 }
                 if (viewModel.stickerUri.size != 0) {
                     mMainActivity.openNextScreen {
-                        AppUtils.shareMultipleImages(requireContext(), viewModel.stickerUri.toList())
+                        AppUtils.shareMultipleImages(
+                            requireContext(),
+                            viewModel.stickerUri.toList()
+                        )
                     }
                     mMainActivity.mFirebaseAnalytics?.logEvent("v_inter_ads_share_$cate", null)
                 }
@@ -98,23 +103,23 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
             }
         }
     }
-   /* private val categoryAdapter : CategoryAdapter by lazy {
-        CategoryAdapter(requireContext(), optionClick = {
-            //getUri(it)
-            sharePackageDialog.category = it
-            sharePackageDialog.show(parentFragmentManager, sharePackageDialog.tag)
-        }, watchMoreClick = {
-            val intent = Intent(requireContext(), ShowStickersActivity::class.java)
-            intent.putExtra("category", it.category.toString())
-            intent.putExtra("category_name", it.categoryName)
-            intent.putExtra("category_size", it.itemSize)
+    /* private val categoryAdapter : CategoryAdapter by lazy {
+         CategoryAdapter(requireContext(), optionClick = {
+             //getUri(it)
+             sharePackageDialog.category = it
+             sharePackageDialog.show(parentFragmentManager, sharePackageDialog.tag)
+         }, watchMoreClick = {
+             val intent = Intent(requireContext(), ShowStickersActivity::class.java)
+             intent.putExtra("category", it.category.toString())
+             intent.putExtra("category_name", it.categoryName)
+             intent.putExtra("category_size", it.itemSize)
 
-            mMainActivity.openNextScreen {
-                startActivity(intent)
-            }
-            mMainActivity.mFirebaseAnalytics?.logEvent("v_inter_ads_open_$it", null)
-        })
-    }*/
+             mMainActivity.openNextScreen {
+                 startActivity(intent)
+             }
+             mMainActivity.mFirebaseAnalytics?.logEvent("v_inter_ads_open_$it", null)
+         })
+     }*/
 
 
     override fun getViewModel(): Class<HomeViewModel> = HomeViewModel::class.java
@@ -140,7 +145,23 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
         mMainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
 
         //viewModel.getCategoryList(requireContext())
-        val adapter: RecyclerView.Adapter<RecyclerView.ViewHolder> = HomeAdapter(requireContext(), mMainViewModel.categories)
+        val adapter: RecyclerView.Adapter<RecyclerView.ViewHolder> = HomeAdapter(
+            requireContext(),
+            mMainViewModel.categories,
+            watchMoreClick = {
+                val intent = Intent(requireContext(), ShowStickersActivity::class.java)
+                intent.putExtra("category", it.category)
+                intent.putExtra("category_name", it.categoryName)
+                intent.putExtra("category_size", it.itemSize)
+                mMainActivity.openNextScreen {
+                    startActivity(intent)
+                }
+            },
+            optionClick = {
+                sharePackageDialog.category = it
+                if (!sharePackageDialog.isAdded)
+                    sharePackageDialog.show(parentFragmentManager, sharePackageDialog.tag)
+            })
         binding.rvCategory.adapter = adapter
 
     }
@@ -163,7 +184,9 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
 
     private fun loadAds() {
         setUpLoadInterAds()
-        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_HOME)) {
+        if (FirebaseRemoteConfig.getInstance()
+                .getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_HOME)
+        ) {
             loadNativeAds()
         } else {
             binding.rlNative.gone()
@@ -238,13 +261,16 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
     }
 
     private fun setUpLoadInterAds() {
-        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_INTER_HOME_SCREEN)) {
+        if (FirebaseRemoteConfig.getInstance()
+                .getBoolean(RemoteConfigKey.IS_SHOW_ADS_INTER_HOME_SCREEN)
+        ) {
             mMainActivity.loadInterAds()
         }
     }
 
     private fun loadNativeAds() {
-        if (!DeviceUtils.checkInternetConnection(requireContext())) binding.rlNative.visibility = View.GONE
+        if (!DeviceUtils.checkInternetConnection(requireContext())) binding.rlNative.visibility =
+            View.GONE
         this.let {
             NativeAdsUtils.instance.loadNativeAds(
                 requireContext(),
@@ -257,7 +283,8 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
                         return@loadNativeAds
                     }
                     //binding.frNativeAds.removeAllViews()
-                    val adNativeVideoBinding = AdNativeVideoHorizontalBinding.inflate(layoutInflater)
+                    val adNativeVideoBinding =
+                        AdNativeVideoHorizontalBinding.inflate(layoutInflater)
                     NativeAdsUtils.instance.populateNativeAdVideoView(
                         nativeAds,
                         adNativeVideoBinding.root as NativeAdView

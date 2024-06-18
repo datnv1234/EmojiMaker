@@ -2,8 +2,6 @@ package com.wa.ai.emojimaker.ui.component.showstickers
 
 import android.content.Context
 import android.content.ContextWrapper
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.CountDownTimer
 import androidx.lifecycle.LiveData
@@ -12,7 +10,6 @@ import androidx.lifecycle.viewModelScope
 import com.wa.ai.emojimaker.common.Constant
 import com.wa.ai.emojimaker.data.model.MadeStickerModel
 import com.wa.ai.emojimaker.ui.base.BaseViewModel
-import com.wa.ai.emojimaker.utils.AppUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
@@ -26,12 +23,14 @@ class ShowStickerViewModel : BaseViewModel() {
         timerReloadBanner?.cancel()
         stickerUri.clear()
     }
-    
-    var stickerUri = ArrayList<Uri>()
-    private var timerReloadBanner : CountDownTimer? = null
 
-    private val _stickersMutableLiveData: MutableLiveData<List<MadeStickerModel>> = MutableLiveData()
-    private val _localStickerMutableLiveData: MutableLiveData<List<MadeStickerModel>> = MutableLiveData()
+    var stickerUri = ArrayList<Uri>()
+    private var timerReloadBanner: CountDownTimer? = null
+
+    private val _stickersMutableLiveData: MutableLiveData<List<MadeStickerModel>> =
+        MutableLiveData()
+    private val _localStickerMutableLiveData: MutableLiveData<List<MadeStickerModel>> =
+        MutableLiveData()
 
     val stickersMutableLiveData: LiveData<List<MadeStickerModel>>
         get() = _stickersMutableLiveData
@@ -65,33 +64,21 @@ class ShowStickerViewModel : BaseViewModel() {
         }
     }
 
-    fun getLocalSticker(context: Context, category: String, size: Int) {
-
-        val listSticker = mutableListOf<MadeStickerModel>()
-        for (i in 0 until size) {
-            listSticker.add(MadeStickerModel("", "", null))
-        }
+    fun getCreativeSticker(context: Context, category: String) {
         val listEntry = mutableListOf<MadeStickerModel>()
-        listEntry.addAll(listSticker)
         viewModelScope.launch(Dispatchers.IO) {
-
             val cw = ContextWrapper(context)
             val directory: File = cw.getDir(Constant.INTERNAL_MY_CREATIVE_DIR, Context.MODE_PRIVATE)
             val files = directory.listFiles()      // Get packages
             if (files != null) {                    //package's size > 0
                 for (file in files) {
                     if (file.isDirectory && file.name.equals(category)) {
-                        val stickers = file.listFiles()
-                        if (stickers != null) {
-                            for ((i, sticker) in stickers.withIndex()) {
-                                val name : String = sticker.name
-                                val bitmap : Bitmap = AppUtils.convertFileToBitmap(sticker)
-                                listEntry[i].name = name
-                                listEntry[i].packageName = category
-                                listEntry[i].bitmap = bitmap
-
-                                _localStickerMutableLiveData.postValue(listEntry)
-                            }
+                        file.listFiles()?.forEach {
+                            listEntry.add(
+                                MadeStickerModel(
+                                    it.name, category, path = it.path
+                                )
+                            )
                         }
                         break
                     }
@@ -101,31 +88,18 @@ class ShowStickerViewModel : BaseViewModel() {
         }
     }
 
-    fun getStickers(context: Context, category: String, size: Int) {
+    fun getStickers(context: Context, category: String) {
         val assetManager = context.assets
         val listEntry = mutableListOf<MadeStickerModel>()
         viewModelScope.launch(Dispatchers.IO) {
-            val listFile = assetManager.list("categories/$category")
-
-            if (listFile != null) {
-                for ((i, file) in listFile.withIndex()) {
-                    val inputStream = assetManager.open("categories/$category/$file")
-                    val bitmap = BitmapFactory.decodeStream(inputStream)
-                    listEntry.add(MadeStickerModel(category, null, bitmap))
-                    _stickersMutableLiveData.postValue(listEntry)
-                    inputStream.close()
-                }
+            assetManager.list("categories/$category")?.forEach {
+                listEntry.add(
+                    MadeStickerModel(
+                        it, category, path = "file:///android_asset/categories/$category/$it"
+                    )
+                )
             }
             _stickersMutableLiveData.postValue(listEntry)
         }
-//        val countDownTimer: CountDownTimer = object : CountDownTimer(5000, 1000) {
-//            override fun onTick(millisUntilFinished: Long) {
-//            }
-//
-//            override fun onFinish() {
-//                _stickersMutableLiveData.postValue(listEntry)
-//            }
-//        }
-//        countDownTimer.start()
     }
 }

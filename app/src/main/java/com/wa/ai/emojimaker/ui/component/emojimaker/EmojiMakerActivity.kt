@@ -98,9 +98,6 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     private lateinit var emojiViewModel: EmojiViewModel
     private val pagerIconAdapter: PagerIconAdapter by lazy { PagerIconAdapter(itemClick = {
         doAddSticker(it)
-        if (!it.isRecycled) {
-            it.recycle()
-        }
     })}
 
     /*

@@ -109,9 +109,8 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
     }
 
     override fun setupData() {
-        viewModel.getStickers(this)
-
-        viewModel.getCategoryList(this)
+        viewModel.getSuggestStickers(this)
+        viewModel.getCategories(this)
 //        addBannerAds()
         //loadBannerAds()
 

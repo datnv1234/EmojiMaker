@@ -83,17 +83,16 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
         val isCreative = intent.getBooleanExtra("local", false)
         val category = intent.getStringExtra("category")
         val categoryName = intent.getStringExtra("category_name")
-        val categorySize = intent.getIntExtra("category_size", 0)
         binding.tvTitle.text = categoryName
 
         if (category != null) {
             if (!isCreative) {
-                viewModel.getStickers(this, category, categorySize)
-
+                viewModel.getStickers(this, category)
                 viewModel.stickersMutableLiveData.observe(this) {
                     cateStickerAdapter.submitList(it.toMutableList())
                     cateStickerAdapter.notifyDataSetChanged()
                 }
+
                 binding.rvStickers.adapter = cateStickerAdapter
                 binding.btnAddToTelegram.setOnSafeClick {
                     nextAction {
@@ -121,11 +120,12 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
                     mFirebaseAnalytics?.logEvent("v_inter_ads_share_category", null)
                 }
             } else {
-                viewModel.getLocalSticker(this, category, categorySize)
+                viewModel.getCreativeSticker(this, category)
                 viewModel.localStickerMutableLiveData.observe(this) {
                     madeStickerAdapter.submitList(it.toMutableList())
                     madeStickerAdapter.notifyDataSetChanged()
                 }
+
                 binding.rvStickers.adapter = madeStickerAdapter
                 binding.btnAddToTelegram.setOnSafeClick {
                     nextAction {

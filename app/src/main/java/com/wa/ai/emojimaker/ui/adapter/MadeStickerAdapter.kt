@@ -1,6 +1,7 @@
 package com.wa.ai.emojimaker.ui.adapter
 
 import androidx.recyclerview.widget.DiffUtil
+import com.bumptech.glide.Glide
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.data.model.MadeStickerModel
 import com.wa.ai.emojimaker.databinding.ItemStickerBinding
@@ -22,10 +23,9 @@ class MadeStickerAdapter(val itemClick: () -> Unit) : BaseBindingAdapterDiff<Mad
 
     override fun onBindViewHolderBase(holder: BaseHolder<ItemStickerBinding>, position: Int) {
         with(getItem(holder.adapterPosition)) {
-            holder.binding.imgSticker.setImageBitmap(this.bitmap)
-            //Log.d(TAG, "onBindViewHolderBase: ${this.name}")
-            holder.binding.imgSticker.setOnSafeClick {
-                itemClick()
+            val context = holder.itemView.context
+            holder.binding.apply {
+                Glide.with(context).load(path).into(imgSticker)
             }
         }
     }

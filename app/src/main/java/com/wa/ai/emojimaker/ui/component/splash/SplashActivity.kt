@@ -67,7 +67,21 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
             }
         }
         countDownTimer.start()
+    }
 
+    override fun setupData() {
+        setUpLoadInterAds()
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Adjust.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Adjust.onPause()
     }
 
     private fun openNextScreen() {
@@ -94,24 +108,6 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
             finish()
         }
 
-    }
-
-    override fun setupData() {
-        setUpLoadInterAds()
-
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Adjust.onResume()
-        lifecycleScope.launch(Dispatchers.IO) {
-            getOptions()
-        }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        Adjust.onPause()
     }
 
     private fun openChooseLanguageActivity() {
@@ -168,43 +164,6 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
         val adConfig = firebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_INTER_SPLASH)
         if (firebaseRemoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_INTER_SPLASH)) {
             loadInterAdsSplash(adConfig)
-        }
-    }
-
-    private fun getOptions() {
-        getFile(Constant.ACCESSORIES)
-        getFile(Constant.BEARD)
-        getFile(Constant.BROW)
-        getFile(Constant.EYES)
-        getFile(Constant.FACE)
-        getFile(Constant.GLASS)
-        getFile(Constant.HAIR)
-        getFile(Constant.HAND)
-        getFile(Constant.HAT)
-        getFile(Constant.MOUTH)
-        getFile(Constant.NOSE)
-    }
-    private fun getFile(category: String) {
-        val assetManager = this.assets
-        val listFile = assetManager.list("item_options/$category")
-        if (listFile != null) {
-            for (file in listFile) {
-                val inputStream = assetManager.open("item_options/$category/$file")
-                val bitmap = BitmapFactory.decodeStream(inputStream)
-                if (bitmap != null) {
-                    DeviceUtils.saveToPackage(
-                        this,
-                        Constant.INTERNAL_ITEM_OPTIONS_DIR,
-                        packageName = category,
-                        bitmapImage = bitmap,
-                        fileName = file
-                    )
-                    if (!bitmap.isRecycled) {
-                        bitmap.recycle()
-                    }
-                }
-                inputStream.close()
-            }
         }
     }
 }

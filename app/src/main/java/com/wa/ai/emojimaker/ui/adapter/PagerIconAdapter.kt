@@ -26,9 +26,12 @@ class PagerIconAdapter(val itemClick:(bitmap: Bitmap) -> Unit): BaseBindingAdapt
         val context = holder.itemView.context
         with(getItem(holder.adapterPosition)) {
             val stickerAdapter = StickerAdapter(itemClick = {
-               getBitmapFromAssets(context, "item_options/${listPieces[it].category}/${listPieces[it].bitmap}")?.let { it1 ->
-                    itemClick(it1)
-                }
+               getBitmapFromAssets(
+                   context,
+                   "item_options/${listPieces[it].category}/${listPieces[it].name}"
+               )?.let { it1 ->
+                        itemClick(it1)
+               }
             })
             stickerAdapter.submitList(this.listPieces)
             holder.binding.rvIcon.adapter = stickerAdapter

@@ -148,7 +148,6 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
             val intent = Intent(requireContext(), ShowStickersActivity::class.java)
             intent.putExtra("category", mMainViewModel.category)
             intent.putExtra("category_name", Constant.categories[mMainViewModel.category])
-            intent.putExtra("category_size", mMainViewModel.categorySize)
             startActivity(intent)
         }
     }

@@ -11,7 +11,7 @@ import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 
 class StickerAdapter(val itemClick:(pos: Int)->Unit) : BaseBindingAdapterDiff<PieceSticker, ItemPieceStickerBinding>(object : DiffUtil.ItemCallback<PieceSticker>() {
     override fun areItemsTheSame(oldItem: PieceSticker, newItem: PieceSticker): Boolean {
-        return oldItem.bitmap == newItem.bitmap
+        return oldItem.name == newItem.name
     }
 
     override fun areContentsTheSame(oldItem: PieceSticker, newItem: PieceSticker): Boolean {
@@ -22,8 +22,11 @@ class StickerAdapter(val itemClick:(pos: Int)->Unit) : BaseBindingAdapterDiff<Pi
     override fun onBindViewHolderBase(holder: BaseHolder<ItemPieceStickerBinding>, position: Int) {
         val context = holder.itemView.context
         holder.binding.apply {
-            Log.d("datnv", "onBindViewHolderBase: " + "file:///android_asset/${getItem(holder.adapterPosition).category}/${getItem(holder.adapterPosition).bitmap}")
-            Glide.with(context).load("file:///android_asset/item_options/${getItem(holder.adapterPosition).category}/${getItem(holder.adapterPosition).bitmap}").into(piece)
+            Glide.with(context).load(
+                "file:///android_asset/item_options/" +
+                        "${getItem(holder.adapterPosition).category}/" +
+                        getItem(holder.adapterPosition).name
+            ).into(piece)
         }
 //        holder.binding.piece.setImageBitmap(getItem(holder.adapterPosition).bitmap)
         holder.binding.piece.setOnSafeClick {

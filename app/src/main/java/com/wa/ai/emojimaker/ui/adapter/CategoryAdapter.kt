@@ -32,9 +32,7 @@ class CategoryAdapter(val context: Context, val watchMoreClick: (category: Categ
 }) {
     override fun onBindViewHolderBase(holder: BaseHolder<ItemCategoryBinding>, position: Int) {
         with(getItem(holder.adapterPosition)) {
-            /*if (this.category.equals("ads")) {
-                //loadAd(holder, context, context.getString(R.string.native_categories))
-            } else {*/
+
             if (this.itemSize == 0)    return
             holder.binding.btnOption.setOnSafeClick {
                 optionClick(this.category.toString())
@@ -45,58 +43,7 @@ class CategoryAdapter(val context: Context, val watchMoreClick: (category: Categ
                 watchMoreClick(this)
             }
             holder.binding.tvTitle.text = this.categoryName
-            if (avatar1 != null)
-                holder.binding.imgPreview1.setImageBitmap(avatar1)
-            if (avatar2 != null)
-                holder.binding.imgPreview2.setImageBitmap(avatar2)
-            if (avatar3 != null)
-                holder.binding.imgPreview3.setImageBitmap(avatar3)
-            if (avatar4 != null)
-                holder.binding.imgPreview4.setImageBitmap(avatar4)
-
         }
-    }
-    private fun loadAd(holder: BaseHolder<ItemCategoryBinding>, context: Context, keyAds:String) {
-        holder.binding.llData.gone()
-        holder.binding.cvAd.visible()
-        loadNativeAds(holder, context, keyAds)
-    }
-    private fun loadNativeAds(holder: BaseHolder<ItemCategoryBinding>, context: Context, keyAds:String) {
-        if (!DeviceUtils.checkInternetConnection(context)) {
-            holder.binding.cvAd.gone()
-            return
-        }
-        val layoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-
-        this.let {
-            NativeAdsUtils.instance.loadNativeAds(
-                context,
-                keyAds
-            ) { nativeAds ->
-                if (nativeAds != null) {
-                    //binding.frNativeAds.removeAllViews()
-                    val adNativeVideoBinding = AdNativeVideoBinding.inflate(layoutInflater)
-                    NativeAdsUtils.instance.populateNativeAdVideoView(
-                        nativeAds,
-                        adNativeVideoBinding.root as NativeAdView
-                    )
-                    holder.binding.frNativeAds.addView(adNativeVideoBinding.root)
-                } else {
-                    //holder.binding.rlNative.gone()
-                }
-            }
-        }
-
-    }
-    private fun download(uri: Uri, imageView: ImageView) {
-        Picasso.get().load(uri)
-            .into(imageView, object : Callback {
-                override fun onSuccess() {
-                }
-
-                override fun onError(e: Exception?) {
-                }
-            })
     }
 
     override val layoutIdItem: Int
