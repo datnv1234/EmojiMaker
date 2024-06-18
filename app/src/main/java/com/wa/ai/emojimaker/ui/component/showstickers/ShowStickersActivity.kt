@@ -31,9 +31,7 @@ import com.wa.ai.emojimaker.common.Constant
 import com.wa.ai.emojimaker.common.Constant.EXTRA_STICKER_PACK_AUTHORITY
 import com.wa.ai.emojimaker.common.Constant.EXTRA_STICKER_PACK_ID
 import com.wa.ai.emojimaker.common.Constant.EXTRA_STICKER_PACK_NAME
-import com.wa.ai.emojimaker.common.sharedprefs.SharedPrefsHelpers
 import com.wa.ai.emojimaker.databinding.ActivityShowStickersBinding
-import com.wa.ai.emojimaker.databinding.AdNativeVideoHorizontalBinding
 import com.wa.ai.emojimaker.ui.adapter.MadeStickerAdapter
 import com.wa.ai.emojimaker.ui.base.BaseBindingActivity
 import com.wa.ai.emojimaker.utils.AppUtils
@@ -54,8 +52,6 @@ import java.util.Date
 class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, ShowStickerViewModel>() {
 
     private var isLoadNativeDone = false
-    private val preferences by lazy { SharedPrefsHelpers() }
-
     private var keyInter = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_INTER_SHOW_STICKERS)
     private val keyNative = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_SHOW_STICKERS)
     private val keyBanner = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_SHOW_STICKERS)
@@ -94,10 +90,6 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
         val category = intent.getStringExtra("category") ?: ""
         val categoryName = intent.getStringExtra("category_name")
 
-        //viewModel.getStickerPackView(this, category = category)
-        viewModel._stickers.observe(this) {
-            //preferences.saveObjectsList("sticker_packs", it)
-        }
         binding.tvTitle.text = categoryName
         binding.btnAddToWhatsapp.setOnSafeClick {
             val intent = Intent().apply {
