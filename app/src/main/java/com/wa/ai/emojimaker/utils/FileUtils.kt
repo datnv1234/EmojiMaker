@@ -1,121 +1,114 @@
-package com.wa.ai.emojimaker.utils;
+package com.wa.ai.emojimaker.utils
 
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
+import android.content.Context
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
+import androidx.core.content.FileProvider
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.InputStream
 
-import androidx.core.content.FileProvider;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
-public class FileUtils {
-
-    public static File copyFileToCache(Context context, File sourceFile) {
-        InputStream inputStream = null;
-        FileOutputStream outputStream = null;
-        File file = new File(context.getFilesDir(), sourceFile.getName());
-
+object FileUtils {
+    fun copyFileToCache(context: Context, sourceFile: File): File {
+        var inputStream: InputStream? = null
+        var outputStream: FileOutputStream? = null
+        val file = File(context.filesDir, sourceFile.name)
         try {
-            inputStream = new FileInputStream((sourceFile));
-            outputStream = new FileOutputStream(file);
-            byte[] buffer = new byte[1024];
-            int length;
-            while ((length = inputStream.read(buffer)) > 0) {
-                outputStream.write(buffer, 0, length);
+            inputStream = FileInputStream(sourceFile)
+            outputStream = FileOutputStream(file)
+            val buffer = ByteArray(1024)
+            var length: Int
+            while (inputStream.read(buffer).also { length = it } > 0) {
+                outputStream.write(buffer, 0, length)
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (e: IOException) {
+            e.printStackTrace()
         } finally {
             try {
-                if (inputStream != null) {
-                    inputStream.close();
-                }
-                if (outputStream != null) {
-                    outputStream.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+                inputStream?.close()
+                outputStream?.close()
+            } catch (e: IOException) {
+                e.printStackTrace()
             }
         }
-
-        return file;
+        return file
     }
 
-    public static File copyAssetFileToCache(Context context, InputStream sourceFile, String fileName) {
-        FileOutputStream outputStream = null;
-        File file = new File(context.getFilesDir(), fileName);
-
+    fun copyAssetFileToCache(context: Context, sourceFile: InputStream, fileName: String?): File {
+        var outputStream: FileOutputStream? = null
+        val file = File(context.filesDir, fileName)
         try {
-            outputStream = new FileOutputStream(file);
-            byte[] buffer = new byte[1024];
-            int length;
-            while ((length = sourceFile.read(buffer)) > 0) {
-                outputStream.write(buffer, 0, length);
+            outputStream = FileOutputStream(file)
+            val buffer = ByteArray(1024)
+            var length: Int
+            while (sourceFile.read(buffer).also { length = it } > 0) {
+                outputStream.write(buffer, 0, length)
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (e: IOException) {
+            e.printStackTrace()
         } finally {
             try {
 //                sourceFile.close();
-                if (outputStream != null) {
-                    outputStream.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+                outputStream?.close()
+            } catch (e: IOException) {
+                e.printStackTrace()
             }
         }
-
-        return file;
+        return file
     }
 
-    public static Uri getUriForFile(Context context, File file) {
-        return FileProvider.getUriForFile(context, context.getPackageName() + ".fileprovider", file);
+    fun getUriForFile(context: Context, file: File?): Uri {
+        return FileProvider.getUriForFile(context, context.packageName + ".fileprovider", file!!)
     }
 
-    public static void shareFile(Context context, File file) {
-        Uri fileUri = FileProvider.getUriForFile(context, context.getPackageName() + ".fileprovider", file);
-
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("application/octet-stream"); // Đặt loại tệp tùy theo tệp của bạn
-        intent.putExtra(Intent.EXTRA_STREAM, fileUri);
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-        context.startActivity(Intent.createChooser(intent, "Share file"));
+    fun shareFile(context: Context, file: File?) {
+        val fileUri =
+            FileProvider.getUriForFile(context, context.packageName + ".fileprovider", file!!)
+        val intent = Intent(Intent.ACTION_SEND)
+        intent.setType("application/octet-stream") // Đặt loại tệp tùy theo tệp của bạn
+        intent.putExtra(Intent.EXTRA_STREAM, fileUri)
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        context.startActivity(Intent.createChooser(intent, "Share file"))
     }
 
-    public static File copyFileToInternalStorage(Context context, File sticker, String fileName) {
-        InputStream inputStream = null;
-        FileOutputStream outputStream = null;
-        File file = new File(context.getFilesDir(), fileName);
-
+    fun copyFileToInternalStorage(context: Context, sticker: File?, fileName: String?): File {
+        val inputStream: InputStream? = null
+        var outputStream: FileOutputStream? = null
+        val file = File(context.filesDir, fileName)
         try {
-            outputStream = new FileOutputStream(file);
-            byte[] buffer = new byte[1024];
-            int length;
-            while ((length = inputStream.read(buffer)) > 0) {
-                outputStream.write(buffer, 0, length);
+            outputStream = FileOutputStream(file)
+            val buffer = ByteArray(1024)
+            var length: Int
+            while (inputStream!!.read(buffer).also { length = it } > 0) {
+                outputStream.write(buffer, 0, length)
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (e: IOException) {
+            e.printStackTrace()
         } finally {
             try {
-                if (inputStream != null) {
-                    inputStream.close();
-                }
-                if (outputStream != null) {
-                    outputStream.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+                inputStream?.close()
+                outputStream?.close()
+            } catch (e: IOException) {
+                e.printStackTrace()
             }
         }
-
-        return file;
+        return file
     }
 
+    fun getBitmapFromAssets(context: Context, fileName: String): Bitmap? {
+        var bitmap: Bitmap? = null
+        try {
+            val inputStream = context.assets.open(fileName)
+            bitmap = BitmapFactory.decodeStream(inputStream)
+            inputStream.close()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return bitmap
+    }
 
 }

@@ -28,7 +28,7 @@ class EmojiViewModel : BaseViewModel() {
         optionList.clear()
     }
 
-    private var timerReloadBanner : CountDownTimer? = null
+    private var timerReloadBanner: CountDownTimer? = null
     val optionList = ArrayList<ItemOptionUI>()
 
     private val _bitmapMutableLiveData: MutableLiveData<Bitmap> = MutableLiveData()
@@ -66,6 +66,7 @@ class EmojiViewModel : BaseViewModel() {
             }
         }
     }
+
     fun starTimeCountReloadBanner(time: Long) {
         kotlin.runCatching {
             timerReloadBanner?.cancel()
@@ -112,7 +113,8 @@ class EmojiViewModel : BaseViewModel() {
                 R.string.hair,
                 R.string.hat,
                 R.string.hand,
-                R.string.accessories)
+                R.string.accessories
+            )
 
             val folders = listOf(
                 "face",
@@ -169,17 +171,26 @@ class EmojiViewModel : BaseViewModel() {
         getFile(assetManager, "nose", pieceOfNose)
     }
 
-    private fun getFile(assetManager: AssetManager, category: String, list: MutableList<PieceSticker>) {
+    private fun getFile(
+        assetManager: AssetManager,
+        category: String,
+        list: MutableList<PieceSticker>
+    ) {
         val listFile = assetManager.list("item_options/$category")
+
         if (listFile != null) {
-            for (file in listFile) {
-                val inputStream = assetManager.open("item_options/$category/$file")
-                val bitmap = BitmapFactory.decodeStream(inputStream)
-                if (bitmap != null) {
-                    list.add(PieceSticker(bitmap))
+            listFile.forEach {
+                    Log.d("datnv", "getFile: " + it)
+                    list.add(PieceSticker(category, it))
                 }
-                inputStream.close()
-            }
+//            for (file in listFile) {
+//                val inputStream = assetManager.open("item_options/$category/$file")
+//                val bitmap = BitmapFactory.decodeStream(inputStream)
+//                if (bitmap != null) {
+//                    list.add(PieceSticker())
+//                }
+//                inputStream.close()
+//            }
         }
     }
 

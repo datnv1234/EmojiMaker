@@ -106,7 +106,9 @@ object DeviceUtils {
         val mPackage = getInternalDir(context, folder, packageName) ?: return null
         // Tạo tệp lưu trữ ảnh
         val path = File(mPackage, fileName)
-        saveToInternalStorage(path, bitmapImage)
+        if (!path.exists()) {
+            saveToInternalStorage(path, bitmapImage)
+        }
 
         return mPackage.absolutePath
     }

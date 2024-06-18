@@ -54,6 +54,7 @@ object Constant {
 
     //Local storage
     const val INTERNAL_MY_CREATIVE_DIR = "my_creative"
+    const val INTERNAL_ITEM_OPTIONS_DIR = "item_options"
 
     const val CREATE_STICKER_DELAY = 3000L
 
@@ -72,4 +73,16 @@ object Constant {
         "brainy_endeavors" to "Brainy Endeavors",
         "couple_emoji" to "Couple emoji",
         "cute_girl" to "Cute girl")
+
+    const val ACCESSORIES = "accessories"
+    const val BEARD = "beard"
+    const val BROW = "brow"
+    const val EYES = "eyes"
+    const val FACE = "face"
+    const val GLASS = "glass"
+    const val HAIR = "hair"
+    const val HAND = "hand"
+    const val HAT = "hat"
+    const val MOUTH = "mouth"
+    const val NOSE = "nose"
 }

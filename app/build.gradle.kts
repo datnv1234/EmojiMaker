@@ -99,6 +99,10 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.datastore:datastore-preferences-core-jvm:1.1.1")
 
+    //Glide
+    implementation("com.github.bumptech.glide:glide:4.12.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
+
     //App update
     implementation ("com.google.android.play:app-update-ktx:2.1.0")
     implementation ("com.google.android.play:app-update:2.1.0")

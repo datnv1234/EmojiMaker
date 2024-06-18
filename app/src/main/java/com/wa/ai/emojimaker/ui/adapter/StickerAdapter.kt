@@ -1,6 +1,8 @@
 package com.wa.ai.emojimaker.ui.adapter
 
+import android.util.Log
 import androidx.recyclerview.widget.DiffUtil
+import com.bumptech.glide.Glide
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.data.model.PieceSticker
 import com.wa.ai.emojimaker.databinding.ItemPieceStickerBinding
@@ -18,7 +20,12 @@ class StickerAdapter(val itemClick:(pos: Int)->Unit) : BaseBindingAdapterDiff<Pi
 
 }) {
     override fun onBindViewHolderBase(holder: BaseHolder<ItemPieceStickerBinding>, position: Int) {
-        holder.binding.piece.setImageBitmap(getItem(holder.adapterPosition).bitmap)
+        val context = holder.itemView.context
+        holder.binding.apply {
+            Log.d("datnv", "onBindViewHolderBase: " + "file:///android_asset/${getItem(holder.adapterPosition).category}/${getItem(holder.adapterPosition).bitmap}")
+            Glide.with(context).load("file:///android_asset/item_options/${getItem(holder.adapterPosition).category}/${getItem(holder.adapterPosition).bitmap}").into(piece)
+        }
+//        holder.binding.piece.setImageBitmap(getItem(holder.adapterPosition).bitmap)
         holder.binding.piece.setOnSafeClick {
             itemClick(holder.adapterPosition)
         }

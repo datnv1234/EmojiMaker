@@ -1,9 +1,12 @@
 package com.wa.ai.emojimaker.ui.component.splash
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.CountDownTimer
+import androidx.lifecycle.lifecycleScope
 import com.adjust.sdk.Adjust
 import com.adjust.sdk.AdjustAdRevenue
 import com.adjust.sdk.AdjustConfig
@@ -22,8 +25,11 @@ import com.wa.ai.emojimaker.common.Constant
 import com.wa.ai.emojimaker.databinding.ActivitySplashBinding
 import com.wa.ai.emojimaker.ui.base.BaseBindingActivity
 import com.wa.ai.emojimaker.ui.component.multilang.MultiLangActivity
+import com.wa.ai.emojimaker.utils.DeviceUtils
 import com.wa.ai.emojimaker.utils.RemoteConfigKey
 import com.wa.ai.emojimaker.utils.extention.setStatusBarColor
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.Date
 
 @SuppressLint("CustomSplashScreen")
@@ -45,11 +51,12 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
     }
     override fun setupView(savedInstanceState: Bundle?) {
         setStatusBarColor("#11141A")
+        //viewModel.getOptions(this)
         val countDownTimer: CountDownTimer = object : CountDownTimer(20000, 5000) {
             override fun onTick(millisUntilFinished: Long) {
                 if (mInterstitialAd == null)
                     setUpLoadInterAds()
-                else{
+                else if (millisUntilFinished < 13000){
                     cancel()
                     openNextScreen()
                 }
@@ -60,6 +67,7 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
             }
         }
         countDownTimer.start()
+
     }
 
     private fun openNextScreen() {
@@ -90,11 +98,15 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
 
     override fun setupData() {
         setUpLoadInterAds()
+
     }
 
     override fun onResume() {
         super.onResume()
         Adjust.onResume()
+        lifecycleScope.launch(Dispatchers.IO) {
+            getOptions()
+        }
     }
 
     override fun onPause() {
@@ -156,6 +168,43 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
         val adConfig = firebaseRemoteConfig.getString(RemoteConfigKey.KEY_ADS_INTER_SPLASH)
         if (firebaseRemoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_INTER_SPLASH)) {
             loadInterAdsSplash(adConfig)
+        }
+    }
+
+    private fun getOptions() {
+        getFile(Constant.ACCESSORIES)
+        getFile(Constant.BEARD)
+        getFile(Constant.BROW)
+        getFile(Constant.EYES)
+        getFile(Constant.FACE)
+        getFile(Constant.GLASS)
+        getFile(Constant.HAIR)
+        getFile(Constant.HAND)
+        getFile(Constant.HAT)
+        getFile(Constant.MOUTH)
+        getFile(Constant.NOSE)
+    }
+    private fun getFile(category: String) {
+        val assetManager = this.assets
+        val listFile = assetManager.list("item_options/$category")
+        if (listFile != null) {
+            for (file in listFile) {
+                val inputStream = assetManager.open("item_options/$category/$file")
+                val bitmap = BitmapFactory.decodeStream(inputStream)
+                if (bitmap != null) {
+                    DeviceUtils.saveToPackage(
+                        this,
+                        Constant.INTERNAL_ITEM_OPTIONS_DIR,
+                        packageName = category,
+                        bitmapImage = bitmap,
+                        fileName = file
+                    )
+                    if (!bitmap.isRecycled) {
+                        bitmap.recycle()
+                    }
+                }
+                inputStream.close()
+            }
         }
     }
 }

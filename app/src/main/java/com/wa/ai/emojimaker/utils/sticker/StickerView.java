@@ -589,7 +589,7 @@ public class StickerView extends FrameLayout {
         // Measure the view
         int originalWidth = getWidth();
         int originalHeight = getHeight();
-        Log.d("datnv", "originalWidth: " + originalWidth + "originalHeight: " + originalHeight);
+        //Log.d("datnv", "originalWidth: " + originalWidth + "originalHeight: " + originalHeight);
         // Create a Bitmap with the view's original size
         Bitmap originalBitmap = Bitmap.createBitmap(originalWidth, originalHeight, Bitmap.Config.ARGB_8888);
         Canvas originalCanvas = new Canvas(originalBitmap);
