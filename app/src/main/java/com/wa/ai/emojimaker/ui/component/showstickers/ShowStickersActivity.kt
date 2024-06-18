@@ -82,7 +82,6 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
     @SuppressLint("NotifyDataSetChanged")
     override fun setupView(savedInstanceState: Bundle?) {
 
-
         binding.btnBack.setOnSafeClick {
             finish()
         }
