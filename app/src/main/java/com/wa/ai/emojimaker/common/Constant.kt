@@ -85,4 +85,9 @@ object Constant {
     const val HAT = "hat"
     const val MOUTH = "mouth"
     const val NOSE = "nose"
+
+    const val EXTRA_STICKER_PACK_ID = "sticker_pack_id"
+    const val EXTRA_STICKER_PACK_AUTHORITY = "sticker_pack_authority"
+    const val EXTRA_STICKER_PACK_NAME = "sticker_pack_name"
+    const val EXTRA_STICKERPACK = "stickerpack"
 }

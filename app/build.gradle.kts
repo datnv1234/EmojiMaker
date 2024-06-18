@@ -22,6 +22,8 @@ val apikeyPropertiesFile = rootProject.file("apikey.properties")
 val apikeyProperties = Properties()
 apikeyProperties.load(FileInputStream(apikeyPropertiesFile))
 
+var contentProviderAuthority = ""
+
 android {
     namespace = "com.wa.ai.emojimaker"
     compileSdk = 34
@@ -38,6 +40,10 @@ android {
 
         multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        contentProviderAuthority = "$applicationId.provider.StickerContentProvider"
+        manifestPlaceholders["contentProviderAuthority"] = contentProviderAuthority
+        buildConfigField("String", "CONTENT_PROVIDER_AUTHORITY", "\"${contentProviderAuthority}\"")
     }
 
     buildFeatures {

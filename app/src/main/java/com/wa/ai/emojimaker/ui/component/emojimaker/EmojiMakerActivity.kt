@@ -679,7 +679,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.d(TAG, "onDestroy: ")
+        //Log.d(TAG, "onDestroy: ")
     }
 
     private fun hasPermission(permission: String) =

@@ -103,24 +103,6 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
             }
         }
     }
-    /* private val categoryAdapter : CategoryAdapter by lazy {
-         CategoryAdapter(requireContext(), optionClick = {
-             //getUri(it)
-             sharePackageDialog.category = it
-             sharePackageDialog.show(parentFragmentManager, sharePackageDialog.tag)
-         }, watchMoreClick = {
-             val intent = Intent(requireContext(), ShowStickersActivity::class.java)
-             intent.putExtra("category", it.category.toString())
-             intent.putExtra("category_name", it.categoryName)
-             intent.putExtra("category_size", it.itemSize)
-
-             mMainActivity.openNextScreen {
-                 startActivity(intent)
-             }
-             mMainActivity.mFirebaseAnalytics?.logEvent("v_inter_ads_open_$it", null)
-         })
-     }*/
-
 
     override fun getViewModel(): Class<HomeViewModel> = HomeViewModel::class.java
     override fun registerOnBackPress() {
@@ -144,7 +126,6 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
         mMainActivity = activity as MainActivity
         mMainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
 
-        //viewModel.getCategoryList(requireContext())
         val adapter: RecyclerView.Adapter<RecyclerView.ViewHolder> = HomeAdapter(
             requireContext(),
             mMainViewModel.categories,

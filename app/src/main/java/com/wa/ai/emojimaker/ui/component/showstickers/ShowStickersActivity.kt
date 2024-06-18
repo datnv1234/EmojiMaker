@@ -2,8 +2,10 @@ package com.wa.ai.emojimaker.ui.component.showstickers
 
 import android.annotation.SuppressLint
 import android.app.DownloadManager
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.ContextWrapper
+import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -23,8 +25,12 @@ import com.google.android.gms.ads.nativead.NativeAdView
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.wa.ai.emojimaker.App
+import com.wa.ai.emojimaker.BuildConfig
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.common.Constant
+import com.wa.ai.emojimaker.common.Constant.EXTRA_STICKER_PACK_AUTHORITY
+import com.wa.ai.emojimaker.common.Constant.EXTRA_STICKER_PACK_ID
+import com.wa.ai.emojimaker.common.Constant.EXTRA_STICKER_PACK_NAME
 import com.wa.ai.emojimaker.databinding.ActivityShowStickersBinding
 import com.wa.ai.emojimaker.databinding.AdNativeVideoHorizontalBinding
 import com.wa.ai.emojimaker.ui.adapter.MadeStickerAdapter
@@ -84,7 +90,19 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
         val category = intent.getStringExtra("category")
         val categoryName = intent.getStringExtra("category_name")
         binding.tvTitle.text = categoryName
-
+        binding.btnAddToWhatsapp.setOnSafeClick {
+            val intent = Intent().apply {
+                action = "com.whatsapp.intent.action.ENABLE_STICKER_PACK"
+                putExtra(EXTRA_STICKER_PACK_ID, category)
+                putExtra(EXTRA_STICKER_PACK_AUTHORITY, BuildConfig.CONTENT_PROVIDER_AUTHORITY)
+                putExtra(EXTRA_STICKER_PACK_NAME, categoryName)
+            }
+            try {
+                startActivityForResult(intent, 200)
+            } catch (e: ActivityNotFoundException) {
+                e.printStackTrace()
+            }
+        }
         if (category != null) {
             if (!isCreative) {
                 viewModel.getStickers(this, category)
@@ -175,11 +193,6 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
         Adjust.onPause()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        countDownTimer.cancel()
-    }
-
     private fun loadAds() {
         val isShowBanner = FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_BANNER_SHOW_STICKERS)
         if (!isShowBanner) {
@@ -191,22 +204,6 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
             loadBanner()
         }
         setUpLoadInterAds()
-        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_SHOW_STICKERS)) {
-            loadNativeUntilDone()
-        }
-    }
-    val countDownTimer: CountDownTimer = object : CountDownTimer(25000, 5000) {
-        override fun onTick(millisUntilFinished: Long) {
-            if (!isLoadNativeDone) {
-                loadNativeAds()
-            }
-        }
-        override fun onFinish() {
-        }
-    }
-    private fun loadNativeUntilDone() {
-        loadNativeAds()
-        countDownTimer.start()
     }
 
     private fun performImageDownload(imageUrl: Uri?) {
@@ -419,29 +416,4 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
             loadInterAds()
         }
     }
-
-    private fun loadNativeAds() {
-        if (!DeviceUtils.checkInternetConnection(applicationContext)) binding.rlNative.visibility = View.GONE
-        this.let {
-            NativeAdsUtils.instance.loadNativeAds(
-                applicationContext,
-                keyNative
-            ) { nativeAds ->
-                if (nativeAds != null) {
-                    //binding.frNativeAds.removeAllViews()
-                    val adNativeVideoBinding = AdNativeVideoHorizontalBinding.inflate(layoutInflater)
-                    NativeAdsUtils.instance.populateNativeAdVideoView(
-                        nativeAds,
-                        adNativeVideoBinding.root as NativeAdView
-                    )
-                    binding.frNativeAds.addView(adNativeVideoBinding.root)
-                    isLoadNativeDone = true
-                } else {
-                    //binding.rlNative.visibility = View.GONE
-                }
-            }
-        }
-
-    }
-
 }
