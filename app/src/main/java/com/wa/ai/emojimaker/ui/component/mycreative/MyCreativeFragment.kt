@@ -146,8 +146,8 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
         binding.rvSeeMore.adapter = stickerAdapter
         binding.btnSeeMore.setOnSafeClick {
             val intent = Intent(requireContext(), ShowStickersActivity::class.java)
-            intent.putExtra("category", mMainViewModel.category)
-            intent.putExtra("category_name", Constant.categories[mMainViewModel.category])
+            intent.putExtra("category", mMainViewModel.suggestCategory)
+            intent.putExtra("category_name", Constant.categories[mMainViewModel.suggestCategory])
             startActivity(intent)
         }
     }
