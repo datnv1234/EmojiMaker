@@ -97,7 +97,7 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
 
     override fun setupView(savedInstanceState: Bundle?) {
         setUpDialogPermission()
-        setFullScreen()
+        //setFullScreen()
         val toolbar: Toolbar = binding.toolbar
         toolbar.title = ""
         setSupportActionBar(toolbar)

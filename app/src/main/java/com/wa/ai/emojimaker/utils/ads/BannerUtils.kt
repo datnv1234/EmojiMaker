@@ -73,7 +73,7 @@ class BannerUtils {
         val containerShimmer =
             mActivity.findViewById<ShimmerFrameLayout>(R.id.shimmer_container_banner)
         if (!isShowAllAds || !DeviceUtils.checkInternetConnection(mActivity)) {
-            //adContainer.gone()
+            adContainer.gone()
             Log.d(TAG, "!isShowAllAds: ")
             containerShimmer.gone()
         } else {
@@ -158,7 +158,6 @@ class BannerUtils {
             //containerShimmer.visible()
             containerShimmer.startShimmer()
             try {
-                Log.d(TAG, "loadCollapsibleBanner: ")
                 val adView = AdView(mActivity)
                 adView.adUnitId = id
                 //adContainer.addView(adView)

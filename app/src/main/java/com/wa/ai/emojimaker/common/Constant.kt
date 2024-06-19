@@ -15,6 +15,7 @@ object Constant {
     const val EVENT_NET_WORK_CHANGE = 21
 
     const val KEY_IS_RATE = "isRate"
+    const val KEY_IS_CREATE_PACKAGE = "isCreatePackage"
     const val KEY_FIRST_SHOW_INTRO = "KEY_FIRST_SHOW_INTRO"
 
     const val TYPE_SHOW_INTRO_ACT = 2

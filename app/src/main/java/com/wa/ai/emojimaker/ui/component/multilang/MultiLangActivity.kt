@@ -3,7 +3,6 @@ package com.wa.ai.emojimaker.ui.component.multilang
 import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.util.Log
 import android.view.View
 import com.adjust.sdk.Adjust
 import com.google.android.gms.ads.nativead.NativeAdView
@@ -22,6 +21,7 @@ import com.wa.ai.emojimaker.utils.RemoteConfigKey
 import com.wa.ai.emojimaker.utils.SystemUtil
 import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils
 import com.wa.ai.emojimaker.utils.extention.invisible
+import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 import com.wa.ai.emojimaker.utils.extention.visible
 
 class MultiLangActivity : BaseBindingActivity<ActivityMultiLangBinding, MultiLangViewModel>() {
@@ -118,7 +118,10 @@ class MultiLangActivity : BaseBindingActivity<ActivityMultiLangBinding, MultiLan
 
 			Constant.TYPE_LANGUAGE_SETTING -> {
 				binding.imgBack.visible()
-				binding.btnChooseLang.setOnClickListener {
+				binding.imgBack.setOnSafeClick {
+					finish()
+				}
+				binding.btnChooseLang.setOnSafeClick {
 					if (oldCode != code) {
 						SystemUtil.changeLang(code.ifEmpty { oldCode }, this)
 						val i = Intent(this, MainActivity::class.java)

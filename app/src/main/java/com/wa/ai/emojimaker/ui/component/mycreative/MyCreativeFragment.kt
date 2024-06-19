@@ -6,9 +6,9 @@ import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import com.adjust.sdk.Adjust
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.common.Constant
+import com.wa.ai.emojimaker.data.local.SharedPreferenceHelper
 import com.wa.ai.emojimaker.databinding.FragmentMyCreativeBinding
 import com.wa.ai.emojimaker.ui.adapter.CreativeAdapter
 import com.wa.ai.emojimaker.ui.adapter.MadeStickerAdapter
@@ -19,8 +19,8 @@ import com.wa.ai.emojimaker.ui.component.main.MainViewModel
 import com.wa.ai.emojimaker.ui.component.showstickers.ShowStickersActivity
 import com.wa.ai.emojimaker.ui.dialog.CreatePackageDialog
 import com.wa.ai.emojimaker.utils.DeviceUtils
-import com.wa.ai.emojimaker.utils.RemoteConfigKey
 import com.wa.ai.emojimaker.utils.extention.gone
+import com.wa.ai.emojimaker.utils.extention.invisible
 import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 import com.wa.ai.emojimaker.utils.extention.visible
 
@@ -111,7 +111,11 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
 
 
     override fun onCreatedView(view: View?, savedInstanceState: Bundle?) {
+        if (SharedPreferenceHelper.getBoolean(Constant.KEY_IS_CREATE_PACKAGE, false)) {
+            binding.tvCreatePackage.invisible()
+        }
         binding.btnAddPackage.setOnSafeClick {
+            SharedPreferenceHelper.storeBoolean(Constant.KEY_IS_CREATE_PACKAGE, true)
             if (!createPackageDialog.isAdded)
                 createPackageDialog.show(parentFragmentManager, createPackageDialog.tag)
         }
@@ -147,11 +151,6 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        loadAds()
-    }
-
     override fun onResume() {
         super.onResume()
         Adjust.onResume()
@@ -163,19 +162,8 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
         Adjust.onPause()
     }
 
-    private fun loadAds() {
-        //setUpLoadInterAds()
-    }
-
     override fun getViewModel(): Class<MyCreativeViewModel> = MyCreativeViewModel::class.java
     override fun registerOnBackPress() {
-
-    }
-
-    private fun setUpLoadInterAds() {
-        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_INTER_MY_CREATIVE)) {
-            mMainActivity.loadInterAds()
-        }
     }
 
 }
