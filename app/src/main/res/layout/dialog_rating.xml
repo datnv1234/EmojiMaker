@@ -45,13 +45,12 @@
                     android:layout_gravity="center"
                     android:layout_marginHorizontal="5dp"
                     android:layout_marginTop="16dp"
-                    android:fontFamily="@font/poppins_bold"
+                    android:fontFamily="@font/poppins_semibold"
                     android:gravity="center"
                     android:includeFontPadding="false"
                     android:maxLines="1"
                     android:text="@string/title_rate_default"
-                    android:textColor="#FFFFFF"
-                    android:textSize="20sp" />
+                    android:textSize="@dimen/_14ssp" />
 
                 <TextView
                     android:id="@+id/tvContent"
@@ -72,6 +71,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
+                    android:layout_marginHorizontal="@dimen/_28sdp"
                     android:rating="5"
                     app:srb_clearRatingEnabled="true"
                     app:srb_clickable="true"
@@ -82,9 +82,9 @@
                     app:srb_numStars="5"
                     app:srb_rating="0"
                     app:srb_scrollable="true"
-                    app:srb_starHeight="50dp"
-                    app:srb_starPadding="5dp"
-                    app:srb_starWidth="50dp"
+                    app:srb_starHeight="@dimen/_24sdp"
+                    app:srb_starPadding="1dp"
+                    app:srb_starWidth="@dimen/_24sdp"
                     app:srb_stepSize="1" />
 
                 <Button
@@ -95,15 +95,13 @@
                     android:fontFamily="@font/poppins_bold"
                     android:foreground="?selectableItemBackground"
                     android:gravity="center"
-                    android:includeFontPadding="false"
                     android:paddingVertical="12dp"
-                    android:text="@string/rate_us"
-                    app:startGradientColor="#3067F4"
+                    android:text="@string/rate"
+                    android:backgroundTint="#6993FF"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
                     android:textSize="16sp"
-                    app:endGradientColor="#56B6FC"
-                    app:cornerRadius="12dp" />
+                    app:cornerRadius="@dimen/_6sdp" />
 
                 <TextView
                     android:id="@+id/tvExit"
@@ -111,15 +109,13 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="3dp"
                     android:background="@drawable/custom_ripple_image"
-                    android:fontFamily="@font/poppins_medium"
+                    android:fontFamily="@font/poppins_italic"
                     android:gravity="center"
                     android:includeFontPadding="false"
                     android:maxLines="1"
                     android:paddingVertical="12dp"
-                    android:text="@string/may_be_later"
-                    android:textColor="#FFFFFF"
-                    android:textSize="16sp"
-                    android:textStyle="italic"/>
+                    android:textStyle="italic"
+                    android:text="@string/may_be_later"/>
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>

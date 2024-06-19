@@ -23,39 +23,14 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
-            <LinearLayout
-                android:id="@+id/turn_of_overlay"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:backgroundTintMode="screen"
-                android:gravity="center_vertical"
-                android:layout_marginVertical="1dp"
-                android:visibility="gone">
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/on_off_button_24"
-                    android:layout_margin="5dp" />
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textSize="18sp"
-                    android:textColor="@color/white"/>
-            </LinearLayout>
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginVertical="@dimen/_16sdp"
-                android:background="#202C38"
-                android:visibility="gone"/>
+
             <LinearLayout
                 android:id="@+id/language"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginVertical="1dp"
+                android:layout_marginVertical="@dimen/_6sdp"
+                android:background="@drawable/bg_item_settings"
                 android:gravity="center_vertical">
                 <ImageView
                     android:layout_width="wrap_content"
@@ -67,8 +42,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/language_options"
-                    android:textSize="@dimen/_14ssp"
+                    android:text="@string/language"
                     android:fontFamily="@font/poppins_regular"/>
                 <ImageButton
                     android:layout_width="wrap_content"
@@ -77,17 +51,13 @@
                     android:src="@drawable/ic_arrow_right"
                     tools:ignore="ContentDescription" />
             </LinearLayout>
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginVertical="@dimen/_16sdp"
-                android:background="#202C38"/>
             <LinearLayout
                 android:id="@+id/rate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginVertical="1dp"
+                android:layout_marginBottom="@dimen/_6sdp"
+                android:background="@drawable/bg_item_settings"
                 android:gravity="center_vertical">
                 <ImageView
                     android:layout_width="wrap_content"
@@ -100,7 +70,6 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/rate_us"
-                    android:textSize="@dimen/_14ssp"
                     android:fontFamily="@font/poppins_regular"/>
                 <ImageButton
                     android:layout_width="wrap_content"
@@ -109,18 +78,13 @@
                     android:src="@drawable/ic_arrow_right"
                     tools:ignore="ContentDescription" />
             </LinearLayout>
-            <View
-                android:id="@+id/viewLineRate"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginVertical="@dimen/_16sdp"
-                android:background="#202C38"/>
             <LinearLayout
                 android:id="@+id/share"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginVertical="1dp"
+                android:layout_marginBottom="@dimen/_6sdp"
+                android:background="@drawable/bg_item_settings"
                 android:gravity="center_vertical">
                 <ImageView
                     android:layout_width="wrap_content"
@@ -133,7 +97,6 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/share_app"
-                    android:textSize="@dimen/_14ssp"
                     android:fontFamily="@font/poppins_regular"/>
                 <ImageButton
                     android:layout_width="wrap_content"
@@ -142,16 +105,12 @@
                     android:src="@drawable/ic_arrow_right"
                     tools:ignore="ContentDescription" />
             </LinearLayout>
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginVertical="@dimen/_16sdp"
-                android:background="#202C38"/>
             <LinearLayout
                 android:id="@+id/about"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:background="@drawable/bg_item_settings"
                 android:gravity="center_vertical">
                 <ImageView
                     android:layout_width="wrap_content"
@@ -164,8 +123,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/privacy_policy"
-                    android:textSize="@dimen/_14ssp"
-                    android:fontFamily="@font/poppins_regular"/>
+                    android:fontFamily="@font/poppins_medium"/>
                 <ImageButton
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

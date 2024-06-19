@@ -39,40 +39,40 @@ class DialogRating : BaseBindingDialogFragment<DialogRatingBinding>() {
 					binding.tvTitle.text = context?.getString(R.string.title_dialog_rating_1)
 					binding.tvContent.text =
 						context?.getString(R.string.content_dialog_rating_1_2_3)
-					binding.imgIcon.setImageResource(R.drawable.ic_rating_1)
+					binding.imgIcon.setImageResource(R.drawable.img_rating_1)
 				}
 
 				"2.0" -> {
 					binding.tvTitle.text = context?.getString(R.string.title_dialog_rating_1)
 					binding.tvContent.text =
 						context?.getString(R.string.content_dialog_rating_1_2_3)
-					binding.imgIcon.setImageResource(R.drawable.ic_rating_2)
+					binding.imgIcon.setImageResource(R.drawable.img_rating_2)
 				}
 
 				"3.0" -> {
 					binding.tvTitle.text = context?.getString(R.string.title_dialog_rating_1)
 					binding.tvContent.text =
 						context?.getString(R.string.content_dialog_rating_1_2_3)
-					binding.imgIcon.setImageResource(R.drawable.ic_rating_3)
+					binding.imgIcon.setImageResource(R.drawable.img_rating_3)
 				}
 
 				"4.0" -> {
 					binding.tvTitle.text = context?.getString(R.string.title_dialog_rating_5)
 					binding.tvContent.text = context?.getString(R.string.content_dialog_rating_4_5)
-					binding.imgIcon.setImageResource(R.drawable.ic_rating_4)
+					binding.imgIcon.setImageResource(R.drawable.img_rating_4)
 				}
 
 				"5.0" -> {
 					binding.tvTitle.text = context?.getString(R.string.title_dialog_rating_5)
 					binding.tvContent.text = context?.getString(R.string.content_dialog_rating_4_5)
-					binding.imgIcon.setImageResource(R.drawable.ic_rating_5)
+					binding.imgIcon.setImageResource(R.drawable.img_rating_5)
 				}
 
 				else -> {
 					binding.tvTitle.text = context?.getString(R.string.title_rate_default)
 					binding.tvContent.text =
 						context?.getString(R.string.content_rate_default)
-					binding.imgIcon.setImageResource(R.drawable.ic_rating)
+					binding.imgIcon.setImageResource(R.drawable.img_rating_default)
 				}
 			}
 		}

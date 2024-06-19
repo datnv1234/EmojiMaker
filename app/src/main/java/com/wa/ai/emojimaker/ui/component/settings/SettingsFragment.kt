@@ -3,13 +3,13 @@ package com.wa.ai.emojimaker.ui.component.settings
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.view.View
 import com.adjust.sdk.Adjust
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.common.Constant
+import com.wa.ai.emojimaker.data.local.SharedPreferenceHelper
 import com.wa.ai.emojimaker.databinding.AdNativeVideoBinding
 import com.wa.ai.emojimaker.databinding.FragmentSettingsBinding
 import com.wa.ai.emojimaker.ui.base.BaseBindingFragment
@@ -34,7 +34,6 @@ class SettingsFragment : BaseBindingFragment<FragmentSettingsBinding, SettingsVi
             }
             onClickFiveStar = {
                 binding.rate.gone()
-                binding.viewLineRate.gone()
                 toast(getString(R.string.thank_you))
                 ratingDialog.dismiss()
             }
@@ -70,10 +69,13 @@ class SettingsFragment : BaseBindingFragment<FragmentSettingsBinding, SettingsVi
                 startActivity(Intent.createChooser(shareIntent, "Share the application via"))
             }
         }
-
+        if (SharedPreferenceHelper.getBoolean(Constant.KEY_IS_RATE, false)) {
+            binding.rate.gone()
+        }
         binding.rate.setOnClickListener {
             mMainActivity.openNextScreen {
-                ratingDialog.show(parentFragmentManager, null)
+                if (!ratingDialog.isAdded)
+                    ratingDialog.show(parentFragmentManager, null)
             }
             //openPlayStoreForRating()
         }
