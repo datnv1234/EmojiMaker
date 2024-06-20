@@ -255,7 +255,9 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         emojiViewModel.loadBanner.observe(this) {
             loadBanner()
         }
-        loadInterAds()
+        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_INTER_CREATE_EMOJI)) {
+            loadInterAds()
+        }
     }
     override fun setupData() {
         emojiViewModel = ViewModelProvider(this)[EmojiViewModel::class.java]

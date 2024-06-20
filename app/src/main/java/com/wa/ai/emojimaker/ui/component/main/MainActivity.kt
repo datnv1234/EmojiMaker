@@ -119,7 +119,10 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
         viewModel.loadBanner.observe(this) {
             loadBanner()
         }
-        loadInterAds()
+
+        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_INTER_HOME_SCREEN)) {
+            loadInterAds()
+        }
     }
 
     override fun onResume() {

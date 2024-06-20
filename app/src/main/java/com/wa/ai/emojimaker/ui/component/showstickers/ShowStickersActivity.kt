@@ -201,7 +201,9 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
         viewModel.loadBanner.observe(this) {
             loadBanner()
         }
-        setUpLoadInterAds()
+        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_INTER_SHOW_STICKERS)) {
+            loadInterAds()
+        }
     }
 
     private fun performImageDownload(imageUrl: Uri?) {
@@ -403,15 +405,6 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
                             analytics?.logEvent(FirebaseAnalytics.Event.AD_IMPRESSION, params)
                         }
                 }
-
-
             })
-
-    }
-
-    private fun setUpLoadInterAds() {
-        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_INTER_SHOW_STICKERS)) {
-            loadInterAds()
-        }
     }
 }

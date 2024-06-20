@@ -164,7 +164,7 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
     }
 
     private fun loadAds() {
-        setUpLoadInterAds()
+        //setUpLoadInterAds()
         if (FirebaseRemoteConfig.getInstance()
                 .getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_HOME)
         ) {
@@ -242,9 +242,7 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
     }
 
     private fun setUpLoadInterAds() {
-        if (FirebaseRemoteConfig.getInstance()
-                .getBoolean(RemoteConfigKey.IS_SHOW_ADS_INTER_HOME_SCREEN)
-        ) {
+        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_INTER_HOME_SCREEN)) {
             mMainActivity.loadInterAds()
         }
     }
