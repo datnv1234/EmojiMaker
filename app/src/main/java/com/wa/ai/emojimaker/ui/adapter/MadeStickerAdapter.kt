@@ -6,7 +6,6 @@ import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.data.model.MadeStickerModel
 import com.wa.ai.emojimaker.databinding.ItemStickerBinding
 import com.wa.ai.emojimaker.ui.base.BaseBindingAdapterDiff
-import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 
 class MadeStickerAdapter(val itemClick: () -> Unit) : BaseBindingAdapterDiff<MadeStickerModel, ItemStickerBinding>(object : DiffUtil.ItemCallback<MadeStickerModel>() {
     override fun areItemsTheSame(oldItem: MadeStickerModel, newItem: MadeStickerModel): Boolean {

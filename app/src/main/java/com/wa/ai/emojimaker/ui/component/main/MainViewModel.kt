@@ -42,9 +42,6 @@ class MainViewModel : BaseViewModel() {
     val stickerMutableLiveData: LiveData<List<MadeStickerModel>>
         get() = _stickerMutableLiveData
 
-    private val _loadBanner: MutableLiveData<Boolean> = MutableLiveData()
-    val loadBanner: LiveData<Boolean>
-        get() = _loadBanner
     val categories: MutableList<Any> = ArrayList()
 
     private val _packageMutableLiveData: MutableLiveData<List<PackageModel>> = MutableLiveData()
@@ -88,28 +85,6 @@ class MainViewModel : BaseViewModel() {
         cate.avatar3 = listFile[2]
         cate.avatar4 = listFile[3]
         return cate
-    }
-
-    private fun createCountDownTimerReloadBanner(time: Long): CountDownTimer {
-        return object : CountDownTimer(time, 1000) {
-            override fun onTick(millisUntilFinished: Long) {
-            }
-
-            override fun onFinish() {
-                _loadBanner.postValue(true)
-            }
-        }
-    }
-
-
-    fun starTimeCountReloadBanner(time: Long) {
-        kotlin.runCatching {
-            timerReloadBanner?.cancel()
-            timerReloadBanner = createCountDownTimerReloadBanner(time)
-            timerReloadBanner?.start()
-        }.onFailure {
-            it.printStackTrace()
-        }
     }
 
     fun getSuggestStickers(context: Context) {

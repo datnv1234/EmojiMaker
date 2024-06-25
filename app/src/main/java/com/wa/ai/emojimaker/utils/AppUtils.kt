@@ -28,8 +28,6 @@ import kotlin.jvm.internal.Intrinsics
 object AppUtils {
 
     private val CREATE_STICKER_PACK_ACTION = "org.telegram.messenger.CREATE_STICKER_PACK"
-    private val CREATE_STICKER_PACK_EMOJIS_EXTRA = "STICKER_EMOJIS"
-    private val CREATE_STICKER_PACK_IMPORTER_EXTRA = "IMPORTER"
     fun shareImage(context: Context, bitmap: Bitmap) {
         try {
             // Save the image to a temporary file

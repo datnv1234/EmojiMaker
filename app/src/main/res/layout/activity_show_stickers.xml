@@ -59,7 +59,7 @@
             android:background="@drawable/bg_dialog"
             android:orientation="vertical"
             android:padding="@dimen/_12sdp"
-            app:layout_constraintBottom_toTopOf="@id/rl_banner">
+            app:layout_constraintBottom_toBottomOf="parent">
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -213,17 +213,5 @@
                 </androidx.cardview.widget.CardView>
             </LinearLayout>
         </LinearLayout>
-        <FrameLayout
-            android:id="@+id/rl_banner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            app:layout_constraintBottom_toBottomOf="parent">
-            <include
-                android:id="@+id/ads_banner"
-                layout="@layout/ads_banner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-        </FrameLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

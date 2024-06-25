@@ -48,32 +48,6 @@ class EmojiViewModel : BaseViewModel() {
     private val pieceOfMouth = mutableListOf<PieceSticker>()
     private val pieceOfNose = mutableListOf<PieceSticker>()
 
-    private val _loadBanner: MutableLiveData<Boolean> = MutableLiveData()
-    val loadBanner: LiveData<Boolean>
-        get() = _loadBanner
-
-    private fun createCountDownTimerReloadBanner(time: Long): CountDownTimer {
-        return object : CountDownTimer(time, 1000) {
-            override fun onTick(millisUntilFinished: Long) {
-            }
-
-            override fun onFinish() {
-                _loadBanner.postValue(true)
-            }
-        }
-    }
-
-    fun starTimeCountReloadBanner(time: Long) {
-        kotlin.runCatching {
-            timerReloadBanner?.cancel()
-            timerReloadBanner = createCountDownTimerReloadBanner(time)
-            timerReloadBanner?.start()
-        }.onFailure {
-            it.printStackTrace()
-        }
-    }
-
-
     fun setBitmap(bitmap: Bitmap) {
         _bitmapMutableLiveData.postValue(bitmap)
     }

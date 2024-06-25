@@ -21,7 +21,7 @@
             android:layout_marginHorizontal="16dp"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            app:layout_constraintBottom_toTopOf="@id/rl_native">
+            app:layout_constraintBottom_toBottomOf="parent">
             <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
                 android:id="@+id/dotsIndicator"
                 android:layout_width="53dp"
@@ -31,7 +31,7 @@
                 app:dotsSpacing="3dp"
                 app:layout_goneMarginStart="16dp"
                 app:selectedDotColor="@color/blue"
-                app:layout_constraintBottom_toTopOf="@id/rl_native"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"/>
             <View
                 android:layout_width="0dp"
@@ -44,28 +44,9 @@
                 android:text="@string/next"
                 android:fontFamily="@font/poppins_semibold"
                 android:textSize="@dimen/_14ssp"
-                app:layout_constraintBottom_toTopOf="@id/rl_native"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
         </LinearLayout>
-
-
-        <RelativeLayout
-            android:id="@+id/rl_native"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/_180sdp"
-            android:layout_marginTop="@dimen/_40sdp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintVertical_bias="1.0"
-            app:layout_goneMarginTop="@dimen/_4sdp">
-
-            <FrameLayout
-                android:id="@+id/fr_native_ads"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <include layout="@layout/ads_native_shimmer" />
-            </FrameLayout>
-        </RelativeLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

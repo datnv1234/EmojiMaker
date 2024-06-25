@@ -2,67 +2,27 @@ package com.wa.ai.emojimaker.ui.component.showstickers
 
 import android.annotation.SuppressLint
 import android.app.DownloadManager
-import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.ContextWrapper
-import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.os.Environment
-import android.view.View
 import com.adjust.sdk.Adjust
-import com.adjust.sdk.AdjustAdRevenue
-import com.adjust.sdk.AdjustConfig
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdapterResponseInfo
-import com.google.android.gms.ads.LoadAdError
-import com.google.android.gms.ads.OnPaidEventListener
-import com.google.android.gms.ads.interstitial.InterstitialAd
-import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
-import com.google.android.gms.ads.nativead.NativeAdView
-import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig
-import com.wa.ai.emojimaker.App
-import com.wa.ai.emojimaker.BuildConfig
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.common.Constant
-import com.wa.ai.emojimaker.common.Constant.EXTRA_STICKER_PACK_AUTHORITY
-import com.wa.ai.emojimaker.common.Constant.EXTRA_STICKER_PACK_ID
-import com.wa.ai.emojimaker.common.Constant.EXTRA_STICKER_PACK_NAME
 import com.wa.ai.emojimaker.databinding.ActivityShowStickersBinding
 import com.wa.ai.emojimaker.ui.adapter.MadeStickerAdapter
 import com.wa.ai.emojimaker.ui.base.BaseBindingActivity
 import com.wa.ai.emojimaker.utils.AppUtils
 import com.wa.ai.emojimaker.utils.AppUtils.saveSticker
-import com.wa.ai.emojimaker.utils.DeviceUtils
 import com.wa.ai.emojimaker.utils.FileUtils
 import com.wa.ai.emojimaker.utils.FileUtils.copyFileToCache
-import com.wa.ai.emojimaker.utils.RemoteConfigKey
-import com.wa.ai.emojimaker.utils.ads.BannerUtils
-import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils
-import com.wa.ai.emojimaker.utils.extention.gone
 import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
-import timber.log.Timber
 import java.io.File
-import java.util.Date
 
 
 class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, ShowStickerViewModel>() {
-
-    private var isLoadNativeDone = false
-    private var keyInter = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_INTER_SHOW_STICKERS)
-//    private var keyInter = "ca-app-pub-3940256099942544/1033173712"
-    private val keyNative = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_SHOW_STICKERS)
-    private val keyBanner = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_SHOW_STICKERS)
-//    private val keyBanner = "ca-app-pub-3940256099942544/2014213617"
-    private val interDelay = FirebaseRemoteConfig.getInstance().getLong(RemoteConfigKey.INTER_DELAY)
-    private val bannerReload = FirebaseRemoteConfig.getInstance().getLong(RemoteConfigKey.BANNER_RELOAD)
-
-    private var mInterstitialAd: InterstitialAd? = null
-    private var analytics: FirebaseAnalytics? = null
-    var mFirebaseAnalytics: FirebaseAnalytics? = null
 
     private val cateStickerAdapter : MadeStickerAdapter by lazy {
         MadeStickerAdapter(itemClick = {
@@ -72,7 +32,6 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
 
     private val madeStickerAdapter : MadeStickerAdapter by lazy {
         MadeStickerAdapter(itemClick = {
-            toast("Clicked")
         })
     }
 
@@ -93,17 +52,17 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
 
         binding.tvTitle.text = categoryName
         binding.btnAddToWhatsapp.setOnSafeClick {
-            val intent = Intent().apply {
-                action = "com.whatsapp.intent.action.ENABLE_STICKER_PACK"
-                putExtra(EXTRA_STICKER_PACK_ID, "1")
-                putExtra(EXTRA_STICKER_PACK_AUTHORITY, BuildConfig.CONTENT_PROVIDER_AUTHORITY)
-                putExtra(EXTRA_STICKER_PACK_NAME, "Alpi Powers")
-            }
-            try {
-                startActivityForResult(intent, 200)
-            } catch (e: ActivityNotFoundException) {
-                e.printStackTrace()
-            }
+//            val intent = Intent().apply {
+//                action = "com.whatsapp.intent.action.ENABLE_STICKER_PACK"
+//                putExtra(EXTRA_STICKER_PACK_ID, "1")
+//                putExtra(EXTRA_STICKER_PACK_AUTHORITY, BuildConfig.CONTENT_PROVIDER_AUTHORITY)
+//                putExtra(EXTRA_STICKER_PACK_NAME, "Alpi Powers")
+//            }
+//            try {
+//                startActivityForResult(intent, 200)
+//            } catch (e: ActivityNotFoundException) {
+//                e.printStackTrace()
+//            }
         }
         if (category != null) {
             if (!isCreative) {
@@ -116,7 +75,6 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
                 binding.rvStickers.adapter = cateStickerAdapter
                 binding.btnAddToTelegram.setOnSafeClick {
                     addStickerInCategoryToTele(category)
-                    mFirebaseAnalytics?.logEvent("v_inter_ads_add_telegram_category", null)
                 }
                 binding.btnDownload.setOnSafeClick {
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
@@ -125,17 +83,10 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
                             return@setOnSafeClick
                         }
                     }
-                    nextAction {
-                        downloadStickerInCategory(category)
-                    }
-                    mFirebaseAnalytics?.logEvent("v_inter_ads_download_category", null)
-
+                    downloadStickerInCategory(category)
                 }
                 binding.btnShare.setOnSafeClick {
-                    nextAction {
-                        shareStickerInCategory(category)
-                    }
-                    mFirebaseAnalytics?.logEvent("v_inter_ads_share_category", null)
+                    shareStickerInCategory(category)
                 }
             } else {
                 viewModel.getCreativeSticker(this, category)
@@ -147,7 +98,6 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
                 binding.rvStickers.adapter = madeStickerAdapter
                 binding.btnAddToTelegram.setOnSafeClick {
                     addCreativeStickerToTelegram(category)
-                    mFirebaseAnalytics?.logEvent("v_inter_ads_add_telegram_creative", null)
                 }
 
                 binding.btnDownload.setOnSafeClick {
@@ -155,16 +105,10 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
                         AppUtils.requestPermissionAndContinue(this)
                         return@setOnSafeClick
                     }
-                    nextAction {
-                        downloadCreativeSticker(category)
-                    }
-                    mFirebaseAnalytics?.logEvent("v_inter_ads_download_creative", null)
+                    downloadCreativeSticker(category)
                 }
                 binding.btnShare.setOnSafeClick {
-                    nextAction {
-                        shareCreativeSticker(category)
-                    }
-                    mFirebaseAnalytics?.logEvent("v_inter_ads_share_creative", null)
+                    shareCreativeSticker(category)
                 }
             }
         }
@@ -176,7 +120,6 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
 
     override fun onStart() {
         super.onStart()
-        loadAds()
     }
 
     override fun onResume() {
@@ -187,21 +130,6 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
     override fun onPause() {
         super.onPause()
         Adjust.onPause()
-    }
-
-    private fun loadAds() {
-        val isShowBanner = FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_BANNER_SHOW_STICKERS)
-        if (!isShowBanner) {
-            binding.rlBanner.gone()
-        } else {
-            loadBanner()
-        }
-        viewModel.loadBanner.observe(this) {
-            loadBanner()
-        }
-        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_INTER_SHOW_STICKERS)) {
-            loadInterAds()
-        }
     }
 
     private fun performImageDownload(imageUrl: Uri?) {
@@ -329,80 +257,5 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
                 }
             }
         }
-    }
-
-    private fun loadBanner() {
-        viewModel.starTimeCountReloadBanner(bannerReload)
-        BannerUtils.instance?.loadCollapsibleBanner(this, keyBanner)
-    }
-
-    private fun nextAction(action:() -> Unit) {
-        val isShowAd = (Date().time - App.adTimeStamp) > interDelay
-        if (isShowAd && mInterstitialAd != null) {
-            mInterstitialAd?.fullScreenContentCallback =
-                object : com.google.android.gms.ads.FullScreenContentCallback() {
-                    override fun onAdDismissedFullScreenContent() {
-                        App.adTimeStamp = Date().time
-                        action()
-                    }
-
-                    override fun onAdFailedToShowFullScreenContent(adError: com.google.android.gms.ads.AdError) {
-                        action()
-                    }
-                }
-            mInterstitialAd?.show(this@ShowStickersActivity)
-            loadInterAds()
-        }else{
-            action()
-        }
-    }
-
-    //Ads
-    var loadInterCount = 0
-    private fun loadInterAds() {
-        InterstitialAd.load(
-            this,
-            keyInter,
-            AdRequest.Builder().build(),
-            object : InterstitialAdLoadCallback() {
-                override fun onAdFailedToLoad(loadAdError: LoadAdError) {
-                    mInterstitialAd = null
-                    Timber.tag(Constant.ADS).d("onAdFailedToShowFullScreenContent: ${loadAdError.message}")
-                    Timber.tag(Constant.ADS).d("onAdFailedToShowFullScreenContent: ${loadAdError.cause}")
-                    if (loadInterCount < 3) {
-                        loadInterAds()
-                        loadInterCount++
-                    }
-                }
-
-                override fun onAdLoaded(interstitialAd: InterstitialAd) {
-                    mInterstitialAd = interstitialAd
-                    loadInterCount = 0
-                    mFirebaseAnalytics?.logEvent("d_load_inter", null)
-
-                    mInterstitialAd?.onPaidEventListener =
-                        OnPaidEventListener { adValue -> // Lấy thông tin về nhà cung cấp quảng cáo
-                            val loadedAdapterResponseInfo: AdapterResponseInfo? =
-                                interstitialAd.responseInfo.loadedAdapterResponseInfo
-                            // Gửi thông tin doanh thu quảng cáo đến Adjust
-                            val adRevenue = AdjustAdRevenue(AdjustConfig.AD_REVENUE_ADMOB)
-                            val revenue = adValue.valueMicros.toDouble() / 1000000.0
-                            adRevenue.setRevenue(
-                                revenue,
-                                adValue.currencyCode
-                            )
-                            adRevenue.adRevenueNetwork = loadedAdapterResponseInfo?.adSourceName
-                            Adjust.trackAdRevenue(adRevenue)
-                            analytics = FirebaseAnalytics.getInstance(applicationContext)
-                            val params = Bundle()
-                            params.putString(FirebaseAnalytics.Param.AD_PLATFORM, "admob mediation")
-                            params.putString(FirebaseAnalytics.Param.AD_SOURCE, "AdMob")
-                            params.putString(FirebaseAnalytics.Param.AD_FORMAT, "Interstitial")
-                            params.putDouble(FirebaseAnalytics.Param.VALUE, revenue)
-                            params.putString(FirebaseAnalytics.Param.CURRENCY, "USD")
-                            analytics?.logEvent(FirebaseAnalytics.Event.AD_IMPRESSION, params)
-                        }
-                }
-            })
     }
 }

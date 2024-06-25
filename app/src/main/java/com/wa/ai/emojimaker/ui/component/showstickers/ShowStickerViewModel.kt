@@ -9,10 +9,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.wa.ai.emojimaker.common.Constant
 import com.wa.ai.emojimaker.data.model.MadeStickerModel
-import com.wa.ai.emojimaker.data.model.Sticker
 import com.wa.ai.emojimaker.ui.base.BaseViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import java.io.File
@@ -39,32 +37,6 @@ class ShowStickerViewModel : BaseViewModel() {
 
     val localStickerMutableLiveData: LiveData<List<MadeStickerModel>>
         get() = _localStickerMutableLiveData
-
-    private val _loadBanner: MutableLiveData<Boolean> = MutableLiveData()
-    val loadBanner: LiveData<Boolean>
-        get() = _loadBanner
-
-    private fun createCountDownTimerReloadBanner(time: Long): CountDownTimer {
-        return object : CountDownTimer(time, 1000) {
-            override fun onTick(millisUntilFinished: Long) {
-            }
-
-            override fun onFinish() {
-                _loadBanner.postValue(true)
-            }
-        }
-    }
-
-
-    fun starTimeCountReloadBanner(time: Long) {
-        kotlin.runCatching {
-            timerReloadBanner?.cancel()
-            timerReloadBanner = createCountDownTimerReloadBanner(time)
-            timerReloadBanner?.start()
-        }.onFailure {
-            it.printStackTrace()
-        }
-    }
 
     fun getCreativeSticker(context: Context, category: String) {
         val listEntry = mutableListOf<MadeStickerModel>()

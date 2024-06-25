@@ -8,12 +8,8 @@ import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.adjust.sdk.Adjust
-import com.google.android.gms.ads.nativead.NativeAdView
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.wa.ai.emojimaker.R
-import com.wa.ai.emojimaker.databinding.AdNativeVideoHorizontalBinding
 import com.wa.ai.emojimaker.databinding.FragmentHomeBinding
-import com.wa.ai.emojimaker.ui.adapter.CategoryAdapter
 import com.wa.ai.emojimaker.ui.adapter.HomeAdapter
 import com.wa.ai.emojimaker.ui.base.BaseBindingFragment
 import com.wa.ai.emojimaker.ui.dialog.SharePackageDialog
@@ -22,13 +18,8 @@ import com.wa.ai.emojimaker.ui.component.main.MainActivity
 import com.wa.ai.emojimaker.ui.component.main.MainViewModel
 import com.wa.ai.emojimaker.ui.component.showstickers.ShowStickersActivity
 import com.wa.ai.emojimaker.utils.AppUtils
-import com.wa.ai.emojimaker.utils.DeviceUtils
 import com.wa.ai.emojimaker.utils.FileUtils
 import com.wa.ai.emojimaker.utils.FileUtils.getUriForFile
-import com.wa.ai.emojimaker.utils.RemoteConfigKey
-import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils
-import com.wa.ai.emojimaker.utils.extention.gone
-import timber.log.Timber
 
 class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
 
@@ -58,7 +49,6 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
                     }
                 }
                 AppUtils.doImport(requireContext(), viewModel.stickerUri)
-                mMainActivity.mFirebaseAnalytics?.logEvent("v_inter_ads_import_$cate", null)
 
             }
 
@@ -83,15 +73,11 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
                         requireContext(),
                         viewModel.stickerUri.toList()
                     )
-                    mMainActivity.mFirebaseAnalytics?.logEvent("v_inter_ads_share_$cate", null)
                 }
             }
 
             download = { cate ->
-                mMainActivity.openNextScreen {
-                    download(requireContext(), cate)
-                }
-                mMainActivity.mFirebaseAnalytics?.logEvent("v_inter_ads_download_$cate", null)
+                download(requireContext(), cate)
             }
         }
     }
@@ -107,10 +93,7 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
 
     override fun onCreatedView(view: View?, savedInstanceState: Bundle?) {
         binding.btnCreateSticker.setOnClickListener {
-            mMainActivity.openNextScreen {
-                startActivity(Intent(context, EmojiMakerActivity::class.java))
-            }
-            mMainActivity.mFirebaseAnalytics?.logEvent("v_inter_ads_create_sticker", null)
+            startActivity(Intent(context, EmojiMakerActivity::class.java))
         }
     }
 
@@ -126,9 +109,8 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
                 intent.putExtra("category", it.category)
                 intent.putExtra("category_name", it.categoryName)
                 intent.putExtra("category_size", it.itemSize)
-                mMainActivity.openNextScreen {
-                    startActivity(intent)
-                }
+                startActivity(intent)
+
             },
             optionClick = {
                 sharePackageDialog.category = it
@@ -147,23 +129,11 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
 
     override fun onStart() {
         super.onStart()
-        loadAds()
     }
 
     override fun onPause() {
         super.onPause()
         Adjust.onPause()
-    }
-
-    private fun loadAds() {
-        //setUpLoadInterAds()
-        if (FirebaseRemoteConfig.getInstance()
-                .getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_HOME)
-        ) {
-            loadNativeAds()
-        } else {
-            binding.rlNative.gone()
-        }
     }
 
     /*private fun getUri(category: String) {
@@ -231,41 +201,5 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
         } else {
             toast(getString(R.string.download_failed))
         }
-    }
-
-    private fun setUpLoadInterAds() {
-        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_INTER_HOME_SCREEN)) {
-            mMainActivity.loadInterAds()
-        }
-    }
-
-    private fun loadNativeAds() {
-        if (!DeviceUtils.checkInternetConnection(requireContext())) binding.rlNative.visibility =
-            View.GONE
-        this.let {
-            NativeAdsUtils.instance.loadNativeAds(
-                requireContext(),
-                mMainActivity.keyAdsNativeHome
-            ) { nativeAds ->
-
-                if (nativeAds != null && isAdded && isVisible) {
-                    if (isDetached) {
-                        nativeAds.destroy()
-                        return@loadNativeAds
-                    }
-                    //binding.frNativeAds.removeAllViews()
-                    val adNativeVideoBinding =
-                        AdNativeVideoHorizontalBinding.inflate(layoutInflater)
-                    NativeAdsUtils.instance.populateNativeAdVideoView(
-                        nativeAds,
-                        adNativeVideoBinding.root as NativeAdView
-                    )
-                    binding.frNativeAds.addView(adNativeVideoBinding.root)
-                } else {
-                    binding.rlNative.visibility = View.GONE
-                }
-            }
-        }
-
     }
 }

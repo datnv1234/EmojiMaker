@@ -1,12 +1,9 @@
 package com.wa.ai.emojimaker.ui.adapter
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
@@ -17,7 +14,6 @@ import com.bumptech.glide.Glide
 import com.google.android.gms.ads.AdView
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.data.model.Category
-import com.wa.ai.emojimaker.ui.component.main.MainActivity
 import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 
 internal class HomeAdapter(
@@ -62,20 +58,10 @@ internal class HomeAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return when (viewType) {
-            ITEM_VIEW_TYPE -> {
-                val menuItemLayoutView =
-                    LayoutInflater.from(parent.context)
-                        .inflate(R.layout.item_category, parent, false)
-                ItemViewHolder(menuItemLayoutView)
-            }
-            else -> {
-                val bannerLayoutView =
-                    LayoutInflater.from(parent.context)
-                        .inflate(R.layout.banner_ad_container, parent, false)
-                AdViewHolder(bannerLayoutView)
-            }
-        }
+        val menuItemLayoutView =
+            LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_category, parent, false)
+        return ItemViewHolder(menuItemLayoutView)
     }
 
 

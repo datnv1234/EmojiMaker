@@ -132,25 +132,6 @@
                     tools:ignore="ContentDescription" />
             </LinearLayout>
         </LinearLayout>
-
-        <RelativeLayout
-            android:id="@+id/rl_native"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/_180sdp"
-            android:layout_marginTop="@dimen/_16sdp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ll_settings"
-            app:layout_constraintVertical_bias="1.0"
-            app:layout_goneMarginTop="@dimen/_4sdp">
-
-            <FrameLayout
-                android:id="@+id/fr_native_ads"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <include layout="@layout/ads_native_shimmer" />
-            </FrameLayout>
-        </RelativeLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

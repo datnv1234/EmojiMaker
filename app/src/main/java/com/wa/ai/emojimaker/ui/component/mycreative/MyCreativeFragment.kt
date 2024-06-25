@@ -37,12 +37,12 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
             intent.putExtra("category", it.id)
             intent.putExtra("category_name", it.name)
             intent.putExtra("category_size", it.itemSize)
-            mMainActivity.openNextScreen {
-                startActivity(intent)
-            }
-            mMainActivity.mFirebaseAnalytics?.logEvent("v_inter_ads_open_${it.name}", null)
+
+            startActivity(intent)
+
+
         }, optionClick = {
-        //sharePackageDialog.show(parentFragmentManager, sharePackageDialog.tag)
+
         }, delete = {
             deletePkgDialog.pkg = it
             if (!deletePkgDialog.isAdded)
@@ -52,7 +52,6 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
 
     private val stickerAdapter : MadeStickerAdapter by lazy {
         MadeStickerAdapter(itemClick = {
-            //toast("Clicked")
         })
     }
 

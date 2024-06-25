@@ -145,19 +145,6 @@
                 android:gravity="center"
                 android:text="@string/load_ad_failed"
                 android:textSize="@dimen/_12ssp"/>
-            <RelativeLayout
-                android:id="@+id/rl_native"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/transparent">
-                <FrameLayout
-                    android:id="@+id/fr_native_ads"
-                    android:background="@color/transparent"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                    <include layout="@layout/ads_native_shimmer" />
-                </FrameLayout>
-            </RelativeLayout>
 
         </androidx.cardview.widget.CardView>
     </androidx.constraintlayout.widget.ConstraintLayout>

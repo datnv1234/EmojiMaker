@@ -1,16 +1,12 @@
 package com.wa.ai.emojimaker.ui.adapter
 
-import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.util.Log
 import androidx.recyclerview.widget.DiffUtil
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.data.model.PagerIconUI
 import com.wa.ai.emojimaker.databinding.ItemPaperIconBinding
 import com.wa.ai.emojimaker.ui.base.BaseBindingAdapterDiff
 import com.wa.ai.emojimaker.utils.FileUtils.getBitmapFromAssets
-import java.io.IOException
 
 class PagerIconAdapter(val itemClick:(bitmap: Bitmap) -> Unit): BaseBindingAdapterDiff<PagerIconUI, ItemPaperIconBinding>(object : DiffUtil.ItemCallback<PagerIconUI>() {
     override fun areItemsTheSame(oldItem: PagerIconUI, newItem: PagerIconUI): Boolean {

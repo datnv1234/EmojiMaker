@@ -5,20 +5,14 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import com.adjust.sdk.Adjust
-import com.google.android.gms.ads.nativead.NativeAdView
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.common.Constant
 import com.wa.ai.emojimaker.data.local.SharedPreferenceHelper
-import com.wa.ai.emojimaker.databinding.AdNativeVideoBinding
 import com.wa.ai.emojimaker.databinding.FragmentSettingsBinding
 import com.wa.ai.emojimaker.ui.base.BaseBindingFragment
 import com.wa.ai.emojimaker.ui.dialog.DialogRating
 import com.wa.ai.emojimaker.ui.component.main.MainActivity
 import com.wa.ai.emojimaker.ui.component.multilang.MultiLangActivity
-import com.wa.ai.emojimaker.utils.DeviceUtils
-import com.wa.ai.emojimaker.utils.RemoteConfigKey
-import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils
 import com.wa.ai.emojimaker.utils.extention.gone
 import com.wa.ai.emojimaker.utils.extention.hideSystemUI
 
@@ -52,9 +46,8 @@ class SettingsFragment : BaseBindingFragment<FragmentSettingsBinding, SettingsVi
         binding.language.setOnClickListener {
             val intent = Intent(requireContext(), MultiLangActivity::class.java)
             intent.putExtra(Constant.TYPE_LANG, Constant.TYPE_LANGUAGE_SETTING)
-            mMainActivity.openNextScreen {
-                startActivity(intent)
-            }
+            startActivity(intent)
+
         }
 
         binding.share.setOnClickListener {
@@ -98,7 +91,6 @@ class SettingsFragment : BaseBindingFragment<FragmentSettingsBinding, SettingsVi
 
     override fun onStart() {
         super.onStart()
-        loadAds()
     }
 
     override fun onResume() {
@@ -110,49 +102,6 @@ class SettingsFragment : BaseBindingFragment<FragmentSettingsBinding, SettingsVi
     override fun onPause() {
         super.onPause()
         Adjust.onPause()
-    }
-
-    private fun loadAds() {
-        //setUpLoadInterAds()
-
-        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_SETTINGS)) {
-            loadNativeAds()
-        } else {
-            binding.rlNative.visibility = View.GONE
-        }
-    }
-
-    private fun setUpLoadInterAds() {
-        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_INTER_SETTINGS)) {
-            mMainActivity.loadInterAds()
-        }
-    }
-
-    private fun loadNativeAds() {
-        if (!DeviceUtils.checkInternetConnection(requireContext())) binding.rlNative.visibility = View.GONE
-        this.let {
-            NativeAdsUtils.instance.loadNativeAds(
-                requireContext(),
-                mMainActivity.keyAdsNativeSettings
-            ) { nativeAds ->
-                if (nativeAds != null && isAdded && isVisible) {
-                    if (isDetached) {
-                        nativeAds.destroy()
-                        return@loadNativeAds
-                    }
-                    //binding.frNativeAds.removeAllViews()
-                    val adNativeVideoBinding = AdNativeVideoBinding.inflate(layoutInflater)
-                    NativeAdsUtils.instance.populateNativeAdVideoView(
-                        nativeAds,
-                        adNativeVideoBinding.root as NativeAdView
-                    )
-                    binding.frNativeAds.addView(adNativeVideoBinding.root)
-                } else {
-                    binding.rlNative.visibility = View.GONE
-                }
-            }
-        }
-
     }
 
 }

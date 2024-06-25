@@ -130,20 +130,6 @@
                         android:gravity="center_vertical"
                         android:textColor="@color/white"/>
                 </LinearLayout>
-                <RelativeLayout
-                    android:id="@+id/rl_native"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_160sdp"
-                    app:layout_goneMarginTop="@dimen/_4sdp">
-                    <FrameLayout
-                        android:id="@+id/fr_native_ads"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <include layout="@layout/ads_native_shimmer" />
-                    </FrameLayout>
-                </RelativeLayout>
-
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
