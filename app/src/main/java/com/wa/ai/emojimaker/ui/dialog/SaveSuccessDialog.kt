@@ -18,6 +18,10 @@ import com.wa.ai.emojimaker.utils.extention.gone
 import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 
 class SaveSuccessDialog() : BaseBindingDialogFragment<DialogSaveSuccessBinding>() {
+
+//    private val keyNative = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_MY_CREATIVE)
+    private val keyNative = "ca-app-pub-3940256099942544/2247696110"
+
     private var isLoadNativeDone = false
 
     lateinit var home:() -> Unit
@@ -25,7 +29,7 @@ class SaveSuccessDialog() : BaseBindingDialogFragment<DialogSaveSuccessBinding>(
     override val layoutId: Int
         get() = R.layout.dialog_save_success
 
-    private val keyNative = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_MY_CREATIVE)
+
     val countDownTimer: CountDownTimer = object : CountDownTimer(25000, 5000) {
         override fun onTick(millisUntilFinished: Long) {
             if (!isLoadNativeDone) {

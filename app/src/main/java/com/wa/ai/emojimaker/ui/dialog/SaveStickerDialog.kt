@@ -19,6 +19,9 @@ import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 
 class SaveStickerDialog : BaseBindingDialogFragment<DialogSaveBinding>() {
 
+//    private val keyNative = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_MY_CREATIVE)
+    private val keyNative = "ca-app-pub-3940256099942544/2247696110"
+
     private var isLoadNativeDone = false
 
     var addToPackage: (() -> Unit)? = null
@@ -29,7 +32,7 @@ class SaveStickerDialog : BaseBindingDialogFragment<DialogSaveBinding>() {
         get() = R.layout.dialog_save
 
     private val mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
-    private val keyNative = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_MY_CREATIVE)
+
     val countDownTimer: CountDownTimer = object : CountDownTimer(25000, 5000) {
         override fun onTick(millisUntilFinished: Long) {
             if (!isLoadNativeDone) {

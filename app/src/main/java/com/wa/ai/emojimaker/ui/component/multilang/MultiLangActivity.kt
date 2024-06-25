@@ -27,7 +27,8 @@ import com.wa.ai.emojimaker.utils.extention.visible
 class MultiLangActivity : BaseBindingActivity<ActivityMultiLangBinding, MultiLangViewModel>() {
 
 	private var isLoadNativeDone = false
-	private var keynative = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_LANGUAGE)
+//	private var keynative = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_LANGUAGE)
+	private var keynative = "ca-app-pub-3940256099942544/2247696110"
 
 
 	private var type: Int = 0

@@ -24,6 +24,8 @@ class AddToPackageDialog : BaseBindingDialogFragment<DialogAddToPackageBinding>(
     lateinit var save: ((pkg: PackageModel?) -> Unit)
     lateinit var createNewPackage: ((binding : DialogAddToPackageBinding) -> Unit)
 
+    private val keyNative = "ca-app-pub-3940256099942544/2247696110"
+
     override val layoutId: Int
         get() = R.layout.dialog_add_to_package
 
@@ -37,7 +39,7 @@ class AddToPackageDialog : BaseBindingDialogFragment<DialogAddToPackageBinding>(
         }
     }
 
-    private val keyNative = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_MY_CREATIVE)
+
 
     val countDownTimer: CountDownTimer = object : CountDownTimer(25000, 5000) {
         override fun onTick(millisUntilFinished: Long) {

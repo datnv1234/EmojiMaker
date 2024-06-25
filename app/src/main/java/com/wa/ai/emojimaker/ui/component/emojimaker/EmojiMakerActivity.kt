@@ -85,8 +85,9 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
 
     private var isFinishImmediately = false
 
-    private var keyInter = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_INTER_CREATE_EMOJI)
-    private val keyBanner = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_CREATE_EMOJI)
+//    private var keyInter = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_INTER_CREATE_EMOJI)
+    private var keyInter = "ca-app-pub-3940256099942544/1033173712"
+    private val keyBanner = "ca-app-pub-3940256099942544/2014213617"
     private val interDelay = FirebaseRemoteConfig.getInstance().getLong(RemoteConfigKey.INTER_DELAY)
     private val bannerReload = FirebaseRemoteConfig.getInstance().getLong(RemoteConfigKey.BANNER_RELOAD)
 
@@ -675,10 +676,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
             .setTitle(getString(R.string.confirm))
             .setMessage(getString(R.string.are_you_sure_want_to_quit))
             .setPositiveButton(getString(R.string.ok)) { _, _ ->
-                nextAction(action = {
-                    super.finish()
-                })
-
+                super.finish()
             }
             .setNegativeButton(getString(R.string.no), null)
             .show()

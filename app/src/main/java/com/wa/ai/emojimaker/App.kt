@@ -47,12 +47,6 @@ class App : Application() {
 
         loadConfig()
         initTrackingAdjust()
-
-        try {
-            AppOpenAdsManager(this)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
     }
 
     private fun loadConfig() {

@@ -17,6 +17,9 @@ import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 
 class SharePackageDialog: BaseBindingDialogFragment<DialogShareBinding>() {
 
+//    private val keyNative = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_MY_CREATIVE)
+    private val keyNative = "ca-app-pub-3940256099942544/2247696110"
+
     private var isLoadNativeDone = false
     var category: String? = null
     var addToWhatsapp: ((category: String) -> Unit)? = null
@@ -27,7 +30,7 @@ class SharePackageDialog: BaseBindingDialogFragment<DialogShareBinding>() {
     override val layoutId: Int
         get() = R.layout.dialog_share
 
-    private val keyNative = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_MY_CREATIVE)
+
     val countDownTimer: CountDownTimer = object : CountDownTimer(25000, 5000) {
         override fun onTick(millisUntilFinished: Long) {
             if (!isLoadNativeDone) {
