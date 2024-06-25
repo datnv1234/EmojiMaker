@@ -24,7 +24,7 @@ class AddToPackageDialog : BaseBindingDialogFragment<DialogAddToPackageBinding>(
     lateinit var save: ((pkg: PackageModel?) -> Unit)
     lateinit var createNewPackage: ((binding : DialogAddToPackageBinding) -> Unit)
 
-    private val keyNative = "ca-app-pub-3940256099942544/2247696110"
+    private val keyNative = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_MY_CREATIVE)
 
     override val layoutId: Int
         get() = R.layout.dialog_add_to_package

@@ -31,10 +31,6 @@ import com.wa.ai.emojimaker.utils.extention.gone
 import timber.log.Timber
 
 class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
-//
-//    private val CREATE_STICKER_PACK_ACTION = "org.telegram.messenger.CREATE_STICKER_PACK"
-//    private val CREATE_STICKER_PACK_EMOJIS_EXTRA = "STICKER_EMOJIS"
-//    private val CREATE_STICKER_PACK_IMPORTER_EXTRA = "IMPORTER"
 
     private lateinit var mMainActivity: MainActivity
     private lateinit var mMainViewModel: MainViewModel
@@ -61,9 +57,7 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
                         inputStream1.close()
                     }
                 }
-                mMainActivity.openNextScreen {
-                    AppUtils.doImport(requireContext(), viewModel.stickerUri)
-                }
+                AppUtils.doImport(requireContext(), viewModel.stickerUri)
                 mMainActivity.mFirebaseAnalytics?.logEvent("v_inter_ads_import_$cate", null)
 
             }
@@ -85,12 +79,10 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
                     }
                 }
                 if (viewModel.stickerUri.size != 0) {
-                    mMainActivity.openNextScreen {
-                        AppUtils.shareMultipleImages(
-                            requireContext(),
-                            viewModel.stickerUri.toList()
-                        )
-                    }
+                    AppUtils.shareMultipleImages(
+                        requireContext(),
+                        viewModel.stickerUri.toList()
+                    )
                     mMainActivity.mFirebaseAnalytics?.logEvent("v_inter_ads_share_$cate", null)
                 }
             }

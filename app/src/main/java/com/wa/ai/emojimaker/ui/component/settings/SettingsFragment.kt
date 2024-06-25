@@ -65,26 +65,21 @@ class SettingsFragment : BaseBindingFragment<FragmentSettingsBinding, SettingsVi
                 Intent.EXTRA_TEXT,
                 "https://play.google.com/store/apps/details?id=${requireContext().packageName}"
             )
-            mMainActivity.openNextScreen {
-                startActivity(Intent.createChooser(shareIntent, "Share the application via"))
-            }
+            startActivity(Intent.createChooser(shareIntent, "Share the application via"))
+
         }
         if (SharedPreferenceHelper.getBoolean(Constant.KEY_IS_RATE, false)) {
             binding.rate.gone()
         }
         binding.rate.setOnClickListener {
-            mMainActivity.openNextScreen {
-                if (!ratingDialog.isAdded)
-                    ratingDialog.show(parentFragmentManager, null)
-            }
+            if (!ratingDialog.isAdded)
+                ratingDialog.show(parentFragmentManager, null)
             //openPlayStoreForRating()
         }
 
         binding.about.setOnClickListener {
-            mMainActivity.openNextScreen {
-                Intent(Intent.ACTION_VIEW, Uri.parse(this.getString(R.string.privacy_policy_link))).apply {
-                    startActivity(this)
-                }
+            Intent(Intent.ACTION_VIEW, Uri.parse(this.getString(R.string.privacy_policy_link))).apply {
+                startActivity(this)
             }
         }
     }

@@ -52,11 +52,11 @@ import java.util.Date
 class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, ShowStickerViewModel>() {
 
     private var isLoadNativeDone = false
-//    private var keyInter = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_INTER_SHOW_STICKERS)
-    private var keyInter = "ca-app-pub-3940256099942544/1033173712"
+    private var keyInter = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_INTER_SHOW_STICKERS)
+//    private var keyInter = "ca-app-pub-3940256099942544/1033173712"
     private val keyNative = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_SHOW_STICKERS)
-//    private val keyBanner = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_SHOW_STICKERS)
-    private val keyBanner = "ca-app-pub-3940256099942544/2014213617"
+    private val keyBanner = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_SHOW_STICKERS)
+//    private val keyBanner = "ca-app-pub-3940256099942544/2014213617"
     private val interDelay = FirebaseRemoteConfig.getInstance().getLong(RemoteConfigKey.INTER_DELAY)
     private val bannerReload = FirebaseRemoteConfig.getInstance().getLong(RemoteConfigKey.BANNER_RELOAD)
 
@@ -115,9 +115,7 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
 
                 binding.rvStickers.adapter = cateStickerAdapter
                 binding.btnAddToTelegram.setOnSafeClick {
-                    nextAction {
-                        addStickerInCategoryToTele(category)
-                    }
+                    addStickerInCategoryToTele(category)
                     mFirebaseAnalytics?.logEvent("v_inter_ads_add_telegram_category", null)
                 }
                 binding.btnDownload.setOnSafeClick {
@@ -148,9 +146,7 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
 
                 binding.rvStickers.adapter = madeStickerAdapter
                 binding.btnAddToTelegram.setOnSafeClick {
-                    nextAction {
-                        addCreativeStickerToTelegram(category)
-                    }
+                    addCreativeStickerToTelegram(category)
                     mFirebaseAnalytics?.logEvent("v_inter_ads_add_telegram_creative", null)
                 }
 

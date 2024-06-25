@@ -30,8 +30,8 @@ class IntroActivity : BaseBindingActivity<ActivityIntroBinding, IntroViewModel>(
 
     private var isLoadNativeDone = false
     private val introAdapter: IntroAdapter by lazy { IntroAdapter() }
-//    private val keyNative = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_INTRO)
-    private val keyNative = "ca-app-pub-3940256099942544/2247696110"
+    private val keyNative = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_INTRO)
+//    private val keyNative = "ca-app-pub-3940256099942544/2247696110"
     override val layoutId: Int
         get() = R.layout.activity_intro
 

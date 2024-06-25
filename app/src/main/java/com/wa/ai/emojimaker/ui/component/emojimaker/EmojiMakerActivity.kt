@@ -85,9 +85,10 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
 
     private var isFinishImmediately = false
 
-//    private var keyInter = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_INTER_CREATE_EMOJI)
-    private var keyInter = "ca-app-pub-3940256099942544/1033173712"
-    private val keyBanner = "ca-app-pub-3940256099942544/2014213617"
+    private var keyInter = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_INTER_CREATE_EMOJI)
+//    private var keyInter = "ca-app-pub-3940256099942544/1033173712"
+    private val keyBanner = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_CREATE_EMOJI)
+//    private val keyBanner = "ca-app-pub-3940256099942544/2014213617"
     private val interDelay = FirebaseRemoteConfig.getInstance().getLong(RemoteConfigKey.INTER_DELAY)
     private val bannerReload = FirebaseRemoteConfig.getInstance().getLong(RemoteConfigKey.BANNER_RELOAD)
 
@@ -111,15 +112,13 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
             }
 
             download = {
-                nextAction(action = {
-                    emojiViewModel.bitmapMutableLiveData.value?.let { it1 ->
-                        AppUtils.saveSticker(this@EmojiMakerActivity,
-                            it1, "creative")
-                        if (!mSaveSuccessDialog.isAdded)
-                            mSaveSuccessDialog.show(supportFragmentManager, mSaveSuccessDialog.tag)
-                    }
-                    toast("Downloaded!")
-                })
+                emojiViewModel.bitmapMutableLiveData.value?.let { it1 ->
+                    AppUtils.saveSticker(this@EmojiMakerActivity,
+                        it1, "creative")
+                    if (!mSaveSuccessDialog.isAdded)
+                        mSaveSuccessDialog.show(supportFragmentManager, mSaveSuccessDialog.tag)
+                }
+                toast("Downloaded!")
                 mFirebaseAnalytics?.logEvent("v_inter_ads_download_creative_emoji", null)
             }
 
@@ -137,18 +136,16 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
                 if (it == null) {
                     toast(getString(R.string.please_input_package_name))
                 } else {
-                    nextAction(action = {
-                        emojiViewModel.bitmapMutableLiveData.value?.let { it1 ->
-                            DeviceUtils.saveToPackage(
-                                this@EmojiMakerActivity,
-                                INTERNAL_MY_CREATIVE_DIR,
-                                packageName = it.id,
-                                bitmapImage = it1
-                            )
-                        }
-                        if (!mSaveSuccessDialog.isAdded)
-                            mSaveSuccessDialog.show(supportFragmentManager, mSaveSuccessDialog.tag)
-                    })
+                    emojiViewModel.bitmapMutableLiveData.value?.let { it1 ->
+                        DeviceUtils.saveToPackage(
+                            this@EmojiMakerActivity,
+                            INTERNAL_MY_CREATIVE_DIR,
+                            packageName = it.id,
+                            bitmapImage = it1
+                        )
+                    }
+                    if (!mSaveSuccessDialog.isAdded)
+                        mSaveSuccessDialog.show(supportFragmentManager, mSaveSuccessDialog.tag)
                     mFirebaseAnalytics?.logEvent("v_inter_ads_save_creative_emoji", null)
                 }
             }
@@ -186,17 +183,12 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     private val mSaveSuccessDialog: SaveSuccessDialog by lazy {
         SaveSuccessDialog().apply {
             home = {
-                nextAction(action = {
-                    isFinishImmediately = true
-                    finish()
-                    startActivity(Intent(this@EmojiMakerActivity, MainActivity::class.java))
-                })
-
+                isFinishImmediately = true
+                finish()
+                startActivity(Intent(this@EmojiMakerActivity, MainActivity::class.java))
             }
             createMore = {
-                nextAction(action = {
-                    newBoard()
-                })
+                newBoard()
             }
         }
     }
@@ -671,20 +663,17 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         if (isFinishImmediately) {
             super.finish()
         }
-        AlertDialog.Builder(this)
-            .setIcon(android.R.drawable.ic_dialog_alert)
-            .setTitle(getString(R.string.confirm))
-            .setMessage(getString(R.string.are_you_sure_want_to_quit))
-            .setPositiveButton(getString(R.string.ok)) { _, _ ->
-                super.finish()
-            }
-            .setNegativeButton(getString(R.string.no), null)
-            .show()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        //Log.d(TAG, "onDestroy: ")
+        else {
+            AlertDialog.Builder(this)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle(getString(R.string.confirm))
+                .setMessage(getString(R.string.are_you_sure_want_to_quit))
+                .setPositiveButton(getString(R.string.ok)) { _, _ ->
+                    super.finish()
+                }
+                .setNegativeButton(getString(R.string.no), null)
+                .show()
+        }
     }
 
     private fun hasPermission(permission: String) =
