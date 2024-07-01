@@ -32,6 +32,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.adjust.sdk.Adjust
 import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.Headers
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.common.Constant.INTERNAL_MY_CREATIVE_DIR
 import com.wa.ai.emojimaker.databinding.ActivityEmojiMakerBinding
@@ -45,6 +46,9 @@ import com.wa.ai.emojimaker.ui.dialog.SaveSuccessDialog
 import com.wa.ai.emojimaker.ui.component.main.MainActivity
 import com.wa.ai.emojimaker.utils.AppUtils
 import com.wa.ai.emojimaker.utils.DeviceUtils
+import com.wa.ai.emojimaker.utils.RemoteConfigKey
+import com.wa.ai.emojimaker.utils.ads.BannerUtils
+import com.wa.ai.emojimaker.utils.extention.gone
 import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 import com.wa.ai.emojimaker.utils.sticker.BitmapStickerIcon
 import com.wa.ai.emojimaker.utils.sticker.DrawableSticker
@@ -65,27 +69,36 @@ import java.util.Locale
 
 class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, StickerViewModel>() {
 
+    private val keyAdsBanner =
+        FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_CREATE_EMOJI)
+    private val bannerReload =
+        FirebaseRemoteConfig.getInstance().getLong(RemoteConfigKey.BANNER_RELOAD)
+
     private var isFinishImmediately = false
 
     private lateinit var emojiViewModel: EmojiViewModel
-    private val pagerIconAdapter: PagerIconAdapter by lazy { PagerIconAdapter(itemClick = {
-        doAddSticker(it)
-    })}
+    private val pagerIconAdapter: PagerIconAdapter by lazy {
+        PagerIconAdapter(itemClick = {
+            doAddSticker(it)
+        })
+    }
 
     /*
     * Declare dialog variable
     * */
-    private val mSaveDialog : SaveStickerDialog by lazy {
+    private val mSaveDialog: SaveStickerDialog by lazy {
         SaveStickerDialog().apply {
-            addToPackage= {
+            addToPackage = {
                 if (!mAddToPackageDialog.isAdded)
                     mAddToPackageDialog.show(supportFragmentManager, mAddToPackageDialog.tag)
             }
 
             download = {
                 emojiViewModel.bitmapMutableLiveData.value?.let { it1 ->
-                    AppUtils.saveSticker(this@EmojiMakerActivity,
-                        it1, "creative")
+                    AppUtils.saveSticker(
+                        this@EmojiMakerActivity,
+                        it1, "creative"
+                    )
                     if (!mSaveSuccessDialog.isAdded)
                         mSaveSuccessDialog.show(supportFragmentManager, mSaveSuccessDialog.tag)
                 }
@@ -93,14 +106,14 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
             }
 
             share = {
-                emojiViewModel.bitmapMutableLiveData.value?.let {
-                    it1 -> share(it1)
+                emojiViewModel.bitmapMutableLiveData.value?.let { it1 ->
+                    share(it1)
                 }
             }
         }
     }
 
-    private val mAddToPackageDialog : AddToPackageDialog by lazy {
+    private val mAddToPackageDialog: AddToPackageDialog by lazy {
         AddToPackageDialog().apply {
             save = {
                 if (it == null) {
@@ -127,20 +140,20 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         }
     }
 
-    private val mCreatePackageDialog : CreatePackageDialog by lazy {
+    private val mCreatePackageDialog: CreatePackageDialog by lazy {
         CreatePackageDialog().apply {
             confirm = { pkg ->
-                    emojiViewModel.bitmapMutableLiveData.value?.let {
-                        DeviceUtils.saveToPackage(
-                            this@EmojiMakerActivity,
-                            INTERNAL_MY_CREATIVE_DIR,
-                            packageName = pkg.id,
-                            bitmapImage = it
-                        )
-                    }
-                    //mDialogWaiting.show(supportFragmentManager, mDialogWaiting.tag)
-                    if (!mSaveSuccessDialog.isAdded)
-                        mSaveSuccessDialog.show(supportFragmentManager, mSaveSuccessDialog.tag)
+                emojiViewModel.bitmapMutableLiveData.value?.let {
+                    DeviceUtils.saveToPackage(
+                        this@EmojiMakerActivity,
+                        INTERNAL_MY_CREATIVE_DIR,
+                        packageName = pkg.id,
+                        bitmapImage = it
+                    )
+                }
+                //mDialogWaiting.show(supportFragmentManager, mDialogWaiting.tag)
+                if (!mSaveSuccessDialog.isAdded)
+                    mSaveSuccessDialog.show(supportFragmentManager, mSaveSuccessDialog.tag)
             }
         }
     }
@@ -203,6 +216,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     override fun onStart() {
         super.onStart()
     }
+
     override fun setupData() {
         emojiViewModel = ViewModelProvider(this)[EmojiViewModel::class.java]
         emojiViewModel.getItemOption(this)
@@ -214,6 +228,9 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         })
 
         binding.rvOptions.adapter = optionAdapter
+
+        loadAds()
+
     }
 
     override fun onResume() {
@@ -225,6 +242,25 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         super.onPause()
         Adjust.onPause()
     }
+
+    private fun loadAds() {
+        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_BANNER_CREATE_EMOJI)) {
+            loadBanner()
+        } else {
+            binding.rlBanner.gone()
+        }
+        emojiViewModel.loadBanner.observe(this) {
+            loadBanner()
+        }
+    }
+
+    private fun loadBanner() {
+        emojiViewModel.starTimeCountReloadBanner(bannerReload)
+        BannerUtils.instance?.loadCollapsibleBanner(this, keyAdsBanner) {
+
+        }
+    }
+
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         handleIntent(intent)
@@ -239,6 +275,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
                     handleSendLink(intent)
                 }
             }
+
             intent?.action == Intent.ACTION_SEND_MULTIPLE
                     && intent.type?.startsWith("image/") == true -> {
                 handleSendMultipleImages(intent)
@@ -265,8 +302,8 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         requestPermission(Manifest.permission.ACCESS_NETWORK_STATE)
 
         if (hasPermission(Manifest.permission.INTERNET)
-            && hasPermission(Manifest.permission.ACCESS_NETWORK_STATE))
-        {
+            && hasPermission(Manifest.permission.ACCESS_NETWORK_STATE)
+        ) {
             val text = intent.getStringExtra(Intent.EXTRA_TEXT)
             if (text != null) {
                 if (!isValidUrl(text)) {
@@ -337,7 +374,8 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
             doSave(input.text.toString())
         }
         builder.setNegativeButton("Cancel") { dialog, _ ->
-            dialog.cancel() }
+            dialog.cancel()
+        }
 
         builder.show()
     }
@@ -365,8 +403,13 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         }
     }
 
-    private fun createSticker(bitmap: Bitmap, packageName : String) {
-        DeviceUtils.saveToPackage(this, INTERNAL_MY_CREATIVE_DIR, packageName = packageName ,bitmapImage = bitmap)
+    private fun createSticker(bitmap: Bitmap, packageName: String) {
+        DeviceUtils.saveToPackage(
+            this,
+            INTERNAL_MY_CREATIVE_DIR,
+            packageName = packageName,
+            bitmapImage = bitmap
+        )
     }
 
     private fun download(bitmap: Bitmap) {
@@ -511,6 +554,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
                     val selectedImage = data.data!!
                     doAddSticker(selectedImage)
                 }
+
                 INTENT_PICK_SAVED_FILE -> {
                     val selectedFile = data.data!!
                     doLoad(selectedFile)
@@ -613,8 +657,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     override fun finish() {
         if (isFinishImmediately) {
             super.finish()
-        }
-        else {
+        } else {
             AlertDialog.Builder(this)
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setTitle(getString(R.string.confirm))
@@ -673,7 +716,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
                                     val bitmap = BitmapFactory.decodeByteArray(it, 0, it.size)
                                     context.doAddSticker(bitmap)
                                     //context.binding.progressBarHolder.visibility =
-                                        View.GONE
+                                    View.GONE
                                 }, {
                                     Toast.makeText(
                                         context,
@@ -682,7 +725,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
                                     )
                                         .show()
                                     //context.binding.progressBarHolder.visibility =
-                                        View.GONE
+                                    View.GONE
                                     Timber.e(it)
                                 })
                             }
@@ -701,7 +744,6 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
             return null
         }
     }
-
 
 
     internal class MyStickerOperationListener(private val binding: ActivityEmojiMakerBinding) :
@@ -754,6 +796,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
             binding.btnSave.isEnabled = false
         }
     }
+
     companion object {
         const val PERM_RQST_CODE = 110
         const val SAVE_FILE_EXTENSION: String = "ref"
@@ -762,6 +805,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         const val INTENT_PICK_SAVED_FILE = 2
 
         const val MAX_SIZE_PIXELS = 2000 * 2000
-        val emojiDir = DeviceUtils.getPublicDirectoryPath(Environment.DIRECTORY_PICTURES) + "/Emoji/"
+        val emojiDir =
+            DeviceUtils.getPublicDirectoryPath(Environment.DIRECTORY_PICTURES) + "/Emoji/"
     }
 }

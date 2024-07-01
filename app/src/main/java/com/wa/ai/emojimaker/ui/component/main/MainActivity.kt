@@ -17,13 +17,22 @@ import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.android.play.core.ktx.isFlexibleUpdateAllowed
 import com.google.android.play.core.ktx.isImmediateUpdateAllowed
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.databinding.ActivityMainBinding
 import com.wa.ai.emojimaker.ui.base.BaseBindingActivity
+import com.wa.ai.emojimaker.utils.RemoteConfigKey
+import com.wa.ai.emojimaker.utils.ads.BannerUtils
+import com.wa.ai.emojimaker.utils.extention.gone
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
+
+    private val keyAdsBanner =
+        FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_MAIN)
+    private val bannerReload =
+        FirebaseRemoteConfig.getInstance().getLong(RemoteConfigKey.BANNER_RELOAD)
 
     private val REQUEST_CODE_UPDATE = 1001
     private lateinit var appUpdateManager: AppUpdateManager
@@ -37,7 +46,7 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         appUpdateManager = AppUpdateManagerFactory.create(applicationContext)
-        if (updateType == AppUpdateType.FLEXIBLE){
+        if (updateType == AppUpdateType.FLEXIBLE) {
             appUpdateManager.registerListener(installStateUpdateListener)
         }
         checkForAppUpdates()
@@ -56,6 +65,8 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
     }
 
     override fun setupData() {
+        loadAds()
+
         viewModel.getSuggestStickers(this)
         viewModel.getCategories(this)
 
@@ -66,9 +77,9 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
         super.onResume()
         Adjust.onResume()
 
-        if (updateType == AppUpdateType.IMMEDIATE){
+        if (updateType == AppUpdateType.IMMEDIATE) {
             appUpdateManager.appUpdateInfo.addOnSuccessListener { info ->
-                if (info.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS){
+                if (info.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
                     appUpdateManager.startUpdateFlowForResult(
                         info,
                         AppUpdateType.FLEXIBLE,
@@ -83,6 +94,24 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
     override fun onPause() {
         super.onPause()
         Adjust.onPause()
+    }
+
+    private fun loadAds() {
+        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_BANNER_MAIN)) {
+            loadBanner()
+        } else {
+            binding.rlBanner.gone()
+        }
+        viewModel.loadBanner.observe(this) {
+            loadBanner()
+        }
+    }
+
+    private fun loadBanner() {
+        viewModel.starTimeCountReloadBanner(bannerReload)
+        BannerUtils.instance?.loadCollapsibleBanner(this, keyAdsBanner) {
+
+        }
     }
 
     private fun checkForAppUpdates() {
@@ -103,23 +132,25 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
             }
         }
     }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE_UPDATE){
-            if (resultCode != RESULT_OK){
-                Toast.makeText(this,"Something went wrong !", Toast.LENGTH_SHORT).show()
+        if (requestCode == REQUEST_CODE_UPDATE) {
+            if (resultCode != RESULT_OK) {
+                Toast.makeText(this, "Something went wrong !", Toast.LENGTH_SHORT).show()
             }
         }
     }
+
     override fun onDestroy() {
         super.onDestroy()
-        if (updateType == AppUpdateType.FLEXIBLE){
+        if (updateType == AppUpdateType.FLEXIBLE) {
             appUpdateManager.unregisterListener(installStateUpdateListener)
         }
     }
 
-    private val installStateUpdateListener = InstallStateUpdatedListener{state ->
-        if (state.installStatus() == InstallStatus.DOWNLOADED){
+    private val installStateUpdateListener = InstallStateUpdatedListener { state ->
+        if (state.installStatus() == InstallStatus.DOWNLOADED) {
             Toast.makeText(
                 applicationContext,
                 "Download successful. Restarting app in 5 seconds.",
@@ -131,6 +162,7 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
             }
         }
     }
+
     companion object {
         const val ITEMS_PER_AD = 8
     }

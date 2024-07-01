@@ -18,6 +18,12 @@ import kotlinx.coroutines.launch
 
 class EmojiViewModel : BaseViewModel() {
 
+    private val _loadBanner: MutableLiveData<Boolean> = MutableLiveData()
+    val loadBanner: LiveData<Boolean>
+        get() = _loadBanner
+
+    private var timerReloadBanner : CountDownTimer? = null
+
     override fun onCleared() {
         super.onCleared()
         viewModelScope.cancel()
@@ -25,7 +31,6 @@ class EmojiViewModel : BaseViewModel() {
         optionList.clear()
     }
 
-    private var timerReloadBanner: CountDownTimer? = null
     val optionList = ArrayList<ItemOptionUI>()
 
     private val _bitmapMutableLiveData: MutableLiveData<Bitmap> = MutableLiveData()
@@ -148,6 +153,27 @@ class EmojiViewModel : BaseViewModel() {
     ) {
         assetManager.list("item_options/$category")?.forEach {
             list.add(PieceSticker(category, it))
+        }
+    }
+
+    private fun createCountDownTimerReloadBanner(time: Long): CountDownTimer {
+        return object : CountDownTimer(time, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+            }
+
+            override fun onFinish() {
+                _loadBanner.postValue(true)
+            }
+        }
+    }
+
+    fun starTimeCountReloadBanner(time: Long) {
+        kotlin.runCatching {
+            timerReloadBanner?.cancel()
+            timerReloadBanner = createCountDownTimerReloadBanner(time)
+            timerReloadBanner?.start()
+        }.onFailure {
+            it.printStackTrace()
         }
     }
 

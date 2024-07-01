@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import com.adjust.sdk.Adjust
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.common.Constant
 import com.wa.ai.emojimaker.databinding.ActivityShowStickersBinding
@@ -18,11 +19,19 @@ import com.wa.ai.emojimaker.utils.AppUtils
 import com.wa.ai.emojimaker.utils.AppUtils.saveSticker
 import com.wa.ai.emojimaker.utils.FileUtils
 import com.wa.ai.emojimaker.utils.FileUtils.copyFileToCache
+import com.wa.ai.emojimaker.utils.RemoteConfigKey
+import com.wa.ai.emojimaker.utils.ads.BannerUtils
+import com.wa.ai.emojimaker.utils.extention.gone
 import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 import java.io.File
 
 
 class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, ShowStickerViewModel>() {
+
+    private val keyAdsBanner =
+        FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_SHOW_STICKERS)
+    private val bannerReload =
+        FirebaseRemoteConfig.getInstance().getLong(RemoteConfigKey.BANNER_RELOAD)
 
     private val cateStickerAdapter : MadeStickerAdapter by lazy {
         MadeStickerAdapter(itemClick = {
@@ -64,7 +73,7 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
 //                e.printStackTrace()
 //            }
         }
-        if (category != null) {
+        if (category != "") {
             if (!isCreative) {
                 viewModel.getStickers(this, category)
                 viewModel.stickersMutableLiveData.observe(this) {
@@ -115,7 +124,7 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
     }
 
     override fun setupData() {
-
+        loadAds()
     }
 
     override fun onStart() {
@@ -130,6 +139,24 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
     override fun onPause() {
         super.onPause()
         Adjust.onPause()
+    }
+
+    private fun loadAds() {
+        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_BANNER_SHOW_STICKERS)) {
+            loadBanner()
+        } else {
+            binding.rlBanner.gone()
+        }
+        viewModel.loadBanner.observe(this) {
+            loadBanner()
+        }
+    }
+
+    private fun loadBanner() {
+        viewModel.starTimeCountReloadBanner(bannerReload)
+        BannerUtils.instance?.loadCollapsibleBanner(this, keyAdsBanner) {
+
+        }
     }
 
     private fun performImageDownload(imageUrl: Uri?) {

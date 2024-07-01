@@ -17,6 +17,12 @@ import java.io.File
 
 class ShowStickerViewModel : BaseViewModel() {
 
+    private val _loadBanner: MutableLiveData<Boolean> = MutableLiveData()
+    val loadBanner: LiveData<Boolean>
+        get() = _loadBanner
+
+    private var timerReloadBanner : CountDownTimer? = null
+
     override fun onCleared() {
         super.onCleared()
         viewModelScope.cancel()
@@ -25,7 +31,6 @@ class ShowStickerViewModel : BaseViewModel() {
     }
 
     var stickerUri = ArrayList<Uri>()
-    private var timerReloadBanner: CountDownTimer? = null
 
     private val _stickersMutableLiveData: MutableLiveData<List<MadeStickerModel>> =
         MutableLiveData()
@@ -74,6 +79,27 @@ class ShowStickerViewModel : BaseViewModel() {
                 )
             }
             _stickersMutableLiveData.postValue(listEntry)
+        }
+    }
+
+    private fun createCountDownTimerReloadBanner(time: Long): CountDownTimer {
+        return object : CountDownTimer(time, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+            }
+
+            override fun onFinish() {
+                _loadBanner.postValue(true)
+            }
+        }
+    }
+
+    fun starTimeCountReloadBanner(time: Long) {
+        kotlin.runCatching {
+            timerReloadBanner?.cancel()
+            timerReloadBanner = createCountDownTimerReloadBanner(time)
+            timerReloadBanner?.start()
+        }.onFailure {
+            it.printStackTrace()
         }
     }
 }
