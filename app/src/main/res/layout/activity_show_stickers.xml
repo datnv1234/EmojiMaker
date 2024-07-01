@@ -37,12 +37,12 @@
                 android:fontFamily="@font/poppins_semibold"
                 android:textSize="@dimen/_20ssp"/>
         </LinearLayout>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvStickers"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:paddingHorizontal="@dimen/_11sdp"
-
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintBottom_toTopOf="@id/action"
             app:layout_constraintEnd_toEndOf="parent"

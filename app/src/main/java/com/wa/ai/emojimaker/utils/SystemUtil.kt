@@ -22,7 +22,6 @@ object SystemUtil {
 		}
 	}
 
-	// method phục vụ cho việc thay đổi ngôn ngữ.
 	fun changeLang(lang: String?, context: Context) {
 		if (lang.equals("", ignoreCase = true)) return
 		myLocale = lang?.let { Locale(it) }

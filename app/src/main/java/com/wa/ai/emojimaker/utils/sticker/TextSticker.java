@@ -16,18 +16,6 @@ import androidx.core.content.ContextCompat;
 
 import com.wa.ai.emojimaker.R;
 
-
-/**
- * Customize your sticker with text and image background.
- * You can place some text into a given region, however,
- * you can also add a plain text sticker. To support text
- * auto resizing , I take most of the code from AutoResizeTextView.
- * See https://adilatwork.blogspot.com/2014/08/android-textview-which-resizes-its-text.html
- * Notice: It's not efficient to add long text due to too much of
- * StaticLayout object allocation.
- * Created by liutao on 30/11/2016.
- */
-
 public class TextSticker extends Sticker {
 
     /**
