@@ -127,10 +127,6 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
         loadAds()
     }
 
-    override fun onStart() {
-        super.onStart()
-    }
-
     override fun onResume() {
         super.onResume()
         Adjust.onResume()

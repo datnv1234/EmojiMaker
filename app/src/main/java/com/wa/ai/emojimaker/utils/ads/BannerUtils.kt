@@ -189,7 +189,7 @@ class BannerUtils {
         try {
             val adView = AdView(mActivity)
             adView.adUnitId = id
-            adContainer.addView(adView)
+            //adContainer.addView(adView)
             val adSize: AdSize = getAdSize(mActivity, useInlineAdaptive, inlineStyle)
             val adHeight: Int = if (useInlineAdaptive && inlineStyle.equals(
                     BANNER_INLINE_SMALL_STYLE,
@@ -226,6 +226,8 @@ class BannerUtils {
                     containerShimmer.gone()
                     adContainer.visible()
                     adsLoadCallBack(true)
+                    adContainer.removeAllViews()
+                    adContainer.addView(adView)
                     adView.onPaidEventListener = OnPaidEventListener { adValue: AdValue ->
                         val loadedAdapterResponseInfo: AdapterResponseInfo? =
                             adView.responseInfo?.loadedAdapterResponseInfo

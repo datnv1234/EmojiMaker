@@ -3,10 +3,14 @@ package com.wa.ai.emojimaker.ui.component.main
 import android.content.Context
 import android.content.ContextWrapper
 import android.graphics.Bitmap
+import android.os.Build
 import android.os.CountDownTimer
+import android.view.WindowManager
+import android.view.WindowMetrics
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.ads.nativead.NativeAdView
 import com.wa.ai.emojimaker.common.Constant
 import com.wa.ai.emojimaker.data.model.Category
 import com.wa.ai.emojimaker.data.model.MadeStickerModel
@@ -47,7 +51,9 @@ class MainViewModel : BaseViewModel() {
     val stickerMutableLiveData: LiveData<List<MadeStickerModel>>
         get() = _stickerMutableLiveData
 
-    val categories: MutableList<Any> = ArrayList()
+    private val _categoriesMutableLiveData: MutableLiveData<List<Any>> = MutableLiveData()
+    val categoriesMutableLiveData: LiveData<List<Any>>
+        get() = _categoriesMutableLiveData
 
     private val _packageMutableLiveData: MutableLiveData<List<PackageModel>> = MutableLiveData()
     val packageMutableLiveData: LiveData<List<PackageModel>>
@@ -59,21 +65,44 @@ class MainViewModel : BaseViewModel() {
         timerReloadBanner?.cancel()
     }
 
+    fun getAdWidth(context: Context) : Int {
+        val displayMetrics = context.resources.displayMetrics
+        val adWidthPixels =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+                val windowMetrics: WindowMetrics = windowManager.currentWindowMetrics
+                windowMetrics.bounds.width()
+            } else {
+                displayMetrics.widthPixels
+            }
+        val density = displayMetrics.density
+        return (adWidthPixels / density).toInt()
+    }
     fun getCategories(context: Context) {
-        viewModelScope.launch {
-            categories.add(getCategory(context, "cat_chic", "Cat Chic"))
-            categories.add(getCategory(context, "orange_orchard", "Orange Orchard"))
-            categories.add(getCategory(context, "funny_rat", "Funny rat"))
-            categories.add(getCategory(context, "dog_diversity", "Dog Diversity"))
-            categories.add(getCategory(context, "pet_pawtentials", "Pet Pawtentials"))
-            categories.add(getCategory(context, "sly_spirits", "Sly Spirits"))
-            categories.add(getCategory(context, "xiximi", "Xiximi"))
-            categories.add(getCategory(context, "funny_cat", "Funny Cat"))
-            categories.add(getCategory(context, "quacking_quacks", "Quacking Quacks"))
-            categories.add(getCategory(context, "emoji", "Emoji"))
-            categories.add(getCategory(context, "brainy_endeavors", "Brainy Endeavors"))
-            categories.add(getCategory(context, "couple_emoji", "Couple emoji"))
-            categories.add(getCategory(context, "cute_girl", "Cute girl"))
+        viewModelScope.launch(Dispatchers.IO) {
+            val listEntity = mutableListOf<Any>()
+            val adView1 = NativeAdView(context)
+            listEntity.add(adView1)
+            listEntity.add(getCategory(context, "cat_chic", "Cat Chic"))
+            listEntity.add(getCategory(context, "orange_orchard", "Orange Orchard"))
+            listEntity.add(getCategory(context, "funny_rat", "Funny rat"))
+            listEntity.add(getCategory(context, "dog_diversity", "Dog Diversity"))
+            val adView2 = NativeAdView(context)
+            listEntity.add(adView2)
+            listEntity.add(getCategory(context, "pet_pawtentials", "Pet Pawtentials"))
+            listEntity.add(getCategory(context, "sly_spirits", "Sly Spirits"))
+            listEntity.add(getCategory(context, "xiximi", "Xiximi"))
+            listEntity.add(getCategory(context, "funny_cat", "Funny Cat"))
+            val adView3 = NativeAdView(context)
+            listEntity.add(adView3)
+            listEntity.add(getCategory(context, "quacking_quacks", "Quacking Quacks"))
+            listEntity.add(getCategory(context, "emoji", "Emoji"))
+            listEntity.add(getCategory(context, "brainy_endeavors", "Brainy Endeavors"))
+            listEntity.add(getCategory(context, "couple_emoji", "Couple emoji"))
+            val adView4 = NativeAdView(context)
+            listEntity.add(adView4)
+            listEntity.add(getCategory(context, "cute_girl", "Cute girl"))
+            _categoriesMutableLiveData.postValue(listEntity)
         }
     }
 

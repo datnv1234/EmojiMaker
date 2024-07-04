@@ -9,7 +9,8 @@
     <color name="white">#FFFFFFFF</color>
     <color name="transparent">#00FFFFFF</color>
 
-    <color name="colorAds">#068ABF</color>
+    <color name="colorAds">#FFC907</color>
+    <color name="color_2A699F">#2A699F</color>
     <color name="color_6993FF">#6993FF</color>
     <color name="light_blue_600">#FF039BE5</color>
     <color name="light_blue_900">#FF01579B</color>

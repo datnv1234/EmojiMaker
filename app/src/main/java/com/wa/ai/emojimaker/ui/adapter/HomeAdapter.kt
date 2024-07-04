@@ -1,6 +1,6 @@
 package com.wa.ai.emojimaker.ui.adapter
 
-import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,18 +11,21 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
-import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.nativead.NativeAdView
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.data.model.Category
+import com.wa.ai.emojimaker.ui.component.main.MainActivity
 import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 
 internal class HomeAdapter(
-    private val context: Context,
-    private val recyclerViewItems: List<Any>,
+    private val recyclerViewItems: MutableList<Any>,
     val watchMoreClick: (category: Category) -> Unit,
     val optionClick: (category: String) -> Unit
 ) : RecyclerView.Adapter<ViewHolder>() {
 
+    init {
+        setHasStableIds(true)
+    }
     inner class ItemViewHolder internal constructor(view: View) : ViewHolder(view) {
         val title: TextView
         val img1: ImageView
@@ -52,22 +55,31 @@ internal class HomeAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-//        return if (position % MainActivity.ITEMS_PER_AD == 0) BANNER_AD_VIEW_TYPE
-//        else ITEM_VIEW_TYPE
-        return ITEM_VIEW_TYPE
+        return if (position % MainActivity.ITEMS_PER_AD == 0) AD_VIEW_TYPE
+        else ITEM_VIEW_TYPE
+        //return ITEM_VIEW_TYPE
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val menuItemLayoutView =
-            LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_category, parent, false)
-        return ItemViewHolder(menuItemLayoutView)
+        return when (viewType) {
+            ITEM_VIEW_TYPE -> {
+                val menuItemLayoutView =
+                    LayoutInflater.from(parent.context)
+                        .inflate(R.layout.item_category, parent, false)
+                ItemViewHolder(menuItemLayoutView)
+            }
+            else -> {
+                val adLayoutView =
+                    LayoutInflater.from(parent.context)
+                        .inflate(R.layout.ad_native_container, parent, false)
+                AdViewHolder(adLayoutView)
+            }
+        }
     }
 
-
-
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        when (getItemViewType(position)) {
+        val context = holder.itemView.context
+        when (getItemViewType(holder.adapterPosition)) {
             ITEM_VIEW_TYPE -> {
 
                 val itemHolder = holder as ItemViewHolder
@@ -103,14 +115,9 @@ internal class HomeAdapter(
                 }
             }
             else -> {
-                val bannerHolder = holder as AdViewHolder
-                val adView = recyclerViewItems[position] as AdView
-                val adCardView = bannerHolder.itemView as ViewGroup
-                // The AdViewHolder recycled by the RecyclerView may be a different
-                // instance than the one used previously for this position. Clear the
-                // AdViewHolder of any subviews in case it has a different
-                // AdView associated with it, and make sure the AdView for this position doesn't
-                // already have a parent of a different recycled AdViewHolder.
+                val adView = recyclerViewItems[position] as NativeAdView
+                val adCardView = holder.itemView as ViewGroup
+
                 if (adCardView.childCount > 0) {
                     adCardView.removeAllViews()
                 }
@@ -118,19 +125,22 @@ internal class HomeAdapter(
                     (adView.parent as ViewGroup).removeView(adView)
                 }
 
-                // Add the banner ad to the ad view.
+                // Add the ad to the ad view.
                 adCardView.addView(adView)
             }
         }
     }
 
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
+    }
 
     companion object {
         // A menu item view type.
         private const val ITEM_VIEW_TYPE = 0
 
-        // The banner ad view type.
-        private const val BANNER_AD_VIEW_TYPE = 1
+        // The ad view type.
+        private const val AD_VIEW_TYPE = 1
     }
 
 }

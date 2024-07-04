@@ -69,7 +69,6 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
 
         viewModel.getSuggestStickers(this)
         viewModel.getCategories(this)
-
         viewModel.getPackage(this)
     }
 
@@ -164,6 +163,6 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
     }
 
     companion object {
-        const val ITEMS_PER_AD = 8
+        const val ITEMS_PER_AD = 5
     }
 }

@@ -64,7 +64,6 @@
                     android:scaleType="fitXY"
                     android:src="@drawable/emoji1"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/imgPreview2"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -101,7 +100,6 @@
                     android:scaleType="fitXY"
                     android:src="@drawable/emoji1"
                     android:contentDescription="@string/sticker_preview"
-                    app:layout_constraintStart_toEndOf="@id/imgPreview3"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"/>
@@ -128,24 +126,5 @@
                     app:layout_constraintEnd_toEndOf="@id/imgPreview4"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cvAd"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/_160sdp"
-            app:cardElevation="0dp"
-            android:visibility="gone"
-            app:cardBackgroundColor="@color/transparent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="@string/load_ad_failed"
-                android:textSize="@dimen/_12ssp"/>
-
-        </androidx.cardview.widget.CardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

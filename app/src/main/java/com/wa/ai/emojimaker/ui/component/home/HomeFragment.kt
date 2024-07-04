@@ -4,10 +4,15 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.WindowManager
+import android.view.WindowMetrics
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.adjust.sdk.Adjust
+import com.google.android.gms.ads.nativead.NativeAdView
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.databinding.FragmentHomeBinding
 import com.wa.ai.emojimaker.ui.adapter.HomeAdapter
@@ -15,16 +20,21 @@ import com.wa.ai.emojimaker.ui.base.BaseBindingFragment
 import com.wa.ai.emojimaker.ui.dialog.SharePackageDialog
 import com.wa.ai.emojimaker.ui.component.emojimaker.EmojiMakerActivity
 import com.wa.ai.emojimaker.ui.component.main.MainActivity
+import com.wa.ai.emojimaker.ui.component.main.MainActivity.Companion.ITEMS_PER_AD
 import com.wa.ai.emojimaker.ui.component.main.MainViewModel
 import com.wa.ai.emojimaker.ui.component.showstickers.ShowStickersActivity
 import com.wa.ai.emojimaker.utils.AppUtils
 import com.wa.ai.emojimaker.utils.FileUtils
 import com.wa.ai.emojimaker.utils.FileUtils.getUriForFile
+import com.wa.ai.emojimaker.utils.RemoteConfigKey
+import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils
 
 class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
 
     private lateinit var mMainActivity: MainActivity
     private lateinit var mMainViewModel: MainViewModel
+    private val keyAdNative =
+        FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_HOME)
 
     private val sharePackageDialog: SharePackageDialog by lazy {
         SharePackageDialog().apply {
@@ -82,6 +92,22 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
         }
     }
 
+    private val adWidth: Int
+        get() {
+            val displayMetrics = resources.displayMetrics
+            val adWidthPixels =
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    val windowManager =
+                        requireActivity().getSystemService(Context.WINDOW_SERVICE) as WindowManager
+                    val windowMetrics: WindowMetrics = windowManager.currentWindowMetrics
+                    windowMetrics.bounds.width()
+                } else {
+                    displayMetrics.widthPixels
+                }
+            val density = displayMetrics.density
+            return (adWidthPixels / density).toInt()
+        }
+
     override fun getViewModel(): Class<HomeViewModel> = HomeViewModel::class.java
     override fun registerOnBackPress() {
     }
@@ -100,24 +126,25 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
     override fun setupData() {
         mMainActivity = activity as MainActivity
         mMainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
+        mMainViewModel.categoriesMutableLiveData.observe(this) {
+            val adapter: RecyclerView.Adapter<RecyclerView.ViewHolder> = HomeAdapter(
+                it.toMutableList(),
+                watchMoreClick = { cate ->
+                    val intent = Intent(requireContext(), ShowStickersActivity::class.java)
+                    intent.putExtra("category", cate.category)
+                    intent.putExtra("category_name", cate.categoryName)
+                    intent.putExtra("category_size", cate.itemSize)
+                    startActivity(intent)
+                },
+                optionClick = { cate ->
+                    sharePackageDialog.category = cate
+                    if (!sharePackageDialog.isAdded)
+                        sharePackageDialog.show(parentFragmentManager, sharePackageDialog.tag)
+                })
+            binding.rvCategory.adapter = adapter
+            loadNative()
+        }
 
-        val adapter: RecyclerView.Adapter<RecyclerView.ViewHolder> = HomeAdapter(
-            requireContext(),
-            mMainViewModel.categories,
-            watchMoreClick = {
-                val intent = Intent(requireContext(), ShowStickersActivity::class.java)
-                intent.putExtra("category", it.category)
-                intent.putExtra("category_name", it.categoryName)
-                intent.putExtra("category_size", it.itemSize)
-                startActivity(intent)
-
-            },
-            optionClick = {
-                sharePackageDialog.category = it
-                if (!sharePackageDialog.isAdded)
-                    sharePackageDialog.show(parentFragmentManager, sharePackageDialog.tag)
-            })
-        binding.rvCategory.adapter = adapter
 
     }
 
@@ -127,50 +154,45 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
         mMainActivity.binding.titleToolbar.text = title
     }
 
-    override fun onStart() {
-        super.onStart()
-    }
-
     override fun onPause() {
         super.onPause()
         Adjust.onPause()
     }
 
-    /*private fun getUri(category: String) {
-        val cw = ContextWrapper(context)
-        val directory: File = cw.getDir(Constant.INTERNAL_MY_CREATIVE_DIR, Context.MODE_PRIVATE)
-        val files = directory.listFiles()      // Get packages
-        if (files != null) {                    //package's size > 0
-            for (file in files) {
-                if (file.isDirectory && file.name.equals(category)) {
-                    val stickers = file.listFiles()
-                    if (stickers != null) {
-                        for (sticker in stickers) {
-                            viewModel.stickerUri.add(getUriForFile(requireContext(), sticker))
-                        }
-                    }
-                    break
-                }
-            }
-        }
-    }*/
-//    private fun getRawUri(filename: String): Uri {
-//        return Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + requireContext().packageName + "/raw/" + filename)
-//    }
+    private fun loadAds() {
 
-//    private fun doImport(stickers: java.util.ArrayList<Uri>, emojis: java.util.ArrayList<String>) {
-//        val intent = Intent(CREATE_STICKER_PACK_ACTION)
-//        intent.putExtra(Intent.EXTRA_STREAM, stickers)
-//        intent.putExtra(CREATE_STICKER_PACK_IMPORTER_EXTRA, requireContext().packageName)
-//        intent.putExtra(CREATE_STICKER_PACK_EMOJIS_EXTRA, emojis)
-//        intent.setType("image/*")
-//        try {
-//            startActivity(intent)
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//            //no activity to handle intent
-//        }
-//    }
+    }
+
+    private fun loadNative() {
+        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_HOME)) {
+            loadNativeAd(0)
+        }
+    }
+
+    private fun loadNativeAd(index: Int) {
+        if (index >= (mMainViewModel.categoriesMutableLiveData.value?.size ?: 0)) {
+            return
+        }
+        val item = mMainViewModel.categoriesMutableLiveData.value?.get(index) as? NativeAdView
+            ?: throw ClassCastException("Expected item at index $index to be a banner ad ad.")
+        NativeAdsUtils.instance.loadNativeAds(
+            requireContext(),
+            keyAdNative
+        ) { nativeAds ->
+            if (nativeAds != null) {
+                val adLayoutView =
+                    LayoutInflater.from(requireContext())
+                        .inflate(R.layout.ad_native_content, item, false) as NativeAdView
+                NativeAdsUtils.instance.populateNativeAdVideoView(
+                    nativeAds,
+                    adLayoutView
+                )
+                item.removeAllViews()
+                item.addView(adLayoutView)
+            }
+            loadNativeAd(index + ITEMS_PER_AD)
+        }
+    }
 
     private fun download(context: Context, category: String) {
         val assetManager = context.assets
