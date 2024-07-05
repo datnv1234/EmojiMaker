@@ -6,8 +6,6 @@ import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.WindowManager
-import android.view.WindowMetrics
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.adjust.sdk.Adjust
@@ -92,22 +90,6 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
         }
     }
 
-    private val adWidth: Int
-        get() {
-            val displayMetrics = resources.displayMetrics
-            val adWidthPixels =
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                    val windowManager =
-                        requireActivity().getSystemService(Context.WINDOW_SERVICE) as WindowManager
-                    val windowMetrics: WindowMetrics = windowManager.currentWindowMetrics
-                    windowMetrics.bounds.width()
-                } else {
-                    displayMetrics.widthPixels
-                }
-            val density = displayMetrics.density
-            return (adWidthPixels / density).toInt()
-        }
-
     override fun getViewModel(): Class<HomeViewModel> = HomeViewModel::class.java
     override fun registerOnBackPress() {
     }
@@ -118,9 +100,7 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
         get() = getString(R.string.app_name)
 
     override fun onCreatedView(view: View?, savedInstanceState: Bundle?) {
-        binding.btnCreateSticker.setOnClickListener {
-            startActivity(Intent(context, EmojiMakerActivity::class.java))
-        }
+
     }
 
     override fun setupData() {
@@ -135,6 +115,7 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
                     intent.putExtra("category_name", cate.categoryName)
                     intent.putExtra("category_size", cate.itemSize)
                     startActivity(intent)
+                    mMainActivity.showInterstitial()
                 },
                 optionClick = { cate ->
                     sharePackageDialog.category = cate
@@ -143,6 +124,11 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
                 })
             binding.rvCategory.adapter = adapter
             loadNative()
+        }
+
+        binding.btnCreateSticker.setOnClickListener {
+            startActivity(Intent(context, EmojiMakerActivity::class.java))
+            mMainActivity.showInterstitial()
         }
 
 
@@ -157,10 +143,6 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
     override fun onPause() {
         super.onPause()
         Adjust.onPause()
-    }
-
-    private fun loadAds() {
-
     }
 
     private fun loadNative() {

@@ -66,9 +66,26 @@
             android:layout_marginHorizontal="16dp"
             android:clipToPadding="false"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/rl_native"
             app:layout_constraintTop_toBottomOf="@+id/tvTitle"
             tools:listitem="@layout/item_multi_lang" />
+
+        <RelativeLayout
+            android:id="@+id/rl_native"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_180sdp"
+            android:layout_marginTop="@dimen/_40sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_bias="1.0"
+            app:layout_goneMarginTop="@dimen/_4sdp">
+            <FrameLayout
+                android:id="@+id/fr_native_ads"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <include layout="@layout/ads_native_shimmer" />
+            </FrameLayout>
+        </RelativeLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

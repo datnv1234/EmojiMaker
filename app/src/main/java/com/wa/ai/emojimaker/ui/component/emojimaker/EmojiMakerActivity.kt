@@ -19,7 +19,6 @@ import android.os.Environment
 import android.os.Parcelable
 import android.provider.OpenableColumns
 import android.text.InputType
-import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.widget.EditText
@@ -30,10 +29,21 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.adjust.sdk.Adjust
+import com.adjust.sdk.AdjustAdRevenue
+import com.adjust.sdk.AdjustConfig
 import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.Headers
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdapterResponseInfo
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.OnPaidEventListener
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import com.wa.ai.emojimaker.App
 import com.wa.ai.emojimaker.R
+import com.wa.ai.emojimaker.common.Constant
 import com.wa.ai.emojimaker.common.Constant.INTERNAL_MY_CREATIVE_DIR
 import com.wa.ai.emojimaker.databinding.ActivityEmojiMakerBinding
 import com.wa.ai.emojimaker.ui.adapter.OptionAdapter
@@ -64,15 +74,24 @@ import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 
 
 class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, StickerViewModel>() {
 
+    private var keyAdInter: String =
+        FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_INTER_CREATE_EMOJI)
+    private val interDelay = FirebaseRemoteConfig.getInstance().getLong(RemoteConfigKey.INTER_DELAY)
+
     private val keyAdsBanner =
         FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_CREATE_EMOJI)
     private val bannerReload =
         FirebaseRemoteConfig.getInstance().getLong(RemoteConfigKey.BANNER_RELOAD)
+
+    var mInterstitialAd: InterstitialAd? = null
+    private var analytics: FirebaseAnalytics? = null
+    var mFirebaseAnalytics: FirebaseAnalytics? = null
 
     private var isFinishImmediately = false
 
@@ -198,6 +217,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
             emojiViewModel.setBitmap(bitmap)
             if (!mSaveDialog.isAdded)
                 mSaveDialog.show(supportFragmentManager, mSaveDialog.tag)
+            showInterstitial()
         }
     }
 
@@ -244,7 +264,10 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     }
 
     private fun loadAds() {
-        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_BANNER_CREATE_EMOJI)) {
+        setUpLoadInterAds()
+        if (FirebaseRemoteConfig.getInstance()
+                .getBoolean(RemoteConfigKey.IS_SHOW_ADS_BANNER_CREATE_EMOJI)
+        ) {
             loadBanner()
         } else {
             binding.rlBanner.gone()
@@ -686,7 +709,6 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         }
     }
 
-
     internal class FetchImageFromLinkTask(val text: String, val context: EmojiMakerActivity) :
         AsyncTask<Void, Void, Void>() {
         override fun onPreExecute() {
@@ -797,6 +819,79 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         }
     }
 
+    fun showInterstitial() {
+        val isShowAd = (Date().time - App.adTimeStamp) > interDelay
+        if (isShowAd) {
+            mInterstitialAd?.fullScreenContentCallback =
+                object : com.google.android.gms.ads.FullScreenContentCallback() {
+                    override fun onAdDismissedFullScreenContent() {
+                        App.adTimeStamp = Date().time
+                    }
+
+                    override fun onAdFailedToShowFullScreenContent(adError: com.google.android.gms.ads.AdError) {
+                    }
+                }
+            mInterstitialAd?.show(this@EmojiMakerActivity)
+            loadInterAds()
+        }
+    }
+
+    var loadInterCount = 0
+    fun loadInterAds() {
+        InterstitialAd.load(
+            this,
+            keyAdInter,
+            AdRequest.Builder().build(),
+            object : InterstitialAdLoadCallback() {
+
+                override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                    mInterstitialAd = null
+                    Timber.tag(Constant.ADS)
+                        .d("onAdFailedToShowFullScreenContent: ${loadAdError.message}")
+                    Timber.tag(Constant.ADS)
+                        .d("onAdFailedToShowFullScreenContent: ${loadAdError.cause}")
+                    if (loadInterCount < 3) {
+                        loadInterAds()
+                        loadInterCount++
+                    }
+                }
+
+                override fun onAdLoaded(interstitialAd: InterstitialAd) {
+                    mInterstitialAd = interstitialAd
+                    loadInterCount = 0
+                    mFirebaseAnalytics?.logEvent("d_load_inter", null)
+
+                    mInterstitialAd?.onPaidEventListener =
+                        OnPaidEventListener { adValue ->
+                            val loadedAdapterResponseInfo: AdapterResponseInfo? =
+                                interstitialAd.responseInfo.loadedAdapterResponseInfo
+                            val adRevenue = AdjustAdRevenue(AdjustConfig.AD_REVENUE_ADMOB)
+                            val revenue = adValue.valueMicros.toDouble() / 1000000.0
+                            adRevenue.setRevenue(
+                                revenue,
+                                adValue.currencyCode
+                            )
+                            adRevenue.adRevenueNetwork = loadedAdapterResponseInfo?.adSourceName
+                            Adjust.trackAdRevenue(adRevenue)
+                            analytics = FirebaseAnalytics.getInstance(applicationContext)
+                            val params = Bundle()
+                            params.putString(FirebaseAnalytics.Param.AD_PLATFORM, "admob mediation")
+                            params.putString(FirebaseAnalytics.Param.AD_SOURCE, "AdMob")
+                            params.putString(FirebaseAnalytics.Param.AD_FORMAT, "Interstitial")
+                            params.putDouble(FirebaseAnalytics.Param.VALUE, revenue)
+                            params.putString(FirebaseAnalytics.Param.CURRENCY, "USD")
+                            analytics?.logEvent(FirebaseAnalytics.Event.AD_IMPRESSION, params)
+                        }
+                }
+            })
+    }
+
+    private fun setUpLoadInterAds() {
+        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_INTER_CREATE_EMOJI)) {
+            loadInterAds()
+        }
+    }
+
     companion object {
         const val PERM_RQST_CODE = 110
         const val SAVE_FILE_EXTENSION: String = "ref"
@@ -805,7 +900,5 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         const val INTENT_PICK_SAVED_FILE = 2
 
         const val MAX_SIZE_PIXELS = 2000 * 2000
-        val emojiDir =
-            DeviceUtils.getPublicDirectoryPath(Environment.DIRECTORY_PICTURES) + "/Emoji/"
     }
 }

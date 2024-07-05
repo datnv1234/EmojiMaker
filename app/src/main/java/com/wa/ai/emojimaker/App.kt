@@ -85,6 +85,7 @@ class App : Application() {
     }
 
     companion object {
+        var adTimeStamp: Long = 0L
         var forceUpdate: Boolean = false
         lateinit var instance: App
     }

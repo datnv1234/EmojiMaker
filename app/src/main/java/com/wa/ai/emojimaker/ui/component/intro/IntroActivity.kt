@@ -2,16 +2,24 @@ package com.wa.ai.emojimaker.ui.component.intro
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.CountDownTimer
+import android.view.View
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.adjust.sdk.Adjust
+import com.google.android.gms.ads.nativead.NativeAdView
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.common.Constant
 import com.wa.ai.emojimaker.data.local.SharedPreferenceHelper
 import com.wa.ai.emojimaker.databinding.ActivityIntroBinding
+import com.wa.ai.emojimaker.databinding.AdNativeVideoBinding
 import com.wa.ai.emojimaker.ui.adapter.IntroAdapter
 import com.wa.ai.emojimaker.ui.base.BaseBindingActivity
 import com.wa.ai.emojimaker.ui.component.main.MainActivity
+import com.wa.ai.emojimaker.utils.DeviceUtils
+import com.wa.ai.emojimaker.utils.RemoteConfigKey
+import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils
 import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 import com.wa.ai.emojimaker.utils.extention.setStatusBarColor
 import kotlinx.coroutines.Dispatchers
@@ -19,6 +27,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class IntroActivity : BaseBindingActivity<ActivityIntroBinding, IntroViewModel>() {
+
+    private val keyNative =
+        FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_INTRO)
+    private var isLoadNativeDone = false
 
     private val introAdapter: IntroAdapter by lazy { IntroAdapter() }
     override val layoutId: Int
@@ -33,7 +45,7 @@ class IntroActivity : BaseBindingActivity<ActivityIntroBinding, IntroViewModel>(
     }
 
     override fun setupData() {
-
+        loadAds()
         viewModel.getIntro(this)
         viewModel.introMutableLiveData.observe(this) {
             introAdapter.submitList(it.toMutableList())
@@ -48,6 +60,35 @@ class IntroActivity : BaseBindingActivity<ActivityIntroBinding, IntroViewModel>(
     override fun onPause() {
         super.onPause()
         Adjust.onPause()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        countDownTimer.cancel()
+    }
+
+    private fun loadAds() {
+        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_INTRO)) {
+            loadNatives()
+        } else {
+            binding.rlNative.visibility = View.GONE
+        }
+    }
+
+    private val countDownTimer: CountDownTimer = object : CountDownTimer(25000, 5000) {
+        override fun onTick(millisUntilFinished: Long) {
+            if (!isLoadNativeDone) {
+                loadNativeAds(keyNative)
+            }
+        }
+
+        override fun onFinish() {
+        }
+    }
+
+    private fun loadNatives() {
+        loadNativeAds(keyNative)
+        countDownTimer.start()
     }
 
     private fun startMainActivity() {
@@ -99,5 +140,27 @@ class IntroActivity : BaseBindingActivity<ActivityIntroBinding, IntroViewModel>(
             })
             binding.dotsIndicator.attachTo(this)
         }
+    }
+
+    private fun loadNativeAds(keyAds: String) {
+        if (!DeviceUtils.checkInternetConnection(applicationContext)) binding.rlNative.visibility =
+            View.GONE
+        this.let {
+            NativeAdsUtils.instance.loadNativeAds(
+                applicationContext,
+                keyAds
+            ) { nativeAds ->
+                if (nativeAds != null) {
+                    val adNativeVideoBinding = AdNativeVideoBinding.inflate(layoutInflater)
+                    NativeAdsUtils.instance.populateNativeAdVideoView(
+                        nativeAds,
+                        adNativeVideoBinding.root as NativeAdView
+                    )
+                    binding.frNativeAds.addView(adNativeVideoBinding.root)
+                    isLoadNativeDone = true
+                }
+            }
+        }
+
     }
 }
