@@ -2,7 +2,6 @@ package com.wa.ai.emojimaker.ui.component.intro
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.view.View
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
@@ -30,7 +29,6 @@ class IntroActivity : BaseBindingActivity<ActivityIntroBinding, IntroViewModel>(
 
     private val keyNative =
         FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_INTRO)
-    private var isLoadNativeDone = false
 
     private val introAdapter: IntroAdapter by lazy { IntroAdapter() }
     override val layoutId: Int
@@ -62,33 +60,12 @@ class IntroActivity : BaseBindingActivity<ActivityIntroBinding, IntroViewModel>(
         Adjust.onPause()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        countDownTimer.cancel()
-    }
-
     private fun loadAds() {
         if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_INTRO)) {
-            loadNatives()
+            loadNativeAds(keyNative)
         } else {
             binding.rlNative.visibility = View.GONE
         }
-    }
-
-    private val countDownTimer: CountDownTimer = object : CountDownTimer(25000, 5000) {
-        override fun onTick(millisUntilFinished: Long) {
-            if (!isLoadNativeDone) {
-                loadNativeAds(keyNative)
-            }
-        }
-
-        override fun onFinish() {
-        }
-    }
-
-    private fun loadNatives() {
-        loadNativeAds(keyNative)
-        countDownTimer.start()
     }
 
     private fun startMainActivity() {
@@ -157,7 +134,6 @@ class IntroActivity : BaseBindingActivity<ActivityIntroBinding, IntroViewModel>(
                         adNativeVideoBinding.root as NativeAdView
                     )
                     binding.frNativeAds.addView(adNativeVideoBinding.root)
-                    isLoadNativeDone = true
                 }
             }
         }

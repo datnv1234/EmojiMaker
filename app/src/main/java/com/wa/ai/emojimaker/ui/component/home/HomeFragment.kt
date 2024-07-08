@@ -115,7 +115,6 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
                     intent.putExtra("category_name", cate.categoryName)
                     intent.putExtra("category_size", cate.itemSize)
                     startActivity(intent)
-                    mMainActivity.showInterstitial()
                 },
                 optionClick = { cate ->
                     sharePackageDialog.category = cate
@@ -128,7 +127,6 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
 
         binding.btnCreateSticker.setOnClickListener {
             startActivity(Intent(context, EmojiMakerActivity::class.java))
-            mMainActivity.showInterstitial()
         }
 
 

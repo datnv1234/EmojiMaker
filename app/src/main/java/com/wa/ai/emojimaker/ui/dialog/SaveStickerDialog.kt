@@ -10,7 +10,6 @@ import com.wa.ai.emojimaker.ui.component.emojimaker.EmojiViewModel
 import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 
 class SaveStickerDialog : BaseBindingDialogFragment<DialogSaveBinding>() {
-    private var isLoadNativeDone = false
 
     var addToPackage: (() -> Unit)? = null
     var download: ((binding : DialogSaveBinding) -> Unit)? = null

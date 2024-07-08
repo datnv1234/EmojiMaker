@@ -2,7 +2,6 @@ package com.wa.ai.emojimaker.ui.component.multilang
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.view.View
 import com.adjust.sdk.Adjust
 import com.google.android.gms.ads.nativead.NativeAdView
@@ -28,7 +27,6 @@ class MultiLangActivity : BaseBindingActivity<ActivityMultiLangBinding, MultiLan
 
     private val keyNative =
         FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_LANGUAGE)
-    private var isLoadNativeDone = false
 
     private var type: Int = 0
     private var currentPosLanguage = 0
@@ -77,35 +75,14 @@ class MultiLangActivity : BaseBindingActivity<ActivityMultiLangBinding, MultiLan
         Adjust.onPause()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        countDownTimer.cancel()
-    }
-
     private fun loadAds() {
         if (FirebaseRemoteConfig.getInstance()
                 .getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_LANGUAGE)
         ) {
-            loadNatives()
+            loadNativeAds(keyNative)
         } else {
             binding.rlNative.visibility = View.GONE
         }
-    }
-
-    private val countDownTimer: CountDownTimer = object : CountDownTimer(25000, 5000) {
-        override fun onTick(millisUntilFinished: Long) {
-            if (!isLoadNativeDone) {
-                loadNativeAds(keyNative)
-            }
-        }
-
-        override fun onFinish() {
-        }
-    }
-
-    private fun loadNatives() {
-        loadNativeAds(keyNative)
-        countDownTimer.start()
     }
 
     private fun updateUIForType(type: Int) {
@@ -168,7 +145,6 @@ class MultiLangActivity : BaseBindingActivity<ActivityMultiLangBinding, MultiLan
                         adNativeVideoBinding.root as NativeAdView
                     )
                     binding.frNativeAds.addView(adNativeVideoBinding.root)
-                    isLoadNativeDone = true
                 }
             }
         }

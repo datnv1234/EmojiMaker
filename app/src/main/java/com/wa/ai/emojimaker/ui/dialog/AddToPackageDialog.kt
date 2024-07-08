@@ -12,7 +12,6 @@ import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 
 class AddToPackageDialog : BaseBindingDialogFragment<DialogAddToPackageBinding>() {
 
-    private var isLoadNativeDone = false
     lateinit var save: ((pkg: PackageModel?) -> Unit)
     lateinit var createNewPackage: ((binding : DialogAddToPackageBinding) -> Unit)
 

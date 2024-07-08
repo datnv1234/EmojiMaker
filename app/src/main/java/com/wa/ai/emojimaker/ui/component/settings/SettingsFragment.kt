@@ -67,7 +67,6 @@ class SettingsFragment : BaseBindingFragment<FragmentSettingsBinding, SettingsVi
         binding.rate.setOnClickListener {
             if (!ratingDialog.isAdded)
                 ratingDialog.show(parentFragmentManager, null)
-            //openPlayStoreForRating()
         }
 
         binding.about.setOnClickListener {

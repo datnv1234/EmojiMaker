@@ -15,7 +15,6 @@ class CreatePackageDialog : BaseBindingDialogFragment<DialogCreatePackageBinding
 
     var bitmap: Bitmap? =  null
     var confirm: ((pkg : PackageModel) -> Unit)? = null
-    private var isLoadNativeDone = false
     override val layoutId: Int
         get() = R.layout.dialog_create_package
 

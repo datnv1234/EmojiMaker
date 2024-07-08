@@ -8,14 +8,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.adjust.sdk.Adjust
-import com.adjust.sdk.AdjustAdRevenue
-import com.adjust.sdk.AdjustConfig
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdapterResponseInfo
-import com.google.android.gms.ads.LoadAdError
-import com.google.android.gms.ads.OnPaidEventListener
-import com.google.android.gms.ads.interstitial.InterstitialAd
-import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
@@ -37,21 +29,13 @@ import com.wa.ai.emojimaker.utils.ads.BannerUtils
 import com.wa.ai.emojimaker.utils.extention.gone
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import timber.log.Timber
-import java.util.Date
 
 class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
-    private var keyAdInter: String =
-        FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_INTER_HOME_SCREEN)
-    private val interDelay = FirebaseRemoteConfig.getInstance().getLong(RemoteConfigKey.INTER_DELAY)
+
     private val keyAdsBanner =
         FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_MAIN)
     private val bannerReload =
         FirebaseRemoteConfig.getInstance().getLong(RemoteConfigKey.BANNER_RELOAD)
-
-    var mInterstitialAd: InterstitialAd? = null
-    private var analytics: FirebaseAnalytics? = null
-    var mFirebaseAnalytics: FirebaseAnalytics? = null
 
     private val REQUEST_CODE_UPDATE = 1001
     private lateinit var appUpdateManager: AppUpdateManager
@@ -114,7 +98,6 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
     }
 
     private fun loadAds() {
-        setUpLoadInterAds()
         if (FirebaseRemoteConfig.getInstance()
                 .getBoolean(RemoteConfigKey.IS_SHOW_ADS_BANNER_MAIN)
         ) {
@@ -180,77 +163,6 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
                 delay(5000)
                 appUpdateManager.completeUpdate()
             }
-        }
-    }
-
-    fun showInterstitial() {
-        val isShowAd = (Date().time - App.adTimeStamp) > interDelay
-        if (isShowAd) {
-            mInterstitialAd?.fullScreenContentCallback =
-                object : com.google.android.gms.ads.FullScreenContentCallback() {
-                    override fun onAdDismissedFullScreenContent() {
-                        App.adTimeStamp = Date().time
-                    }
-
-                    override fun onAdFailedToShowFullScreenContent(adError: com.google.android.gms.ads.AdError) {
-                    }
-                }
-            mInterstitialAd?.show(this@MainActivity)
-            loadInterAds()
-        }
-    }
-
-    var loadInterCount = 0
-    fun loadInterAds() {
-        InterstitialAd.load(
-            this,
-            keyAdInter,
-            AdRequest.Builder().build(),
-            object : InterstitialAdLoadCallback() {
-
-                override fun onAdFailedToLoad(loadAdError: LoadAdError) {
-                    mInterstitialAd = null
-                    Timber.tag(ADS).d("onAdFailedToShowFullScreenContent: ${loadAdError.message}")
-                    Timber.tag(ADS).d("onAdFailedToShowFullScreenContent: ${loadAdError.cause}")
-                    if (loadInterCount < 3) {
-                        loadInterAds()
-                        loadInterCount++
-                    }
-                }
-
-                override fun onAdLoaded(interstitialAd: InterstitialAd) {
-                    mInterstitialAd = interstitialAd
-                    loadInterCount = 0
-                    mFirebaseAnalytics?.logEvent("d_load_inter", null)
-
-                    mInterstitialAd?.onPaidEventListener =
-                        OnPaidEventListener { adValue ->
-                            val loadedAdapterResponseInfo: AdapterResponseInfo? =
-                                interstitialAd.responseInfo.loadedAdapterResponseInfo
-                            val adRevenue = AdjustAdRevenue(AdjustConfig.AD_REVENUE_ADMOB)
-                            val revenue = adValue.valueMicros.toDouble() / 1000000.0
-                            adRevenue.setRevenue(
-                                revenue,
-                                adValue.currencyCode
-                            )
-                            adRevenue.adRevenueNetwork = loadedAdapterResponseInfo?.adSourceName
-                            Adjust.trackAdRevenue(adRevenue)
-                            analytics = FirebaseAnalytics.getInstance(applicationContext)
-                            val params = Bundle()
-                            params.putString(FirebaseAnalytics.Param.AD_PLATFORM, "admob mediation")
-                            params.putString(FirebaseAnalytics.Param.AD_SOURCE, "AdMob")
-                            params.putString(FirebaseAnalytics.Param.AD_FORMAT, "Interstitial")
-                            params.putDouble(FirebaseAnalytics.Param.VALUE, revenue)
-                            params.putString(FirebaseAnalytics.Param.CURRENCY, "USD")
-                            analytics?.logEvent(FirebaseAnalytics.Event.AD_IMPRESSION, params)
-                        }
-                }
-            })
-    }
-
-    private fun setUpLoadInterAds() {
-        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_INTER_HOME_SCREEN)) {
-            loadInterAds()
         }
     }
 

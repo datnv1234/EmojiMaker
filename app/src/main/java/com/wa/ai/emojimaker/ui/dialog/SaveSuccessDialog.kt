@@ -10,7 +10,6 @@ import com.wa.ai.emojimaker.ui.component.emojimaker.EmojiViewModel
 import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 
 class SaveSuccessDialog() : BaseBindingDialogFragment<DialogSaveSuccessBinding>() {
-    private var isLoadNativeDone = false
 
     lateinit var home:() -> Unit
     lateinit var createMore: () -> Unit
