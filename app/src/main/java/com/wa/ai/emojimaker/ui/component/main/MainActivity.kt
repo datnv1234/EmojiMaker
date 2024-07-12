@@ -217,7 +217,10 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
         if (isAdsInitializeCalled.getAndSet(true)) {
             return
         }
-        MobileAds.initialize(mContext) {}
+        kotlin.runCatching {
+            MobileAds.initialize(mContext) {}
+        }
+
         loadInterAd()
     }
 

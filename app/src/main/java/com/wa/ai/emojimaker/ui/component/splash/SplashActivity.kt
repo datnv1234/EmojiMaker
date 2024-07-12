@@ -24,7 +24,9 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        MobileAds.initialize(this)
+        kotlin.runCatching {
+            MobileAds.initialize(this)
+        }
     }
 
     private val countDownTimer: CountDownTimer = object : CountDownTimer(10000, 5000) {

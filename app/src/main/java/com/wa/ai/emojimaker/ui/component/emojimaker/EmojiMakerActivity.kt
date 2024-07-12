@@ -804,7 +804,9 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         if (isAdsInitializeCalled.getAndSet(true)) {
             return
         }
-        MobileAds.initialize(mContext) {}
+        kotlin.runCatching {
+            MobileAds.initialize(mContext) {}
+        }
         loadInterAd()
     }
 
