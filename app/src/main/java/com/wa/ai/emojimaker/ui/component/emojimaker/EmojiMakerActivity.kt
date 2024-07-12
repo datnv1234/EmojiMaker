@@ -16,6 +16,8 @@ import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Environment
+import android.os.Handler
+import android.os.Looper
 import android.os.Parcelable
 import android.provider.OpenableColumns
 import android.text.InputType
@@ -29,11 +31,25 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.adjust.sdk.Adjust
+import com.adjust.sdk.AdjustAdRevenue
+import com.adjust.sdk.AdjustConfig
 import com.github.kittinunf.fuel.core.FuelManager
 import com.github.kittinunf.fuel.core.Headers
+import com.google.android.gms.ads.AdError
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdapterResponseInfo
+import com.google.android.gms.ads.FullScreenContentCallback
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.OnPaidEventListener
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.wa.ai.emojimaker.R
+import com.wa.ai.emojimaker.common.Constant
 import com.wa.ai.emojimaker.common.Constant.INTERNAL_MY_CREATIVE_DIR
+import com.wa.ai.emojimaker.data.local.SharedPreferenceHelper
 import com.wa.ai.emojimaker.databinding.ActivityEmojiMakerBinding
 import com.wa.ai.emojimaker.ui.adapter.OptionAdapter
 import com.wa.ai.emojimaker.ui.adapter.PagerIconAdapter
@@ -46,6 +62,7 @@ import com.wa.ai.emojimaker.ui.component.main.MainActivity
 import com.wa.ai.emojimaker.utils.AppUtils
 import com.wa.ai.emojimaker.utils.DeviceUtils
 import com.wa.ai.emojimaker.utils.RemoteConfigKey
+import com.wa.ai.emojimaker.utils.ads.AdsConsentManager
 import com.wa.ai.emojimaker.utils.ads.BannerUtils
 import com.wa.ai.emojimaker.utils.extention.gone
 import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
@@ -63,10 +80,23 @@ import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.math.pow
 
 
 class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, StickerViewModel>() {
+
+    private var adsConsentManager: AdsConsentManager? = null
+    private val isAdsInitializeCalled = AtomicBoolean(false)
+    private var interstitialAd: InterstitialAd? = null
+    private var mFirebaseAnalytics: FirebaseAnalytics? = null
+    private var mInterstitialAd: InterstitialAd? = null
+
+    private var retryAttempt = 0.0
+
     private val keyAdsBanner =
         FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_CREATE_EMOJI)
     private val bannerReload =
@@ -75,6 +105,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     private var isFinishImmediately = false
 
     private lateinit var emojiViewModel: EmojiViewModel
+    private val mContext = this
     private val pagerIconAdapter: PagerIconAdapter by lazy {
         PagerIconAdapter(itemClick = {
             doAddSticker(it)
@@ -196,7 +227,9 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
             emojiViewModel.setBitmap(bitmap)
             if (!mSaveDialog.isAdded)
                 mSaveDialog.show(supportFragmentManager, mSaveDialog.tag)
+            showInterstitial {}
         }
+        initAdsManager()
     }
 
     private fun setUpViewPager() {
@@ -745,6 +778,149 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         override fun onClearBoard() {
             binding.stickerView.invalidate()
             binding.btnSave.isEnabled = false
+        }
+    }
+
+
+    private fun initAdsManager() {
+        adsConsentManager = AdsConsentManager.getInstance(mContext)
+        adsConsentManager?.gatherConsent(mContext) { consentError ->
+            if (consentError != null) {
+
+                initializeMobileAdsSdk()
+            }
+
+            if (adsConsentManager?.canRequestAds == true) {
+                initializeMobileAdsSdk()
+            }
+        }
+
+        if (adsConsentManager?.canRequestAds == true) {
+            initializeMobileAdsSdk()
+        }
+    }
+
+    private fun initializeMobileAdsSdk() {
+        if (isAdsInitializeCalled.getAndSet(true)) {
+            return
+        }
+        MobileAds.initialize(mContext) {}
+        loadInterAd()
+    }
+
+
+    private fun loadInterAd() {
+
+        val remoteConfig = FirebaseRemoteConfig.getInstance()
+        if (remoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_INTER_HOME_SCREEN)) {
+
+            var adConfig = remoteConfig.getString(RemoteConfigKey.KEY_ADS_INTER_HOME_SCREEN)
+            if (adConfig.isEmpty()) {
+                adConfig = getString(R.string.inter_home_screen)
+            }
+
+            InterstitialAd.load(
+                mContext,
+                adConfig,
+                AdRequest.Builder().build(),
+                object : InterstitialAdLoadCallback() {
+                    override fun onAdFailedToLoad(adError: LoadAdError) {
+                        mFirebaseAnalytics?.logEvent("e_load_inter_ads_home_screen", null)
+                        mInterstitialAd = null
+                        retryAttempt++
+                        val delayMillis = TimeUnit.SECONDS.toMillis(
+                            2.0.pow(6.0.coerceAtMost(retryAttempt)).toLong()
+                        )
+                        Handler(Looper.getMainLooper()).postDelayed({ loadInterAd() }, delayMillis)
+                    }
+
+                    override fun onAdLoaded(ad: InterstitialAd) {
+                        mFirebaseAnalytics?.logEvent("d_load_inter_ads_home_screen", null)
+                        mInterstitialAd = ad
+                        retryAttempt = 0.0
+                        mInterstitialAd?.onPaidEventListener =
+                            OnPaidEventListener { adValue ->
+                                val loadedAdapterResponseInfo: AdapterResponseInfo? =
+                                    mInterstitialAd?.responseInfo?.loadedAdapterResponseInfo
+                                val adRevenue = AdjustAdRevenue(AdjustConfig.AD_REVENUE_ADMOB)
+                                val revenue = adValue.valueMicros.toDouble() / 1000000.0
+                                adRevenue.setRevenue(revenue, adValue.currencyCode)
+                                adRevenue.adRevenueNetwork = loadedAdapterResponseInfo?.adSourceName
+                                Adjust.trackAdRevenue(adRevenue)
+
+                                val analytics =
+                                    FirebaseAnalytics.getInstance(mContext)
+                                val params = Bundle().apply {
+                                    putString(
+                                        FirebaseAnalytics.Param.AD_PLATFORM,
+                                        "admob mediation"
+                                    )
+                                    putString(FirebaseAnalytics.Param.AD_SOURCE, "AdMob")
+                                    putString(FirebaseAnalytics.Param.AD_FORMAT, "Interstitial")
+                                    putDouble(FirebaseAnalytics.Param.VALUE, revenue)
+                                    putString(FirebaseAnalytics.Param.CURRENCY, "USD")
+                                }
+                                analytics.logEvent("ad_impression_inter", params)
+                            }
+                    }
+                }
+            )
+        }
+
+    }
+
+    fun showInterstitial(onAdDismissedAction: () -> Unit) {
+        if (!DeviceUtils.checkInternetConnection(mContext)) {
+            onAdDismissedAction.invoke()
+            return
+        }
+        val timeLoad = FirebaseRemoteConfig.getInstance()
+            .getLong(RemoteConfigKey.INTER_DELAY)
+
+        val timeSubtraction =
+            Date().time - SharedPreferenceHelper.getLong(Constant.TIME_LOAD_NEW_INTER_ADS)
+        if (timeSubtraction <= timeLoad) {
+            onAdDismissedAction.invoke()
+            return
+        }
+
+        if (mInterstitialAd == null) {
+            if (adsConsentManager?.canRequestAds == false) {
+                onAdDismissedAction.invoke()
+                return
+            }
+            onAdDismissedAction.invoke()
+            loadInterAd()
+            return
+        }
+        mInterstitialAd?.show(mContext)
+
+        mInterstitialAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
+            override fun onAdDismissedFullScreenContent() {
+                mInterstitialAd = null
+                loadInterAd()
+                SharedPreferenceHelper.storeLong(
+                    Constant.TIME_LOAD_NEW_INTER_ADS,
+                    Date().time
+                )
+            }
+
+            override fun onAdFailedToShowFullScreenContent(adError: AdError) {
+                mInterstitialAd = null
+                kotlin.runCatching {
+                    onAdDismissedAction.invoke()
+                }.onFailure {
+                    it.printStackTrace()
+                }
+            }
+
+            override fun onAdShowedFullScreenContent() {
+                kotlin.runCatching {
+                    onAdDismissedAction.invoke()
+                }.onFailure {
+                    it.printStackTrace()
+                }
+            }
         }
     }
 

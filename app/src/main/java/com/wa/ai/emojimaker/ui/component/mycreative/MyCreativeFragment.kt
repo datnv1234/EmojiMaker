@@ -1,14 +1,17 @@
 package com.wa.ai.emojimaker.ui.component.mycreative
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import com.adjust.sdk.Adjust
+import com.google.android.gms.ads.nativead.NativeAdView
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.common.Constant
 import com.wa.ai.emojimaker.data.local.SharedPreferenceHelper
+import com.wa.ai.emojimaker.databinding.AdNativeVideoBinding
 import com.wa.ai.emojimaker.databinding.FragmentMyCreativeBinding
 import com.wa.ai.emojimaker.ui.adapter.CreativeAdapter
 import com.wa.ai.emojimaker.ui.adapter.MadeStickerAdapter
@@ -19,12 +22,14 @@ import com.wa.ai.emojimaker.ui.component.main.MainViewModel
 import com.wa.ai.emojimaker.ui.component.showstickers.ShowStickersActivity
 import com.wa.ai.emojimaker.ui.dialog.CreatePackageDialog
 import com.wa.ai.emojimaker.utils.DeviceUtils
+import com.wa.ai.emojimaker.utils.RemoteConfigKey
+import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils
 import com.wa.ai.emojimaker.utils.extention.gone
 import com.wa.ai.emojimaker.utils.extention.invisible
 import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 import com.wa.ai.emojimaker.utils.extention.visible
 
-@SuppressLint("NotifyDataSetChanged")
+
 class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCreativeViewModel>() {
 
     private lateinit var mMainActivity: MainActivity
@@ -40,7 +45,6 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
 
             startActivity(intent)
 
-
         }, optionClick = {
 
         }, delete = {
@@ -50,7 +54,7 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
         })
     }
 
-    private val stickerAdapter : MadeStickerAdapter by lazy {
+    private val stickerAdapter: MadeStickerAdapter by lazy {
         MadeStickerAdapter(itemClick = {
         })
     }
@@ -95,10 +99,14 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
 
     private val deletePkgDialog: ConfirmDialog by lazy {
         ConfirmDialog(getString(R.string.delete), getString(R.string.delete)).apply {
-             confirm = { pkg ->
-                 DeviceUtils.deletePackage(requireContext(), Constant.INTERNAL_MY_CREATIVE_DIR, pkg.id)
-                 mMainViewModel.removePackage(pkg)
-             }
+            confirm = { pkg ->
+                DeviceUtils.deletePackage(
+                    requireContext(),
+                    Constant.INTERNAL_MY_CREATIVE_DIR,
+                    pkg.id
+                )
+                mMainViewModel.removePackage(pkg)
+            }
         }
     }
 
@@ -126,6 +134,10 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
         mMainViewModel = ViewModelProvider(requireActivity())[MainViewModel::class.java]
 
         mMainViewModel.packageMutableLiveData.observe(this) {
+            if (it.isEmpty()) {
+                binding.rlNative.gone()
+            }
+
             creativeAdapter.submitList(it.toMutableList())
             if (it.isEmpty()) {
                 binding.llEmpty.visible()
@@ -148,6 +160,8 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
             intent.putExtra("category_name", Constant.categories[mMainViewModel.suggestCategory])
             startActivity(intent)
         }
+
+        setUpLoadNativeAds()
     }
 
     override fun onResume() {
@@ -163,6 +177,58 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
 
     override fun getViewModel(): Class<MyCreativeViewModel> = MyCreativeViewModel::class.java
     override fun registerOnBackPress() {
+    }
+
+    private fun setUpLoadNativeAds() {
+        if (FirebaseRemoteConfig.getInstance()
+                .getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_MY_CREATIVE)
+        ) {
+            binding.rlNative.visible()
+            val adConfig = FirebaseRemoteConfig.getInstance()
+                .getString(RemoteConfigKey.KEY_ADS_NATIVE_HOME)
+            if (adConfig.isNotEmpty()) {
+                loadNativeAds(adConfig)
+            } else {
+                loadNativeAds(getString(R.string.native_home))
+            }
+        } else {
+            binding.rlNative.gone()
+        }
+    }
+
+    private fun loadNativeAds(keyAds: String) {
+        if (!DeviceUtils.checkInternetConnection(requireContext()) || !FirebaseRemoteConfig.getInstance()
+                .getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_MY_CREATIVE)
+        ) {
+            binding.rlNative.gone()
+            return
+        }
+        kotlin.runCatching {
+            context?.let { context ->
+                NativeAdsUtils.instance.loadNativeAds(
+                    context,
+                    keyAds
+                ) { nativeAds ->
+                    if (nativeAds != null && isAdded && isVisible) {
+                        val adNativeVideoBinding = AdNativeVideoBinding.inflate(layoutInflater)
+                        NativeAdsUtils.instance.populateNativeAdVideoView(
+                            nativeAds,
+                            adNativeVideoBinding.root as NativeAdView
+                        )
+                        binding.frNativeAds.removeAllViews()
+                        binding.frNativeAds.addView(adNativeVideoBinding.root)
+                    } else {
+                        binding.rlNative.gone()
+                        FirebaseAnalytics.getInstance(context)
+                            .logEvent("e_load_native_ads_select_animal", null)
+                    }
+                }
+            }
+        }.onFailure {
+            it.printStackTrace()
+        }
+
+
     }
 
 }

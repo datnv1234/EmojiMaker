@@ -144,6 +144,7 @@ class MultiLangActivity : BaseBindingActivity<ActivityMultiLangBinding, MultiLan
                         nativeAds,
                         adNativeVideoBinding.root as NativeAdView
                     )
+                    binding.frNativeAds.removeAllViews()
                     binding.frNativeAds.addView(adNativeVideoBinding.root)
                 }
             }

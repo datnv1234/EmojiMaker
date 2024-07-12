@@ -53,7 +53,22 @@
                         android:text="@string/you_don_t_have_any_package"
                         android:fontFamily="@font/poppins_regular"/>
                 </LinearLayout>
+                <RelativeLayout
+                    android:id="@+id/rl_native"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_170sdp"
+                    android:layout_marginTop="@dimen/_40sdp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintVertical_bias="1.0"
+                    app:layout_goneMarginTop="@dimen/_4sdp">
+                    <FrameLayout
+                        android:id="@+id/fr_native_ads"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
 
+                        <include layout="@layout/ads_native_shimmer" />
+                    </FrameLayout>
+                </RelativeLayout>
                 <LinearLayout
                     android:id="@+id/llSeeMore"
                     android:layout_width="match_parent"
