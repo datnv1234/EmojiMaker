@@ -128,7 +128,7 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
 
         binding.btnCreateSticker.setOnClickListener {
             startActivity(Intent(context, EmojiMakerActivity::class.java))
-            mMainActivity.showInterstitial {}
+            mMainActivity.forceShowInterstitial {}
         }
 
 

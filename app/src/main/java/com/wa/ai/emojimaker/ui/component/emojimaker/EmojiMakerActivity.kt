@@ -871,7 +871,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
 
     }
 
-    fun showInterstitial(onAdDismissedAction: () -> Unit) {
+    private fun showInterstitial(onAdDismissedAction: () -> Unit) {
         if (!DeviceUtils.checkInternetConnection(mContext)) {
             onAdDismissedAction.invoke()
             return

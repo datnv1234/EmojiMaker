@@ -8,38 +8,46 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.view.View
 import com.adjust.sdk.Adjust
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.common.Constant
 import com.wa.ai.emojimaker.databinding.ActivityShowStickersBinding
+import com.wa.ai.emojimaker.databinding.AdNativeContentBinding
 import com.wa.ai.emojimaker.ui.adapter.MadeStickerAdapter
 import com.wa.ai.emojimaker.ui.base.BaseBindingActivity
 import com.wa.ai.emojimaker.utils.AppUtils
 import com.wa.ai.emojimaker.utils.AppUtils.saveSticker
+import com.wa.ai.emojimaker.utils.DeviceUtils
 import com.wa.ai.emojimaker.utils.FileUtils
 import com.wa.ai.emojimaker.utils.FileUtils.copyFileToCache
 import com.wa.ai.emojimaker.utils.RemoteConfigKey
 import com.wa.ai.emojimaker.utils.ads.BannerUtils
+import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils
 import com.wa.ai.emojimaker.utils.extention.gone
 import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 import java.io.File
 
 
-class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, ShowStickerViewModel>() {
+class ShowStickersActivity :
+    BaseBindingActivity<ActivityShowStickersBinding, ShowStickerViewModel>() {
 
     private val keyAdsBanner =
         FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_SHOW_STICKERS)
     private val bannerReload =
         FirebaseRemoteConfig.getInstance().getLong(RemoteConfigKey.BANNER_RELOAD)
 
-    private val cateStickerAdapter : MadeStickerAdapter by lazy {
+    private val keyNative =
+        FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_SHOW_STICKERS)
+
+    private val cateStickerAdapter: MadeStickerAdapter by lazy {
         MadeStickerAdapter(itemClick = {
             //toast("Clicked")
         })
     }
 
-    private val madeStickerAdapter : MadeStickerAdapter by lazy {
+    private val madeStickerAdapter: MadeStickerAdapter by lazy {
         MadeStickerAdapter(itemClick = {
         })
     }
@@ -51,6 +59,13 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
 
     @SuppressLint("NotifyDataSetChanged")
     override fun setupView(savedInstanceState: Bundle?) {
+
+        viewModel.starTimeCountLoading(5000)
+        viewModel.isReady.observe(this) {
+            if (it) {
+                binding.llLoading.gone()
+            }
+        }
 
         binding.btnBack.setOnSafeClick {
             finish()
@@ -138,7 +153,17 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
     }
 
     private fun loadAds() {
-        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_BANNER_SHOW_STICKERS)) {
+        if (FirebaseRemoteConfig.getInstance()
+                .getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_SHOW_STICKERS)
+        ) {
+            loadNativeAds(keyNative)
+        } else {
+            binding.rlNative.visibility = View.GONE
+        }
+
+        if (FirebaseRemoteConfig.getInstance()
+                .getBoolean(RemoteConfigKey.IS_SHOW_ADS_BANNER_SHOW_STICKERS)
+        ) {
             loadBanner()
         } else {
             binding.rlBanner.gone()
@@ -191,11 +216,15 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
             for (file in listFile) {
                 val inputStream1 = assetManager.open("categories/$category/$file")
 
-                saveSticker(this, AppUtils.convertFileToBitmap(FileUtils.copyAssetFileToCache(
-                    this,
-                    inputStream1,
-                    file
-                )), category)
+                saveSticker(
+                    this, AppUtils.convertFileToBitmap(
+                        FileUtils.copyAssetFileToCache(
+                            this,
+                            inputStream1,
+                            file
+                        )
+                    ), category
+                )
                 inputStream1.close()
             }
             toast(getString(R.string.download_done))
@@ -280,5 +309,27 @@ class ShowStickersActivity : BaseBindingActivity<ActivityShowStickersBinding, Sh
                 }
             }
         }
+    }
+
+    private fun loadNativeAds(keyAds: String) {
+        if (!DeviceUtils.checkInternetConnection(applicationContext)) binding.rlNative.visibility =
+            View.GONE
+        this.let {
+            NativeAdsUtils.instance.loadNativeAds(
+                applicationContext,
+                keyAds
+            ) { nativeAds ->
+                if (nativeAds != null) {
+                    val adNativeVideoBinding = AdNativeContentBinding.inflate(layoutInflater)
+                    NativeAdsUtils.instance.populateNativeAdVideoView(
+                        nativeAds,
+                        adNativeVideoBinding.root
+                    )
+                    binding.frNativeAds.removeAllViews()
+                    binding.frNativeAds.addView(adNativeVideoBinding.root)
+                }
+            }
+        }
+
     }
 }

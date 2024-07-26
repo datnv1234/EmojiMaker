@@ -94,6 +94,12 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
 
         navView.setupWithNavController((navController))
         initAdsManager()
+        viewModel.starTimeCountLoading(5000)
+        viewModel.isReady.observe(this) {
+            if (it) {
+                binding.llLoading.gone()
+            }
+        }
     }
 
     override fun setupData() {
@@ -296,6 +302,52 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
         val timeSubtraction =
             Date().time - SharedPreferenceHelper.getLong(Constant.TIME_LOAD_NEW_INTER_ADS)
         if (timeSubtraction <= timeLoad) {
+            onAdDismissedAction.invoke()
+            return
+        }
+
+        if (mInterstitialAd == null) {
+            if (adsConsentManager?.canRequestAds == false) {
+                onAdDismissedAction.invoke()
+                return
+            }
+            onAdDismissedAction.invoke()
+            loadInterAd()
+            return
+        }
+        mInterstitialAd?.show(mContext)
+
+        mInterstitialAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
+            override fun onAdDismissedFullScreenContent() {
+                mInterstitialAd = null
+                loadInterAd()
+                SharedPreferenceHelper.storeLong(
+                    Constant.TIME_LOAD_NEW_INTER_ADS,
+                    Date().time
+                )
+            }
+
+            override fun onAdFailedToShowFullScreenContent(adError: AdError) {
+                mInterstitialAd = null
+                kotlin.runCatching {
+                    onAdDismissedAction.invoke()
+                }.onFailure {
+                    it.printStackTrace()
+                }
+            }
+
+            override fun onAdShowedFullScreenContent() {
+                kotlin.runCatching {
+                    onAdDismissedAction.invoke()
+                }.onFailure {
+                    it.printStackTrace()
+                }
+            }
+        }
+    }
+
+    fun forceShowInterstitial(onAdDismissedAction: () -> Unit) {
+        if (!DeviceUtils.checkInternetConnection(mContext)) {
             onAdDismissedAction.invoke()
             return
         }

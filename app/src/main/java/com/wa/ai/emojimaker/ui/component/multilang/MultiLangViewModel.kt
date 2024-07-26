@@ -53,12 +53,12 @@ class MultiLangViewModel : BaseViewModel() {
         val language6 = LanguageUI(
             name = "Vietnamese", code = "vi", avatar = R.drawable.flag_vietnam,
         )
-        listLanguageDefault.add(language1)
         listLanguageDefault.add(language2)
         listLanguageDefault.add(language3)
         listLanguageDefault.add(language4)
         listLanguageDefault.add(language5)
         listLanguageDefault.add(language6)
+        listLanguageDefault.add(language1)
         _languageLiveData.postValue(listLanguageDefault)
     }
 }

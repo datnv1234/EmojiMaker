@@ -151,8 +151,6 @@ dependencies {
     implementation("com.google.android.ump:user-messaging-platform:2.2.0")
     implementation("androidx.window:window:1.2.0")
 
-    //noinspection GradleDependency
-//    implementation("com.google.android.gms:play-services-measurement-api:21.5.1")
 
     //Adjust
     implementation("com.adjust.sdk:adjust-android:4.38.3")
