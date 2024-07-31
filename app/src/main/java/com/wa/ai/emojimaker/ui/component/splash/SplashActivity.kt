@@ -1,8 +1,10 @@
 package com.wa.ai.emojimaker.ui.component.splash
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import com.adjust.sdk.Adjust
 import com.adjust.sdk.AdjustAdRevenue
 import com.adjust.sdk.AdjustConfig
@@ -15,6 +17,7 @@ import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.OnPaidEventListener
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
+import com.google.android.gms.ads.nativead.NativeAdView
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.wa.ai.emojimaker.R
@@ -26,6 +29,7 @@ import com.wa.ai.emojimaker.ui.component.multilang.MultiLangActivity
 import com.wa.ai.emojimaker.utils.DeviceUtils
 import com.wa.ai.emojimaker.utils.RemoteConfigKey
 import com.wa.ai.emojimaker.utils.ads.AdsConsentManager
+import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils
 import com.wa.ai.emojimaker.utils.extention.setStatusBarColor
 import java.util.Date
 import java.util.concurrent.atomic.AtomicBoolean
@@ -128,6 +132,10 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
     }
 
     override fun setupData() {
+        viewModel.loadAds(this)
+        viewModel.nativeAdHome.observe(this) {
+            adNativeHome = it
+        }
     }
 
     override fun onResume() {
@@ -210,4 +218,8 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
         }
     }
 
+    @SuppressLint("StaticFieldLeak")
+    companion object {
+        var adNativeHome: NativeAdView? = null
+    }
 }

@@ -42,6 +42,7 @@
             android:id="@+id/rl_native"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/_11sdp"
             app:layout_constraintTop_toBottomOf="@id/llToolBar"
             app:layout_goneMarginTop="@dimen/_4sdp">
             <FrameLayout

@@ -54,9 +54,9 @@ internal class HomeAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (position % MainActivity.ITEMS_PER_AD == 0) AD_VIEW_TYPE
-        else ITEM_VIEW_TYPE
-        //return ITEM_VIEW_TYPE
+//        return if (position % MainActivity.ITEMS_PER_AD == 0) AD_VIEW_TYPE
+//        else ITEM_VIEW_TYPE
+        return ITEM_VIEW_TYPE
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

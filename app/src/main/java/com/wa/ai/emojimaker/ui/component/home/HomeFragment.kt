@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.adjust.sdk.Adjust
@@ -21,18 +22,19 @@ import com.wa.ai.emojimaker.ui.component.main.MainActivity
 import com.wa.ai.emojimaker.ui.component.main.MainActivity.Companion.ITEMS_PER_AD
 import com.wa.ai.emojimaker.ui.component.main.MainViewModel
 import com.wa.ai.emojimaker.ui.component.showstickers.ShowStickersActivity
+import com.wa.ai.emojimaker.ui.component.splash.SplashActivity
 import com.wa.ai.emojimaker.utils.AppUtils
 import com.wa.ai.emojimaker.utils.FileUtils
 import com.wa.ai.emojimaker.utils.FileUtils.getUriForFile
 import com.wa.ai.emojimaker.utils.RemoteConfigKey
 import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils
+import com.wa.ai.emojimaker.utils.extention.gone
 
 class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
 
     private lateinit var mMainActivity: MainActivity
     private lateinit var mMainViewModel: MainViewModel
-    private val keyAdNative =
-        FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_HOME)
+    private var adNativeView: NativeAdView? = null
 
     private val sharePackageDialog: SharePackageDialog by lazy {
         SharePackageDialog().apply {
@@ -123,8 +125,8 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
                         sharePackageDialog.show(parentFragmentManager, sharePackageDialog.tag)
                 })
             binding.rvCategory.adapter = adapter
-            loadNative()
         }
+        addNativeAd()
 
         binding.btnCreateSticker.setOnClickListener {
             startActivity(Intent(context, EmojiMakerActivity::class.java))
@@ -143,37 +145,6 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
     override fun onPause() {
         super.onPause()
         Adjust.onPause()
-    }
-
-    private fun loadNative() {
-        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_HOME)) {
-            loadNativeAd(0)
-        }
-    }
-
-    private fun loadNativeAd(index: Int) {
-        if (index >= (mMainViewModel.categoriesMutableLiveData.value?.size ?: 0)) {
-            return
-        }
-        val item = mMainViewModel.categoriesMutableLiveData.value?.get(index) as? NativeAdView
-            ?: throw ClassCastException("Expected item at index $index to be a banner ad ad.")
-        NativeAdsUtils.instance.loadNativeAds(
-            requireContext(),
-            keyAdNative
-        ) { nativeAds ->
-            if (nativeAds != null) {
-                val adLayoutView =
-                    LayoutInflater.from(requireContext())
-                        .inflate(R.layout.ad_native_content, item, false) as NativeAdView
-                NativeAdsUtils.instance.populateNativeAdVideoView(
-                    nativeAds,
-                    adLayoutView
-                )
-                item.removeAllViews()
-                item.addView(adLayoutView)
-            }
-            loadNativeAd(index + ITEMS_PER_AD)
-        }
     }
 
     private fun download(context: Context, category: String) {
@@ -204,6 +175,19 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
             toast(getString(R.string.download_done))
         } else {
             toast(getString(R.string.download_failed))
+        }
+    }
+
+    private fun addNativeAd() {
+        SplashActivity.adNativeHome?.let {
+            val adContainer = binding.frNativeAds
+            if (it.parent != null) {
+                (it.parent as ViewGroup).removeView(it)
+            }
+            adContainer.removeAllViews()
+            adContainer.addView(it)
+        } ?: run {
+            binding.frNativeAds.gone()
         }
     }
 }

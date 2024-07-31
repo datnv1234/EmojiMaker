@@ -5,18 +5,23 @@ import android.content.ContextWrapper
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.CountDownTimer
+import android.view.LayoutInflater
 import android.view.WindowManager
 import android.view.WindowMetrics
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.ads.nativead.NativeAdView
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.common.Constant
 import com.wa.ai.emojimaker.data.model.Category
 import com.wa.ai.emojimaker.data.model.MadeStickerModel
 import com.wa.ai.emojimaker.data.model.PackageModel
 import com.wa.ai.emojimaker.ui.base.BaseViewModel
 import com.wa.ai.emojimaker.utils.AppUtils
+import com.wa.ai.emojimaker.utils.RemoteConfigKey
+import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
@@ -81,26 +86,18 @@ class MainViewModel : BaseViewModel() {
     fun getCategories(context: Context) {
         viewModelScope.launch(Dispatchers.IO) {
             val listEntity = mutableListOf<Any>()
-            val adView1 = NativeAdView(context)
-            listEntity.add(adView1)
             listEntity.add(getCategory(context, "cat_chic", "Cat Chic"))
             listEntity.add(getCategory(context, "orange_orchard", "Orange Orchard"))
             listEntity.add(getCategory(context, "funny_rat", "Funny rat"))
             listEntity.add(getCategory(context, "dog_diversity", "Dog Diversity"))
-            val adView2 = NativeAdView(context)
-            listEntity.add(adView2)
             listEntity.add(getCategory(context, "pet_pawtentials", "Pet Pawtentials"))
             listEntity.add(getCategory(context, "sly_spirits", "Sly Spirits"))
             listEntity.add(getCategory(context, "xiximi", "Xiximi"))
             listEntity.add(getCategory(context, "funny_cat", "Funny Cat"))
-            val adView3 = NativeAdView(context)
-            listEntity.add(adView3)
             listEntity.add(getCategory(context, "quacking_quacks", "Quacking Quacks"))
             listEntity.add(getCategory(context, "emoji", "Emoji"))
             listEntity.add(getCategory(context, "brainy_endeavors", "Brainy Endeavors"))
             listEntity.add(getCategory(context, "couple_emoji", "Couple emoji"))
-            val adView4 = NativeAdView(context)
-            listEntity.add(adView4)
             listEntity.add(getCategory(context, "cute_girl", "Cute girl"))
             _categoriesMutableLiveData.postValue(listEntity)
         }
