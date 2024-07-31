@@ -2,18 +2,22 @@ package com.wa.ai.emojimaker.ui.dialog
 
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.gms.ads.nativead.NativeAdView
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.data.model.PackageModel
 import com.wa.ai.emojimaker.databinding.DialogAddToPackageBinding
 import com.wa.ai.emojimaker.ui.adapter.PackageAdapter
 import com.wa.ai.emojimaker.ui.base.BaseBindingDialogFragment
+import com.wa.ai.emojimaker.ui.component.emojimaker.EmojiViewModel
 import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 
 class AddToPackageDialog : BaseBindingDialogFragment<DialogAddToPackageBinding>() {
 
     lateinit var save: ((pkg: PackageModel?) -> Unit)
     lateinit var createNewPackage: ((binding : DialogAddToPackageBinding) -> Unit)
+    private var adView: NativeAdView? = null
 
     override val layoutId: Int
         get() = R.layout.dialog_add_to_package
@@ -35,6 +39,11 @@ class AddToPackageDialog : BaseBindingDialogFragment<DialogAddToPackageBinding>(
         }
         binding.rvPackage.adapter = packageAdapter
         setup()
+        val emojiViewModel : EmojiViewModel = ViewModelProvider(requireActivity())[EmojiViewModel::class.java]
+        emojiViewModel.nativeAdAddToPackageDialog.observe(this) {
+            adView = it
+            addNativeAd()
+        }
     }
 
     private fun getPackage() : PackageModel? = packageAdapter.getCurrentPackage()
@@ -57,6 +66,17 @@ class AddToPackageDialog : BaseBindingDialogFragment<DialogAddToPackageBinding>(
         }
         binding.btnClose.setOnSafeClick {
             dismiss()
+        }
+    }
+
+    private fun addNativeAd() {
+        adView?.let {
+            val adContainer = binding.frNativeAds
+            if (it.parent != null) {
+                (it.parent as ViewGroup).removeView(adView)
+            }
+            adContainer.removeAllViews()
+            adContainer.addView(it)
         }
     }
 }

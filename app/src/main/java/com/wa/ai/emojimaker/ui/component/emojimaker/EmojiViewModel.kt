@@ -4,14 +4,19 @@ import android.content.Context
 import android.content.res.AssetManager
 import android.graphics.Bitmap
 import android.os.CountDownTimer
+import android.view.LayoutInflater
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.ads.nativead.NativeAdView
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.data.model.ItemOptionUI
 import com.wa.ai.emojimaker.data.model.PagerIconUI
 import com.wa.ai.emojimaker.data.model.PieceSticker
 import com.wa.ai.emojimaker.ui.base.BaseViewModel
+import com.wa.ai.emojimaker.utils.RemoteConfigKey
+import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
@@ -74,6 +79,8 @@ class EmojiViewModel : BaseViewModel() {
 
     fun getItemOption(context: Context) {
         viewModelScope.launch(Dispatchers.IO) {
+            loadNativeSaveDialog(context)
+            loadNativeAddToPackageDialog(context)
             getOptions()
             getPieceSticker(context)
             val listOptionEntity = mutableListOf<PagerIconUI>()
@@ -177,4 +184,59 @@ class EmojiViewModel : BaseViewModel() {
         }
     }
 
+    // Load ads section----------------
+    private val _nativeAdSaveDialog: MutableLiveData<NativeAdView> = MutableLiveData()
+    val nativeAdSaveDialog: LiveData<NativeAdView>
+        get() = _nativeAdSaveDialog
+
+    private val _nativeAdAddToPackageDialog: MutableLiveData<NativeAdView> = MutableLiveData()
+    val nativeAdAddToPackageDialog: LiveData<NativeAdView>
+        get() = _nativeAdAddToPackageDialog
+
+    private val _nativeAdCreatePackageDialog: MutableLiveData<NativeAdView> = MutableLiveData()
+    val nativeAdCreatePackageDialog: LiveData<NativeAdView>
+        get() = _nativeAdCreatePackageDialog
+
+    private fun loadNativeSaveDialog(context: Context) {
+        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_MY_CREATIVE)) {
+            val adView = loadNativeAd(context = context)
+            _nativeAdSaveDialog.postValue(adView)
+        }
+    }
+
+    private fun loadNativeAddToPackageDialog(context: Context) {
+        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_MY_CREATIVE)) {
+            val adView = loadNativeAd(context = context)
+            _nativeAdAddToPackageDialog.postValue(adView)
+        }
+    }
+
+    private fun loadNativeCreatePackageDialog(context: Context) {
+        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_MY_CREATIVE)) {
+            val adView = loadNativeAd(context = context)
+            _nativeAdCreatePackageDialog.postValue(adView)
+        }
+    }
+
+    private fun loadNativeAd(context: Context) : NativeAdView {
+        val keyAd = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_MY_CREATIVE)
+        val adView = NativeAdView(context)
+        NativeAdsUtils.instance.loadNativeAds(
+            context,
+            keyAd
+        ) { nativeAds ->
+            if (nativeAds != null) {
+                val adLayoutView =
+                    LayoutInflater.from(context)
+                        .inflate(R.layout.ad_native_content, adView, false) as NativeAdView
+                NativeAdsUtils.instance.populateNativeAdVideoView(
+                    nativeAds,
+                    adLayoutView
+                )
+                adView.removeAllViews()
+                adView.addView(adLayoutView)
+            }
+        }
+        return adView
+    }
 }

@@ -60,13 +60,6 @@ class ShowStickersActivity :
     @SuppressLint("NotifyDataSetChanged")
     override fun setupView(savedInstanceState: Bundle?) {
 
-        viewModel.starTimeCountLoading(5000)
-        viewModel.isReady.observe(this) {
-            if (it) {
-                binding.llLoading.gone()
-            }
-        }
-
         binding.btnBack.setOnSafeClick {
             finish()
         }

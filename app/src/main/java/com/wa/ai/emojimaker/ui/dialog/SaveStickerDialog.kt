@@ -1,8 +1,12 @@
 package com.wa.ai.emojimaker.ui.dialog
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.gms.ads.nativead.NativeAdView
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.databinding.DialogSaveBinding
 import com.wa.ai.emojimaker.ui.base.BaseBindingDialogFragment
@@ -14,6 +18,7 @@ class SaveStickerDialog : BaseBindingDialogFragment<DialogSaveBinding>() {
     var addToPackage: (() -> Unit)? = null
     var download: ((binding : DialogSaveBinding) -> Unit)? = null
     var share: ((binding : DialogSaveBinding) -> Unit)? = null
+    private var adView: NativeAdView? = null
 
     override val layoutId: Int
         get() = R.layout.dialog_save
@@ -23,6 +28,10 @@ class SaveStickerDialog : BaseBindingDialogFragment<DialogSaveBinding>() {
         val emojiViewModel : EmojiViewModel = ViewModelProvider(requireActivity())[EmojiViewModel::class.java]
         emojiViewModel.bitmapMutableLiveData.observe(this) {
             binding.imgPreview.setImageBitmap(it)
+        }
+        emojiViewModel.nativeAdSaveDialog.observe(this) {
+            adView = it
+            addNativeAd()
         }
     }
 
@@ -45,6 +54,17 @@ class SaveStickerDialog : BaseBindingDialogFragment<DialogSaveBinding>() {
         }
         binding.bg.setOnSafeClick {
             dismiss()
+        }
+    }
+
+    private fun addNativeAd() {
+        adView?.let {
+            val adContainer = binding.frNativeAds
+            if (it.parent != null) {
+                (it.parent as ViewGroup).removeView(adView)
+            }
+            adContainer.removeAllViews()
+            adContainer.addView(it)
         }
     }
 }

@@ -37,21 +37,7 @@
                 android:fontFamily="@font/poppins_semibold"
                 android:textSize="@dimen/_20ssp"/>
         </LinearLayout>
-        <LinearLayout
-            android:id="@+id/llLoading"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:elevation="@dimen/_15sdp"
-            android:background="#99FFFFFF"
-            android:gravity="center">
-            <com.airbnb.lottie.LottieAnimationView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginBottom="12dp"
-                app:lottie_autoPlay="true"
-                app:lottie_loop="true"
-                app:lottie_rawRes="@raw/anim_loading" />
-        </LinearLayout>
+
         <RelativeLayout
             android:id="@+id/rl_native"
             android:layout_width="match_parent"

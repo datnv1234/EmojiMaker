@@ -21,7 +21,9 @@ import android.os.Looper
 import android.os.Parcelable
 import android.provider.OpenableColumns
 import android.text.InputType
+import android.util.AttributeSet
 import android.util.Patterns
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
@@ -44,6 +46,7 @@ import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.OnPaidEventListener
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
+import com.google.android.gms.ads.nativead.NativeAdView
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.wa.ai.emojimaker.R
@@ -59,11 +62,13 @@ import com.wa.ai.emojimaker.ui.dialog.CreatePackageDialog
 import com.wa.ai.emojimaker.ui.dialog.SaveStickerDialog
 import com.wa.ai.emojimaker.ui.dialog.SaveSuccessDialog
 import com.wa.ai.emojimaker.ui.component.main.MainActivity
+import com.wa.ai.emojimaker.ui.component.main.MainActivity.Companion.ITEMS_PER_AD
 import com.wa.ai.emojimaker.utils.AppUtils
 import com.wa.ai.emojimaker.utils.DeviceUtils
 import com.wa.ai.emojimaker.utils.RemoteConfigKey
 import com.wa.ai.emojimaker.utils.ads.AdsConsentManager
 import com.wa.ai.emojimaker.utils.ads.BannerUtils
+import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils
 import com.wa.ai.emojimaker.utils.extention.gone
 import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 import com.wa.ai.emojimaker.utils.sticker.BitmapStickerIcon
@@ -105,7 +110,8 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     private var isFinishImmediately = false
 
     private lateinit var emojiViewModel: EmojiViewModel
-    private val mContext = this
+    private val mContext : Context = this
+
     private val pagerIconAdapter: PagerIconAdapter by lazy {
         PagerIconAdapter(itemClick = {
             doAddSticker(it)
@@ -225,8 +231,9 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         binding.btnSave.setOnSafeClick(1000) {
             val bitmap = binding.stickerView.createBitmap()
             emojiViewModel.setBitmap(bitmap)
-            if (!mSaveDialog.isAdded)
+            if (!mSaveDialog.isAdded) {
                 mSaveDialog.show(supportFragmentManager, mSaveDialog.tag)
+            }
             showInterstitial {}
         }
         initAdsManager()
@@ -783,8 +790,8 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
 
 
     private fun initAdsManager() {
-        adsConsentManager = AdsConsentManager.getInstance(mContext)
-        adsConsentManager?.gatherConsent(mContext) { consentError ->
+        adsConsentManager = AdsConsentManager.getInstance(this)
+        adsConsentManager?.gatherConsent(this) { consentError ->
             if (consentError != null) {
 
                 initializeMobileAdsSdk()
@@ -895,7 +902,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
             loadInterAd()
             return
         }
-        mInterstitialAd?.show(mContext)
+        mInterstitialAd?.show(this)
 
         mInterstitialAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
             override fun onAdDismissedFullScreenContent() {
@@ -925,6 +932,8 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
             }
         }
     }
+
+
 
     companion object {
         const val PERM_RQST_CODE = 110

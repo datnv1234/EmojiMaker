@@ -53,7 +53,6 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
 
     private var adsConsentManager: AdsConsentManager? = null
     private val isAdsInitializeCalled = AtomicBoolean(false)
-    private var interstitialAd: InterstitialAd? = null
     private var mFirebaseAnalytics: FirebaseAnalytics? = null
     private var mInterstitialAd: InterstitialAd? = null
 
@@ -94,12 +93,6 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
 
         navView.setupWithNavController((navController))
         initAdsManager()
-        viewModel.starTimeCountLoading(5000)
-        viewModel.isReady.observe(this) {
-            if (it) {
-                binding.llLoading.gone()
-            }
-        }
     }
 
     override fun setupData() {

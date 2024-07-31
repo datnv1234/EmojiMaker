@@ -203,31 +203,4 @@ class MainViewModel : BaseViewModel() {
             it.printStackTrace()
         }
     }
-
-    private var timer: CountDownTimer? = null
-    private var _isReadyMutableLiveData: MutableLiveData<Boolean> = MutableLiveData()
-    val isReady: LiveData<Boolean>
-        get() = _isReadyMutableLiveData
-
-    private fun createCountDownTimer(time : Long): CountDownTimer {
-        return object : CountDownTimer(time, 1000) {
-            override fun onTick(millisUntilFinished: Long) {
-            }
-
-            override fun onFinish() {
-                _isReadyMutableLiveData.postValue(true)
-            }
-        }
-    }
-
-    fun starTimeCountLoading(time : Long) {
-        kotlin.runCatching {
-            timer?.cancel()
-            timer = createCountDownTimer(time)
-            timer?.start()
-        }.onFailure {
-            it.printStackTrace()
-        }
-    }
-
 }

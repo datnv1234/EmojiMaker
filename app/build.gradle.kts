@@ -32,7 +32,7 @@ android {
         applicationId = "com.wa.ai.emojimaker"
         minSdk = 24
         targetSdk = 33
-        versionCode = 15
+        versionCode = 16
         versionName = "1.6"
 
         val formattedDate = SimpleDateFormat("MM.dd.yyyy").format(Date())
@@ -155,6 +155,7 @@ dependencies {
     //Adjust
     implementation("com.adjust.sdk:adjust-android:4.38.3")
     implementation("com.android.installreferrer:installreferrer:2.2")
+
     // Add the following if you are using the Adjust SDK inside web views on your app
     implementation("com.adjust.sdk:adjust-android-webbridge:4.38.3")
     implementation("com.google.android.gms:play-services-ads-identifier:18.0.1")
