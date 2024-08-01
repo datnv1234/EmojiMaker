@@ -275,7 +275,7 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
                                     putDouble(FirebaseAnalytics.Param.VALUE, revenue)
                                     putString(FirebaseAnalytics.Param.CURRENCY, "USD")
                                 }
-                                analytics.logEvent("ad_impression_inter", params)
+                                analytics.logEvent("ad_impression_2", params)
                             }
                     }
                 }

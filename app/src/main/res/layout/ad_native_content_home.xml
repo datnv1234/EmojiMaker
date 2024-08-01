@@ -1,5 +1,4 @@
-<com.google.android.gms.ads.nativead.NativeAdView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.gms.ads.nativead.NativeAdView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -16,66 +15,25 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:padding="@dimen/_8sdp">
+            android:paddingHorizontal="@dimen/_8sdp">
 
-            <TextView
-                android:id="@+id/ad_headline"
+
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_4sdp"
                 android:orientation="horizontal">
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="@dimen/_6sdp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/ad_advertiser"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:ellipsize="end"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/ad_body"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:ellipsize="end"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:id="@+id/ad_call_to_action"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/_40sdp"
-                        android:fontFamily="@font/poppins_bold"
-                        android:background="@drawable/background_round_8"
-                        android:gravity="center"
-                        android:includeFontPadding="false"
-                        android:text="@string/install"
-                        android:enabled="true"
-                        android:textColor="#FFFFFF"
-                        android:textSize="@dimen/_14ssp"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-
                 <androidx.cardview.widget.CardView
-                    android:layout_width="@dimen/_53sdp"
-                    android:layout_height="@dimen/_53sdp"
+                    android:id="@+id/cvIcon"
+                    android:layout_width="@dimen/_44sdp"
+                    android:layout_height="@dimen/_44sdp"
+                    android:layout_marginVertical="@dimen/_26sdp"
                     app:cardBackgroundColor="@color/colorAds"
                     app:cardCornerRadius="@dimen/_6sdp"
-                    app:cardElevation="0dp">
+                    app:cardElevation="0dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent">
 
                     <ImageView
                         android:id="@+id/ad_app_icon"
@@ -83,13 +41,62 @@
                         android:layout_height="wrap_content"
                         android:contentDescription="@string/icon_advertising" />
                 </androidx.cardview.widget.CardView>
-            </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="@dimen/_6sdp"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    app:layout_constraintStart_toEndOf="@id/cvIcon"
+                    app:layout_constraintEnd_toStartOf="@id/ad_call_to_action"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent">
+
+                    <TextView
+                        android:id="@+id/ad_headline"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="" />
+
+                    <TextView
+                        android:id="@+id/ad_body"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+                <TextView
+                    android:id="@+id/ad_call_to_action"
+                    android:layout_width="@dimen/_82sdp"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:background="@drawable/bg_button_ad_native_home"
+                    android:fontFamily="@font/poppins_bold"
+                    android:includeFontPadding="false"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="@dimen/_4sdp"
+                    android:text="@string/install"
+                    android:textColor="#000000"
+                    android:textSize="@dimen/_11ssp"
+                    android:elevation="@dimen/_2sdp"
+                    android:translationZ="@dimen/_2sdp"
+                    android:gravity="center"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@id/cvIcon"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
 
         <TextView
             style="@style/AppTheme.Ads"
             android:backgroundTint="@color/colorAds"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.gms.ads.nativead.NativeAdView>

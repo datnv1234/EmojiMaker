@@ -12,6 +12,7 @@ import com.wa.ai.emojimaker.ui.adapter.PackageAdapter
 import com.wa.ai.emojimaker.ui.base.BaseBindingDialogFragment
 import com.wa.ai.emojimaker.ui.component.emojimaker.EmojiViewModel
 import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
+import com.wa.ai.emojimaker.utils.extention.visible
 
 class AddToPackageDialog : BaseBindingDialogFragment<DialogAddToPackageBinding>() {
 
@@ -70,10 +71,11 @@ class AddToPackageDialog : BaseBindingDialogFragment<DialogAddToPackageBinding>(
     }
 
     private fun addNativeAd() {
+        binding.rlNative.visible()
         adView?.let {
             val adContainer = binding.frNativeAds
             if (it.parent != null) {
-                (it.parent as ViewGroup).removeView(adView)
+                (it.parent as ViewGroup).removeView(it)
             }
             adContainer.removeAllViews()
             adContainer.addView(it)

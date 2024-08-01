@@ -1,10 +1,8 @@
 package com.wa.ai.emojimaker.ui.component.splash
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
 import com.adjust.sdk.Adjust
 import com.adjust.sdk.AdjustAdRevenue
 import com.adjust.sdk.AdjustConfig
@@ -29,7 +27,7 @@ import com.wa.ai.emojimaker.ui.component.multilang.MultiLangActivity
 import com.wa.ai.emojimaker.utils.DeviceUtils
 import com.wa.ai.emojimaker.utils.RemoteConfigKey
 import com.wa.ai.emojimaker.utils.ads.AdsConsentManager
-import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils
+import com.wa.ai.emojimaker.utils.extention.isNetworkAvailable
 import com.wa.ai.emojimaker.utils.extention.setStatusBarColor
 import java.util.Date
 import java.util.concurrent.atomic.AtomicBoolean
@@ -52,6 +50,9 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
         super.onCreate(savedInstanceState)
         initAdsManager()
         init()
+        if (!isNetworkAvailable()) {
+            viewModel.starTimeCount(5000)
+        }
     }
 
     private fun init() {
@@ -132,9 +133,15 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
     }
 
     override fun setupData() {
-        viewModel.loadAds(this)
+        viewModel.loadAds(baseContext)
         viewModel.nativeAdHome.observe(this) {
             adNativeHome = it
+        }
+        viewModel.nativeAdDialog.observe(this) {
+            adNativeDialog = it
+        }
+        viewModel.nativeAdMyCreative.observe(this) {
+            adNativeMyCreative = it
         }
     }
 
@@ -179,18 +186,15 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
                         loadInterCount++
                         if (loadInterCount >= 3) {
                             viewModel.starTimeCount(5000)
-
                         } else {
                             loadInterAdsSplash()
-
                         }
                     }
 
                     override fun onAdLoaded(ad: InterstitialAd) {
-
                         mFirebaseAnalytics?.logEvent("d_load_inter_splash", null)
                         mInterstitialAd = ad
-                        loadInterCount  = 0
+                        loadInterCount = 0
                         viewModel.starTimeCount(0)
                         mInterstitialAd?.onPaidEventListener =
                             OnPaidEventListener { adValue ->
@@ -204,13 +208,16 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
 
                                 val analytics = FirebaseAnalytics.getInstance(this@SplashActivity)
                                 val params = Bundle().apply {
-                                    putString(FirebaseAnalytics.Param.AD_PLATFORM, "admob mediation")
+                                    putString(
+                                        FirebaseAnalytics.Param.AD_PLATFORM,
+                                        "admob mediation"
+                                    )
                                     putString(FirebaseAnalytics.Param.AD_SOURCE, "AdMob")
                                     putString(FirebaseAnalytics.Param.AD_FORMAT, "Interstitial")
                                     putDouble(FirebaseAnalytics.Param.VALUE, revenue)
                                     putString(FirebaseAnalytics.Param.CURRENCY, "USD")
                                 }
-                                analytics.logEvent("ad_impression_inter", params)
+                                analytics.logEvent("ad_impression_2", params)
                             }
                     }
                 }
@@ -221,5 +228,7 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
     @SuppressLint("StaticFieldLeak")
     companion object {
         var adNativeHome: NativeAdView? = null
+        var adNativeDialog: NativeAdView? = null
+        var adNativeMyCreative: NativeAdView? = null
     }
 }

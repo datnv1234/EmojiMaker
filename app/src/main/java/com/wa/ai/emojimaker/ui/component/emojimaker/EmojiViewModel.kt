@@ -81,6 +81,8 @@ class EmojiViewModel : BaseViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             loadNativeSaveDialog(context)
             loadNativeAddToPackageDialog(context)
+            loadNativeSaveSuccessDialog(context)
+
             getOptions()
             getPieceSticker(context)
             val listOptionEntity = mutableListOf<PagerIconUI>()
@@ -193,33 +195,33 @@ class EmojiViewModel : BaseViewModel() {
     val nativeAdAddToPackageDialog: LiveData<NativeAdView>
         get() = _nativeAdAddToPackageDialog
 
-    private val _nativeAdCreatePackageDialog: MutableLiveData<NativeAdView> = MutableLiveData()
-    val nativeAdCreatePackageDialog: LiveData<NativeAdView>
-        get() = _nativeAdCreatePackageDialog
+    private val _nativeAdSaveSuccessDialog: MutableLiveData<NativeAdView> = MutableLiveData()
+    val nativeAdSaveSuccessDialog: LiveData<NativeAdView>
+        get() = _nativeAdSaveSuccessDialog
 
     private fun loadNativeSaveDialog(context: Context) {
-        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_MY_CREATIVE)) {
+        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_SETTINGS)) {
             val adView = loadNativeAd(context = context)
             _nativeAdSaveDialog.postValue(adView)
         }
     }
 
     private fun loadNativeAddToPackageDialog(context: Context) {
-        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_MY_CREATIVE)) {
+        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_SETTINGS)) {
             val adView = loadNativeAd(context = context)
             _nativeAdAddToPackageDialog.postValue(adView)
         }
     }
 
-    private fun loadNativeCreatePackageDialog(context: Context) {
-        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_MY_CREATIVE)) {
+    private fun loadNativeSaveSuccessDialog(context: Context) {
+        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_SETTINGS)) {
             val adView = loadNativeAd(context = context)
-            _nativeAdCreatePackageDialog.postValue(adView)
+            _nativeAdSaveSuccessDialog.postValue(adView)
         }
     }
 
     private fun loadNativeAd(context: Context) : NativeAdView {
-        val keyAd = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_MY_CREATIVE)
+        val keyAd = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_SETTINGS)
         val adView = NativeAdView(context)
         NativeAdsUtils.instance.loadNativeAds(
             context,
