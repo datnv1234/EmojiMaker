@@ -58,9 +58,10 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
     private fun init() {
         viewModel.isCompleteLiveData.observe(this) {
             openChooseLanguageActivity()
-            showInterstitial {
-                finish()
+            kotlin.runCatching {
+                showInterstitial {}
             }
+            finish()
         }
     }
 

@@ -194,11 +194,15 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
                 isFinishImmediately = true
                 finish()
                 startActivity(Intent(this@EmojiMakerActivity, MainActivity::class.java))
-                showInterstitial(false)
+                kotlin.runCatching {
+                    showInterstitial(false)
+                }
             }
             createMore = {
                 newBoard()
-                showInterstitial(true)
+                kotlin.runCatching {
+                    showInterstitial(true)
+                }
             }
         }
     }
@@ -231,7 +235,9 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
             if (!mSaveDialog.isAdded) {
                 mSaveDialog.show(supportFragmentManager, mSaveDialog.tag)
             }
-            showInterstitial(true)
+            kotlin.runCatching {
+                showInterstitial(true)
+            }
         }
         initAdsManager()
     }
@@ -604,6 +610,9 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     private fun setupButtons() {
 
         binding.ivBack.setOnSafeClick {
+            kotlin.runCatching {
+                showInterstitial(false)
+            }
             finish()
         }
 
