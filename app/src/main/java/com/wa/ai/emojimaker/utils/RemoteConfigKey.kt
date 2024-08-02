@@ -8,6 +8,7 @@ object RemoteConfigKey {
     const val INTER_DELAY = "inter_delay"
     const val BANNER_RELOAD = "banner_reload"
     const val IS_SHOW_ADS_OPEN_APP = "show_ads_open_app"
+    const val IS_USE_MONET = "is_use_monet"
 
     const val IS_SHOW_ADS_NATIVE_DIALOG = "is_show_ads_native_dialog"
 
@@ -40,8 +41,15 @@ object RemoteConfigKey {
 
     // Native
     const val KEY_ADS_NATIVE_INTRO = "key_ads_native_intro"
+    const val KEY_ADS_NATIVE_INTRO_HIGH = "key_ads_native_intro_high"
+    const val KEY_ADS_NATIVE_INTRO_MEDIUM = "key_ads_native_intro_medium"
     const val KEY_ADS_NATIVE_LANGUAGE = "key_ads_native_language"
+    const val KEY_ADS_NATIVE_LANGUAGE_HIGH = "key_ads_native_language_high"
+    const val KEY_ADS_NATIVE_LANGUAGE_MEDIUM = "key_ads_native_language_medium"
     const val KEY_ADS_NATIVE_HOME = "key_ads_native_home"
+    const val KEY_ADS_NATIVE_HOME_HIGH = "key_ads_native_home_high"
+    const val KEY_ADS_NATIVE_HOME_MEDIUM = "key_ads_native_home_medium"
+
     const val KEY_ADS_NATIVE_MY_CREATIVE = "key_ads_native_my_creative"
     const val KEY_ADS_NATIVE_SETTINGS = "key_ads_native_settings"
     const val KEY_ADS_NATIVE_SHOW_STICKERS = "key_ads_native_show_stickers"

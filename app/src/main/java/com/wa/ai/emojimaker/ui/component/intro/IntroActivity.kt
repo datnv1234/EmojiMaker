@@ -3,6 +3,7 @@ package com.wa.ai.emojimaker.ui.component.intro
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.adjust.sdk.Adjust
@@ -16,9 +17,11 @@ import com.wa.ai.emojimaker.databinding.AdNativeVideoBinding
 import com.wa.ai.emojimaker.ui.adapter.IntroAdapter
 import com.wa.ai.emojimaker.ui.base.BaseBindingActivity
 import com.wa.ai.emojimaker.ui.component.main.MainActivity
+import com.wa.ai.emojimaker.ui.component.splash.SplashActivity
 import com.wa.ai.emojimaker.utils.DeviceUtils
 import com.wa.ai.emojimaker.utils.RemoteConfigKey
 import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils
+import com.wa.ai.emojimaker.utils.extention.gone
 import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 import com.wa.ai.emojimaker.utils.extention.setStatusBarColor
 import kotlinx.coroutines.Dispatchers
@@ -61,10 +64,15 @@ class IntroActivity : BaseBindingActivity<ActivityIntroBinding, IntroViewModel>(
     }
 
     private fun loadAds() {
-        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_INTRO)) {
-            loadNativeAds(keyNative)
-        } else {
-            binding.rlNative.visibility = View.GONE
+        SplashActivity.adNativeLanguage?.let {
+            val adContainer = binding.frNativeAds
+            if (it.parent != null) {
+                (it.parent as ViewGroup).removeView(it)
+            }
+            adContainer.removeAllViews()
+            adContainer.addView(it)
+        } ?: run {
+            binding.frNativeAds.gone()
         }
     }
 
@@ -98,7 +106,6 @@ class IntroActivity : BaseBindingActivity<ActivityIntroBinding, IntroViewModel>(
                     }
                 }
             }
-
         }
     }
 
@@ -117,26 +124,5 @@ class IntroActivity : BaseBindingActivity<ActivityIntroBinding, IntroViewModel>(
             })
             binding.dotsIndicator.attachTo(this)
         }
-    }
-
-    private fun loadNativeAds(keyAds: String) {
-        if (!DeviceUtils.checkInternetConnection(applicationContext)) binding.rlNative.visibility =
-            View.GONE
-        this.let {
-            NativeAdsUtils.instance.loadNativeAds(
-                applicationContext,
-                keyAds
-            ) { nativeAds ->
-                if (nativeAds != null) {
-                    val adNativeVideoBinding = AdNativeVideoBinding.inflate(layoutInflater)
-                    NativeAdsUtils.instance.populateNativeAdVideoView(
-                        nativeAds,
-                        adNativeVideoBinding.root as NativeAdView
-                    )
-                    binding.frNativeAds.addView(adNativeVideoBinding.root)
-                }
-            }
-        }
-
     }
 }

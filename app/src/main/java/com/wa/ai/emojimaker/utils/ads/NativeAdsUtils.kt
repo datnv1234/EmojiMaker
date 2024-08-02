@@ -22,6 +22,7 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.utils.extention.gone
 import com.wa.ai.emojimaker.utils.extention.visible
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import kotlin.math.pow
 
@@ -68,7 +69,9 @@ class NativeAdsUtils {
                             2.0.pow(6.0.coerceAtMost(retryAttempt)).toLong()
                         )
                         Handler(Looper.getMainLooper()).postDelayed(
-                            { loadNativeAds(context, keyAds, adsLoadCallBack) },
+                            {
+                                loadNativeAds(context, keyAds, adsLoadCallBack)
+                            },
                             delayMillis
                         )
                     } else {
@@ -85,7 +88,62 @@ class NativeAdsUtils {
         adLoader.loadAd(AdRequest.Builder().build())
     }
 
-    fun populateNativeAdVideoView(nativeAd: NativeAd, nativeAdView: NativeAdView, isShowMedia: Boolean = true) {
+    fun loadNativeAdsSequence(
+        context: Context,
+        listKeyAds: List<String>,
+        adsLoadCallBack: (NativeAd?) -> Unit
+    ) {
+
+        fun loadNextAd(adIndex: Int) {
+            if (adIndex == (listKeyAds.size - 1)) {
+                loadNativeAds(context, listKeyAds.last(), adsLoadCallBack)
+                return
+            }
+
+            val adLoader = AdLoader.Builder(context, listKeyAds[adIndex])
+                .forNativeAd { nativeAd ->
+                    adsLoadCallBack(nativeAd)
+                    nativeAd.setOnPaidEventListener { adValue ->
+                        val loadedAdapterResponseInfo: AdapterResponseInfo? =
+                            nativeAd.responseInfo?.loadedAdapterResponseInfo
+                        val adRevenue = AdjustAdRevenue(AdjustConfig.AD_REVENUE_ADMOB)
+                        val revenue = adValue.valueMicros.toDouble() / 1000000.0
+                        adRevenue.setRevenue(revenue, adValue.currencyCode)
+                        adRevenue.adRevenueNetwork = loadedAdapterResponseInfo?.adSourceName
+                        Adjust.trackAdRevenue(adRevenue)
+                        val analytics = FirebaseAnalytics.getInstance(context)
+                        val params = Bundle().apply {
+                            putString(FirebaseAnalytics.Param.AD_PLATFORM, "admob mediation")
+                            putString(FirebaseAnalytics.Param.AD_SOURCE, "AdMob")
+                            putString(FirebaseAnalytics.Param.AD_FORMAT, "Native")
+                            putDouble(FirebaseAnalytics.Param.VALUE, revenue)
+                            putString(FirebaseAnalytics.Param.CURRENCY, "USD")
+                        }
+                        analytics.logEvent("ad_impression_2", params)
+                    }
+                }.withAdListener(object : AdListener() {
+                    override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                        super.onAdFailedToLoad(loadAdError)
+                        loadNextAd(adIndex + 1)
+                    }
+
+                    override fun onAdLoaded() {
+                        super.onAdLoaded()
+                        Timber.tag("datnv").d("onAdLoaded: $adIndex")
+                    }
+                }).build()
+
+            adLoader.loadAd(AdRequest.Builder().build())
+
+        }
+        loadNextAd(0)
+    }
+
+    fun populateNativeAdVideoView(
+        nativeAd: NativeAd,
+        nativeAdView: NativeAdView,
+        isShowMedia: Boolean = true
+    ) {
         kotlin.runCatching {
             val adHeadline: TextView? = nativeAdView.findViewById(R.id.ad_headline)
             val adBody: TextView? = nativeAdView.findViewById(R.id.ad_body)
@@ -108,7 +166,7 @@ class NativeAdsUtils {
             // The headline and media content are guaranteed to be in every NativeAd.
             adHeadline?.text = nativeAd.headline
 
-            if (isShowMedia){
+            if (isShowMedia) {
                 nativeAd.mediaContent?.let {
                     adMedia?.mediaContent = it
                 }

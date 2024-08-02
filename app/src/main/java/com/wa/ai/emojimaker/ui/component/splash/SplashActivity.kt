@@ -137,12 +137,16 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
         viewModel.nativeAdHome.observe(this) {
             adNativeHome = it
         }
+        viewModel.nativeAdLanguage.observe(this) {
+            adNativeLanguage = it
+        }
+        viewModel.nativeAdIntro.observe(this) {
+            adNativeIntro = it
+        }
         viewModel.nativeAdDialog.observe(this) {
             adNativeDialog = it
         }
-        viewModel.nativeAdMyCreative.observe(this) {
-            adNativeMyCreative = it
-        }
+
     }
 
     override fun onResume() {
@@ -195,7 +199,7 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
                         mFirebaseAnalytics?.logEvent("d_load_inter_splash", null)
                         mInterstitialAd = ad
                         loadInterCount = 0
-                        viewModel.starTimeCount(0)
+                        viewModel.starTimeCount(5000)
                         mInterstitialAd?.onPaidEventListener =
                             OnPaidEventListener { adValue ->
                                 val loadedAdapterResponseInfo: AdapterResponseInfo? =
@@ -227,8 +231,10 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
 
     @SuppressLint("StaticFieldLeak")
     companion object {
+        var isUseMonet = FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_USE_MONET)
         var adNativeHome: NativeAdView? = null
+        var adNativeLanguage: NativeAdView? = null
+        var adNativeIntro: NativeAdView? = null
         var adNativeDialog: NativeAdView? = null
-        var adNativeMyCreative: NativeAdView? = null
     }
 }

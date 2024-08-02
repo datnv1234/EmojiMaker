@@ -174,7 +174,7 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
     }
 
     private fun addNativeAd() {
-        SplashActivity.adNativeMyCreative?.let {
+        SplashActivity.adNativeDialog?.let {
             binding.rlNative.visible()
             if (it.parent != null) {
                 (it.parent as ViewGroup).removeView(it)

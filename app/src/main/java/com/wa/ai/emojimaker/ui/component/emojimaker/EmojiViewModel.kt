@@ -15,6 +15,7 @@ import com.wa.ai.emojimaker.data.model.ItemOptionUI
 import com.wa.ai.emojimaker.data.model.PagerIconUI
 import com.wa.ai.emojimaker.data.model.PieceSticker
 import com.wa.ai.emojimaker.ui.base.BaseViewModel
+import com.wa.ai.emojimaker.ui.component.splash.SplashActivity.Companion.isUseMonet
 import com.wa.ai.emojimaker.utils.RemoteConfigKey
 import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils
 import kotlinx.coroutines.Dispatchers
@@ -79,6 +80,7 @@ class EmojiViewModel : BaseViewModel() {
 
     fun getItemOption(context: Context) {
         viewModelScope.launch(Dispatchers.IO) {
+
             loadNativeSaveDialog(context)
             loadNativeAddToPackageDialog(context)
             loadNativeSaveSuccessDialog(context)
@@ -200,32 +202,80 @@ class EmojiViewModel : BaseViewModel() {
         get() = _nativeAdSaveSuccessDialog
 
     private fun loadNativeSaveDialog(context: Context) {
-        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_SETTINGS)) {
-            val adView = loadNativeAd(context = context)
-            _nativeAdSaveDialog.postValue(adView)
+        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_HOME)) {
+            val keyAdNativeHigh = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_HOME_HIGH)
+            val keyAdNativeMedium = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_HOME_MEDIUM)
+            val keyAdNativeAllPrice = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_HOME)
+            val listKeyAds = listOf(keyAdNativeHigh, keyAdNativeMedium, keyAdNativeAllPrice)
+            if (isUseMonet) {
+                val adView = loadNativeAdDialog(context = context, listKeyAds)
+                _nativeAdSaveDialog.postValue(adView)
+            } else {
+                val adView = loadNativeAdDialog(context = context, keyAdNativeAllPrice)
+                _nativeAdSaveDialog.postValue(adView)
+            }
         }
     }
 
     private fun loadNativeAddToPackageDialog(context: Context) {
-        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_SETTINGS)) {
-            val adView = loadNativeAd(context = context)
-            _nativeAdAddToPackageDialog.postValue(adView)
+        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_HOME)) {
+            val keyAdNativeHigh = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_HOME_HIGH)
+            val keyAdNativeMedium = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_HOME_MEDIUM)
+            val keyAdNativeAllPrice = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_HOME)
+            val listKeyAds = listOf(keyAdNativeHigh, keyAdNativeMedium, keyAdNativeAllPrice)
+            if (isUseMonet) {
+                val adView = loadNativeAdDialog(context = context, listKeyAds)
+                _nativeAdAddToPackageDialog.postValue(adView)
+            } else {
+                val adView = loadNativeAdDialog(context = context, keyAdNativeAllPrice)
+                _nativeAdAddToPackageDialog.postValue(adView)
+            }
         }
     }
 
     private fun loadNativeSaveSuccessDialog(context: Context) {
-        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_SETTINGS)) {
-            val adView = loadNativeAd(context = context)
-            _nativeAdSaveSuccessDialog.postValue(adView)
+        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_HOME)) {
+            val keyAdNativeHigh = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_HOME_HIGH)
+            val keyAdNativeMedium = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_HOME_MEDIUM)
+            val keyAdNativeAllPrice = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_HOME)
+            val listKeyAds = listOf(keyAdNativeHigh, keyAdNativeMedium, keyAdNativeAllPrice)
+            if (isUseMonet) {
+                val adView = loadNativeAdDialog(context = context, listKeyAds)
+                _nativeAdSaveSuccessDialog.postValue(adView)
+            } else {
+                val adView = loadNativeAdDialog(context = context, keyAdNativeAllPrice)
+                _nativeAdSaveSuccessDialog.postValue(adView)
+            }
         }
     }
 
-    private fun loadNativeAd(context: Context) : NativeAdView {
-        val keyAd = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_SETTINGS)
+
+    private fun loadNativeAdDialog(context: Context, keyAd : String) : NativeAdView {
         val adView = NativeAdView(context)
         NativeAdsUtils.instance.loadNativeAds(
             context,
             keyAd
+        ) { nativeAds ->
+            if (nativeAds != null) {
+                val adLayoutView =
+                    LayoutInflater.from(context)
+                        .inflate(R.layout.ad_native_content, adView, false) as NativeAdView
+                NativeAdsUtils.instance.populateNativeAdVideoView(
+                    nativeAds,
+                    adLayoutView
+                )
+                adView.removeAllViews()
+                adView.addView(adLayoutView)
+            }
+        }
+        return adView
+    }
+
+    private fun loadNativeAdDialog(context: Context, keyAds : List<String>) : NativeAdView {
+        val adView = NativeAdView(context)
+        NativeAdsUtils.instance.loadNativeAdsSequence(
+            context,
+            keyAds
         ) { nativeAds ->
             if (nativeAds != null) {
                 val adLayoutView =
