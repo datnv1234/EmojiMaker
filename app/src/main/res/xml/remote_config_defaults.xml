@@ -56,17 +56,45 @@
     <value>ca-app-pub-3621741958408545/4887637544</value>
   </entry>
   <entry>
+    <key>key_ads_native_intro_high</key>
+    <value>ca-app-pub-3621741958408545/4644061513</value>
+  </entry>
+  <entry>
+    <key>key_ads_native_intro_medium</key>
+    <value>ca-app-pub-3621741958408545/7359259735</value>
+  </entry>
+
+  <entry>
     <key>key_ads_native_language</key>
     <value>ca-app-pub-3621741958408545/1464479420</value>
   </entry>
   <entry>
+    <key>key_ads_native_language_high</key>
+    <value>ca-app-pub-3621741958408545/8884094399</value>
+  </entry>
+  <entry>
+    <key>key_ads_native_language_medium</key>
+    <value>ca-app-pub-3621741958408545/9565215705</value>
+  </entry>
+
+  <entry>
     <key>key_ads_native_my_creative</key>
     <value>ca-app-pub-3621741958408545/9151397751</value>
   </entry>
+
   <entry>
     <key>key_ads_native_home</key>
     <value>ca-app-pub-3621741958408545/4812897183</value>
   </entry>
+  <entry>
+    <key>key_ads_native_home_high</key>
+    <value>ca-app-pub-3621741958408545/2979626053</value>
+  </entry>
+  <entry>
+    <key>key_ads_native_home_medium</key>
+    <value>ca-app-pub-3621741958408545/9756787395</value>
+  </entry>
+
   <entry>
     <key>key_ads_native_settings</key>
     <value>ca-app-pub-3621741958408545/3574555870</value>

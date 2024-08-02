@@ -32,8 +32,8 @@ android {
         applicationId = "com.wa.ai.emojimaker"
         minSdk = 24
         targetSdk = 33
-        versionCode = 18
-        versionName = "1.7"
+        versionCode = 19
+        versionName = "1.8"
 
         val formattedDate = SimpleDateFormat("MM.dd.yyyy").format(Date())
         base.archivesBaseName = "AI_Emoji_Maker_v${versionName}(${versionCode})_${formattedDate}"
