@@ -155,14 +155,13 @@ class BannerUtils {
 
 
     //Load CollapsibleBanner in activity
-    fun loadCollapsibleBanner(mActivity: Activity, id: String, adsLoadCallBack: (Boolean) -> Unit) {
+    fun loadCollapsibleBanner(mActivity: Activity, id: String) {
         val adContainer = mActivity.findViewById<FrameLayout>(R.id.banner_container)
         val containerShimmer =
             mActivity.findViewById<ShimmerFrameLayout>(R.id.shimmer_container_banner)
         if (!mActivity.isNetworkAvailable()) {
             adContainer.gone()
             containerShimmer.gone()
-            adsLoadCallBack(false)
         } else {
             loadCollapsibleBanner(
                 mActivity,
@@ -170,7 +169,25 @@ class BannerUtils {
                 adContainer,
                 containerShimmer,
                 false, BANNER_INLINE_LARGE_STYLE,
-                adsLoadCallBack
+            )
+        }
+    }
+
+    //Load CollapsibleBanner in activity
+    fun loadCollapsibleBanner(mActivity: Activity, listId: List<String>) {
+        val adContainer = mActivity.findViewById<FrameLayout>(R.id.banner_container)
+        val containerShimmer =
+            mActivity.findViewById<ShimmerFrameLayout>(R.id.shimmer_container_banner)
+        if (!mActivity.isNetworkAvailable()) {
+            adContainer.gone()
+            containerShimmer.gone()
+        } else {
+            loadCollapsibleBanner(
+                mActivity,
+                listId,
+                adContainer,
+                containerShimmer,
+                false, BANNER_INLINE_LARGE_STYLE,
             )
         }
     }
@@ -182,11 +199,11 @@ class BannerUtils {
         containerShimmer: ShimmerFrameLayout,
         useInlineAdaptive: Boolean,
         inlineStyle: String,
-        adsLoadCallBack: (Boolean) -> Unit,
     ) {
         containerShimmer.visible()
         containerShimmer.startShimmer()
         try {
+
             val adView = AdView(mActivity)
             adView.adUnitId = id
             //adContainer.addView(adView)
@@ -217,7 +234,6 @@ class BannerUtils {
                     containerShimmer.stopShimmer()
                     adContainer.gone()
                     containerShimmer.gone()
-                    adsLoadCallBack(false)
                     Timber.e("Buthh: loadAdError " + loadAdError.message + loadAdError.domain + loadAdError.code)
                 }
 
@@ -225,7 +241,6 @@ class BannerUtils {
                     containerShimmer.stopShimmer()
                     containerShimmer.gone()
                     adContainer.visible()
-                    adsLoadCallBack(true)
                     adContainer.removeAllViews()
                     adContainer.addView(adView)
                     adView.onPaidEventListener = OnPaidEventListener { adValue: AdValue ->
@@ -257,6 +272,95 @@ class BannerUtils {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    private fun loadCollapsibleBanner(
+        mActivity: Activity,
+        listId: List<String>,
+        adContainer: FrameLayout,
+        containerShimmer: ShimmerFrameLayout,
+        useInlineAdaptive: Boolean,
+        inlineStyle: String,
+    ) {
+        fun loadNextAd(adIndex: Int) {
+            if (adIndex >= listId.size) {
+                return
+            }
+            containerShimmer.visible()
+            containerShimmer.startShimmer()
+            try {
+                val adView = AdView(mActivity)
+                adView.adUnitId = listId[adIndex]
+                //adContainer.addView(adView)
+                val adSize: AdSize = getAdSize(mActivity, useInlineAdaptive, inlineStyle)
+                val adHeight: Int = if (useInlineAdaptive && inlineStyle.equals(
+                        BANNER_INLINE_SMALL_STYLE,
+                        ignoreCase = true
+                    )
+                ) {
+                    MAX_SMALL_INLINE_BANNER_HEIGHT
+                } else {
+                    adSize.height
+                }
+                containerShimmer.layoutParams.height =
+                    (adHeight * Resources.getSystem().displayMetrics.density + 0.5f).toInt()
+                adView.setAdSize(adSize)
+
+                val extras = Bundle()
+                extras.putString("collapsible", "bottom")
+
+                val adRequest = AdRequest.Builder()
+                    .addNetworkExtrasBundle(AdMobAdapter::class.java, extras)
+                    .build()
+
+                adView.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+                adView.adListener = object : AdListener() {
+                    override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                        containerShimmer.stopShimmer()
+                        adContainer.gone()
+                        containerShimmer.gone()
+                        Timber.e("datnv: loadAdError " + loadAdError.message + loadAdError.domain + loadAdError.code)
+                        loadNextAd(adIndex + 1)
+                    }
+
+                    override fun onAdLoaded() {
+                        containerShimmer.stopShimmer()
+                        containerShimmer.gone()
+                        adContainer.visible()
+                        adContainer.removeAllViews()
+                        adContainer.addView(adView)
+                        adView.onPaidEventListener = OnPaidEventListener { adValue: AdValue ->
+                            val loadedAdapterResponseInfo: AdapterResponseInfo? =
+                                adView.responseInfo?.loadedAdapterResponseInfo
+                            val adRevenue = AdjustAdRevenue(AdjustConfig.AD_REVENUE_ADMOB)
+                            val revenue = adValue.valueMicros.toDouble() / 1000000.0
+                            adRevenue.setRevenue(
+                                revenue,
+                                adValue.currencyCode
+                            )
+                            adRevenue.adRevenueNetwork = loadedAdapterResponseInfo?.adSourceName
+                            Adjust.trackAdRevenue(adRevenue)
+                            analytics = FirebaseAnalytics.getInstance(mActivity)
+                            val params = Bundle()
+                            params.putString(
+                                FirebaseAnalytics.Param.AD_PLATFORM,
+                                loadedAdapterResponseInfo?.adSourceName
+                            )
+                            params.putString(FirebaseAnalytics.Param.AD_SOURCE, "AdMob")
+                            params.putString(FirebaseAnalytics.Param.AD_FORMAT, "Banner")
+                            params.putDouble(FirebaseAnalytics.Param.VALUE, revenue)
+                            params.putString(FirebaseAnalytics.Param.CURRENCY, "USD")
+                            analytics.logEvent("ad_impression_2", params)
+                        }
+                    }
+                }
+                adView.loadAd(adRequest)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
+        loadNextAd(0)
     }
 
     private fun getAdSize(

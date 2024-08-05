@@ -87,7 +87,7 @@
     <string name="may_be_later">May be later</string>
     <string name="rate_us">Rate us</string>
     <string name="rate">Rate</string>
-    <string name="privacy_policy">Price policy</string>
+    <string name="privacy_policy">Privacy policy</string>
     <string name="language_options">Language option</string>
     <string name="share_app">Share app</string>
     <string name="download_done">Download done!</string>
@@ -113,5 +113,6 @@
 
     <string name="are_you_sure">Are you sure?</string>
     <string name="icon_advertising">Icon advertising</string>
+    <string name="content_daily_notification">How do you feel?</string>
 
 </resources>

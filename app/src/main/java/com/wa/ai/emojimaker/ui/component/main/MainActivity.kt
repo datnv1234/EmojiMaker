@@ -9,6 +9,11 @@ import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
+import androidx.work.Constraints
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequest
+import androidx.work.WorkManager
 import com.adjust.sdk.Adjust
 import com.adjust.sdk.AdjustAdRevenue
 import com.adjust.sdk.AdjustConfig
@@ -42,6 +47,7 @@ import com.wa.ai.emojimaker.utils.RemoteConfigKey
 import com.wa.ai.emojimaker.utils.ads.AdsConsentManager
 import com.wa.ai.emojimaker.utils.ads.BannerUtils
 import com.wa.ai.emojimaker.utils.extention.gone
+import com.wa.ai.emojimaker.utils.notification.NotificationWorker
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Date
@@ -58,8 +64,6 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
 
     private var retryAttempt = 0.0
 
-    private val keyAdsBanner =
-        FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_MAIN)
     private val bannerReload =
         FirebaseRemoteConfig.getInstance().getLong(RemoteConfigKey.BANNER_RELOAD)
 
@@ -83,6 +87,7 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
     }
 
     override fun setupView(savedInstanceState: Bundle?) {
+        initNotificationWorker()
         setUpDialogPermission()
         val toolbar: Toolbar = binding.toolbar
         toolbar.title = ""
@@ -140,9 +145,12 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
 
     private fun loadBanner() {
         viewModel.starTimeCountReloadBanner(bannerReload)
-        BannerUtils.instance?.loadCollapsibleBanner(mContext, keyAdsBanner) {
+        val keyAdBannerHigh = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_MAIN_HIGH)
+        val keyAdBannerMedium = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_MAIN_MEDIUM)
+        val keyAdBannerAllPrice = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_MAIN)
+        val listKeyAds = listOf(keyAdBannerHigh, keyAdBannerMedium, keyAdBannerAllPrice)
 
-        }
+        BannerUtils.instance?.loadCollapsibleBanner(mContext, listKeyAds)
     }
 
     private fun checkForAppUpdates() {
@@ -223,8 +231,22 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
         loadInterAd()
     }
 
+    private fun initNotificationWorker() {
+        val constraints = Constraints.Builder()
+            .setRequiresCharging(false)
+            .setRequiredNetworkType(NetworkType.NOT_REQUIRED)
+            .setRequiresBatteryNotLow(true)
+            .build()
 
-    private fun loadInterAd() {
+        val myRequest =
+            PeriodicWorkRequest.Builder(NotificationWorker::class.java, 12, TimeUnit.HOURS)
+                .setConstraints(constraints).build()
+
+        WorkManager.getInstance(this)
+            .enqueueUniquePeriodicWork("my_id", ExistingPeriodicWorkPolicy.KEEP, myRequest)
+    }
+
+    private fun loadInterAd1() {
 
         val remoteConfig = FirebaseRemoteConfig.getInstance()
         if (remoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_INTER_HOME_SCREEN)) {
@@ -282,6 +304,121 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
             )
         }
 
+    }
+
+    private fun loadInterAd() {
+        if (FirebaseRemoteConfig.getInstance()
+                .getBoolean(RemoteConfigKey.IS_SHOW_ADS_INTER_HOME_SCREEN)
+        ) {
+            val keyAdInterHigh = FirebaseRemoteConfig.getInstance()
+                .getString(RemoteConfigKey.KEY_ADS_INTER_HOME_SCREEN_HIGH)
+            val keyAdInterMedium = FirebaseRemoteConfig.getInstance()
+                .getString(RemoteConfigKey.KEY_ADS_INTER_HOME_SCREEN_MEDIUM)
+            val keyAdInterAllPrice =
+                FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_INTER_HOME_SCREEN)
+            val listKeyAds = listOf(keyAdInterHigh, keyAdInterMedium, keyAdInterAllPrice)
+            loadInterAdsSplashSequence(listKeyAds)
+        }
+    }
+
+    private fun loadInterAdsMain(keyAdInter: String) {
+        InterstitialAd.load(
+            this,
+            keyAdInter,
+            AdRequest.Builder().build(),
+            object : InterstitialAdLoadCallback() {
+                override fun onAdFailedToLoad(adError: LoadAdError) {
+                    mFirebaseAnalytics?.logEvent("e_load_inter_splash", null)
+                    mInterstitialAd = null
+                    retryAttempt++
+                    val delayMillis = TimeUnit.SECONDS.toMillis(
+                        2.0.pow(6.0.coerceAtMost(retryAttempt)).toLong()
+                    )
+                    Handler(Looper.getMainLooper()).postDelayed({ loadInterAdsMain(keyAdInter) }, delayMillis)
+                }
+
+                override fun onAdLoaded(ad: InterstitialAd) {
+                    mFirebaseAnalytics?.logEvent("d_load_inter_splash", null)
+                    mInterstitialAd = ad
+                    retryAttempt = 0.0
+                    mInterstitialAd?.onPaidEventListener =
+                        OnPaidEventListener { adValue ->
+                            val loadedAdapterResponseInfo: AdapterResponseInfo? =
+                                mInterstitialAd?.responseInfo?.loadedAdapterResponseInfo
+                            val adRevenue = AdjustAdRevenue(AdjustConfig.AD_REVENUE_ADMOB)
+                            val revenue = adValue.valueMicros.toDouble() / 1000000.0
+                            adRevenue.setRevenue(revenue, adValue.currencyCode)
+                            adRevenue.adRevenueNetwork = loadedAdapterResponseInfo?.adSourceName
+                            Adjust.trackAdRevenue(adRevenue)
+
+                            val analytics = FirebaseAnalytics.getInstance(this@MainActivity)
+                            val params = Bundle().apply {
+                                putString(
+                                    FirebaseAnalytics.Param.AD_PLATFORM,
+                                    "admob mediation"
+                                )
+                                putString(FirebaseAnalytics.Param.AD_SOURCE, "AdMob")
+                                putString(FirebaseAnalytics.Param.AD_FORMAT, "Interstitial")
+                                putDouble(FirebaseAnalytics.Param.VALUE, revenue)
+                                putString(FirebaseAnalytics.Param.CURRENCY, "USD")
+                            }
+                            analytics.logEvent("ad_impression_2", params)
+                        }
+                }
+            }
+        )
+    }
+
+    private fun loadInterAdsSplashSequence(listKeyAds: List<String>) {
+
+        fun loadInterAds(adIndex: Int) {
+            if (adIndex == listKeyAds.size - 1) {
+                loadInterAdsMain(listKeyAds.last())
+                return
+            }
+            InterstitialAd.load(
+                this,
+                listKeyAds[adIndex],
+                AdRequest.Builder().build(),
+                object : InterstitialAdLoadCallback() {
+                    override fun onAdFailedToLoad(adError: LoadAdError) {
+                        mFirebaseAnalytics?.logEvent("e_load_inter_splash", null)
+                        mInterstitialAd = null
+                        loadInterAds(adIndex + 1)
+                    }
+
+                    override fun onAdLoaded(ad: InterstitialAd) {
+                        mFirebaseAnalytics?.logEvent("d_load_inter_splash", null)
+                        mInterstitialAd = ad
+                        mInterstitialAd?.onPaidEventListener =
+                            OnPaidEventListener { adValue ->
+                                val loadedAdapterResponseInfo: AdapterResponseInfo? =
+                                    mInterstitialAd?.responseInfo?.loadedAdapterResponseInfo
+                                val adRevenue = AdjustAdRevenue(AdjustConfig.AD_REVENUE_ADMOB)
+                                val revenue = adValue.valueMicros.toDouble() / 1000000.0
+                                adRevenue.setRevenue(revenue, adValue.currencyCode)
+                                adRevenue.adRevenueNetwork = loadedAdapterResponseInfo?.adSourceName
+                                Adjust.trackAdRevenue(adRevenue)
+
+                                val analytics = FirebaseAnalytics.getInstance(this@MainActivity)
+                                val params = Bundle().apply {
+                                    putString(
+                                        FirebaseAnalytics.Param.AD_PLATFORM,
+                                        "admob mediation"
+                                    )
+                                    putString(FirebaseAnalytics.Param.AD_SOURCE, "AdMob")
+                                    putString(FirebaseAnalytics.Param.AD_FORMAT, "Interstitial")
+                                    putDouble(FirebaseAnalytics.Param.VALUE, revenue)
+                                    putString(FirebaseAnalytics.Param.CURRENCY, "USD")
+                                }
+                                analytics.logEvent("ad_impression_2", params)
+                            }
+                    }
+                }
+            )
+        }
+
+        loadInterAds(0)
     }
 
     fun showInterstitial(onAdDismissedAction: () -> Unit) {

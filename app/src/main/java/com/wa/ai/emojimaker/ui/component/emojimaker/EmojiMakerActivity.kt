@@ -299,9 +299,11 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
 
     private fun loadBanner() {
         emojiViewModel.starTimeCountReloadBanner(bannerReload)
-        BannerUtils.instance?.loadCollapsibleBanner(this, keyAdsBanner) {
-
-        }
+        val keyAdBannerHigh = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_CREATE_EMOJI_HIGH)
+        val keyAdBannerMedium = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_CREATE_EMOJI_MEDIUM)
+        val keyAdBannerAllPrice = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_CREATE_EMOJI)
+        val listKeyAds = listOf(keyAdBannerHigh, keyAdBannerMedium, keyAdBannerAllPrice)
+        BannerUtils.instance?.loadCollapsibleBanner(this, listKeyAds)
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -825,34 +827,89 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
 
 
     private fun loadInterAd() {
+        if (FirebaseRemoteConfig.getInstance()
+                .getBoolean(RemoteConfigKey.IS_SHOW_ADS_INTER_CREATE_EMOJI)
+        ) {
+            val keyAdInterHigh = FirebaseRemoteConfig.getInstance()
+                .getString(RemoteConfigKey.KEY_ADS_INTER_CREATE_EMOJI_HIGH)
+            val keyAdInterMedium = FirebaseRemoteConfig.getInstance()
+                .getString(RemoteConfigKey.KEY_ADS_INTER_CREATE_EMOJI_MEDIUM)
+            val keyAdInterAllPrice =
+                FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_INTER_CREATE_EMOJI)
+            val listKeyAds = listOf(keyAdInterHigh, keyAdInterMedium, keyAdInterAllPrice)
+            loadInterAdsSplashSequence(listKeyAds)
+        }
+    }
 
-        val remoteConfig = FirebaseRemoteConfig.getInstance()
-        if (remoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_INTER_CREATE_EMOJI)) {
+    private fun loadInterAdsMain(keyAdInter: String) {
+        InterstitialAd.load(
+            this,
+            keyAdInter,
+            AdRequest.Builder().build(),
+            object : InterstitialAdLoadCallback() {
+                override fun onAdFailedToLoad(adError: LoadAdError) {
+                    mFirebaseAnalytics?.logEvent("e_load_inter_splash", null)
+                    mInterstitialAd = null
+                    retryAttempt++
+                    val delayMillis = TimeUnit.SECONDS.toMillis(
+                        2.0.pow(6.0.coerceAtMost(retryAttempt)).toLong()
+                    )
+                    Handler(Looper.getMainLooper()).postDelayed({ loadInterAdsMain(keyAdInter) }, delayMillis)
+                }
 
-            var adConfig = remoteConfig.getString(RemoteConfigKey.KEY_ADS_INTER_CREATE_EMOJI)
-            if (adConfig.isEmpty()) {
-                adConfig = getString(R.string.inter_create_emoji)
+                override fun onAdLoaded(ad: InterstitialAd) {
+                    mFirebaseAnalytics?.logEvent("d_load_inter_splash", null)
+                    mInterstitialAd = ad
+                    retryAttempt = 0.0
+                    mInterstitialAd?.onPaidEventListener =
+                        OnPaidEventListener { adValue ->
+                            val loadedAdapterResponseInfo: AdapterResponseInfo? =
+                                mInterstitialAd?.responseInfo?.loadedAdapterResponseInfo
+                            val adRevenue = AdjustAdRevenue(AdjustConfig.AD_REVENUE_ADMOB)
+                            val revenue = adValue.valueMicros.toDouble() / 1000000.0
+                            adRevenue.setRevenue(revenue, adValue.currencyCode)
+                            adRevenue.adRevenueNetwork = loadedAdapterResponseInfo?.adSourceName
+                            Adjust.trackAdRevenue(adRevenue)
+
+                            val analytics = FirebaseAnalytics.getInstance(this@EmojiMakerActivity)
+                            val params = Bundle().apply {
+                                putString(
+                                    FirebaseAnalytics.Param.AD_PLATFORM,
+                                    "admob mediation"
+                                )
+                                putString(FirebaseAnalytics.Param.AD_SOURCE, "AdMob")
+                                putString(FirebaseAnalytics.Param.AD_FORMAT, "Interstitial")
+                                putDouble(FirebaseAnalytics.Param.VALUE, revenue)
+                                putString(FirebaseAnalytics.Param.CURRENCY, "USD")
+                            }
+                            analytics.logEvent("ad_impression_2", params)
+                        }
+                }
             }
+        )
+    }
 
+    private fun loadInterAdsSplashSequence(listKeyAds: List<String>) {
+
+        fun loadInterAds(adIndex: Int) {
+            if (adIndex == listKeyAds.size - 1) {
+                loadInterAdsMain(listKeyAds.last())
+                return
+            }
             InterstitialAd.load(
-                mContext,
-                adConfig,
+                this,
+                listKeyAds[adIndex],
                 AdRequest.Builder().build(),
                 object : InterstitialAdLoadCallback() {
                     override fun onAdFailedToLoad(adError: LoadAdError) {
-                        mFirebaseAnalytics?.logEvent("e_load_inter_ads_home_screen", null)
+                        mFirebaseAnalytics?.logEvent("e_load_inter_splash", null)
                         mInterstitialAd = null
-                        retryAttempt++
-                        val delayMillis = TimeUnit.SECONDS.toMillis(
-                            2.0.pow(6.0.coerceAtMost(retryAttempt)).toLong()
-                        )
-                        Handler(Looper.getMainLooper()).postDelayed({ loadInterAd() }, delayMillis)
+                        loadInterAds(adIndex + 1)
                     }
 
                     override fun onAdLoaded(ad: InterstitialAd) {
-                        mFirebaseAnalytics?.logEvent("d_load_inter_ads_home_screen", null)
+                        mFirebaseAnalytics?.logEvent("d_load_inter_splash", null)
                         mInterstitialAd = ad
-                        retryAttempt = 0.0
                         mInterstitialAd?.onPaidEventListener =
                             OnPaidEventListener { adValue ->
                                 val loadedAdapterResponseInfo: AdapterResponseInfo? =
@@ -863,8 +920,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
                                 adRevenue.adRevenueNetwork = loadedAdapterResponseInfo?.adSourceName
                                 Adjust.trackAdRevenue(adRevenue)
 
-                                val analytics =
-                                    FirebaseAnalytics.getInstance(mContext)
+                                val analytics = FirebaseAnalytics.getInstance(this@EmojiMakerActivity)
                                 val params = Bundle().apply {
                                     putString(
                                         FirebaseAnalytics.Param.AD_PLATFORM,
@@ -881,6 +937,8 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
                 }
             )
         }
+
+        loadInterAds(0)
     }
 
     private fun showInterstitial(isReload: Boolean) {

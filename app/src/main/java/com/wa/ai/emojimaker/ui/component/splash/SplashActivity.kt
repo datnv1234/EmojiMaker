@@ -3,6 +3,7 @@ package com.wa.ai.emojimaker.ui.component.splash
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.os.CountDownTimer
 import com.adjust.sdk.Adjust
 import com.adjust.sdk.AdjustAdRevenue
 import com.adjust.sdk.AdjustConfig
@@ -63,6 +64,16 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
             }
             finish()
         }
+        val countDownTimer = object : CountDownTimer(60000, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+
+            }
+
+            override fun onFinish() {
+                viewModel.starTimeCount(1000)
+            }
+        }
+        countDownTimer.start()
     }
 
     private fun initAdsManager() {
@@ -88,7 +99,7 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
             return
         }
         MobileAds.initialize(this) {}
-        loadInterAdsSplash()
+        loadInterAd()
     }
 
     private fun showInterstitial(onAdDismissedAction: () -> Unit) {
@@ -148,6 +159,16 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
             adNativeDialog = it
         }
 
+        val countDownTimer = object : CountDownTimer(30000, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+            }
+
+
+            override fun onFinish() {
+
+            }
+        }
+        countDownTimer.start()
     }
 
     override fun onResume() {
@@ -160,10 +181,6 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
         Adjust.onPause()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-    }
-
     private fun openChooseLanguageActivity() {
         val intent = Intent(this@SplashActivity, MultiLangActivity::class.java)
         intent.putExtra(Constant.TYPE_LANG, Constant.TYPE_LANGUAGE_SPLASH)
@@ -171,35 +188,92 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
         finish()
     }
 
-    private fun loadInterAdsSplash() {
+    private fun loadInterAd() {
+        if (FirebaseRemoteConfig.getInstance()
+                .getBoolean(RemoteConfigKey.IS_SHOW_ADS_INTER_SPLASH)
+        ) {
+            val keyAdInterHigh = FirebaseRemoteConfig.getInstance()
+                .getString(RemoteConfigKey.KEY_ADS_INTER_SPLASH_HIGH)
+            val keyAdInterMedium = FirebaseRemoteConfig.getInstance()
+                .getString(RemoteConfigKey.KEY_ADS_INTER_SPLASH_MEDIUM)
+            val keyAdInterAllPrice =
+                FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_INTER_SPLASH)
+            val listKeyAds = listOf(keyAdInterHigh, keyAdInterMedium, keyAdInterAllPrice)
+            loadInterAdsSplashSequence(listKeyAds)
+        }
+    }
 
-        val remoteConfig = FirebaseRemoteConfig.getInstance()
-        if (remoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_INTER_SPLASH)) {
-            var adConfig = remoteConfig.getString(RemoteConfigKey.KEY_ADS_INTER_SPLASH)
-            if (adConfig.isEmpty()) {
-                adConfig = getString(R.string.inter_splash)
+    private fun loadInterAdsSplash(keyAdInter: String) {
+        InterstitialAd.load(
+            this,
+            keyAdInter,
+            AdRequest.Builder().build(),
+            object : InterstitialAdLoadCallback() {
+                override fun onAdFailedToLoad(adError: LoadAdError) {
+                    mFirebaseAnalytics?.logEvent("e_load_inter_splash", null)
+                    mInterstitialAd = null
+                    loadInterCount++
+                    if (loadInterCount >= 3) {
+                        viewModel.starTimeCount(5000)
+                    } else {
+                        loadInterAdsSplash(keyAdInter)
+                    }
+                }
+
+                override fun onAdLoaded(ad: InterstitialAd) {
+                    mFirebaseAnalytics?.logEvent("d_load_inter_splash", null)
+                    mInterstitialAd = ad
+                    loadInterCount = 0
+                    viewModel.starTimeCount(5000)
+                    mInterstitialAd?.onPaidEventListener =
+                        OnPaidEventListener { adValue ->
+                            val loadedAdapterResponseInfo: AdapterResponseInfo? =
+                                mInterstitialAd?.responseInfo?.loadedAdapterResponseInfo
+                            val adRevenue = AdjustAdRevenue(AdjustConfig.AD_REVENUE_ADMOB)
+                            val revenue = adValue.valueMicros.toDouble() / 1000000.0
+                            adRevenue.setRevenue(revenue, adValue.currencyCode)
+                            adRevenue.adRevenueNetwork = loadedAdapterResponseInfo?.adSourceName
+                            Adjust.trackAdRevenue(adRevenue)
+
+                            val analytics = FirebaseAnalytics.getInstance(this@SplashActivity)
+                            val params = Bundle().apply {
+                                putString(
+                                    FirebaseAnalytics.Param.AD_PLATFORM,
+                                    "admob mediation"
+                                )
+                                putString(FirebaseAnalytics.Param.AD_SOURCE, "AdMob")
+                                putString(FirebaseAnalytics.Param.AD_FORMAT, "Interstitial")
+                                putDouble(FirebaseAnalytics.Param.VALUE, revenue)
+                                putString(FirebaseAnalytics.Param.CURRENCY, "USD")
+                            }
+                            analytics.logEvent("ad_impression_2", params)
+                        }
+                }
             }
+        )
+    }
 
+    private fun loadInterAdsSplashSequence(listKeyAds: List<String>) {
+
+        fun loadInterAds(adIndex: Int) {
+            if (adIndex == listKeyAds.size - 1) {
+                loadInterAdsSplash(listKeyAds.last())
+                return
+            }
             InterstitialAd.load(
                 this,
-                adConfig,
+                listKeyAds[adIndex],
                 AdRequest.Builder().build(),
                 object : InterstitialAdLoadCallback() {
                     override fun onAdFailedToLoad(adError: LoadAdError) {
                         mFirebaseAnalytics?.logEvent("e_load_inter_splash", null)
                         mInterstitialAd = null
-                        loadInterCount++
-                        if (loadInterCount >= 3) {
-                            viewModel.starTimeCount(5000)
-                        } else {
-                            loadInterAdsSplash()
-                        }
+                        loadInterAds(adIndex + 1)
                     }
 
                     override fun onAdLoaded(ad: InterstitialAd) {
                         mFirebaseAnalytics?.logEvent("d_load_inter_splash", null)
                         mInterstitialAd = ad
-                        loadInterCount = 0
                         viewModel.starTimeCount(5000)
                         mInterstitialAd?.onPaidEventListener =
                             OnPaidEventListener { adValue ->
@@ -228,6 +302,8 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
                 }
             )
         }
+
+        loadInterAds(0)
     }
 
     @SuppressLint("StaticFieldLeak")

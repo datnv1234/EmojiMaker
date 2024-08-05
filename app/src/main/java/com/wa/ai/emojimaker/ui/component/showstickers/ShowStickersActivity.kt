@@ -168,9 +168,11 @@ class ShowStickersActivity :
 
     private fun loadBanner() {
         viewModel.starTimeCountReloadBanner(bannerReload)
-        BannerUtils.instance?.loadCollapsibleBanner(this, keyAdsBanner) {
-
-        }
+        val keyAdBannerHigh = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_SHOW_STICKERS_HIGH)
+        val keyAdBannerMedium = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_SHOW_STICKERS_MEDIUM)
+        val keyAdBannerAllPrice = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_SHOW_STICKERS)
+        val listKeyAds = listOf(keyAdBannerHigh, keyAdBannerMedium, keyAdBannerAllPrice)
+        BannerUtils.instance?.loadCollapsibleBanner(this, listKeyAds)
     }
 
     private fun performImageDownload(imageUrl: Uri?) {

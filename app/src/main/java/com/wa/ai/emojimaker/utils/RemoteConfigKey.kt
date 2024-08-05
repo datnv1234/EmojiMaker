@@ -3,28 +3,25 @@ package com.wa.ai.emojimaker.utils
 object RemoteConfigKey {
 
     //unit: seconds
-    const val KEY_COLLAPSE_RELOAD_TIME = "collapse_reload_time"
-    const val KEY_DELAY_LOAD_ADS = "key_delay_load_ads"
     const val INTER_DELAY = "inter_delay"
     const val BANNER_RELOAD = "banner_reload"
-    const val IS_SHOW_ADS_OPEN_APP = "show_ads_open_app"
     const val IS_USE_MONET = "is_use_monet"
-
-    const val IS_SHOW_ADS_NATIVE_DIALOG = "is_show_ads_native_dialog"
 
     const val IS_SHOW_ADS_INTER_SPLASH= "is_show_ads_inter_splash"
     const val IS_SHOW_ADS_INTER_HOME_SCREEN= "is_show_ads_inter_home_screen"
+    const val IS_SHOW_ADS_INTER_CREATE_EMOJI= "is_show_ads_inter_create_emoji"
+
     const val IS_SHOW_ADS_INTER_MY_CREATIVE= "is_show_ads_inter_my_creative"
     const val IS_SHOW_ADS_INTER_SETTINGS= "is_show_ads_inter_settings"
-    const val IS_SHOW_ADS_INTER_CREATE_EMOJI= "is_show_ads_inter_create_emoji"
     const val IS_SHOW_ADS_INTER_SHOW_STICKERS= "is_show_ads_inter_show_stickers"
 
     const val IS_SHOW_ADS_NATIVE_INTRO = "is_show_ads_native_intro"
     const val IS_SHOW_ADS_NATIVE_LANGUAGE = "is_show_ads_native_language"
     const val IS_SHOW_ADS_NATIVE_HOME = "is_show_ads_native_home"
+    const val IS_SHOW_ADS_NATIVE_SHOW_STICKERS = "is_show_ads_native_show_stickers"
+
     const val IS_SHOW_ADS_NATIVE_MY_CREATIVE = "is_show_ads_native_my_creative"
     const val IS_SHOW_ADS_NATIVE_SETTINGS = "is_show_ads_native_settings"
-    const val IS_SHOW_ADS_NATIVE_SHOW_STICKERS = "is_show_ads_native_show_stickers"
 
     const val IS_SHOW_ADS_BANNER_MAIN = "is_show_ads_banner_main"
     const val IS_SHOW_ADS_BANNER_CREATE_EMOJI = "is_show_ads_banner_create_emoji"
@@ -33,10 +30,19 @@ object RemoteConfigKey {
 
     // Inter
     const val KEY_ADS_INTER_SPLASH= "key_ads_inter_splash"
+    const val KEY_ADS_INTER_SPLASH_HIGH= "key_ads_inter_splash_high"
+    const val KEY_ADS_INTER_SPLASH_MEDIUM= "key_ads_inter_splash_medium"
+
     const val KEY_ADS_INTER_HOME_SCREEN= "key_ads_inter_home_screen"
+    const val KEY_ADS_INTER_HOME_SCREEN_HIGH= "key_ads_inter_home_screen_high"
+    const val KEY_ADS_INTER_HOME_SCREEN_MEDIUM= "key_ads_inter_home_screen_medium"
+
+    const val KEY_ADS_INTER_CREATE_EMOJI= "key_ads_inter_create_emoji"
+    const val KEY_ADS_INTER_CREATE_EMOJI_HIGH= "key_ads_inter_create_emoji_high"
+    const val KEY_ADS_INTER_CREATE_EMOJI_MEDIUM= "key_ads_inter_create_emoji_medium"
+
     const val KEY_ADS_INTER_MY_CREATIVE= "key_ads_inter_my_creative"
     const val KEY_ADS_INTER_SETTINGS= "key_ads_inter_settings"
-    const val KEY_ADS_INTER_CREATE_EMOJI= "key_ads_inter_create_emoji"
     const val KEY_ADS_INTER_SHOW_STICKERS= "key_ads_inter_show_stickers"
 
     // Native
@@ -50,13 +56,21 @@ object RemoteConfigKey {
     const val KEY_ADS_NATIVE_HOME_HIGH = "key_ads_native_home_high"
     const val KEY_ADS_NATIVE_HOME_MEDIUM = "key_ads_native_home_medium"
 
+    const val KEY_ADS_NATIVE_SHOW_STICKERS = "key_ads_native_show_stickers"
+
     const val KEY_ADS_NATIVE_MY_CREATIVE = "key_ads_native_my_creative"
     const val KEY_ADS_NATIVE_SETTINGS = "key_ads_native_settings"
-    const val KEY_ADS_NATIVE_SHOW_STICKERS = "key_ads_native_show_stickers"
 
     // Banner
     const val KEY_ADS_BANNER_MAIN = "key_ads_banner_main"
-    const val KEY_ADS_BANNER_CREATE_EMOJI = "key_ads_banner_create_emoji"
-    const val KEY_ADS_BANNER_SHOW_STICKERS = "key_ads_banner_show_stickers"
+    const val KEY_ADS_BANNER_MAIN_HIGH = "key_ads_banner_main_high"
+    const val KEY_ADS_BANNER_MAIN_MEDIUM = "key_ads_banner_main_medium"
 
+    const val KEY_ADS_BANNER_CREATE_EMOJI = "key_ads_banner_create_emoji"
+    const val KEY_ADS_BANNER_CREATE_EMOJI_HIGH = "key_ads_banner_create_emoji_high"
+    const val KEY_ADS_BANNER_CREATE_EMOJI_MEDIUM = "key_ads_banner_create_emoji_medium"
+
+    const val KEY_ADS_BANNER_SHOW_STICKERS = "key_ads_banner_show_stickers"
+    const val KEY_ADS_BANNER_SHOW_STICKERS_HIGH = "key_ads_banner_show_stickers_high"
+    const val KEY_ADS_BANNER_SHOW_STICKERS_MEDIUM = "key_ads_banner_show_stickers_medium"
 }

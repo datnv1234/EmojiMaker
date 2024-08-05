@@ -43,9 +43,15 @@ class CreatePackageDialog : BaseBindingDialogFragment<DialogCreatePackageBinding
                 dismiss()
             }
         }
+
+        binding.btnClearText.setOnSafeClick {
+            val emptyText = ""
+            binding.edtPkgName.setText(emptyText)
+        }
         binding.btnCancel.setOnSafeClick {
             dismiss()
         }
+
     }
 
     private fun addNativeAd() {
