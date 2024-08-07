@@ -199,7 +199,11 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
             val keyAdInterAllPrice =
                 FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_INTER_SPLASH)
             val listKeyAds = listOf(keyAdInterHigh, keyAdInterMedium, keyAdInterAllPrice)
-            loadInterAdsSplashSequence(listKeyAds)
+            if (isUseInterMonet) {
+                loadInterAdsSplashSequence(listKeyAds)
+            } else {
+                loadInterAdsSplash(keyAdInterAllPrice)
+            }
         }
     }
 
@@ -309,6 +313,8 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
     @SuppressLint("StaticFieldLeak")
     companion object {
         var isUseMonet = FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_USE_MONET)
+        var isUseInterMonet = FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_USE_INTER_MONET)
+        var isUseBannerMonet = FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_USE_BANNER_MONET)
         var adNativeHome: NativeAdView? = null
         var adNativeLanguage: NativeAdView? = null
         var adNativeIntro: NativeAdView? = null

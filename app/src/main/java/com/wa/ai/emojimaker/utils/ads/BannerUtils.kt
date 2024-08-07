@@ -31,9 +31,6 @@ class BannerUtils {
     private val BANNER_INLINE_LARGE_STYLE = "BANNER_INLINE_LARGE_STYLE"
     private val MAX_SMALL_INLINE_BANNER_HEIGHT = 50
     private lateinit var analytics: FirebaseAnalytics
-    private var retryAttempt = 0.0
-
-    var loadNativeCount = 0
 
     companion object {
 
@@ -42,6 +39,30 @@ class BannerUtils {
                 if (field == null) field = BannerUtils()
                 return field
             }
+    }
+
+    private fun pushEvent(mActivity: Activity, adView: AdView, adValue: AdValue) {
+        val loadedAdapterResponseInfo: AdapterResponseInfo? =
+            adView.responseInfo?.loadedAdapterResponseInfo
+        val adRevenue = AdjustAdRevenue(AdjustConfig.AD_REVENUE_ADMOB)
+        val revenue = adValue.valueMicros.toDouble() / 1000000.0
+        adRevenue.setRevenue(
+            revenue,
+            adValue.currencyCode
+        )
+        adRevenue.adRevenueNetwork = loadedAdapterResponseInfo?.adSourceName
+        Adjust.trackAdRevenue(adRevenue)
+        analytics = FirebaseAnalytics.getInstance(mActivity)
+        val params = Bundle()
+        params.putString(
+            FirebaseAnalytics.Param.AD_PLATFORM,
+            loadedAdapterResponseInfo?.adSourceName
+        )
+        params.putString(FirebaseAnalytics.Param.AD_SOURCE, "AdMob")
+        params.putString(FirebaseAnalytics.Param.AD_FORMAT, "Banner")
+        params.putDouble(FirebaseAnalytics.Param.VALUE, revenue)
+        params.putString(FirebaseAnalytics.Param.CURRENCY, "USD")
+        analytics.logEvent("ad_impression_2", params)
     }
 
     //Load banner in activity
@@ -129,22 +150,6 @@ class BannerUtils {
                         params.putString(FirebaseAnalytics.Param.CURRENCY, "USD")
                         analytics.logEvent("ad_impression_2", params)
                     }
-                }
-
-                override fun onAdClicked() {
-                    super.onAdClicked()
-                }
-
-                override fun onAdImpression() {
-                    super.onAdImpression()
-                }
-
-                override fun onAdClosed() {
-                    super.onAdClosed()
-                }
-
-                override fun onAdOpened() {
-                    super.onAdOpened()
                 }
             }
             adView.loadAd(getAdsRequest())
@@ -234,7 +239,7 @@ class BannerUtils {
                     containerShimmer.stopShimmer()
                     adContainer.gone()
                     containerShimmer.gone()
-                    Timber.e("Buthh: loadAdError " + loadAdError.message + loadAdError.domain + loadAdError.code)
+                    Timber.e("datnv: loadAdError " + loadAdError.message + loadAdError.domain + loadAdError.code)
                 }
 
                 override fun onAdLoaded() {
@@ -244,27 +249,7 @@ class BannerUtils {
                     adContainer.removeAllViews()
                     adContainer.addView(adView)
                     adView.onPaidEventListener = OnPaidEventListener { adValue: AdValue ->
-                        val loadedAdapterResponseInfo: AdapterResponseInfo? =
-                            adView.responseInfo?.loadedAdapterResponseInfo
-                        val adRevenue = AdjustAdRevenue(AdjustConfig.AD_REVENUE_ADMOB)
-                        val revenue = adValue.valueMicros.toDouble() / 1000000.0
-                        adRevenue.setRevenue(
-                            revenue,
-                            adValue.currencyCode
-                        )
-                        adRevenue.adRevenueNetwork = loadedAdapterResponseInfo?.adSourceName
-                        Adjust.trackAdRevenue(adRevenue)
-                        analytics = FirebaseAnalytics.getInstance(mActivity)
-                        val params = Bundle()
-                        params.putString(
-                            FirebaseAnalytics.Param.AD_PLATFORM,
-                            loadedAdapterResponseInfo?.adSourceName
-                        )
-                        params.putString(FirebaseAnalytics.Param.AD_SOURCE, "AdMob")
-                        params.putString(FirebaseAnalytics.Param.AD_FORMAT, "Banner")
-                        params.putDouble(FirebaseAnalytics.Param.VALUE, revenue)
-                        params.putString(FirebaseAnalytics.Param.CURRENCY, "USD")
-                        analytics.logEvent("ad_impression_2", params)
+                        pushEvent(mActivity, adView, adValue)
                     }
                 }
             }
@@ -330,27 +315,7 @@ class BannerUtils {
                         adContainer.removeAllViews()
                         adContainer.addView(adView)
                         adView.onPaidEventListener = OnPaidEventListener { adValue: AdValue ->
-                            val loadedAdapterResponseInfo: AdapterResponseInfo? =
-                                adView.responseInfo?.loadedAdapterResponseInfo
-                            val adRevenue = AdjustAdRevenue(AdjustConfig.AD_REVENUE_ADMOB)
-                            val revenue = adValue.valueMicros.toDouble() / 1000000.0
-                            adRevenue.setRevenue(
-                                revenue,
-                                adValue.currencyCode
-                            )
-                            adRevenue.adRevenueNetwork = loadedAdapterResponseInfo?.adSourceName
-                            Adjust.trackAdRevenue(adRevenue)
-                            analytics = FirebaseAnalytics.getInstance(mActivity)
-                            val params = Bundle()
-                            params.putString(
-                                FirebaseAnalytics.Param.AD_PLATFORM,
-                                loadedAdapterResponseInfo?.adSourceName
-                            )
-                            params.putString(FirebaseAnalytics.Param.AD_SOURCE, "AdMob")
-                            params.putString(FirebaseAnalytics.Param.AD_FORMAT, "Banner")
-                            params.putDouble(FirebaseAnalytics.Param.VALUE, revenue)
-                            params.putString(FirebaseAnalytics.Param.CURRENCY, "USD")
-                            analytics.logEvent("ad_impression_2", params)
+                            pushEvent(mActivity, adView, adValue)
                         }
                     }
                 }

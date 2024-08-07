@@ -59,6 +59,7 @@ import com.wa.ai.emojimaker.ui.dialog.CreatePackageDialog
 import com.wa.ai.emojimaker.ui.dialog.SaveStickerDialog
 import com.wa.ai.emojimaker.ui.dialog.SaveSuccessDialog
 import com.wa.ai.emojimaker.ui.component.main.MainActivity
+import com.wa.ai.emojimaker.ui.component.splash.SplashActivity.Companion.isUseInterMonet
 import com.wa.ai.emojimaker.utils.AppUtils
 import com.wa.ai.emojimaker.utils.DeviceUtils
 import com.wa.ai.emojimaker.utils.RemoteConfigKey
@@ -837,7 +838,11 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
             val keyAdInterAllPrice =
                 FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_INTER_CREATE_EMOJI)
             val listKeyAds = listOf(keyAdInterHigh, keyAdInterMedium, keyAdInterAllPrice)
-            loadInterAdsSplashSequence(listKeyAds)
+            if (isUseInterMonet) {
+                loadInterAdsSplashSequence(listKeyAds)
+            } else {
+                loadInterAdsMain(keyAdInterAllPrice)
+            }
         }
     }
 
@@ -850,17 +855,12 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
                 override fun onAdFailedToLoad(adError: LoadAdError) {
                     mFirebaseAnalytics?.logEvent("e_load_inter_splash", null)
                     mInterstitialAd = null
-                    retryAttempt++
-                    val delayMillis = TimeUnit.SECONDS.toMillis(
-                        2.0.pow(6.0.coerceAtMost(retryAttempt)).toLong()
-                    )
-                    Handler(Looper.getMainLooper()).postDelayed({ loadInterAdsMain(keyAdInter) }, delayMillis)
+                    Handler(Looper.getMainLooper()).postDelayed({ loadInterAdsMain(keyAdInter) }, 2000)
                 }
 
                 override fun onAdLoaded(ad: InterstitialAd) {
                     mFirebaseAnalytics?.logEvent("d_load_inter_splash", null)
                     mInterstitialAd = ad
-                    retryAttempt = 0.0
                     mInterstitialAd?.onPaidEventListener =
                         OnPaidEventListener { adValue ->
                             val loadedAdapterResponseInfo: AdapterResponseInfo? =

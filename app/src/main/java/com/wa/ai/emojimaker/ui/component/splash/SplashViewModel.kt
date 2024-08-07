@@ -68,7 +68,6 @@ class SplashViewModel : BaseViewModel() {
     val nativeAdDialog: LiveData<NativeAdView>
         get() = _nativeAdDialog
 
-
     private fun loadNativeDialog(context: Context) {
         if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_HOME)) {
             val keyAdNativeHigh = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_HOME_HIGH)

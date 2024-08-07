@@ -20,6 +20,14 @@
     <key>is_use_monet</key>
     <value>true</value>
   </entry>
+  <entry>
+    <key>is_use_inter_monet</key>
+    <value>true</value>
+  </entry>
+  <entry>
+    <key>is_use_banner_monet</key>
+    <value>true</value>
+  </entry>
 
   <entry>
     <key>key_delay_load_ads</key>

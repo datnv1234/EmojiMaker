@@ -13,6 +13,7 @@ import com.adjust.sdk.Adjust
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.wa.ai.emojimaker.R
+import com.wa.ai.emojimaker.databinding.AdNativeVideoBinding
 import com.wa.ai.emojimaker.databinding.FragmentHomeBinding
 import com.wa.ai.emojimaker.ui.adapter.HomeAdapter
 import com.wa.ai.emojimaker.ui.base.BaseBindingFragment
@@ -34,7 +35,8 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
 
     private lateinit var mMainActivity: MainActivity
     private lateinit var mMainViewModel: MainViewModel
-    private var adNativeView: NativeAdView? = null
+    private val keyNative =
+        FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_HOME)
 
     private val sharePackageDialog: SharePackageDialog by lazy {
         SharePackageDialog().apply {
@@ -191,7 +193,37 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
             adContainer.removeAllViews()
             adContainer.addView(it)
         } ?: run {
-            binding.frNativeAds.gone()
+            loadNativeAd()
         }
+    }
+
+    private fun loadNativeAd() {
+        if (FirebaseRemoteConfig.getInstance()
+                .getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_HOME)
+        ) {
+            loadNativeAds(keyNative)
+        } else {
+            binding.rlNative.visibility = View.GONE
+        }
+    }
+
+    private fun loadNativeAds(keyAds: String) {
+        this.let {
+            NativeAdsUtils.instance.loadNativeAds(
+                requireContext(),
+                keyAds
+            ) { nativeAds ->
+                if (nativeAds != null && isAdded && isVisible) {
+                    val adNativeVideoBinding = AdNativeVideoBinding.inflate(layoutInflater)
+                    NativeAdsUtils.instance.populateNativeAdVideoView(
+                        nativeAds,
+                        adNativeVideoBinding.root as NativeAdView
+                    )
+                    binding.frNativeAds.removeAllViews()
+                    binding.frNativeAds.addView(adNativeVideoBinding.root)
+                }
+            }
+        }
+
     }
 }

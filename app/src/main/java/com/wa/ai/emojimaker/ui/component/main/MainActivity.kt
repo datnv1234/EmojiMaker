@@ -42,6 +42,8 @@ import com.wa.ai.emojimaker.common.Constant
 import com.wa.ai.emojimaker.data.local.SharedPreferenceHelper
 import com.wa.ai.emojimaker.databinding.ActivityMainBinding
 import com.wa.ai.emojimaker.ui.base.BaseBindingActivity
+import com.wa.ai.emojimaker.ui.component.splash.SplashActivity.Companion.isUseBannerMonet
+import com.wa.ai.emojimaker.ui.component.splash.SplashActivity.Companion.isUseInterMonet
 import com.wa.ai.emojimaker.utils.DeviceUtils
 import com.wa.ai.emojimaker.utils.RemoteConfigKey
 import com.wa.ai.emojimaker.utils.ads.AdsConsentManager
@@ -149,8 +151,11 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
         val keyAdBannerMedium = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_MAIN_MEDIUM)
         val keyAdBannerAllPrice = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_MAIN)
         val listKeyAds = listOf(keyAdBannerHigh, keyAdBannerMedium, keyAdBannerAllPrice)
-
-        BannerUtils.instance?.loadCollapsibleBanner(mContext, listKeyAds)
+        if (isUseBannerMonet) {
+            BannerUtils.instance?.loadCollapsibleBanner(mContext, keyAdBannerAllPrice)
+        } else {
+            BannerUtils.instance?.loadCollapsibleBanner(mContext, listKeyAds)
+        }
     }
 
     private fun checkForAppUpdates() {
@@ -246,66 +251,6 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
             .enqueueUniquePeriodicWork("my_id", ExistingPeriodicWorkPolicy.KEEP, myRequest)
     }
 
-    private fun loadInterAd1() {
-
-        val remoteConfig = FirebaseRemoteConfig.getInstance()
-        if (remoteConfig.getBoolean(RemoteConfigKey.IS_SHOW_ADS_INTER_HOME_SCREEN)) {
-
-            var adConfig = remoteConfig.getString(RemoteConfigKey.KEY_ADS_INTER_HOME_SCREEN)
-            if (adConfig.isEmpty()) {
-                adConfig = getString(R.string.inter_home_screen)
-            }
-
-            InterstitialAd.load(
-                mContext,
-                adConfig,
-                AdRequest.Builder().build(),
-                object : InterstitialAdLoadCallback() {
-                    override fun onAdFailedToLoad(adError: LoadAdError) {
-                        mFirebaseAnalytics?.logEvent("e_load_inter_ads_home_screen", null)
-                        mInterstitialAd = null
-                        retryAttempt++
-                        val delayMillis = TimeUnit.SECONDS.toMillis(
-                            2.0.pow(6.0.coerceAtMost(retryAttempt)).toLong()
-                        )
-                        Handler(Looper.getMainLooper()).postDelayed({ loadInterAd() }, delayMillis)
-                    }
-
-                    override fun onAdLoaded(ad: InterstitialAd) {
-                        mFirebaseAnalytics?.logEvent("d_load_inter_ads_home_screen", null)
-                        mInterstitialAd = ad
-                        retryAttempt = 0.0
-                        mInterstitialAd?.onPaidEventListener =
-                            OnPaidEventListener { adValue ->
-                                val loadedAdapterResponseInfo: AdapterResponseInfo? =
-                                    mInterstitialAd?.responseInfo?.loadedAdapterResponseInfo
-                                val adRevenue = AdjustAdRevenue(AdjustConfig.AD_REVENUE_ADMOB)
-                                val revenue = adValue.valueMicros.toDouble() / 1000000.0
-                                adRevenue.setRevenue(revenue, adValue.currencyCode)
-                                adRevenue.adRevenueNetwork = loadedAdapterResponseInfo?.adSourceName
-                                Adjust.trackAdRevenue(adRevenue)
-
-                                val analytics =
-                                    FirebaseAnalytics.getInstance(mContext)
-                                val params = Bundle().apply {
-                                    putString(
-                                        FirebaseAnalytics.Param.AD_PLATFORM,
-                                        "admob mediation"
-                                    )
-                                    putString(FirebaseAnalytics.Param.AD_SOURCE, "AdMob")
-                                    putString(FirebaseAnalytics.Param.AD_FORMAT, "Interstitial")
-                                    putDouble(FirebaseAnalytics.Param.VALUE, revenue)
-                                    putString(FirebaseAnalytics.Param.CURRENCY, "USD")
-                                }
-                                analytics.logEvent("ad_impression_2", params)
-                            }
-                    }
-                }
-            )
-        }
-
-    }
-
     private fun loadInterAd() {
         if (FirebaseRemoteConfig.getInstance()
                 .getBoolean(RemoteConfigKey.IS_SHOW_ADS_INTER_HOME_SCREEN)
@@ -317,7 +262,12 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
             val keyAdInterAllPrice =
                 FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_INTER_HOME_SCREEN)
             val listKeyAds = listOf(keyAdInterHigh, keyAdInterMedium, keyAdInterAllPrice)
-            loadInterAdsSplashSequence(listKeyAds)
+            if (isUseInterMonet) {
+                loadInterAdsSplashSequence(listKeyAds)
+            }
+            else {
+                loadInterAdsMain(keyAdInterAllPrice)
+            }
         }
     }
 
@@ -330,11 +280,8 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
                 override fun onAdFailedToLoad(adError: LoadAdError) {
                     mFirebaseAnalytics?.logEvent("e_load_inter_splash", null)
                     mInterstitialAd = null
-                    retryAttempt++
-                    val delayMillis = TimeUnit.SECONDS.toMillis(
-                        2.0.pow(6.0.coerceAtMost(retryAttempt)).toLong()
-                    )
-                    Handler(Looper.getMainLooper()).postDelayed({ loadInterAdsMain(keyAdInter) }, delayMillis)
+
+                    Handler(Looper.getMainLooper()).postDelayed({ loadInterAdsMain(keyAdInter) }, 2000)
                 }
 
                 override fun onAdLoaded(ad: InterstitialAd) {

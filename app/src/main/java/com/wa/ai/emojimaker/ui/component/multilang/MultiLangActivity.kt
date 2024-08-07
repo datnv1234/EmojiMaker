@@ -134,7 +134,35 @@ class MultiLangActivity : BaseBindingActivity<ActivityMultiLangBinding, MultiLan
             adContainer.removeAllViews()
             adContainer.addView(it)
         } ?: run {
-            binding.frNativeAds.gone()
+            loadNativeAd()
+        }
+    }
+
+    private fun loadNativeAd() {
+        if (FirebaseRemoteConfig.getInstance()
+                .getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_LANGUAGE)
+        ) {
+            loadNativeAds(keyNative)
+        } else {
+            binding.rlNative.visibility = View.GONE
+        }
+    }
+    private fun loadNativeAds(keyAds: String) {
+        this.let {
+            NativeAdsUtils.instance.loadNativeAds(
+                applicationContext,
+                keyAds
+            ) { nativeAds ->
+                if (nativeAds != null) {
+                    val adNativeVideoBinding = AdNativeVideoBinding.inflate(layoutInflater)
+                    NativeAdsUtils.instance.populateNativeAdVideoView(
+                        nativeAds,
+                        adNativeVideoBinding.root as NativeAdView
+                    )
+                    binding.frNativeAds.removeAllViews()
+                    binding.frNativeAds.addView(adNativeVideoBinding.root)
+                }
+            }
         }
     }
 }

@@ -13,6 +13,7 @@ import com.adjust.sdk.AdjustConfig
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdLoader
 import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdValue
 import com.google.android.gms.ads.AdapterResponseInfo
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.nativead.MediaView
@@ -35,44 +36,44 @@ class NativeAdsUtils {
     private var retryAttempt = 0.0
     var loadNativeCount = 0
 
+    private fun pushEvent(context: Context, nativeAd: NativeAd, adValue: AdValue) {
+        val loadedAdapterResponseInfo: AdapterResponseInfo? =
+            nativeAd.responseInfo?.loadedAdapterResponseInfo
+        val adRevenue = AdjustAdRevenue(AdjustConfig.AD_REVENUE_ADMOB)
+        val revenue = adValue.valueMicros.toDouble() / 1000000.0
+        adRevenue.setRevenue(
+            revenue,
+            adValue.currencyCode
+        )
+        adRevenue.adRevenueNetwork = loadedAdapterResponseInfo?.adSourceName
+        Adjust.trackAdRevenue(adRevenue)
+        analytics = FirebaseAnalytics.getInstance(context)
+        val params = Bundle()
+        params.putString(FirebaseAnalytics.Param.AD_PLATFORM, "admob mediation")
+        params.putString(FirebaseAnalytics.Param.AD_SOURCE, "AdMob")
+        params.putString(FirebaseAnalytics.Param.AD_FORMAT, "Native")
+        params.putDouble(FirebaseAnalytics.Param.VALUE, revenue)
+        params.putString(FirebaseAnalytics.Param.CURRENCY, "USD")
+        analytics.logEvent("ad_impression_2", params)
+    }
+
     fun loadNativeAds(context: Context, keyAds: String, adsLoadCallBack: (NativeAd?) -> Unit) {
         val adLoader = AdLoader.Builder(context, keyAds)
             .forNativeAd { nativeAd ->
                 adsLoadCallBack(nativeAd)
                 nativeAd.setOnPaidEventListener { adValue ->
-                    val loadedAdapterResponseInfo: AdapterResponseInfo? =
-                        nativeAd.responseInfo?.loadedAdapterResponseInfo
-                    val adRevenue = AdjustAdRevenue(AdjustConfig.AD_REVENUE_ADMOB)
-                    val revenue = adValue.valueMicros.toDouble() / 1000000.0
-                    adRevenue.setRevenue(
-                        revenue,
-                        adValue.currencyCode
-                    )
-                    adRevenue.adRevenueNetwork = loadedAdapterResponseInfo?.adSourceName
-                    Adjust.trackAdRevenue(adRevenue)
-                    analytics = FirebaseAnalytics.getInstance(context)
-                    val params = Bundle()
-                    params.putString(FirebaseAnalytics.Param.AD_PLATFORM, "admob mediation")
-                    params.putString(FirebaseAnalytics.Param.AD_SOURCE, "AdMob")
-                    params.putString(FirebaseAnalytics.Param.AD_FORMAT, "Native")
-                    params.putDouble(FirebaseAnalytics.Param.VALUE, revenue)
-                    params.putString(FirebaseAnalytics.Param.CURRENCY, "USD")
-                    analytics.logEvent("ad_impression_2", params)
+                    pushEvent(context, nativeAd, adValue)
                 }
             }.withAdListener(object : AdListener() {
                 override fun onAdFailedToLoad(p0: LoadAdError) {
                     super.onAdFailedToLoad(p0)
                     loadNativeCount++
                     if (loadNativeCount <= 10) {
-                        retryAttempt++
-                        val delayMillis = TimeUnit.SECONDS.toMillis(
-                            2.0.pow(6.0.coerceAtMost(retryAttempt)).toLong()
-                        )
                         Handler(Looper.getMainLooper()).postDelayed(
                             {
                                 loadNativeAds(context, keyAds, adsLoadCallBack)
                             },
-                            delayMillis
+                            2000
                         )
                     } else {
                         adsLoadCallBack(null)
@@ -81,7 +82,6 @@ class NativeAdsUtils {
 
                 override fun onAdLoaded() {
                     super.onAdLoaded()
-                    retryAttempt = 0.0
                     loadNativeCount = 0
                 }
             }).build()
@@ -104,22 +104,7 @@ class NativeAdsUtils {
                 .forNativeAd { nativeAd ->
                     adsLoadCallBack(nativeAd)
                     nativeAd.setOnPaidEventListener { adValue ->
-                        val loadedAdapterResponseInfo: AdapterResponseInfo? =
-                            nativeAd.responseInfo?.loadedAdapterResponseInfo
-                        val adRevenue = AdjustAdRevenue(AdjustConfig.AD_REVENUE_ADMOB)
-                        val revenue = adValue.valueMicros.toDouble() / 1000000.0
-                        adRevenue.setRevenue(revenue, adValue.currencyCode)
-                        adRevenue.adRevenueNetwork = loadedAdapterResponseInfo?.adSourceName
-                        Adjust.trackAdRevenue(adRevenue)
-                        val analytics = FirebaseAnalytics.getInstance(context)
-                        val params = Bundle().apply {
-                            putString(FirebaseAnalytics.Param.AD_PLATFORM, "admob mediation")
-                            putString(FirebaseAnalytics.Param.AD_SOURCE, "AdMob")
-                            putString(FirebaseAnalytics.Param.AD_FORMAT, "Native")
-                            putDouble(FirebaseAnalytics.Param.VALUE, revenue)
-                            putString(FirebaseAnalytics.Param.CURRENCY, "USD")
-                        }
-                        analytics.logEvent("ad_impression_2", params)
+                        pushEvent(context, nativeAd, adValue)
                     }
                 }.withAdListener(object : AdListener() {
                     override fun onAdFailedToLoad(loadAdError: LoadAdError) {
