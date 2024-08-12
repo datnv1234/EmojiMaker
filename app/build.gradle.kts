@@ -32,8 +32,8 @@ android {
         applicationId = "com.wa.ai.emojimaker"
         minSdk = 24
         targetSdk = 33
-        versionCode = 21
-        versionName = "1.8"
+        versionCode = 22
+        versionName = "1.9"
 
         val formattedDate = SimpleDateFormat("MM.dd.yyyy").format(Date())
         base.archivesBaseName = "AI_Emoji_Maker_v${versionName}(${versionCode})_${formattedDate}"
@@ -54,7 +54,8 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isShrinkResources = true
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
