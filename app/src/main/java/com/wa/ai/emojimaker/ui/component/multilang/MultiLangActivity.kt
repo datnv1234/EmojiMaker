@@ -8,7 +8,6 @@ import com.google.android.gms.ads.nativead.NativeAdView
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.common.Constant
-import com.wa.ai.emojimaker.data.local.SharedPreferenceHelper
 import com.wa.ai.emojimaker.databinding.ActivityMultiLangBinding
 import com.wa.ai.emojimaker.databinding.AdNativeVideoBinding
 import com.wa.ai.emojimaker.ui.adapter.MultiLangAdapter

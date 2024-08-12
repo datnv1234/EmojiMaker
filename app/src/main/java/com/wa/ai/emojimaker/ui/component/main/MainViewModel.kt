@@ -3,25 +3,16 @@ package com.wa.ai.emojimaker.ui.component.main
 import android.content.Context
 import android.content.ContextWrapper
 import android.graphics.Bitmap
-import android.os.Build
 import android.os.CountDownTimer
-import android.view.LayoutInflater
-import android.view.WindowManager
-import android.view.WindowMetrics
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.ads.nativead.NativeAdView
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig
-import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.common.Constant
 import com.wa.ai.emojimaker.data.model.Category
 import com.wa.ai.emojimaker.data.model.MadeStickerModel
 import com.wa.ai.emojimaker.data.model.PackageModel
 import com.wa.ai.emojimaker.ui.base.BaseViewModel
 import com.wa.ai.emojimaker.utils.AppUtils
-import com.wa.ai.emojimaker.utils.RemoteConfigKey
-import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
@@ -41,15 +32,27 @@ class MainViewModel : BaseViewModel() {
         "brainy_endeavors",
         "cat_chic",
         "couple_emoji",
+        "cute_baby",
         "cute_girl",
         "dog_diversity",
+        "axolotl_emotions",
+        "panda_pals",
         "emoji",
         "funny_cat",
+        "meow_tions",
+        "pug_adventures",
         "funny_rat",
+        "lazy_day_vibes",
+        "anime_emotions",
         "orange_orchard",
         "pet_pawtentials",
+        "folk_emoji",
+        "emo_teens",
+        "happy_hijabi",
         "quacking_quacks",
         "sly_spirits",
+        "character_moods",
+        "pink_personality",
         "xiximi")
 
     private val _stickerMutableLiveData: MutableLiveData<List<MadeStickerModel>> = MutableLiveData()
@@ -70,35 +73,35 @@ class MainViewModel : BaseViewModel() {
         timerReloadBanner?.cancel()
     }
 
-    fun getAdWidth(context: Context) : Int {
-        val displayMetrics = context.resources.displayMetrics
-        val adWidthPixels =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-                val windowMetrics: WindowMetrics = windowManager.currentWindowMetrics
-                windowMetrics.bounds.width()
-            } else {
-                displayMetrics.widthPixels
-            }
-        val density = displayMetrics.density
-        return (adWidthPixels / density).toInt()
-    }
     fun getCategories(context: Context) {
         viewModelScope.launch(Dispatchers.IO) {
             val listEntity = mutableListOf<Any>()
+            listEntity.add(getCategory(context, "pink_personality", "Pink Personality"))
+            listEntity.add(getCategory(context, "anime_emotions", "Anime Emotions"))
+            listEntity.add(getCategory(context, "meow_tions", "Meow_tions"))
             listEntity.add(getCategory(context, "cat_chic", "Cat Chic"))
+            listEntity.add(getCategory(context, "happy_hijabi", "Happy Hijabi"))
+            listEntity.add(getCategory(context, "emo_teens", "Emo Teens"))
             listEntity.add(getCategory(context, "orange_orchard", "Orange Orchard"))
             listEntity.add(getCategory(context, "funny_rat", "Funny rat"))
-            listEntity.add(getCategory(context, "dog_diversity", "Dog Diversity"))
+            listEntity.add(getCategory(context, "funny_cat", "Funny Cat"))
+            listEntity.add(getCategory(context, "cute_baby", "Cute Baby"))
+            listEntity.add(getCategory(context, "cute_girl", "Cute girl"))
+            listEntity.add(getCategory(context, "lazy_day_vibes", "Lazy Day Vibes"))
+            listEntity.add(getCategory(context, "panda_pals", "Panda Pals"))
+            listEntity.add(getCategory(context, "folk_emoji", "Folk Emoji"))
             listEntity.add(getCategory(context, "pet_pawtentials", "Pet Pawtentials"))
+            listEntity.add(getCategory(context, "axolotl_emotions", "Axolotl Emotions"))
             listEntity.add(getCategory(context, "sly_spirits", "Sly Spirits"))
             listEntity.add(getCategory(context, "xiximi", "Xiximi"))
-            listEntity.add(getCategory(context, "funny_cat", "Funny Cat"))
+            listEntity.add(getCategory(context, "dog_diversity", "Dog Diversity"))
+            listEntity.add(getCategory(context, "pug_adventures", "Pug Adventures"))
             listEntity.add(getCategory(context, "quacking_quacks", "Quacking Quacks"))
             listEntity.add(getCategory(context, "emoji", "Emoji"))
             listEntity.add(getCategory(context, "brainy_endeavors", "Brainy Endeavors"))
             listEntity.add(getCategory(context, "couple_emoji", "Couple emoji"))
-            listEntity.add(getCategory(context, "cute_girl", "Cute girl"))
+            listEntity.add(getCategory(context, "character_moods", "Character Moods"))
+
             _categoriesMutableLiveData.postValue(listEntity)
         }
     }

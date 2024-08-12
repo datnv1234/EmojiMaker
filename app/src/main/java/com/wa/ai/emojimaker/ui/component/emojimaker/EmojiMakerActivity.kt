@@ -59,6 +59,7 @@ import com.wa.ai.emojimaker.ui.dialog.CreatePackageDialog
 import com.wa.ai.emojimaker.ui.dialog.SaveStickerDialog
 import com.wa.ai.emojimaker.ui.dialog.SaveSuccessDialog
 import com.wa.ai.emojimaker.ui.component.main.MainActivity
+import com.wa.ai.emojimaker.ui.component.splash.SplashActivity.Companion.isUseBannerMonet
 import com.wa.ai.emojimaker.ui.component.splash.SplashActivity.Companion.isUseInterMonet
 import com.wa.ai.emojimaker.utils.AppUtils
 import com.wa.ai.emojimaker.utils.DeviceUtils
@@ -105,6 +106,9 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
 
     private val pagerIconAdapter: PagerIconAdapter by lazy {
         PagerIconAdapter(itemClick = {
+            kotlin.runCatching {
+                showInterstitialItemClick(true)
+            }
             doAddSticker(it)
         })
     }
@@ -259,6 +263,9 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
             registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
+                    kotlin.runCatching {
+                        showInterstitialItemClick(true)
+                    }
                     optionAdapter.onItemFocus(position)
                     binding.rvOptions.scrollToPosition(position)
                 }
@@ -297,7 +304,11 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         val keyAdBannerMedium = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_CREATE_EMOJI_MEDIUM)
         val keyAdBannerAllPrice = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_CREATE_EMOJI)
         val listKeyAds = listOf(keyAdBannerHigh, keyAdBannerMedium, keyAdBannerAllPrice)
-        BannerUtils.instance?.loadCollapsibleBanner(this, listKeyAds)
+        if (isUseBannerMonet) {
+            BannerUtils.instance?.loadCollapsibleBanner(this, listKeyAds)
+        } else {
+            BannerUtils.instance?.loadCollapsibleBanner(this, keyAdBannerAllPrice)
+        }
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -606,9 +617,6 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     private fun setupButtons() {
 
         binding.ivBack.setOnSafeClick {
-            kotlin.runCatching {
-                showInterstitial(false)
-            }
             finish()
         }
 
@@ -688,6 +696,9 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
                 .setTitle(getString(R.string.confirm))
                 .setMessage(getString(R.string.are_you_sure_want_to_quit))
                 .setPositiveButton(getString(R.string.ok)) { _, _ ->
+                    kotlin.runCatching {
+                        showInterstitial(false)
+                    }
                     super.finish()
                 }
                 .setNegativeButton(getString(R.string.no), null)

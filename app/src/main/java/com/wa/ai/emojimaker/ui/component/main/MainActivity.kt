@@ -43,7 +43,6 @@ import com.wa.ai.emojimaker.data.local.SharedPreferenceHelper
 import com.wa.ai.emojimaker.databinding.ActivityMainBinding
 import com.wa.ai.emojimaker.ui.base.BaseBindingActivity
 import com.wa.ai.emojimaker.ui.component.splash.SplashActivity.Companion.isUseBannerMonet
-import com.wa.ai.emojimaker.ui.component.splash.SplashActivity.Companion.isUseInterMonet
 import com.wa.ai.emojimaker.utils.DeviceUtils
 import com.wa.ai.emojimaker.utils.RemoteConfigKey
 import com.wa.ai.emojimaker.utils.ads.AdsConsentManager
@@ -55,7 +54,6 @@ import kotlinx.coroutines.launch
 import java.util.Date
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
-import kotlin.math.pow
 
 class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
 
