@@ -4,8 +4,10 @@ object RemoteConfigKey {
 
     //unit: seconds
     const val INTER_DELAY = "inter_delay"
+    const val INTER_ITEM_CLICK_DELAY = "inter_item_click_delay"
+
     const val BANNER_RELOAD = "banner_reload"
-    const val IS_USE_MONET = "is_use_monet"
+    const val IS_USE_NATIVE_MONET = "is_use_native_monet"
     const val IS_USE_INTER_MONET = "is_use_inter_monet"
     const val IS_USE_BANNER_MONET = "is_use_banner_monet"
 

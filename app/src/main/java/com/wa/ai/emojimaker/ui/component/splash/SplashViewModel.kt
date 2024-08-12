@@ -11,7 +11,7 @@ import com.google.android.gms.ads.nativead.NativeAdView
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.ui.base.BaseViewModel
-import com.wa.ai.emojimaker.ui.component.splash.SplashActivity.Companion.isUseMonet
+import com.wa.ai.emojimaker.ui.component.splash.SplashActivity.Companion.isUseNativeMonet
 import com.wa.ai.emojimaker.utils.RemoteConfigKey
 import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils
 import kotlinx.coroutines.Dispatchers
@@ -74,12 +74,10 @@ class SplashViewModel : BaseViewModel() {
             val keyAdNativeMedium = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_HOME_MEDIUM)
             val keyAdNativeAllPrice = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_HOME)
             val listKeyAds = listOf(keyAdNativeHigh, keyAdNativeMedium, keyAdNativeAllPrice)
-            if (isUseMonet) {
-                val adView = loadNativeAdDialog(context = context, listKeyAds)
-                _nativeAdDialog.postValue(adView)
+            if (isUseNativeMonet) {
+                loadNativeAdDialog(context = context, listKeyAds, _nativeAdDialog)
             } else {
-                val adView = loadNativeAdDialog(context = context, keyAdNativeAllPrice)
-                _nativeAdDialog.postValue(adView)
+                loadNativeAdDialog(context = context, keyAdNativeAllPrice, _nativeAdDialog)
             }
         }
     }
@@ -90,12 +88,10 @@ class SplashViewModel : BaseViewModel() {
             val keyAdNativeMedium = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_HOME_MEDIUM)
             val keyAdNativeAllPrice = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_HOME)
             val listKeyAds = listOf(keyAdNativeHigh, keyAdNativeMedium, keyAdNativeAllPrice)
-            if (isUseMonet) {
-                val adView = loadNativeAdHome(context = context, listKeyAds)
-                _nativeAdHome.postValue(adView)
+            if (isUseNativeMonet) {
+                loadNativeAdHome(context = context, listKeyAds, _nativeAdHome)
             } else {
-                val adView = loadNativeAdHome(context = context, keyAdNativeAllPrice)
-                _nativeAdHome.postValue(adView)
+                loadNativeAdHome(context = context, keyAdNativeAllPrice, _nativeAdHome)
             }
         }
     }
@@ -106,12 +102,10 @@ class SplashViewModel : BaseViewModel() {
             val keyAdNativeMedium = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_LANGUAGE_MEDIUM)
             val keyAdNativeAllPrice = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_LANGUAGE)
             val listKeyAds = listOf(keyAdNativeHigh, keyAdNativeMedium, keyAdNativeAllPrice)
-            if (isUseMonet) {
-                val adView = loadNativeAdVideo(context = context, listKeyAds)
-                _nativeAdLanguage.postValue(adView)
+            if (isUseNativeMonet) {
+                loadNativeAdVideo(context = context, listKeyAds, _nativeAdLanguage)
             } else {
-                val adView = loadNativeAdVideo(context = context, keyAdNativeAllPrice)
-                _nativeAdLanguage.postValue(adView)
+                loadNativeAdVideo(context = context, keyAdNativeAllPrice, _nativeAdLanguage)
             }
         }
     }
@@ -122,17 +116,15 @@ class SplashViewModel : BaseViewModel() {
             val keyAdNativeMedium = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_INTRO_MEDIUM)
             val keyAdNativeAllPrice = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_INTRO)
             val listKeyAds = listOf(keyAdNativeHigh, keyAdNativeMedium, keyAdNativeAllPrice)
-            if (isUseMonet) {
-                val adView = loadNativeAdVideo(context = context, listKeyAds)
-                _nativeAdIntro.postValue(adView)
+            if (isUseNativeMonet) {
+                loadNativeAdVideo(context = context, listKeyAds, _nativeAdIntro)
             } else {
-                val adView = loadNativeAdVideo(context = context, keyAdNativeAllPrice)
-                _nativeAdIntro.postValue(adView)
+                loadNativeAdVideo(context = context, keyAdNativeAllPrice, _nativeAdIntro)
             }
         }
     }
 
-    private fun loadNativeAdVideo(context: Context, keyAd : String) : NativeAdView {
+    private fun loadNativeAdVideo(context: Context, keyAd : String, nativeAd: MutableLiveData<NativeAdView>) {
         val adView = NativeAdView(context)
         NativeAdsUtils.instance.loadNativeAds(
             context,
@@ -148,12 +140,12 @@ class SplashViewModel : BaseViewModel() {
                 )
                 adView.removeAllViews()
                 adView.addView(adLayoutView)
+                nativeAd.postValue(adView)
             }
         }
-        return adView
     }
 
-    private fun loadNativeAdVideo(context: Context, keyAds : List<String>) : NativeAdView {
+    private fun loadNativeAdVideo(context: Context, keyAds : List<String>, nativeAd: MutableLiveData<NativeAdView>) {
         val adView = NativeAdView(context)
         NativeAdsUtils.instance.loadNativeAdsSequence(
             context,
@@ -169,12 +161,12 @@ class SplashViewModel : BaseViewModel() {
                 )
                 adView.removeAllViews()
                 adView.addView(adLayoutView)
+                nativeAd.postValue(adView)
             }
         }
-        return adView
     }
 
-    private fun loadNativeAdHome(context: Context, keyAd : String) : NativeAdView {
+    private fun loadNativeAdHome(context: Context, keyAd : String, nativeAd: MutableLiveData<NativeAdView>) {
         val adView = NativeAdView(context)
         NativeAdsUtils.instance.loadNativeAds(
             context,
@@ -190,12 +182,12 @@ class SplashViewModel : BaseViewModel() {
                 )
                 adView.removeAllViews()
                 adView.addView(adLayoutView)
+                nativeAd.postValue(adView)
             }
         }
-        return adView
     }
 
-    private fun loadNativeAdHome(context: Context, keyAds : List<String>) : NativeAdView {
+    private fun loadNativeAdHome(context: Context, keyAds : List<String>, nativeAd: MutableLiveData<NativeAdView>) {
         val adView = NativeAdView(context)
         NativeAdsUtils.instance.loadNativeAdsSequence(
             context,
@@ -211,12 +203,12 @@ class SplashViewModel : BaseViewModel() {
                 )
                 adView.removeAllViews()
                 adView.addView(adLayoutView)
+                nativeAd.postValue(adView)
             }
         }
-        return adView
     }
 
-    private fun loadNativeAdDialog(context: Context, keyAd : String) : NativeAdView {
+    private fun loadNativeAdDialog(context: Context, keyAd : String, nativeAd: MutableLiveData<NativeAdView>) {
         val adView = NativeAdView(context)
         NativeAdsUtils.instance.loadNativeAds(
             context,
@@ -232,12 +224,12 @@ class SplashViewModel : BaseViewModel() {
                 )
                 adView.removeAllViews()
                 adView.addView(adLayoutView)
+                nativeAd.postValue(adView)
             }
         }
-        return adView
     }
 
-    private fun loadNativeAdDialog(context: Context, keyAds : List<String>) : NativeAdView {
+    private fun loadNativeAdDialog(context: Context, keyAds : List<String>, nativeAd: MutableLiveData<NativeAdView>) {
         val adView = NativeAdView(context)
         NativeAdsUtils.instance.loadNativeAdsSequence(
             context,
@@ -253,8 +245,8 @@ class SplashViewModel : BaseViewModel() {
                 )
                 adView.removeAllViews()
                 adView.addView(adLayoutView)
+                nativeAd.postValue(adView)
             }
         }
-        return adView
     }
 }

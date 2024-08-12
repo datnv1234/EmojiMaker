@@ -105,11 +105,11 @@ public class BaseRatingBar extends LinearLayout implements SimpleRatingBar {
         }
 
         if (mEmptyDrawable == null) {
-            mEmptyDrawable = ContextCompat.getDrawable(getContext(), R.drawable.empty);
+            mEmptyDrawable = ContextCompat.getDrawable(getContext(), R.drawable.ic_star_unfilled);
         }
 
         if (mFilledDrawable == null) {
-            mFilledDrawable = ContextCompat.getDrawable(getContext(), R.drawable.filled);
+            mFilledDrawable = ContextCompat.getDrawable(getContext(), R.drawable.ic_star_filled);
         }
 
         if (mStepSize > 1.0f) {

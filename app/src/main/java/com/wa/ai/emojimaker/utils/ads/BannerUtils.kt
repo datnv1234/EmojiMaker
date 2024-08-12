@@ -154,7 +154,7 @@ class BannerUtils {
             }
             adView.loadAd(getAdsRequest())
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e("datnv: loadCollapsibleBanner " + e.message)
         }
     }
 
@@ -255,7 +255,7 @@ class BannerUtils {
             }
             adView.loadAd(adRequest)
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e("datnv: loadCollapsibleBanner " + e.message)
         }
     }
 
@@ -321,7 +321,7 @@ class BannerUtils {
                 }
                 adView.loadAd(adRequest)
             } catch (e: Exception) {
-                e.printStackTrace()
+                Timber.e("datnv: loadCollapsibleBanner " + e.message)
             }
         }
 

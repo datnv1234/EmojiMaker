@@ -66,6 +66,7 @@ import com.wa.ai.emojimaker.utils.RemoteConfigKey
 import com.wa.ai.emojimaker.utils.ads.AdsConsentManager
 import com.wa.ai.emojimaker.utils.ads.BannerUtils
 import com.wa.ai.emojimaker.utils.extention.gone
+import com.wa.ai.emojimaker.utils.extention.isNetworkAvailable
 import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 import com.wa.ai.emojimaker.utils.sticker.BitmapStickerIcon
 import com.wa.ai.emojimaker.utils.sticker.DrawableSticker
@@ -83,9 +84,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
-import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
-import kotlin.math.pow
 
 
 class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, StickerViewModel>() {
@@ -96,10 +95,6 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     private var mFirebaseAnalytics: FirebaseAnalytics? = null
     private var mInterstitialAd: InterstitialAd? = null
 
-    private var retryAttempt = 0.0
-
-    private val keyAdsBanner =
-        FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_CREATE_EMOJI)
     private val bannerReload =
         FirebaseRemoteConfig.getInstance().getLong(RemoteConfigKey.BANNER_RELOAD)
 
@@ -244,19 +239,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     }
 
     private fun setUpViewPager() {
-        binding.vpIcon.apply {
-            adapter = pagerIconAdapter
-            registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-                override fun onPageSelected(position: Int) {
-                    super.onPageSelected(position)
 
-                }
-            })
-        }
-    }
-
-    override fun onStart() {
-        super.onStart()
     }
 
     override fun setupData() {
@@ -266,13 +249,23 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
             pagerIconAdapter.submitList(it.toMutableList())
         }
         val optionAdapter = OptionAdapter(this, emojiViewModel.optionList, itemClick = {
+            kotlin.runCatching {
+                showInterstitialItemClick(true)
+            }
             binding.vpIcon.setCurrentItem(it, true)
         })
-
+        binding.vpIcon.apply {
+            adapter = pagerIconAdapter
+            registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
+                    optionAdapter.onItemFocus(position)
+                    binding.rvOptions.scrollToPosition(position)
+                }
+            })
+        }
         binding.rvOptions.adapter = optionAdapter
-
         loadAds()
-
     }
 
     override fun onResume() {
@@ -620,16 +613,30 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         }
 
         binding.buttonAdd.setOnClickListener {
+            kotlin.runCatching {
+                showInterstitialItemClick(true)
+            }
             addSticker()
         }
 
-        binding.buttonReset.setOnClickListener { viewModel.resetView() }
+        binding.buttonReset.setOnClickListener {
+            kotlin.runCatching {
+                showInterstitialItemClick(true)
+            }
+            viewModel.resetView()
+        }
 
         binding.buttonLock.setOnCheckedChangeListener { _, isToggled ->
+            kotlin.runCatching {
+                showInterstitialItemClick(true)
+            }
             viewModel.isLocked.value = isToggled
         }
 
         binding.buttonCrop.setOnCheckedChangeListener { _, isToggled ->
+            kotlin.runCatching {
+                showInterstitialItemClick(true)
+            }
             viewModel.isCropActive.value = isToggled
         }
 
@@ -647,15 +654,27 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         }
 
         binding.btnFlipHorizontal.setOnSafeClick {
+            kotlin.runCatching {
+                showInterstitialItemClick(true)
+            }
             viewModel.flipCurrentSticker(StickerView.FLIP_HORIZONTALLY)
         }
         binding.btnFlipVertical.setOnSafeClick {
+            kotlin.runCatching {
+                showInterstitialItemClick(true)
+            }
             viewModel.flipCurrentSticker(StickerView.FLIP_VERTICALLY)
         }
         binding.btnUndo.setOnSafeClick {
+            kotlin.runCatching {
+                showInterstitialItemClick(true)
+            }
             toast("This function is not available!")
         }
         binding.btnReUndo.setOnSafeClick {
+            kotlin.runCatching {
+                showInterstitialItemClick(true)
+            }
             toast("This function is not available!")
         }
     }
@@ -942,11 +961,55 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     }
 
     private fun showInterstitial(isReload: Boolean) {
-        if (!DeviceUtils.checkInternetConnection(mContext)) {
+        if (!isNetworkAvailable()) {
             return
         }
         val timeLoad = FirebaseRemoteConfig.getInstance()
             .getLong(RemoteConfigKey.INTER_DELAY)
+
+        val timeSubtraction =
+            Date().time - SharedPreferenceHelper.getLong(Constant.TIME_LOAD_NEW_INTER_ADS)
+        if (timeSubtraction <= timeLoad) {
+            return
+        }
+
+        if (mInterstitialAd == null) {
+            if (adsConsentManager?.canRequestAds == false) {
+                return
+            }
+            if (isReload)
+                loadInterAd()
+            return
+        }
+        mInterstitialAd?.show(this)
+
+        mInterstitialAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
+            override fun onAdDismissedFullScreenContent() {
+                mInterstitialAd = null
+                if (isReload) {
+                    loadInterAd()
+                }
+                SharedPreferenceHelper.storeLong(
+                    Constant.TIME_LOAD_NEW_INTER_ADS,
+                    Date().time
+                )
+            }
+
+            override fun onAdFailedToShowFullScreenContent(adError: AdError) {
+                mInterstitialAd = null
+            }
+
+            override fun onAdShowedFullScreenContent() {
+            }
+        }
+    }
+
+    private fun showInterstitialItemClick(isReload: Boolean) {
+        if (!isNetworkAvailable()) {
+            return
+        }
+        val timeLoad = FirebaseRemoteConfig.getInstance()
+            .getLong(RemoteConfigKey.INTER_ITEM_CLICK_DELAY)
 
         val timeSubtraction =
             Date().time - SharedPreferenceHelper.getLong(Constant.TIME_LOAD_NEW_INTER_ADS)

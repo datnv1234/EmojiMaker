@@ -10,6 +10,10 @@
     <key>inter_delay</key>
     <value>20000</value>
   </entry>
+  <entry>
+    <key>inter_item_click_delay</key>
+    <value>660000</value>
+  </entry>
 
   <entry>
     <key>banner_reload</key>
@@ -17,7 +21,7 @@
   </entry>
 
   <entry>
-    <key>is_use_monet</key>
+    <key>is_use_native_monet</key>
     <value>true</value>
   </entry>
   <entry>

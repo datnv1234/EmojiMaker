@@ -2,7 +2,6 @@ package com.wa.ai.emojimaker.ui.component.multilang
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import android.view.ViewGroup
 import com.adjust.sdk.Adjust
 import com.google.android.gms.ads.nativead.NativeAdView
@@ -17,7 +16,6 @@ import com.wa.ai.emojimaker.ui.base.BaseBindingActivity
 import com.wa.ai.emojimaker.ui.component.intro.IntroActivity
 import com.wa.ai.emojimaker.ui.component.main.MainActivity
 import com.wa.ai.emojimaker.ui.component.splash.SplashActivity
-import com.wa.ai.emojimaker.utils.DeviceUtils
 import com.wa.ai.emojimaker.utils.RemoteConfigKey
 import com.wa.ai.emojimaker.utils.SystemUtil
 import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils
@@ -84,7 +82,8 @@ class MultiLangActivity : BaseBindingActivity<ActivityMultiLangBinding, MultiLan
 
         when (type) {
             Constant.TYPE_LANGUAGE_SPLASH -> {
-                val isFirstRun = SharedPreferenceHelper.getBoolean("isFirstRun", true)
+                //val isFirstRun = SharedPreferenceHelper.getBoolean("isFirstRun", true)
+                val isFirstRun = true
                 binding.imgBack.invisible()
                 binding.btnChooseLang.setOnClickListener {
                     SystemUtil.changeLang(code.ifEmpty { oldCode }, this)
@@ -144,7 +143,7 @@ class MultiLangActivity : BaseBindingActivity<ActivityMultiLangBinding, MultiLan
         ) {
             loadNativeAds(keyNative)
         } else {
-            binding.rlNative.visibility = View.GONE
+            binding.rlNative.gone()
         }
     }
     private fun loadNativeAds(keyAds: String) {

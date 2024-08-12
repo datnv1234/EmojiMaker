@@ -1,11 +1,9 @@
-package com.wa.cast.tv.utils.rate
+package com.wa.ai.emojimaker.utils.rate
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.animation.AnimationUtils
 import com.wa.ai.emojimaker.R
-import com.wa.ai.emojimaker.utils.rate.AnimationRatingBar
-import com.wa.ai.emojimaker.utils.rate.PartialView
 
 class RotationRatingBar : AnimationRatingBar {
     constructor(context: Context?) : super(context)

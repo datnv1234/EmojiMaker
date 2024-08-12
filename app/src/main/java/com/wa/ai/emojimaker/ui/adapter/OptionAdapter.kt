@@ -15,6 +15,8 @@ class OptionAdapter(
     private val itemClick: (pos: Int) -> Unit
 ) : BaseBindingAdapter<ItemOptionsBinding>() {
 
+    private var focusedItemPosition: Int = -1
+
     override fun onBindViewHolderBase(holder: BaseHolder<ItemOptionsBinding>, position: Int) {
         holder.binding.tvOption.text = optionList[holder.adapterPosition].title
         try {
@@ -26,7 +28,10 @@ class OptionAdapter(
         }
         holder.binding.item.setOnSafeClick {
             itemClick(holder.adapterPosition)
+            onItemFocus(holder.adapterPosition)
         }
+
+        holder.binding.item.isSelected = position == focusedItemPosition
     }
 
     override val layoutIdItem: Int
@@ -34,5 +39,14 @@ class OptionAdapter(
 
     override fun getItemCount(): Int {
         return optionList.size
+    }
+
+    fun onItemFocus(pos: Int) {
+        val previousFocusedItem = focusedItemPosition
+        focusedItemPosition = pos
+
+        // Cập nhật lại giao diện của item trước đó và item hiện tại
+        notifyItemChanged(previousFocusedItem)
+        notifyItemChanged(focusedItemPosition)
     }
 }

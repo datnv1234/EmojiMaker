@@ -15,7 +15,7 @@ import com.wa.ai.emojimaker.data.model.ItemOptionUI
 import com.wa.ai.emojimaker.data.model.PagerIconUI
 import com.wa.ai.emojimaker.data.model.PieceSticker
 import com.wa.ai.emojimaker.ui.base.BaseViewModel
-import com.wa.ai.emojimaker.ui.component.splash.SplashActivity.Companion.isUseMonet
+import com.wa.ai.emojimaker.ui.component.splash.SplashActivity.Companion.isUseNativeMonet
 import com.wa.ai.emojimaker.utils.RemoteConfigKey
 import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils
 import kotlinx.coroutines.Dispatchers
@@ -207,12 +207,10 @@ class EmojiViewModel : BaseViewModel() {
             val keyAdNativeMedium = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_HOME_MEDIUM)
             val keyAdNativeAllPrice = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_HOME)
             val listKeyAds = listOf(keyAdNativeHigh, keyAdNativeMedium, keyAdNativeAllPrice)
-            if (isUseMonet) {
-                val adView = loadNativeAdDialog(context = context, listKeyAds)
-                _nativeAdSaveDialog.postValue(adView)
+            if (isUseNativeMonet) {
+                loadNativeAdDialog(context = context, listKeyAds, _nativeAdSaveDialog)
             } else {
-                val adView = loadNativeAdDialog(context = context, keyAdNativeAllPrice)
-                _nativeAdSaveDialog.postValue(adView)
+                loadNativeAdDialog(context = context, keyAdNativeAllPrice, _nativeAdSaveDialog)
             }
         }
     }
@@ -223,12 +221,10 @@ class EmojiViewModel : BaseViewModel() {
             val keyAdNativeMedium = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_HOME_MEDIUM)
             val keyAdNativeAllPrice = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_HOME)
             val listKeyAds = listOf(keyAdNativeHigh, keyAdNativeMedium, keyAdNativeAllPrice)
-            if (isUseMonet) {
-                val adView = loadNativeAdDialog(context = context, listKeyAds)
-                _nativeAdAddToPackageDialog.postValue(adView)
+            if (isUseNativeMonet) {
+                loadNativeAdDialog(context = context, listKeyAds, _nativeAdAddToPackageDialog)
             } else {
-                val adView = loadNativeAdDialog(context = context, keyAdNativeAllPrice)
-                _nativeAdAddToPackageDialog.postValue(adView)
+                loadNativeAdDialog(context = context, keyAdNativeAllPrice, _nativeAdAddToPackageDialog)
             }
         }
     }
@@ -239,18 +235,16 @@ class EmojiViewModel : BaseViewModel() {
             val keyAdNativeMedium = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_HOME_MEDIUM)
             val keyAdNativeAllPrice = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_HOME)
             val listKeyAds = listOf(keyAdNativeHigh, keyAdNativeMedium, keyAdNativeAllPrice)
-            if (isUseMonet) {
-                val adView = loadNativeAdDialog(context = context, listKeyAds)
-                _nativeAdSaveSuccessDialog.postValue(adView)
+            if (isUseNativeMonet) {
+                loadNativeAdDialog(context = context, listKeyAds, _nativeAdSaveSuccessDialog)
             } else {
-                val adView = loadNativeAdDialog(context = context, keyAdNativeAllPrice)
-                _nativeAdSaveSuccessDialog.postValue(adView)
+                loadNativeAdDialog(context = context, keyAdNativeAllPrice, _nativeAdSaveSuccessDialog)
             }
         }
     }
 
 
-    private fun loadNativeAdDialog(context: Context, keyAd : String) : NativeAdView {
+    private fun loadNativeAdDialog(context: Context, keyAd : String, nativeAd: MutableLiveData<NativeAdView>) {
         val adView = NativeAdView(context)
         NativeAdsUtils.instance.loadNativeAds(
             context,
@@ -266,12 +260,12 @@ class EmojiViewModel : BaseViewModel() {
                 )
                 adView.removeAllViews()
                 adView.addView(adLayoutView)
+                nativeAd.postValue(adView)
             }
         }
-        return adView
     }
 
-    private fun loadNativeAdDialog(context: Context, keyAds : List<String>) : NativeAdView {
+    private fun loadNativeAdDialog(context: Context, keyAds : List<String>, nativeAd: MutableLiveData<NativeAdView>) {
         val adView = NativeAdView(context)
         NativeAdsUtils.instance.loadNativeAdsSequence(
             context,
@@ -287,8 +281,8 @@ class EmojiViewModel : BaseViewModel() {
                 )
                 adView.removeAllViews()
                 adView.addView(adLayoutView)
+                nativeAd.postValue(adView)
             }
         }
-        return adView
     }
 }

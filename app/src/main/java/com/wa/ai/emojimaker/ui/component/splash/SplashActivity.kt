@@ -158,17 +158,6 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
         viewModel.nativeAdDialog.observe(this) {
             adNativeDialog = it
         }
-
-        val countDownTimer = object : CountDownTimer(30000, 1000) {
-            override fun onTick(millisUntilFinished: Long) {
-            }
-
-
-            override fun onFinish() {
-
-            }
-        }
-        countDownTimer.start()
     }
 
     override fun onResume() {
@@ -199,11 +188,12 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
             val keyAdInterAllPrice =
                 FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_INTER_SPLASH)
             val listKeyAds = listOf(keyAdInterHigh, keyAdInterMedium, keyAdInterAllPrice)
-            if (isUseInterMonet) {
+            loadInterAdsSplash(keyAdInterAllPrice)
+            /*if (isUseInterMonet) {
                 loadInterAdsSplashSequence(listKeyAds)
             } else {
                 loadInterAdsSplash(keyAdInterAllPrice)
-            }
+            }*/
         }
     }
 
@@ -217,7 +207,7 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
                     mFirebaseAnalytics?.logEvent("e_load_inter_splash", null)
                     mInterstitialAd = null
                     loadInterCount++
-                    if (loadInterCount >= 3) {
+                    if (loadInterCount >= 5) {
                         viewModel.starTimeCount(5000)
                     } else {
                         loadInterAdsSplash(keyAdInter)
@@ -312,7 +302,7 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
 
     @SuppressLint("StaticFieldLeak")
     companion object {
-        var isUseMonet = FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_USE_MONET)
+        var isUseNativeMonet = FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_USE_NATIVE_MONET)
         var isUseInterMonet = FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_USE_INTER_MONET)
         var isUseBannerMonet = FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_USE_BANNER_MONET)
         var adNativeHome: NativeAdView? = null
