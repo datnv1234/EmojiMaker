@@ -32,7 +32,7 @@ android {
         applicationId = "com.wa.ai.emojimaker"
         minSdk = 24
         targetSdk = 33
-        versionCode = 22
+        versionCode = 23
         versionName = "1.9"
 
         val formattedDate = SimpleDateFormat("MM.dd.yyyy").format(Date())
