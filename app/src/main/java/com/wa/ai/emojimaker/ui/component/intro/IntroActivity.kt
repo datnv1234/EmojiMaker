@@ -112,7 +112,7 @@ class IntroActivity : BaseBindingActivity<ActivityIntroBinding, IntroViewModel>(
     }
 
     private fun loadAds() {
-        SplashActivity.adNativeLanguage?.let {
+        SplashActivity.adNativeIntro?.let {
             val adContainer = binding.frNativeAds
             if (it.parent != null) {
                 (it.parent as ViewGroup).removeView(it)

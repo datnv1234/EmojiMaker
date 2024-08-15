@@ -108,4 +108,10 @@
     <string name="please_try_again">Vui lòng thử lại!</string>
     <string name="are_you_sure">Bạn có chắc không?</string>
 
+    <string name="icon_advertising">Biểu tượng quảng cáo</string>
+    <string name="content_daily_notification">Bạn cảm thấy thế nào?</string>
+    <string name="unlock_items">Mở khóa các mục</string>
+    <string name="watch_ads_to_unlock_for_free">Xem quảng cáo để mở khóa miễn phí</string>
+    <string name="watch_video">Xem video</string>
+
 </resources>

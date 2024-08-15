@@ -108,4 +108,10 @@
     <string name="please_try_again">Por favor, tente novamente!</string>
     <string name="are_you_sure">Você tem certeza?</string>
 
+    <string name="icon_advertising">Ícone de publicidade</string>
+    <string name="content_daily_notification">Como você se sente?</string>
+    <string name="unlock_items">Desbloquear itens</string>
+    <string name="watch_ads_to_unlock_for_free">Assista a anúncios para desbloquear gratuitamente</string>
+    <string name="watch_video">Assistir vídeo</string>
+
 </resources>

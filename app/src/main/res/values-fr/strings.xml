@@ -107,4 +107,11 @@
     <string name="please_try_again">Veuillez réessayer !</string>
     <string name="are_you_sure">Êtes-vous sûr ?</string>
 
+    <string name="icon_advertising">Icône publicitaire</string>
+    <string name="content_daily_notification">Comment vous sentez-vous ?</string>
+    <string name="unlock_items">Débloquer des articles</string>
+    <string name="watch_ads_to_unlock_for_free">Regardez des annonces pour débloquer gratuitement</string>
+    <string name="watch_video">Regarder la vidéo</string>
+
+
 </resources>

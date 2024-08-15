@@ -203,12 +203,11 @@ class BannerUtils {
         adContainer: FrameLayout,
         containerShimmer: ShimmerFrameLayout,
         useInlineAdaptive: Boolean,
-        inlineStyle: String,
+        inlineStyle: String
     ) {
         containerShimmer.visible()
         containerShimmer.startShimmer()
         try {
-
             val adView = AdView(mActivity)
             adView.adUnitId = id
             //adContainer.addView(adView)
@@ -239,7 +238,6 @@ class BannerUtils {
                     containerShimmer.stopShimmer()
                     adContainer.gone()
                     containerShimmer.gone()
-                    Timber.e("datnv: loadAdError " + loadAdError.message + loadAdError.domain + loadAdError.code)
                 }
 
                 override fun onAdLoaded() {
@@ -249,13 +247,33 @@ class BannerUtils {
                     adContainer.removeAllViews()
                     adContainer.addView(adView)
                     adView.onPaidEventListener = OnPaidEventListener { adValue: AdValue ->
-                        pushEvent(mActivity, adView, adValue)
+                        val loadedAdapterResponseInfo: AdapterResponseInfo? =
+                            adView.responseInfo?.loadedAdapterResponseInfo
+                        val adRevenue = AdjustAdRevenue(AdjustConfig.AD_REVENUE_ADMOB)
+                        val revenue = adValue.valueMicros.toDouble() / 1000000.0
+                        adRevenue.setRevenue(
+                            revenue,
+                            adValue.currencyCode
+                        )
+                        adRevenue.adRevenueNetwork = loadedAdapterResponseInfo?.adSourceName
+                        Adjust.trackAdRevenue(adRevenue)
+                        analytics = FirebaseAnalytics.getInstance(mActivity)
+                        val params = Bundle()
+                        params.putString(
+                            FirebaseAnalytics.Param.AD_PLATFORM,
+                            loadedAdapterResponseInfo?.adSourceName
+                        )
+                        params.putString(FirebaseAnalytics.Param.AD_SOURCE, "AdMob")
+                        params.putString(FirebaseAnalytics.Param.AD_FORMAT, "Banner")
+                        params.putDouble(FirebaseAnalytics.Param.VALUE, revenue)
+                        params.putString(FirebaseAnalytics.Param.CURRENCY, "USD")
+                        analytics.logEvent("ad_impression_2", params)
                     }
                 }
             }
             adView.loadAd(adRequest)
         } catch (e: Exception) {
-            Timber.e("datnv: loadCollapsibleBanner " + e.message)
+            e.printStackTrace()
         }
     }
 

@@ -74,7 +74,7 @@ class SplashViewModel : BaseViewModel() {
             val keyAdNativeMedium = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_HOME_MEDIUM)
             val keyAdNativeAllPrice = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_HOME)
             val listKeyAds = listOf(keyAdNativeHigh, keyAdNativeMedium, keyAdNativeAllPrice)
-            if (isUseNativeMonet) {
+            if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_USE_NATIVE_MONET)) {
                 loadNativeAdDialog(context = context, listKeyAds, _nativeAdDialog)
             } else {
                 loadNativeAdDialog(context = context, keyAdNativeAllPrice, _nativeAdDialog)
@@ -88,7 +88,7 @@ class SplashViewModel : BaseViewModel() {
             val keyAdNativeMedium = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_HOME_MEDIUM)
             val keyAdNativeAllPrice = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_HOME)
             val listKeyAds = listOf(keyAdNativeHigh, keyAdNativeMedium, keyAdNativeAllPrice)
-            if (isUseNativeMonet) {
+            if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_USE_NATIVE_MONET)) {
                 loadNativeAdHome(context = context, listKeyAds, _nativeAdHome)
             } else {
                 loadNativeAdHome(context = context, keyAdNativeAllPrice, _nativeAdHome)
@@ -102,7 +102,7 @@ class SplashViewModel : BaseViewModel() {
             val keyAdNativeMedium = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_LANGUAGE_MEDIUM)
             val keyAdNativeAllPrice = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_LANGUAGE)
             val listKeyAds = listOf(keyAdNativeHigh, keyAdNativeMedium, keyAdNativeAllPrice)
-            if (isUseNativeMonet) {
+            if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_USE_NATIVE_MONET)) {
                 loadNativeAdVideo(context = context, listKeyAds, _nativeAdLanguage)
             } else {
                 loadNativeAdVideo(context = context, keyAdNativeAllPrice, _nativeAdLanguage)
@@ -116,7 +116,7 @@ class SplashViewModel : BaseViewModel() {
             val keyAdNativeMedium = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_INTRO_MEDIUM)
             val keyAdNativeAllPrice = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_INTRO)
             val listKeyAds = listOf(keyAdNativeHigh, keyAdNativeMedium, keyAdNativeAllPrice)
-            if (isUseNativeMonet) {
+            if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_USE_NATIVE_MONET)) {
                 loadNativeAdVideo(context = context, listKeyAds, _nativeAdIntro)
             } else {
                 loadNativeAdVideo(context = context, keyAdNativeAllPrice, _nativeAdIntro)

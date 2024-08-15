@@ -108,4 +108,11 @@
     <string name="please_try_again">कृपया पुन: प्रयास करें!</string>
     <string name="are_you_sure">क्या आपको यकीन है?</string>
 
+    <string name="icon_advertising">विज्ञापन आइकन</string>
+    <string name="content_daily_notification">आप कैसा महसूस कर रहे हैं?</string>
+    <string name="unlock_items">आइटम्स को अनलॉक करें</string>
+    <string name="watch_ads_to_unlock_for_free">मुफ़्त में अनलॉक करने के लिए विज्ञापन देखें</string>
+    <string name="watch_video">वीडियो देखें</string>
+
+
 </resources>

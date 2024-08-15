@@ -51,8 +51,7 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
     }
 
     private val stickerAdapter: MadeStickerAdapter by lazy {
-        MadeStickerAdapter(itemClick = {
-        })
+        MadeStickerAdapter()
     }
 
     /*private val sharePackageDialog : SharePackageDialog by lazy {

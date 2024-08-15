@@ -69,6 +69,7 @@ import com.wa.ai.emojimaker.utils.ads.BannerUtils
 import com.wa.ai.emojimaker.utils.extention.gone
 import com.wa.ai.emojimaker.utils.extention.isNetworkAvailable
 import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
+import com.wa.ai.emojimaker.utils.extention.visible
 import com.wa.ai.emojimaker.utils.sticker.BitmapStickerIcon
 import com.wa.ai.emojimaker.utils.sticker.DrawableSticker
 import com.wa.ai.emojimaker.utils.sticker.Sticker
@@ -112,6 +113,8 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
             doAddSticker(it)
         })
     }
+
+
 
     /*
     * Declare dialog variable
@@ -215,8 +218,10 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         get() = R.layout.activity_emoji_maker
 
     override fun getViewModel(): Class<StickerViewModel> = StickerViewModel::class.java
-    override fun setupView(savedInstanceState: Bundle?) {
 
+    @SuppressLint("ClickableViewAccessibility")
+    override fun setupView(savedInstanceState: Bundle?) {
+        emojiViewModel = ViewModelProvider(this)[EmojiViewModel::class.java]
         Timber.plant(Timber.DebugTree())
         viewModel.stickerOperationListener = MyStickerOperationListener(binding)
         binding.viewModel = viewModel
@@ -236,9 +241,35 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
                 mSaveDialog.show(supportFragmentManager, mSaveDialog.tag)
             }
             kotlin.runCatching {
-                showInterstitial(true)
+                showInterstitial()
             }
         }
+        binding.btnWatchVideo.setOnSafeClick {
+            kotlin.runCatching {
+                forceShowInterstitial()
+            }
+            emojiViewModel.setLock(emojiViewModel.pageSelected.value!!, false)
+        }
+//        binding.llLocked.setOnTouchListener { _, _ ->
+//            return@setOnTouchListener true
+//        }
+        binding.llLocked.setOnSafeClick {
+
+        }
+        emojiViewModel.pageSelected.observe(this) {
+            if (it == LOCK1 && emojiViewModel.lock1.value!!) {
+                binding.llLocked.visible()
+            } else if (it == LOCK2 && emojiViewModel.lock2.value!!) {
+                binding.llLocked.visible()
+            } else if (it == LOCK3 && emojiViewModel.lock3.value!!) {
+                binding.llLocked.visible()
+            } else {
+                binding.llLocked.gone()
+            }
+        }
+
+
+
         initAdsManager()
     }
 
@@ -247,7 +278,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     }
 
     override fun setupData() {
-        emojiViewModel = ViewModelProvider(this)[EmojiViewModel::class.java]
+
         emojiViewModel.getItemOption(this)
         emojiViewModel.optionMutableLiveData.observe(this) {
             pagerIconAdapter.submitList(it.toMutableList())
@@ -263,6 +294,8 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
             registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
+
+                    emojiViewModel.setPageSelected(position)
                     kotlin.runCatching {
                         showInterstitialItemClick(true)
                     }
@@ -971,7 +1004,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         loadInterAds(0)
     }
 
-    private fun showInterstitial(isReload: Boolean) {
+    private fun showInterstitial(isReload: Boolean = true) {
         if (!isNetworkAvailable()) {
             return
         }
@@ -1004,6 +1037,42 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
                     Constant.TIME_LOAD_NEW_INTER_ADS,
                     Date().time
                 )
+            }
+
+            override fun onAdFailedToShowFullScreenContent(adError: AdError) {
+                mInterstitialAd = null
+            }
+
+            override fun onAdShowedFullScreenContent() {
+            }
+        }
+    }
+
+    private fun forceShowInterstitial(isReload: Boolean = true) {
+        if (!isNetworkAvailable()) {
+            return
+        }
+
+        if (mInterstitialAd == null) {
+            if (adsConsentManager?.canRequestAds == false) {
+                return
+            }
+            if (isReload)
+                loadInterAd()
+            return
+        }
+        mInterstitialAd?.show(this)
+
+        mInterstitialAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
+            override fun onAdDismissedFullScreenContent() {
+                mInterstitialAd = null
+                if (isReload) {
+                    loadInterAd()
+                }
+                /*SharedPreferenceHelper.storeLong(
+                    Constant.TIME_LOAD_NEW_INTER_ADS,
+                    Date().time
+                )*/
             }
 
             override fun onAdFailedToShowFullScreenContent(adError: AdError) {
@@ -1062,6 +1131,11 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
 
 
     companion object {
+
+        const val LOCK1 = 3
+        const val LOCK2 = 6
+        const val LOCK3 = 10
+
         const val PERM_RQST_CODE = 110
         const val SAVE_FILE_EXTENSION: String = "ref"
 

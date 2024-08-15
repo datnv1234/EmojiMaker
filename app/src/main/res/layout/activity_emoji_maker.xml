@@ -43,8 +43,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:padding="@dimen/_6sdp"
                 android:enabled="false"
+                android:padding="@dimen/_6sdp"
                 android:text="@string/save"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
@@ -313,7 +313,7 @@
                     android:layout_marginHorizontal="16dp"
                     android:background="#D2D5DA" />
 
-                <RelativeLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_40sdp"
                     android:layout_above="@+id/rl_options"
@@ -328,13 +328,56 @@
                         android:orientation="vertical"
                         android:paddingTop="8dp"
                         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                        app:layout_constraintTop_toTopOf="parent"
                         app:spanCount="6" />
 
                     <androidx.viewpager2.widget.ViewPager2
                         android:id="@+id/vp_icon"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
-                </RelativeLayout>
+
+                    <LinearLayout
+                        android:id="@+id/llLocked"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="#E6FFFFFF"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:visibility="visible">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_30sdp"
+                            android:fontFamily="@font/poppins_semibold"
+                            android:gravity="center"
+                            android:text="@string/unlock_items"
+                            android:textSize="@dimen/_14ssp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/poppins_regular"
+                            android:gravity="center"
+                            android:text="@string/watch_ads_to_unlock_for_free"
+                            android:textSize="@dimen/_11ssp" />
+
+                        <TextView
+                            android:id="@+id/btnWatchVideo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_9sdp"
+                            android:background="@drawable/bg_button_enabled"
+                            android:fontFamily="@font/poppins_medium"
+                            android:foreground="?android:attr/selectableItemBackground"
+                            android:gravity="center"
+                            android:paddingHorizontal="@dimen/_20sdp"
+                            android:paddingVertical="@dimen/_6sdp"
+                            android:text="@string/watch_video"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/_12ssp" />
+                    </LinearLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <RelativeLayout
                     android:id="@+id/rl_options"

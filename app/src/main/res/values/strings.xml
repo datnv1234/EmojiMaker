@@ -114,5 +114,8 @@
     <string name="are_you_sure">Are you sure?</string>
     <string name="icon_advertising">Icon advertising</string>
     <string name="content_daily_notification">How do you feel?</string>
+    <string name="unlock_items">Unlock items</string>
+    <string name="watch_ads_to_unlock_for_free">Watch ads to unlock for free</string>
+    <string name="watch_video">Watch Video</string>
 
 </resources>

@@ -15,6 +15,9 @@ import com.wa.ai.emojimaker.data.model.ItemOptionUI
 import com.wa.ai.emojimaker.data.model.PagerIconUI
 import com.wa.ai.emojimaker.data.model.PieceSticker
 import com.wa.ai.emojimaker.ui.base.BaseViewModel
+import com.wa.ai.emojimaker.ui.component.emojimaker.EmojiMakerActivity.Companion.LOCK1
+import com.wa.ai.emojimaker.ui.component.emojimaker.EmojiMakerActivity.Companion.LOCK2
+import com.wa.ai.emojimaker.ui.component.emojimaker.EmojiMakerActivity.Companion.LOCK3
 import com.wa.ai.emojimaker.ui.component.splash.SplashActivity.Companion.isUseNativeMonet
 import com.wa.ai.emojimaker.utils.RemoteConfigKey
 import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils
@@ -29,6 +32,28 @@ class EmojiViewModel : BaseViewModel() {
         get() = _loadBanner
 
     private var timerReloadBanner : CountDownTimer? = null
+
+    private val _pageSelected: MutableLiveData<Int> = MutableLiveData()
+    val pageSelected: LiveData<Int>
+        get() = _pageSelected
+
+    private val _lock1: MutableLiveData<Boolean> = MutableLiveData()
+    val lock1: LiveData<Boolean>
+        get() = _lock1
+
+    private val _lock2: MutableLiveData<Boolean> = MutableLiveData()
+    val lock2: LiveData<Boolean>
+        get() = _lock2
+
+    private val _lock3: MutableLiveData<Boolean> = MutableLiveData()
+    val lock3: LiveData<Boolean>
+        get() = _lock3
+
+    init {
+        _lock1.postValue(true)
+        _lock2.postValue(true)
+        _lock3.postValue(true)
+    }
 
     override fun onCleared() {
         super.onCleared()
@@ -61,6 +86,32 @@ class EmojiViewModel : BaseViewModel() {
 
     fun setBitmap(bitmap: Bitmap) {
         _bitmapMutableLiveData.postValue(bitmap)
+    }
+
+    fun setPageSelected(position: Int) {
+        _pageSelected.postValue(position)
+    }
+    fun setLock(position: Int, isLock: Boolean) {
+        when (position) {
+            LOCK1 -> {
+                _lock1.postValue(isLock)
+                _pageSelected.postValue(position)
+            }
+            LOCK2 -> {
+                _lock2.postValue(isLock)
+                _pageSelected.postValue(position)
+            }
+            LOCK3 -> {
+                _lock3.postValue(isLock)
+                _pageSelected.postValue(position)
+            }
+            else -> {
+                _lock1.postValue(false)
+                _lock2.postValue(false)
+                _lock3.postValue(false)
+                _pageSelected.postValue(position)
+            }
+        }
     }
 
     private fun getOptions() {

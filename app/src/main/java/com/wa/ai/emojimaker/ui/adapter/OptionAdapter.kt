@@ -15,7 +15,7 @@ class OptionAdapter(
     private val itemClick: (pos: Int) -> Unit
 ) : BaseBindingAdapter<ItemOptionsBinding>() {
 
-    private var focusedItemPosition: Int = -1
+    private var focusedItemPosition: Int = 0
 
     override fun onBindViewHolderBase(holder: BaseHolder<ItemOptionsBinding>, position: Int) {
         holder.binding.tvOption.text = optionList[holder.adapterPosition].title

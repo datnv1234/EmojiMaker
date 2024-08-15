@@ -42,14 +42,11 @@ class ShowStickersActivity :
         FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_SHOW_STICKERS)
 
     private val cateStickerAdapter: MadeStickerAdapter by lazy {
-        MadeStickerAdapter(itemClick = {
-            //toast("Clicked")
-        })
+        MadeStickerAdapter()
     }
 
     private val madeStickerAdapter: MadeStickerAdapter by lazy {
-        MadeStickerAdapter(itemClick = {
-        })
+        MadeStickerAdapter()
     }
 
     override val layoutId: Int

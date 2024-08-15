@@ -261,12 +261,7 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
                 FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_INTER_HOME_SCREEN)
             val listKeyAds = listOf(keyAdInterHigh, keyAdInterMedium, keyAdInterAllPrice)
             loadInterAdsMain(keyAdInterAllPrice)
-            /*if (isUseInterMonet) {
-                loadInterAdsSplashSequence(listKeyAds)
-            }
-            else {
-                loadInterAdsMain(keyAdInterAllPrice)
-            }*/
+
         }
     }
 

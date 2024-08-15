@@ -32,11 +32,9 @@ class MainViewModel : BaseViewModel() {
         "brainy_endeavors",
         "cat_chic",
         "couple_emoji",
-        "cute_baby",
         "cute_girl",
         "dog_diversity",
         "axolotl_emotions",
-        "panda_pals",
         "emoji",
         "funny_cat",
         "meow_tions",
@@ -46,7 +44,6 @@ class MainViewModel : BaseViewModel() {
         "anime_emotions",
         "orange_orchard",
         "pet_pawtentials",
-        "folk_emoji",
         "emo_teens",
         "happy_hijabi",
         "quacking_quacks",
@@ -85,11 +82,8 @@ class MainViewModel : BaseViewModel() {
             listEntity.add(getCategory(context, "orange_orchard", "Orange Orchard"))
             listEntity.add(getCategory(context, "funny_rat", "Funny rat"))
             listEntity.add(getCategory(context, "funny_cat", "Funny Cat"))
-            listEntity.add(getCategory(context, "cute_baby", "Cute Baby"))
             listEntity.add(getCategory(context, "cute_girl", "Cute girl"))
             listEntity.add(getCategory(context, "lazy_day_vibes", "Lazy Day Vibes"))
-            listEntity.add(getCategory(context, "panda_pals", "Panda Pals"))
-            listEntity.add(getCategory(context, "folk_emoji", "Folk Emoji"))
             listEntity.add(getCategory(context, "pet_pawtentials", "Pet Pawtentials"))
             listEntity.add(getCategory(context, "axolotl_emotions", "Axolotl Emotions"))
             listEntity.add(getCategory(context, "sly_spirits", "Sly Spirits"))
