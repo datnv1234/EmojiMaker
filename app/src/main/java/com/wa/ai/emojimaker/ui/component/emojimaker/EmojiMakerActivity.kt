@@ -88,7 +88,6 @@ import java.util.Date
 import java.util.Locale
 import java.util.concurrent.atomic.AtomicBoolean
 
-
 class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, StickerViewModel>() {
 
     private var adsConsentManager: AdsConsentManager? = null
@@ -108,7 +107,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     private val pagerIconAdapter: PagerIconAdapter by lazy {
         PagerIconAdapter(itemClick = {
             kotlin.runCatching {
-                showInterstitialItemClick(true)
+                showInterstitialItemClick()
             }
             doAddSticker(it)
         })
@@ -285,7 +284,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         }
         val optionAdapter = OptionAdapter(this, emojiViewModel.optionList, itemClick = {
             kotlin.runCatching {
-                showInterstitialItemClick(true)
+                showInterstitialItemClick()
             }
             binding.vpIcon.setCurrentItem(it, true)
         })
@@ -297,7 +296,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
 
                     emojiViewModel.setPageSelected(position)
                     kotlin.runCatching {
-                        showInterstitialItemClick(true)
+                        showInterstitialItemClick()
                     }
                     optionAdapter.onItemFocus(position)
                     binding.rvOptions.scrollToPosition(position)
@@ -655,7 +654,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
 
         binding.buttonAdd.setOnClickListener {
             kotlin.runCatching {
-                showInterstitialItemClick(true)
+                showInterstitialItemClick()
             }
             addSticker()
         }
@@ -1069,10 +1068,10 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
                 if (isReload) {
                     loadInterAd()
                 }
-                /*SharedPreferenceHelper.storeLong(
+                SharedPreferenceHelper.storeLong(
                     Constant.TIME_LOAD_NEW_INTER_ADS,
                     Date().time
-                )*/
+                )
             }
 
             override fun onAdFailedToShowFullScreenContent(adError: AdError) {
@@ -1080,11 +1079,21 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
             }
 
             override fun onAdShowedFullScreenContent() {
+                val analytics = FirebaseAnalytics.getInstance(this@EmojiMakerActivity)
+
+                val params = Bundle().apply {
+                    putString(
+                        FirebaseAnalytics.Param.AD_PLATFORM,
+                        "admob mediation"
+                    )
+                    putString("Unlock items", "Emoji Maker")
+                }
+                analytics.logEvent("unlock_item", params)
             }
         }
     }
 
-    private fun showInterstitialItemClick(isReload: Boolean) {
+    private fun showInterstitialItemClick(isReload: Boolean = true) {
         if (!isNetworkAvailable()) {
             return
         }
