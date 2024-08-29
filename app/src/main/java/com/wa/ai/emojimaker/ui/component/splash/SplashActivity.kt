@@ -16,7 +16,6 @@ import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.OnPaidEventListener
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
-import com.google.android.gms.ads.nativead.NativeAdView
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.wa.ai.emojimaker.R
@@ -145,19 +144,7 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
     }
 
     override fun setupData() {
-        viewModel.loadAds(baseContext)
-        viewModel.nativeAdHome.observe(this) {
-            adNativeHome = it
-        }
-        viewModel.nativeAdLanguage.observe(this) {
-            adNativeLanguage = it
-        }
-        viewModel.nativeAdIntro.observe(this) {
-            adNativeIntro = it
-        }
-        viewModel.nativeAdDialog.observe(this) {
-            adNativeDialog = it
-        }
+
     }
 
     override fun onResume() {
@@ -300,14 +287,5 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
         }
 
         loadInterAds(0)
-    }
-
-    @SuppressLint("StaticFieldLeak")
-    companion object {
-        var isUseNativeMonet = FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_USE_NATIVE_MONET)
-        var adNativeHome: NativeAdView? = null
-        var adNativeLanguage: NativeAdView? = null
-        var adNativeIntro: NativeAdView? = null
-        var adNativeDialog: NativeAdView? = null
     }
 }

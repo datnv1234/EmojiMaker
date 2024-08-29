@@ -146,6 +146,7 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
     override fun onResume() {
         super.onResume()
         Adjust.onResume()
+        mMainViewModel.getPackage(requireContext())
         mMainActivity.binding.titleToolbar.visible()
         mMainActivity.binding.imgToolbar.gone()
         mMainActivity.binding.titleToolbar.text = title
