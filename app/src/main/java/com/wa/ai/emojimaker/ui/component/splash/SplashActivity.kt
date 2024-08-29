@@ -63,7 +63,7 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
             }
             finish()
         }
-        val countDownTimer = object : CountDownTimer(60000, 1000) {
+        val countDownTimer = object : CountDownTimer(90000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
 
             }
@@ -168,19 +168,10 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
         if (FirebaseRemoteConfig.getInstance()
                 .getBoolean(RemoteConfigKey.IS_SHOW_ADS_INTER_SPLASH)
         ) {
-            val keyAdInterHigh = FirebaseRemoteConfig.getInstance()
-                .getString(RemoteConfigKey.KEY_ADS_INTER_SPLASH_HIGH)
-            val keyAdInterMedium = FirebaseRemoteConfig.getInstance()
-                .getString(RemoteConfigKey.KEY_ADS_INTER_SPLASH_MEDIUM)
             val keyAdInterAllPrice =
                 FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_INTER_SPLASH)
-            val listKeyAds = listOf(keyAdInterHigh, keyAdInterMedium, keyAdInterAllPrice)
+
             loadInterAdsSplash(keyAdInterAllPrice)
-            /*if (isUseInterMonet) {
-                loadInterAdsSplashSequence(listKeyAds)
-            } else {
-                loadInterAdsSplash(keyAdInterAllPrice)
-            }*/
         } else {
             viewModel.starTimeCount(5000)
         }
@@ -234,58 +225,5 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
                 }
             }
         )
-    }
-
-    private fun loadInterAdsSplashSequence(listKeyAds: List<String>) {
-
-        fun loadInterAds(adIndex: Int) {
-            if (adIndex == listKeyAds.size - 1) {
-                loadInterAdsSplash(listKeyAds.last())
-                return
-            }
-            InterstitialAd.load(
-                this,
-                listKeyAds[adIndex],
-                AdRequest.Builder().build(),
-                object : InterstitialAdLoadCallback() {
-                    override fun onAdFailedToLoad(adError: LoadAdError) {
-                        mFirebaseAnalytics.logEvent("e_load_inter_splash", null)
-                        mInterstitialAd = null
-                        loadInterAds(adIndex + 1)
-                    }
-
-                    override fun onAdLoaded(ad: InterstitialAd) {
-                        mFirebaseAnalytics.logEvent("d_load_inter_splash", null)
-                        mInterstitialAd = ad
-                        viewModel.starTimeCount(5000)
-                        mInterstitialAd?.onPaidEventListener =
-                            OnPaidEventListener { adValue ->
-                                val loadedAdapterResponseInfo: AdapterResponseInfo? =
-                                    mInterstitialAd?.responseInfo?.loadedAdapterResponseInfo
-                                val adRevenue = AdjustAdRevenue(AdjustConfig.AD_REVENUE_ADMOB)
-                                val revenue = adValue.valueMicros.toDouble() / 1000000.0
-                                adRevenue.setRevenue(revenue, adValue.currencyCode)
-                                adRevenue.adRevenueNetwork = loadedAdapterResponseInfo?.adSourceName
-                                Adjust.trackAdRevenue(adRevenue)
-
-                                val analytics = FirebaseAnalytics.getInstance(this@SplashActivity)
-                                val params = Bundle().apply {
-                                    putString(
-                                        FirebaseAnalytics.Param.AD_PLATFORM,
-                                        "admob mediation"
-                                    )
-                                    putString(FirebaseAnalytics.Param.AD_SOURCE, "AdMob")
-                                    putString(FirebaseAnalytics.Param.AD_FORMAT, "Interstitial")
-                                    putDouble(FirebaseAnalytics.Param.VALUE, revenue)
-                                    putString(FirebaseAnalytics.Param.CURRENCY, "USD")
-                                }
-                                analytics.logEvent("ad_impression_2", params)
-                            }
-                    }
-                }
-            )
-        }
-
-        loadInterAds(0)
     }
 }
