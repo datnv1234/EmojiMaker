@@ -64,6 +64,11 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
 
     private var retryAttempt = 0.0
 
+    private val keyAdInterAllPrice =
+        FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_INTER_HOME_SCREEN)
+
+    private val keyAdBannerAllPrice = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_MAIN)
+
     private val bannerReload =
         FirebaseRemoteConfig.getInstance().getLong(RemoteConfigKey.BANNER_RELOAD)
 
@@ -146,15 +151,7 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
 
     private fun loadBanner() {
         viewModel.starTimeCountReloadBanner(bannerReload)
-        val keyAdBannerHigh = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_MAIN_HIGH)
-        val keyAdBannerMedium = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_MAIN_MEDIUM)
-        val keyAdBannerAllPrice = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_MAIN)
-        val listKeyAds = listOf(keyAdBannerHigh, keyAdBannerMedium, keyAdBannerAllPrice)
-        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_USE_BANNER_MONET)) {
-            BannerUtils.instance?.loadCollapsibleBanner(mContext, listKeyAds)
-        } else {
-            BannerUtils.instance?.loadCollapsibleBanner(mContext, keyAdBannerAllPrice)
-        }
+        BannerUtils.instance?.loadCollapsibleBanner(mContext, keyAdBannerAllPrice)
     }
 
     private fun checkForAppUpdates() {
@@ -254,15 +251,7 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
         if (FirebaseRemoteConfig.getInstance()
                 .getBoolean(RemoteConfigKey.IS_SHOW_ADS_INTER_HOME_SCREEN)
         ) {
-            val keyAdInterHigh = FirebaseRemoteConfig.getInstance()
-                .getString(RemoteConfigKey.KEY_ADS_INTER_HOME_SCREEN_HIGH)
-            val keyAdInterMedium = FirebaseRemoteConfig.getInstance()
-                .getString(RemoteConfigKey.KEY_ADS_INTER_HOME_SCREEN_MEDIUM)
-            val keyAdInterAllPrice =
-                FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_INTER_HOME_SCREEN)
-            val listKeyAds = listOf(keyAdInterHigh, keyAdInterMedium, keyAdInterAllPrice)
             loadInterAdsMain(keyAdInterAllPrice)
-
         }
     }
 

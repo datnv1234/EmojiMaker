@@ -33,7 +33,7 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
     private lateinit var mMainViewModel: MainViewModel
 
     private val keyNative =
-        FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_HOME)
+        FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_MY_CREATIVE)
 
     private val stickerAdapter: MadeStickerAdapter by lazy {
         MadeStickerAdapter()
@@ -164,7 +164,7 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
 
     private fun loadNativeAd() {
         if (FirebaseRemoteConfig.getInstance()
-                .getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_HOME)
+                .getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_MY_CREATIVE)
         ) {
             loadNativeAds(keyNative)
         } else {

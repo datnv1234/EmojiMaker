@@ -51,7 +51,6 @@ import com.wa.ai.emojimaker.common.Constant
 import com.wa.ai.emojimaker.common.Constant.INTERNAL_MY_CREATIVE_DIR
 import com.wa.ai.emojimaker.data.local.SharedPreferenceHelper
 import com.wa.ai.emojimaker.databinding.ActivityEmojiMakerBinding
-import com.wa.ai.emojimaker.functions.Utils
 import com.wa.ai.emojimaker.ui.adapter.OptionAdapter
 import com.wa.ai.emojimaker.ui.adapter.PagerIconAdapter
 import com.wa.ai.emojimaker.ui.base.BaseBindingActivity
@@ -63,7 +62,6 @@ import com.wa.ai.emojimaker.ui.component.main.MainActivity
 import com.wa.ai.emojimaker.utils.AppUtils
 import com.wa.ai.emojimaker.utils.DeviceUtils
 import com.wa.ai.emojimaker.utils.RemoteConfigKey
-import com.wa.ai.emojimaker.utils.RemoteConfigKey.IS_USE_INTER_MONET
 import com.wa.ai.emojimaker.utils.ads.AdsConsentManager
 import com.wa.ai.emojimaker.utils.ads.BannerUtils
 import com.wa.ai.emojimaker.utils.extention.gone
@@ -95,8 +93,14 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     private val mFirebaseAnalytics: FirebaseAnalytics = FirebaseAnalytics.getInstance(this)
     private var mInterstitialAd: InterstitialAd? = null
 
+    private val keyAdInterAllPrice =
+        FirebaseRemoteConfig.getInstance()
+            .getString(RemoteConfigKey.KEY_ADS_INTER_CREATE_EMOJI)
+
     private val bannerReload =
         FirebaseRemoteConfig.getInstance().getLong(RemoteConfigKey.BANNER_RELOAD)
+    private val keyAdBannerAllPrice = FirebaseRemoteConfig.getInstance()
+        .getString(RemoteConfigKey.KEY_ADS_BANNER_CREATE_EMOJI)
 
     private var isFinishImmediately = false
 
@@ -330,18 +334,9 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
 
     private fun loadBanner() {
         emojiViewModel.starTimeCountReloadBanner(bannerReload)
-        val keyAdBannerHigh = FirebaseRemoteConfig.getInstance()
-            .getString(RemoteConfigKey.KEY_ADS_BANNER_CREATE_EMOJI_HIGH)
-        val keyAdBannerMedium = FirebaseRemoteConfig.getInstance()
-            .getString(RemoteConfigKey.KEY_ADS_BANNER_CREATE_EMOJI_MEDIUM)
-        val keyAdBannerAllPrice = FirebaseRemoteConfig.getInstance()
-            .getString(RemoteConfigKey.KEY_ADS_BANNER_CREATE_EMOJI)
-        val listKeyAds = listOf(keyAdBannerHigh, keyAdBannerMedium, keyAdBannerAllPrice)
-        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_USE_BANNER_MONET)) {
-            BannerUtils.instance?.loadCollapsibleBanner(this, listKeyAds)
-        } else {
-            BannerUtils.instance?.loadCollapsibleBanner(this, keyAdBannerAllPrice)
-        }
+
+        BannerUtils.instance?.loadCollapsibleBanner(this, keyAdBannerAllPrice)
+
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -891,19 +886,8 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         if (FirebaseRemoteConfig.getInstance()
                 .getBoolean(RemoteConfigKey.IS_SHOW_ADS_INTER_CREATE_EMOJI)
         ) {
-            val keyAdInterHigh = FirebaseRemoteConfig.getInstance()
-                .getString(RemoteConfigKey.KEY_ADS_INTER_CREATE_EMOJI_HIGH)
-            val keyAdInterMedium = FirebaseRemoteConfig.getInstance()
-                .getString(RemoteConfigKey.KEY_ADS_INTER_CREATE_EMOJI_MEDIUM)
-            val keyAdInterAllPrice =
-                FirebaseRemoteConfig.getInstance()
-                    .getString(RemoteConfigKey.KEY_ADS_INTER_CREATE_EMOJI)
-            val listKeyAds = listOf(keyAdInterHigh, keyAdInterMedium, keyAdInterAllPrice)
-            if (FirebaseRemoteConfig.getInstance().getBoolean(IS_USE_INTER_MONET)) {
-                loadInterAdsSplashSequence(listKeyAds)
-            } else {
-                loadInterAdsMain(keyAdInterAllPrice)
-            }
+            loadInterAdsMain(keyAdInterAllPrice)
+
         }
     }
 

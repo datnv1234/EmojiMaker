@@ -1,13 +1,9 @@
 package com.wa.ai.emojimaker.ui.component.showstickers
 
 import android.annotation.SuppressLint
-import android.app.DownloadManager
 import android.content.Context
 import android.content.ContextWrapper
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.view.View
 import com.adjust.sdk.Adjust
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
@@ -21,7 +17,6 @@ import com.wa.ai.emojimaker.ui.adapter.MadeStickerAdapter
 import com.wa.ai.emojimaker.ui.base.BaseBindingActivity
 import com.wa.ai.emojimaker.ui.dialog.DeleteStickerDialog
 import com.wa.ai.emojimaker.utils.AppUtils
-import com.wa.ai.emojimaker.utils.AppUtils.saveSticker
 import com.wa.ai.emojimaker.utils.DeviceUtils
 import com.wa.ai.emojimaker.utils.FileUtils
 import com.wa.ai.emojimaker.utils.FileUtils.copyFileToCache
@@ -33,7 +28,6 @@ import com.wa.ai.emojimaker.utils.extention.invisible
 import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 import com.wa.ai.emojimaker.utils.extention.visible
 import java.io.File
-
 
 class ShowStickersActivity :
     BaseBindingActivity<ActivityShowStickersBinding, ShowStickerViewModel>() {
@@ -106,12 +100,6 @@ class ShowStickersActivity :
                     addStickerInCategoryToTele(category)
                 }
                 binding.btnDownload.setOnSafeClick {
-//                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-//                        if (AppUtils.checkPermission(this)) {
-//                            AppUtils.requestPermissionAndContinue(this)
-//                            return@setOnSafeClick
-//                        }
-//                    }
                     downloadStickerInCategory(category)
                 }
                 binding.btnShare.setOnSafeClick {
@@ -130,10 +118,6 @@ class ShowStickersActivity :
                 }
 
                 binding.btnDownload.setOnSafeClick {
-//                    if (AppUtils.checkPermission(this)) {
-//                        AppUtils.requestPermissionAndContinue(this)
-//                        return@setOnSafeClick
-//                    }
                     downloadCreativeSticker(category)
                 }
                 binding.btnShare.setOnSafeClick {
@@ -183,23 +167,6 @@ class ShowStickersActivity :
         val keyAdBannerAllPrice = FirebaseRemoteConfig.getInstance()
             .getString(RemoteConfigKey.KEY_ADS_BANNER_SHOW_STICKERS)
         BannerUtils.instance?.loadCollapsibleBanner(this, keyAdBannerAllPrice)
-    }
-
-    private fun performImageDownload(imageUrl: Uri?) {
-        val request = DownloadManager.Request(imageUrl)
-        request.setAllowedNetworkTypes(
-            DownloadManager.Request.NETWORK_WIFI or
-                    DownloadManager.Request.NETWORK_MOBILE
-        )
-        request.setTitle("Download") // Set a title for the download notification
-        request.setDescription("Downloading image...") // Set a description for the download notification
-        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-        request.setDestinationInExternalPublicDir(
-            Environment.DIRECTORY_PICTURES,
-            "AIEmojiMaker/" + System.currentTimeMillis() + ".png"
-        )
-        val downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
-        downloadManager.enqueue(request)
     }
 
     private fun shareStickerInCategory(category: String) {

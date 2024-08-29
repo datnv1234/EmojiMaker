@@ -187,13 +187,12 @@ public class Utils {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             values.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DCIM);
-            uri = context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
         } else {
             File directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
             File file = new File(directory, fileName);
             values.put(MediaStore.MediaColumns.DATA, file.getAbsolutePath());
-            uri = context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
         }
+        uri = context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
 
         if (uri == null) {
             Toast.makeText(context, R.string.failed_to_save, Toast.LENGTH_SHORT).show();
@@ -268,5 +267,6 @@ public class Utils {
         drawable.draw(canvas);
         return bitmap;
     }
+
 
 }

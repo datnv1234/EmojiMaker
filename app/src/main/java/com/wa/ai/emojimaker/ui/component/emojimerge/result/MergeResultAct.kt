@@ -501,7 +501,7 @@ class MergeResultAct : BaseBindingActivity<ActivityMergeResultBinding, MergeResu
 
     private fun loadNativeAd() {
         if (FirebaseRemoteConfig.getInstance()
-                .getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_HOME)
+                .getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_MERGE_EMOJI)
         ) {
             loadNativeAds(keyNative)
         } else {
