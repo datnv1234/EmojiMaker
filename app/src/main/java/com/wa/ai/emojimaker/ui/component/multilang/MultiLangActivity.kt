@@ -2,7 +2,6 @@ package com.wa.ai.emojimaker.ui.component.multilang
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.ViewGroup
 import com.adjust.sdk.Adjust
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
@@ -14,7 +13,6 @@ import com.wa.ai.emojimaker.ui.adapter.MultiLangAdapter
 import com.wa.ai.emojimaker.ui.base.BaseBindingActivity
 import com.wa.ai.emojimaker.ui.component.intro.IntroActivity
 import com.wa.ai.emojimaker.ui.component.main.MainActivity
-import com.wa.ai.emojimaker.ui.component.splash.SplashActivity
 import com.wa.ai.emojimaker.utils.RemoteConfigKey
 import com.wa.ai.emojimaker.utils.SystemUtil
 import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils

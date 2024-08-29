@@ -4,9 +4,7 @@ import android.os.Bundle
 import android.view.View
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.data.model.MadeStickerModel
-import com.wa.ai.emojimaker.data.model.PackageModel
 import com.wa.ai.emojimaker.databinding.DialogDeleteStickerBinding
-import com.wa.ai.emojimaker.databinding.PopupConfirmBinding
 import com.wa.ai.emojimaker.ui.base.BaseBindingDialogFragment
 import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 

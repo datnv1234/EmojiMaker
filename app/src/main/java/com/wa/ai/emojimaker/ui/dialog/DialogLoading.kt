@@ -7,7 +7,6 @@ import com.adjust.sdk.Adjust
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.databinding.AdNativeContentBinding
-import com.wa.ai.emojimaker.databinding.DialogInternetConnectionBinding
 import com.wa.ai.emojimaker.databinding.DialogLoadingBinding
 import com.wa.ai.emojimaker.ui.base.BaseBindingDialogFragment
 import com.wa.ai.emojimaker.utils.RemoteConfigKey

@@ -2,7 +2,6 @@ package com.wa.ai.emojimaker.ui.dialog
 
 import android.os.Bundle
 import android.view.View
-import androidx.core.widget.doOnTextChanged
 import com.adjust.sdk.Adjust
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.wa.ai.emojimaker.R

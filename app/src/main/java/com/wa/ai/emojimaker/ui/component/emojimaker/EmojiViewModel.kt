@@ -18,7 +18,6 @@ import com.wa.ai.emojimaker.ui.base.BaseViewModel
 import com.wa.ai.emojimaker.ui.component.emojimaker.EmojiMakerActivity.Companion.LOCK1
 import com.wa.ai.emojimaker.ui.component.emojimaker.EmojiMakerActivity.Companion.LOCK2
 import com.wa.ai.emojimaker.ui.component.emojimaker.EmojiMakerActivity.Companion.LOCK3
-import com.wa.ai.emojimaker.ui.component.splash.SplashActivity.Companion.isUseNativeMonet
 import com.wa.ai.emojimaker.utils.RemoteConfigKey
 import com.wa.ai.emojimaker.utils.RemoteConfigKey.IS_USE_NATIVE_MONET
 import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils

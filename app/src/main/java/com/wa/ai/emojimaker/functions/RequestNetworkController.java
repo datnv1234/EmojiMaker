@@ -5,7 +5,6 @@ import android.annotation.SuppressLint;
 import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
-import com.wa.ai.emojimaker.functions.RequestNetwork;
 
 import java.io.IOException;
 import java.util.HashMap;

@@ -33,12 +33,10 @@ import com.wa.ai.emojimaker.common.Constant.INTERNAL_MY_CREATIVE_DIR
 import com.wa.ai.emojimaker.data.local.SharedPreferenceHelper
 import com.wa.ai.emojimaker.data.model.CollectionUI
 import com.wa.ai.emojimaker.databinding.ActivityMergeResultBinding
-import com.wa.ai.emojimaker.databinding.AdNativeContentBinding
 import com.wa.ai.emojimaker.databinding.AdNativeVideoBinding
 import com.wa.ai.emojimaker.functions.EmojiMixer
 import com.wa.ai.emojimaker.functions.Utils
 import com.wa.ai.emojimaker.ui.base.BaseBindingActivity
-import com.wa.ai.emojimaker.ui.component.emojimerge.MergeAct2
 import com.wa.ai.emojimaker.ui.component.main.MainActivity
 import com.wa.ai.emojimaker.ui.dialog.AddToPackageDialog
 import com.wa.ai.emojimaker.ui.dialog.CreatePackageDialog

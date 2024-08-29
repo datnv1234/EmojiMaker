@@ -2,10 +2,8 @@ package com.wa.ai.emojimaker.ui.dialog
 
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.adjust.sdk.Adjust
-import com.google.android.gms.ads.nativead.NativeAdView
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.data.model.PackageModel
@@ -13,7 +11,6 @@ import com.wa.ai.emojimaker.databinding.AdNativeContentBinding
 import com.wa.ai.emojimaker.databinding.DialogAddToPackageBinding
 import com.wa.ai.emojimaker.ui.adapter.PackageAdapter
 import com.wa.ai.emojimaker.ui.base.BaseBindingDialogFragment
-import com.wa.ai.emojimaker.ui.component.emojimaker.EmojiViewModel
 import com.wa.ai.emojimaker.utils.RemoteConfigKey
 import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils
 import com.wa.ai.emojimaker.utils.extention.setOnSafeClick

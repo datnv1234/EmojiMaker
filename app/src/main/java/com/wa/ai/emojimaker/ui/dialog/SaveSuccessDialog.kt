@@ -2,11 +2,9 @@ package com.wa.ai.emojimaker.ui.dialog
 
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.adjust.sdk.Adjust
 import com.bumptech.glide.Glide
-import com.google.android.gms.ads.nativead.NativeAdView
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.databinding.AdNativeContentBinding
@@ -17,7 +15,6 @@ import com.wa.ai.emojimaker.utils.RemoteConfigKey
 import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils
 import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 import com.wa.ai.emojimaker.utils.extention.visible
-import java.net.URL
 
 class SaveSuccessDialog : BaseBindingDialogFragment<DialogSaveSuccessBinding>() {
 
