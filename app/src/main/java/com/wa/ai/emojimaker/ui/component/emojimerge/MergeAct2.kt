@@ -39,6 +39,8 @@ import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 import com.wa.ai.emojimaker.ui.component.emojimerge.result.MergeResultAct
 import com.wa.ai.emojimaker.ui.dialog.DialogInternetConnection
 import com.wa.ai.emojimaker.ui.dialog.DialogLoading
+import com.wa.ai.emojimaker.utils.ads.BannerUtils
+import com.wa.ai.emojimaker.utils.extention.gone
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -54,6 +56,10 @@ class MergeAct2 : BaseBindingActivity<ActivityMerge2Binding, MergeVM>() {
     private var interstitialAd: InterstitialAd? = null
     private var adsConsentManager: AdsConsentManager? = null
     private var analytics: FirebaseAnalytics? = null
+
+    private val bannerReload =
+        FirebaseRemoteConfig.getInstance().getLong(RemoteConfigKey.BANNER_RELOAD)
+    private val keyAdBannerAllPrice = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_MERGE_EMOJI)
 
     private var emote1 = ""
     private var emote2 = ""
@@ -142,12 +148,10 @@ class MergeAct2 : BaseBindingActivity<ActivityMerge2Binding, MergeVM>() {
     }
 
     override fun setupData() {
+        loadAds()
         viewModel.getAllListEmoji(this)
         viewModel.emojiLiveData.observeWithCatch(this) {
             emojiAdapter1.submitList(it)
-        }
-
-        viewModel.isLoadBannerLiveData.observeWithCatch(this) {
         }
     }
 
@@ -278,6 +282,25 @@ class MergeAct2 : BaseBindingActivity<ActivityMerge2Binding, MergeVM>() {
                 else -> {}
             }
         }.onFailure { it.printStackTrace() }
+    }
+
+    private fun loadAds() {
+        if (FirebaseRemoteConfig.getInstance()
+                .getBoolean(RemoteConfigKey.IS_SHOW_ADS_BANNER_MERGE_EMOJI)
+        ) {
+            loadBanner()
+        } else {
+            binding.rlBanner.gone()
+        }
+        viewModel.loadBanner.observe(this) {
+            loadBanner()
+        }
+    }
+
+    private fun loadBanner() {
+        viewModel.starTimeCountReloadBanner(bannerReload)
+        BannerUtils.instance?.loadCollapsibleBanner(this, keyAdBannerAllPrice)
+
     }
 
     private fun initAdsManager() {

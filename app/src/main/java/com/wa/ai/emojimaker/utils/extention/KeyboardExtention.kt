@@ -8,7 +8,7 @@ import timber.log.Timber
 
 //fun Activity.hideKeyboard() {
 //    val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-//    Timber.e("Buthh: imm" + imm.isActive)
+//    Timber.e("datnv: imm" + imm.isActive)
 //    if (imm.isActive) {
 //        imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS)
 //    }

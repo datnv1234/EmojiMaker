@@ -17,6 +17,12 @@ import javax.inject.Inject
 @HiltViewModel
 class MergeVM @Inject constructor(private val emojiRepo: EmojiRepo) : BaseViewModel() {
 
+    private val _loadBanner: MutableLiveData<Boolean> = MutableLiveData()
+    val loadBanner: LiveData<Boolean>
+        get() = _loadBanner
+
+    private var timerReloadBanner : CountDownTimer? = null
+
     private val _emojiMutableLiveData: MutableLiveData<List<EmojiUI>> = MutableLiveData()
     val emojiLiveData: LiveData<List<EmojiUI>>
         get() = _emojiMutableLiveData
@@ -31,18 +37,13 @@ class MergeVM @Inject constructor(private val emojiRepo: EmojiRepo) : BaseViewMo
         }
     }
 
-    private var timerReloadBanner: CountDownTimer? = null
-    private var _isLoadBannerMutableLiveData: MutableLiveData<Boolean> = MutableLiveData()
-    val isLoadBannerLiveData: LiveData<Boolean>
-        get() = _isLoadBannerMutableLiveData
-
     private fun createCountDownTimerReloadBanner(time: Long): CountDownTimer {
         return object : CountDownTimer(time, 1000) {
             override fun onTick(millisUntilFinished: Long) {
             }
 
             override fun onFinish() {
-                _isLoadBannerMutableLiveData.postValue(true)
+                _loadBanner.postValue(true)
             }
         }
     }

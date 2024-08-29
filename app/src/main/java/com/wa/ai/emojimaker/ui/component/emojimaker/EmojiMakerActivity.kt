@@ -100,7 +100,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     private var isFinishImmediately = false
 
     private lateinit var emojiViewModel: EmojiViewModel
-    private val mContext : Context = this
+    private val mContext: Context = this
 
     private val pagerIconAdapter: PagerIconAdapter by lazy {
         PagerIconAdapter(itemClick = {
@@ -110,7 +110,6 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
             doAddSticker(it)
         })
     }
-
 
 
     /*
@@ -328,9 +327,12 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
 
     private fun loadBanner() {
         emojiViewModel.starTimeCountReloadBanner(bannerReload)
-        val keyAdBannerHigh = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_CREATE_EMOJI_HIGH)
-        val keyAdBannerMedium = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_CREATE_EMOJI_MEDIUM)
-        val keyAdBannerAllPrice = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_CREATE_EMOJI)
+        val keyAdBannerHigh = FirebaseRemoteConfig.getInstance()
+            .getString(RemoteConfigKey.KEY_ADS_BANNER_CREATE_EMOJI_HIGH)
+        val keyAdBannerMedium = FirebaseRemoteConfig.getInstance()
+            .getString(RemoteConfigKey.KEY_ADS_BANNER_CREATE_EMOJI_MEDIUM)
+        val keyAdBannerAllPrice = FirebaseRemoteConfig.getInstance()
+            .getString(RemoteConfigKey.KEY_ADS_BANNER_CREATE_EMOJI)
         val listKeyAds = listOf(keyAdBannerHigh, keyAdBannerMedium, keyAdBannerAllPrice)
         if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_USE_BANNER_MONET)) {
             BannerUtils.instance?.loadCollapsibleBanner(this, listKeyAds)
@@ -752,9 +754,6 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
 
     internal class FetchImageFromLinkTask(val text: String, val context: EmojiMakerActivity) :
         AsyncTask<Void, Void, Void>() {
-        override fun onPreExecute() {
-            super.onPreExecute()
-        }
 
         override fun doInBackground(vararg params: Void?): Void? {
             try {
@@ -894,7 +893,8 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
             val keyAdInterMedium = FirebaseRemoteConfig.getInstance()
                 .getString(RemoteConfigKey.KEY_ADS_INTER_CREATE_EMOJI_MEDIUM)
             val keyAdInterAllPrice =
-                FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_INTER_CREATE_EMOJI)
+                FirebaseRemoteConfig.getInstance()
+                    .getString(RemoteConfigKey.KEY_ADS_INTER_CREATE_EMOJI)
             val listKeyAds = listOf(keyAdInterHigh, keyAdInterMedium, keyAdInterAllPrice)
             if (FirebaseRemoteConfig.getInstance().getBoolean(IS_USE_INTER_MONET)) {
                 loadInterAdsSplashSequence(listKeyAds)
@@ -913,7 +913,10 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
                 override fun onAdFailedToLoad(adError: LoadAdError) {
                     mFirebaseAnalytics.logEvent("e_load_inter_splash", null)
                     mInterstitialAd = null
-                    Handler(Looper.getMainLooper()).postDelayed({ loadInterAdsMain(keyAdInter) }, 2000)
+                    Handler(Looper.getMainLooper()).postDelayed(
+                        { loadInterAdsMain(keyAdInter) },
+                        2000
+                    )
                 }
 
                 override fun onAdLoaded(ad: InterstitialAd) {
@@ -978,7 +981,8 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
                                 adRevenue.adRevenueNetwork = loadedAdapterResponseInfo?.adSourceName
                                 Adjust.trackAdRevenue(adRevenue)
 
-                                val analytics = FirebaseAnalytics.getInstance(this@EmojiMakerActivity)
+                                val analytics =
+                                    FirebaseAnalytics.getInstance(this@EmojiMakerActivity)
                                 val params = Bundle().apply {
                                     putString(
                                         FirebaseAnalytics.Param.AD_PLATFORM,
@@ -1123,7 +1127,6 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
             }
         }
     }
-
 
 
     companion object {

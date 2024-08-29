@@ -158,8 +158,8 @@ class MergeResultAct : BaseBindingActivity<ActivityMergeResultBinding, MergeResu
             intent?.let {
                 emote1 = it.getStringExtra(Constant.KEY_EMOTE_1) ?: ""
                 emote2 = it.getStringExtra(Constant.KEY_EMOTE_2) ?: ""
-                Timber.e("Buthh: emote1 $emote1")
-                Timber.e("Buthh: emote2 $emote2")
+                Timber.e("datnv: emote1 $emote1")
+                Timber.e("datnv: emote2 $emote2")
                 date = it.getStringExtra(Constant.KEY_DATE) ?: ""
             }
             mixEmojis(
