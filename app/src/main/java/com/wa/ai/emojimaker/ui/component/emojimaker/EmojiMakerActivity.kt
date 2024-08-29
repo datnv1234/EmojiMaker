@@ -59,11 +59,10 @@ import com.wa.ai.emojimaker.ui.dialog.CreatePackageDialog
 import com.wa.ai.emojimaker.ui.dialog.SaveStickerDialog
 import com.wa.ai.emojimaker.ui.dialog.SaveSuccessDialog
 import com.wa.ai.emojimaker.ui.component.main.MainActivity
-import com.wa.ai.emojimaker.ui.component.splash.SplashActivity.Companion.isUseBannerMonet
-import com.wa.ai.emojimaker.ui.component.splash.SplashActivity.Companion.isUseInterMonet
 import com.wa.ai.emojimaker.utils.AppUtils
 import com.wa.ai.emojimaker.utils.DeviceUtils
 import com.wa.ai.emojimaker.utils.RemoteConfigKey
+import com.wa.ai.emojimaker.utils.RemoteConfigKey.IS_USE_INTER_MONET
 import com.wa.ai.emojimaker.utils.ads.AdsConsentManager
 import com.wa.ai.emojimaker.utils.ads.BannerUtils
 import com.wa.ai.emojimaker.utils.extention.gone
@@ -92,8 +91,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
 
     private var adsConsentManager: AdsConsentManager? = null
     private val isAdsInitializeCalled = AtomicBoolean(false)
-    private var interstitialAd: InterstitialAd? = null
-    private var mFirebaseAnalytics: FirebaseAnalytics? = null
+    private val mFirebaseAnalytics: FirebaseAnalytics = FirebaseAnalytics.getInstance(this)
     private var mInterstitialAd: InterstitialAd? = null
 
     private val bannerReload =
@@ -267,8 +265,6 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
             }
         }
 
-
-
         initAdsManager()
     }
 
@@ -336,7 +332,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         val keyAdBannerMedium = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_CREATE_EMOJI_MEDIUM)
         val keyAdBannerAllPrice = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_CREATE_EMOJI)
         val listKeyAds = listOf(keyAdBannerHigh, keyAdBannerMedium, keyAdBannerAllPrice)
-        if (isUseBannerMonet) {
+        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_USE_BANNER_MONET)) {
             BannerUtils.instance?.loadCollapsibleBanner(this, listKeyAds)
         } else {
             BannerUtils.instance?.loadCollapsibleBanner(this, keyAdBannerAllPrice)
@@ -900,7 +896,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
             val keyAdInterAllPrice =
                 FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_INTER_CREATE_EMOJI)
             val listKeyAds = listOf(keyAdInterHigh, keyAdInterMedium, keyAdInterAllPrice)
-            if (isUseInterMonet) {
+            if (FirebaseRemoteConfig.getInstance().getBoolean(IS_USE_INTER_MONET)) {
                 loadInterAdsSplashSequence(listKeyAds)
             } else {
                 loadInterAdsMain(keyAdInterAllPrice)
@@ -915,13 +911,13 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
             AdRequest.Builder().build(),
             object : InterstitialAdLoadCallback() {
                 override fun onAdFailedToLoad(adError: LoadAdError) {
-                    mFirebaseAnalytics?.logEvent("e_load_inter_splash", null)
+                    mFirebaseAnalytics.logEvent("e_load_inter_splash", null)
                     mInterstitialAd = null
                     Handler(Looper.getMainLooper()).postDelayed({ loadInterAdsMain(keyAdInter) }, 2000)
                 }
 
                 override fun onAdLoaded(ad: InterstitialAd) {
-                    mFirebaseAnalytics?.logEvent("d_load_inter_splash", null)
+                    mFirebaseAnalytics.logEvent("d_load_inter_splash", null)
                     mInterstitialAd = ad
                     mInterstitialAd?.onPaidEventListener =
                         OnPaidEventListener { adValue ->
@@ -964,13 +960,13 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
                 AdRequest.Builder().build(),
                 object : InterstitialAdLoadCallback() {
                     override fun onAdFailedToLoad(adError: LoadAdError) {
-                        mFirebaseAnalytics?.logEvent("e_load_inter_splash", null)
+                        mFirebaseAnalytics.logEvent("e_load_inter_splash", null)
                         mInterstitialAd = null
                         loadInterAds(adIndex + 1)
                     }
 
                     override fun onAdLoaded(ad: InterstitialAd) {
-                        mFirebaseAnalytics?.logEvent("d_load_inter_splash", null)
+                        mFirebaseAnalytics.logEvent("d_load_inter_splash", null)
                         mInterstitialAd = ad
                         mInterstitialAd?.onPaidEventListener =
                             OnPaidEventListener { adValue ->
@@ -1079,16 +1075,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
             }
 
             override fun onAdShowedFullScreenContent() {
-                val analytics = FirebaseAnalytics.getInstance(this@EmojiMakerActivity)
-
-                val params = Bundle().apply {
-                    putString(
-                        FirebaseAnalytics.Param.AD_PLATFORM,
-                        "admob mediation"
-                    )
-                    putString("Unlock items", "Emoji Maker")
-                }
-                analytics.logEvent("unlock_item", params)
+                mFirebaseAnalytics.logEvent("unlock_items", null)
             }
         }
     }

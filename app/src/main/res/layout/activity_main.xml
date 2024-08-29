@@ -17,7 +17,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_43sdp"
-            android:layout_marginTop="@dimen/_12sdp"
+            android:layout_marginTop="@dimen/_30sdp"
             android:elevation="4dp"
             app:layout_constraintTop_toTopOf="parent">
             <TextView
@@ -27,9 +27,14 @@
                 android:gravity="center"
                 android:text="@string/emoji_sticker"
                 android:fontFamily="@font/poppins_semibold"
-                android:textColor="#252E40"
+                android:textColor="@color/text_color"
                 android:textSize="@dimen/_16ssp"
-                android:layout_gravity="center"/>
+                android:visibility="gone"/>
+            <ImageView
+                android:id="@+id/imgToolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/img_emoji_sticker"/>
         </androidx.appcompat.widget.Toolbar>
 
         <fragment

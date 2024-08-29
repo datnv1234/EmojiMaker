@@ -39,6 +39,16 @@
             android:exported="false"
             android:label="@string/title_activity_emoji_maker"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.component.emojimerge.MergeAct2"
+            android:exported="true"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.component.emojimerge.result.MergeResultAct"
+            android:exported="true"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.component.splash.SplashActivity"
             android:exported="true"

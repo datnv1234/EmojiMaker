@@ -23,7 +23,7 @@
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="recent">Recent</string>
-    <string name="Create_Emoji">Create Emoji</string>
+    <string name="create_Emoji">Create Emoji</string>
     <string name="back">Back</string>
     <string name="todo">TODO</string>
     <string name="option_preview">Option preview</string>
@@ -117,5 +117,26 @@
     <string name="unlock_items">Unlock items</string>
     <string name="watch_ads_to_unlock_for_free">Watch ads to unlock for free</string>
     <string name="watch_video">Watch Video</string>
+    <string name="you_need_to">You need to</string>
+    <string name="exporting">Exporting</string>
+    <string name="saved">Saved</string>
+    <string name="failed_to_save">Failed to save</string>
+    <string name="error">Error</string>
+    <string name="image">image</string>
+    <string name="emoji_merge">Emoji merge</string>
+    <string name="warning">Warning</string>
+    <string name="lost_internet_connection">Lost internet connection</string>
+    <string name="go_to_setting">Go to settings</string>
+    <string name="merge_emoji">Merge Emoji</string>
+    <string name="merge">Merge</string>
+    <string name="done">Done</string>
+    <string name="merging">Merging…</string>
+    <string name="oops_something_went_wrong">Oops, something went wrong.\nPlease try again.</string>
+    <string name="try_again">Try again</string>
+    <string name="check_result">Check result</string>
+    <string name="Rename">Rename</string>
+    <string name="your_emoji_has_been_saved_to_my_creative">Your emoji has been saved to \n <b> \"My Creative\" </b></string>
+    <string name="merge_successfully">Merge Successfully</string>
+    <string name="delete_this_sticker">Delete this sticker!</string>
 
 </resources>

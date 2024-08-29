@@ -1,20 +1,22 @@
 package com.wa.ai.emojimaker.ui.adapter
 
-import android.content.Context
-import android.widget.PopupMenu
-import androidx.appcompat.view.ContextThemeWrapper
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.PopupWindow
 import androidx.recyclerview.widget.DiffUtil
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.data.model.PackageModel
 import com.wa.ai.emojimaker.databinding.ItemCreativeBinding
+import com.wa.ai.emojimaker.databinding.MenuOptionBinding
 import com.wa.ai.emojimaker.ui.base.BaseBindingAdapterDiff
 import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 
 class CreativeAdapter (
-    val context: Context,
     val itemClick:(pkg: PackageModel)->Unit,
     val optionClick: (binding: ItemCreativeBinding) -> Unit,
-    val delete:(pkg: PackageModel) -> Unit
+    val delete:(pkg: PackageModel) -> Unit,
+    val rename:(pkg: PackageModel) -> Unit
 ) : BaseBindingAdapterDiff<PackageModel, ItemCreativeBinding>(
     object : DiffUtil.ItemCallback<PackageModel>() {
     override fun areItemsTheSame(oldItem: PackageModel, newItem: PackageModel): Boolean {
@@ -42,15 +44,17 @@ class CreativeAdapter (
     var callBack: (Int, PackageModel) -> Unit = { _, _ -> }
 
     fun getCurrentPackage(): PackageModel? = currentList[newPosition]
+    private var positionRename = -1
 
     override fun onBindViewHolderBase(holder: BaseHolder<ItemCreativeBinding>, position: Int) {
+        val context = holder.binding.root.context
         with(getItem(holder.adapterPosition)) {
             holder.binding.apply {
                 // Set View
                 if (this@with.avatar != null) {
                     imgSticker.setImageBitmap(this@with.avatar)
                 }
-                tvCategory.text = name
+                tvCategory.text = getName()
                 tvQuantity.text = itemSize.toString()
 
                 // Action
@@ -60,19 +64,29 @@ class CreativeAdapter (
 
                 btnOption.setOnSafeClick {
                     optionClick(this)
-                    val wrapper = ContextThemeWrapper(context, R.style.CustomPopupMenu)
-                    val popUp = PopupMenu(wrapper, it)
-                    popUp.menuInflater.inflate(R.menu.popup_menu, popUp.menu)
-                    //popUp.gravity = Gravity.END
-                    popUp.setOnMenuItemClickListener { item ->
-                        when (item.itemId) {
-                            R.id.action_delete -> {
-                                delete(this@with)
-                            }
-                        }
-                        true
+                    val inflater = LayoutInflater.from(context)
+                    val view = MenuOptionBinding.inflate(inflater)
+                    val popupWindow = PopupWindow(view.root, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+
+                    view.btnDelete.setOnSafeClick {
+                        delete(this@with)
+                        popupWindow.dismiss()
                     }
-                    popUp.show()
+                    view.btnRename.setOnSafeClick {
+                        rename(this@with)
+                        positionRename = position
+                        popupWindow.dismiss()
+                    }
+
+                    view.root.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+                    val popupWidth = view.root.measuredWidth
+
+                    popupWindow.isOutsideTouchable = true
+                    popupWindow.isFocusable = true
+                    popupWindow.setBackgroundDrawable(null)
+
+                    popupWindow.showAsDropDown(btnOption, (-popupWidth * 1.5f).toInt(), 0)
+
                     newPosition = holder.adapterPosition
                 }
                 btnDelete.setOnSafeClick {
@@ -81,33 +95,18 @@ class CreativeAdapter (
             }
 
         }
-        //Log.d(Constant.TAG, "StickerAdapter: " + getItem(holder.adapterPosition).bitmap)
+
     }
 
     override val layoutIdItem: Int
         get() = R.layout.item_creative
 
-    /*private fun expand() {
-        expandableLayout.visibility = View.VISIBLE
-        val widthSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-        val heightSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-        expandableLayout.measure(widthSpec, heightSpec)
-        val animator = ObjectAnimator.ofInt(expandableLayout, "height", 0, expandableLayout.measuredHeight)
-        animator.duration = 300
-        animator.start()
-        toggleButton.text = "Collapse"
+    fun updateFolderName(newName: String) {
+        if (positionRename >= 0 && positionRename < currentList.size) {
+            currentList[positionRename].updateName(newName)
+            notifyItemChanged(positionRename)
+            positionRename = -1
+        }
     }
 
-    private fun collapse() {
-        val initialHeight = expandableLayout.measuredHeight
-        val animator = ObjectAnimator.ofInt(expandableLayout, "height", initialHeight, 0)
-        animator.duration = 300
-        animator.start()
-        animator.addListener(object : android.animation.AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: android.animation.Animator?) {
-                expandableLayout.visibility = View.GONE
-            }
-        })
-        toggleButton.text = "Expand"
-    }*/
 }

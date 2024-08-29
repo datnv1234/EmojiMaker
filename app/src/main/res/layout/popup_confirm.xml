@@ -11,6 +11,7 @@
     android:layout_height="match_parent"
     android:background="#80000000">
     <ImageButton
+        android:id="@+id/btnClose"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"

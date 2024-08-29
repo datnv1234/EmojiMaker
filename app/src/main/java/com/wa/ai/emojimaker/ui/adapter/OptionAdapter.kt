@@ -18,17 +18,18 @@ class OptionAdapter(
     private var focusedItemPosition: Int = 0
 
     override fun onBindViewHolderBase(holder: BaseHolder<ItemOptionsBinding>, position: Int) {
-        holder.binding.tvOption.text = optionList[holder.adapterPosition].title
+        val item = optionList[position]
+        holder.binding.tvOption.text = item.title
         try {
             holder.binding.imgOption.setImageDrawable(
-                AppCompatResources.getDrawable(context, optionList[holder.adapterPosition].icon)
+                AppCompatResources.getDrawable(context, item.icon)
             )
-        }catch (e: Exception) {
+        } catch (e: Exception) {
             Timber.e(e)
         }
         holder.binding.item.setOnSafeClick {
-            itemClick(holder.adapterPosition)
-            onItemFocus(holder.adapterPosition)
+            itemClick(position)
+            onItemFocus(position)
         }
 
         holder.binding.item.isSelected = position == focusedItemPosition

@@ -132,7 +132,22 @@ object DeviceUtils {
     }
 
     @JvmStatic
-    fun getInternalDir(context: Context, folder: String, packageName: String) : File?{
+    fun deleteSticker(path: String): Boolean {
+        val file = File(path)
+        return try {
+            if (file.exists()) {
+                file.delete()
+            } else {
+                false
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+
+    @JvmStatic
+    fun getInternalDir(context: Context, folder: String, packageName: String) : File {
         val cw = ContextWrapper(context)
         // Path to /data/data/your_app/app_data/imageDir
         val internalStorage: File = cw.getDir(folder, Context.MODE_PRIVATE)
@@ -140,6 +155,21 @@ object DeviceUtils {
 
         mPackage.mkdir()
         return mPackage
+    }
+
+    @JvmStatic
+    fun renameInternalDir(context: Context, oldFolderName: String, newFolderName: String, packageName: String): File? {
+        val cw = ContextWrapper(context)
+        val internalStorage = cw.getDir(oldFolderName, Context.MODE_PRIVATE)
+        val mPackage = File(internalStorage, packageName)
+        val newDir = File(mPackage.parent, newFolderName)
+
+        if (mPackage.exists() && mPackage.isDirectory) {
+            if (mPackage.renameTo(newDir)) {
+                return newDir
+            }
+        }
+        return null
     }
 
     @JvmStatic

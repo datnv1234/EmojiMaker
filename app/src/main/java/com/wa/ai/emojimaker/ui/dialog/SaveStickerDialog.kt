@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import com.adjust.sdk.Adjust
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.databinding.DialogSaveBinding
@@ -54,6 +55,16 @@ class SaveStickerDialog : BaseBindingDialogFragment<DialogSaveBinding>() {
         binding.bg.setOnSafeClick {
             dismiss()
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Adjust.onPause()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Adjust.onResume()
     }
 
     private fun addNativeAd() {

@@ -12,6 +12,7 @@ import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Environment
 import android.os.Parcelable
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -23,6 +24,7 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
+import java.net.URL
 import kotlin.jvm.internal.Intrinsics
 
 object AppUtils {
@@ -59,6 +61,19 @@ object AppUtils {
                 Toast.LENGTH_SHORT
             ).show()
         }
+    }
+
+    fun setBitmapFromURL(url: String) {
+        val thread = Thread {
+            try {
+                val inputStream = URL(url).openStream()
+                val bitmap = BitmapFactory.decodeStream(inputStream)
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+        thread.start()
     }
 
     fun Bitmap.scaleWith(scale: Float) = Bitmap.createScaledBitmap(

@@ -12,65 +12,69 @@
         android:layout_height="match_parent"
         tools:context=".ui.component.mycreative.MyCreativeFragment">
 
-
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
+
+                <RelativeLayout
+                    android:id="@+id/rl_native"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/_6sdp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintVertical_bias="1.0"
+                    app:layout_goneMarginTop="@dimen/_4sdp">
+
+                    <FrameLayout
+                        android:id="@+id/fr_native_ads"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <include layout="@layout/ads_native_shimmer" />
+                    </FrameLayout>
+                </RelativeLayout>
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvSticker"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/_6sdp"
                     android:visibility="visible"
                     app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                    app:spanCount="2"/>
+                    app:spanCount="2" />
 
                 <LinearLayout
                     android:id="@+id/llEmpty"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_13sdp"
-                    android:orientation="vertical"
                     android:gravity="center_horizontal"
+                    android:orientation="vertical"
                     android:visibility="gone"
                     tools:ignore="UseCompoundDrawables">
+
                     <ImageView
                         android:layout_width="@dimen/_122sdp"
                         android:layout_height="@dimen/_146sdp"
-                        android:src="@drawable/ic_cry"
-                        android:contentDescription="@string/empty" />
+                        android:contentDescription="@string/empty"
+                        android:src="@drawable/ic_cry" />
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_19sdp"
+                        android:fontFamily="@font/poppins_regular"
                         android:gravity="center"
-                        android:text="@string/you_don_t_have_any_package"
-                        android:fontFamily="@font/poppins_regular"/>
+                        android:text="@string/you_don_t_have_any_package" />
                 </LinearLayout>
-                <RelativeLayout
-                    android:id="@+id/rl_native"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_170sdp"
-                    android:layout_marginTop="@dimen/_40sdp"
-                    android:layout_margin="@dimen/_6sdp"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintVertical_bias="1.0"
-                    app:layout_goneMarginTop="@dimen/_4sdp">
-                    <FrameLayout
-                        android:id="@+id/fr_native_ads"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
 
-                        <include layout="@layout/ads_native_shimmer" />
-                    </FrameLayout>
-                </RelativeLayout>
                 <LinearLayout
                     android:id="@+id/llSeeMore"
                     android:layout_width="match_parent"
@@ -78,41 +82,45 @@
                     android:layout_marginTop="@dimen/_18sdp"
                     android:orientation="vertical"
                     app:layout_constraintBottom_toBottomOf="parent">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingHorizontal="@dimen/_12sdp"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="@dimen/_12sdp">
+
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="@string/you_may_also_like"
                             android:fontFamily="@font/poppins_regular"
-                            android:textSize="@dimen/_11ssp"/>
+                            android:text="@string/you_may_also_like"
+                            android:textSize="@dimen/_11ssp" />
+
                         <TextView
                             android:id="@+id/btnSeeMore"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:drawablePadding="@dimen/_3sdp"
+                            android:fontFamily="@font/poppins_italic"
                             android:text="@string/see_more"
                             android:textColor="#856DFF"
                             android:textSize="@dimen/_11ssp"
-                            android:fontFamily="@font/poppins_italic"
-                            android:drawablePadding="@dimen/_3sdp"
                             app:drawableEndCompat="@drawable/ic_arrow_right_purple" />
 
                     </LinearLayout>
+
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rvSeeMore"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_98sdp"
-                        android:paddingHorizontal="@dimen/_12sdp"
                         android:layout_marginBottom="@dimen/_12sdp"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                        android:orientation="horizontal" />
+                        android:orientation="horizontal"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
                     <View
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/_100sdp"/>
+                        android:layout_height="@dimen/_100sdp" />
                 </LinearLayout>
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
@@ -123,36 +131,38 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/_12sdp"
             android:layout_marginBottom="@dimen/_19sdp"
-            app:cardCornerRadius="@dimen/_40sdp"
             android:visibility="visible"
+            app:cardCornerRadius="@dimen/_40sdp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
+
             <ImageButton
                 android:id="@+id/btnAddPackage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@color/transparent"
+                android:contentDescription="@string/create_package"
+                android:elevation="@dimen/_10sdp"
                 android:foreground="?android:selectableItemBackground"
                 android:src="@drawable/ic_addition"
-                android:elevation="@dimen/_10sdp"
-                android:translationZ="@dimen/_10sdp"
-                android:contentDescription="@string/create_package"/>
+                android:translationZ="@dimen/_10sdp" />
 
         </androidx.cardview.widget.CardView>
+
         <TextView
             android:id="@+id/tvCreatePackage"
             android:layout_width="@dimen/_200sdp"
             android:layout_height="@dimen/_35sdp"
             android:background="@drawable/union"
+            android:gravity="center_vertical"
             android:paddingStart="@dimen/_10sdp"
             android:paddingEnd="@dimen/_5sdp"
-            android:gravity="center_vertical"
-            android:textSize="@dimen/_10ssp"
             android:singleLine="true"
-            android:visibility="visible"
             android:text="@string/tap_here_to_create_new_package"
+            android:textSize="@dimen/_10ssp"
+            android:visibility="visible"
             app:layout_constraintEnd_toStartOf="@id/cvAddToPackage"
-            app:layout_constraintTop_toTopOf="@id/cvAddToPackage"/>
+            app:layout_constraintTop_toTopOf="@id/cvAddToPackage" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

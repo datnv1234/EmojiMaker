@@ -17,24 +17,21 @@ import com.wa.ai.emojimaker.ui.adapter.HomeAdapter
 import com.wa.ai.emojimaker.ui.base.BaseBindingFragment
 import com.wa.ai.emojimaker.ui.dialog.SharePackageDialog
 import com.wa.ai.emojimaker.ui.component.emojimaker.EmojiMakerActivity
+import com.wa.ai.emojimaker.ui.component.emojimerge.MergeAct2
 import com.wa.ai.emojimaker.ui.component.main.MainActivity
 import com.wa.ai.emojimaker.ui.component.main.MainViewModel
 import com.wa.ai.emojimaker.ui.component.showstickers.ShowStickersActivity
-import com.wa.ai.emojimaker.ui.component.splash.SplashActivity
 import com.wa.ai.emojimaker.utils.AppUtils
 import com.wa.ai.emojimaker.utils.FileUtils
 import com.wa.ai.emojimaker.utils.FileUtils.getUriForFile
-import com.wa.ai.emojimaker.utils.RemoteConfigKey
-import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils
 import com.wa.ai.emojimaker.utils.extention.gone
+import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 import com.wa.ai.emojimaker.utils.extention.visible
 
 class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
 
     private lateinit var mMainActivity: MainActivity
     private lateinit var mMainViewModel: MainViewModel
-    private val keyNative =
-        FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_HOME)
 
     private val sharePackageDialog: SharePackageDialog by lazy {
         SharePackageDialog().apply {
@@ -128,22 +125,32 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
                 })
             binding.rvCategory.adapter = adapter
         }
-        addNativeAd()
 
-        binding.btnCreateSticker.setOnClickListener {
+        binding.btnCreateSticker.setOnSafeClick {
             startActivity(Intent(context, EmojiMakerActivity::class.java))
             kotlin.runCatching {
                 mMainActivity.forceShowInterstitial {}
+            }.onFailure {
+                it.printStackTrace()
             }
         }
 
+        binding.btnMergeEmoji.setOnSafeClick {
+            kotlin.runCatching {
+                startActivity(Intent(context, MergeAct2::class.java))
+                mMainActivity.forceShowInterstitial {}
+            }.onFailure {
+                it.printStackTrace()
+            }
+        }
 
     }
 
     override fun onResume() {
         super.onResume()
         Adjust.onResume()
-        mMainActivity.binding.titleToolbar.text = title
+        mMainActivity.binding.titleToolbar.gone()
+        mMainActivity.binding.imgToolbar.visible()
     }
 
     override fun onPause() {
@@ -180,50 +187,5 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
         } else {
             toast(getString(R.string.download_failed))
         }
-    }
-
-    private fun addNativeAd() {
-        SplashActivity.adNativeHome?.let {
-            val adContainer = binding.frNativeAds
-            if (it.parent != null) {
-                (it.parent as ViewGroup).removeView(it)
-            }
-            adContainer.removeAllViews()
-            adContainer.addView(it)
-        } ?: run {
-            binding.rlNative.gone()
-            loadNativeAd()
-        }
-    }
-
-    private fun loadNativeAd() {
-        if (FirebaseRemoteConfig.getInstance()
-                .getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_HOME)
-        ) {
-            loadNativeAds(keyNative)
-        } else {
-            binding.rlNative.gone()
-        }
-    }
-
-    private fun loadNativeAds(keyAds: String) {
-        this.let {
-            NativeAdsUtils.instance.loadNativeAds(
-                requireContext(),
-                keyAds
-            ) { nativeAds ->
-                if (nativeAds != null && isAdded && isVisible) {
-                    val adNativeVideoBinding = AdNativeContentHomeBinding.inflate(layoutInflater)
-                    NativeAdsUtils.instance.populateNativeAdVideoView(
-                        nativeAds,
-                        adNativeVideoBinding.root
-                    )
-                    binding.rlNative.visible()
-                    binding.frNativeAds.removeAllViews()
-                    binding.frNativeAds.addView(adNativeVideoBinding.root)
-                }
-            }
-        }
-
     }
 }

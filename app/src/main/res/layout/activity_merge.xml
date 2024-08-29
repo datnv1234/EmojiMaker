@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg">
+
+        <ImageButton
+            android:id="@+id/imBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_7sdp"
+            android:background="@color/transparent"
+            android:contentDescription="@string/back"
+            android:padding="@dimen/_5sdp"
+            android:src="@drawable/ic_back_round"
+            app:layout_constraintBottom_toBottomOf="@id/imMerge"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/imMerge" />
+
+        <ImageButton
+            android:id="@+id/btnRefresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_7sdp"
+            android:background="@color/transparent"
+            android:contentDescription="@string/back"
+            android:padding="@dimen/_5sdp"
+            android:src="@drawable/ic_reload"
+            app:layout_constraintBottom_toBottomOf="@id/imMerge"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/imMerge" />
+
+        <TextView
+            android:id="@+id/imMerge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_19sdp"
+            android:fontFamily="@font/poppins_semibold"
+            android:text="@string/merge_emoji"
+            android:textSize="@dimen/_18ssp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/imEmot1UnSelected"
+            android:layout_width="@dimen/_86sdp"
+            android:layout_height="@dimen/_86sdp"
+            android:layout_marginStart="@dimen/_24sdp"
+            android:layout_marginTop="56dp"
+            android:src="@drawable/img_unselected"
+            android:elevation="@dimen/_18ssp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/imMerge" />
+
+        <ImageView
+            android:id="@+id/imEmot3UnSelected"
+            android:layout_width="@dimen/_86sdp"
+            android:layout_height="@dimen/_86sdp"
+            android:layout_marginStart="@dimen/_24sdp"
+            android:layout_marginTop="56dp"
+            android:src="@drawable/img_merge_unselected_1"
+            android:visibility="invisible"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/imMerge" />
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:src="@drawable/img_plus"
+            android:layout_marginHorizontal="@dimen/_18sdp"
+            app:layout_constraintBottom_toBottomOf="@id/imEmot1UnSelected"
+            app:layout_constraintEnd_toStartOf="@id/imEmot2UnSelected"
+            app:layout_constraintStart_toEndOf="@id/imEmot1UnSelected"
+            app:layout_constraintTop_toTopOf="@id/imEmot1UnSelected" />
+
+        <ImageView
+            android:id="@+id/imEmot2UnSelected"
+            android:layout_width="@dimen/_86sdp"
+            android:layout_height="@dimen/_86sdp"
+            android:layout_marginTop="56dp"
+            android:layout_marginEnd="@dimen/_24sdp"
+            android:src="@drawable/img_merge_unselected"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/imMerge" />
+
+        <ImageView
+            android:id="@+id/imEmot4UnSelected"
+            android:layout_width="@dimen/_86sdp"
+            android:layout_height="@dimen/_86sdp"
+            android:layout_marginTop="56dp"
+            android:layout_marginEnd="28dp"
+            android:src="@drawable/img_merge_unselected_1"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/imMerge" />
+
+        <ImageView
+            android:id="@+id/imEmot1"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_margin="24dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/imEmot1UnSelected"
+            app:layout_constraintEnd_toEndOf="@+id/imEmot1UnSelected"
+            app:layout_constraintStart_toStartOf="@+id/imEmot1UnSelected"
+            app:layout_constraintTop_toTopOf="@+id/imEmot1UnSelected" />
+
+        <ImageView
+            android:id="@+id/imEmot2"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_margin="24dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/imEmot2UnSelected"
+            app:layout_constraintEnd_toEndOf="@+id/imEmot2UnSelected"
+            app:layout_constraintStart_toStartOf="@+id/imEmot2UnSelected"
+            app:layout_constraintTop_toTopOf="@+id/imEmot2UnSelected" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="#FFFFFF"
+            android:paddingTop="@dimen/_20sdp"
+            app:layout_constraintBottom_toTopOf="@id/rl_banner"
+            app:layout_constraintDimensionRatio="1:1">
+
+            <ImageView
+                android:id="@+id/imBtnMerge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:adjustViewBounds="true"
+                android:src="@drawable/img_btn_merge_unselected"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvEmot"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_240sdp"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginBottom="16dp"
+                android:clipToPadding="false"
+                android:orientation="vertical"
+                android:overScrollMode="never"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:layout_constraintBottom_toTopOf="@id/imBtnMerge"
+                app:spanCount="6"
+                tools:listitem="@layout/emojis_slider_item" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <FrameLayout
+            android:id="@+id/rl_banner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <include
+                android:id="@+id/include"
+                layout="@layout/ads_banner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </FrameLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

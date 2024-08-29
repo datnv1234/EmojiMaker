@@ -15,8 +15,10 @@ import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.common.Constant
 import com.wa.ai.emojimaker.databinding.ActivityShowStickersBinding
 import com.wa.ai.emojimaker.databinding.AdNativeContentBinding
+import com.wa.ai.emojimaker.ui.adapter.CreateStickerAdapter
 import com.wa.ai.emojimaker.ui.adapter.MadeStickerAdapter
 import com.wa.ai.emojimaker.ui.base.BaseBindingActivity
+import com.wa.ai.emojimaker.ui.dialog.DeleteStickerDialog
 import com.wa.ai.emojimaker.utils.AppUtils
 import com.wa.ai.emojimaker.utils.AppUtils.saveSticker
 import com.wa.ai.emojimaker.utils.DeviceUtils
@@ -26,15 +28,15 @@ import com.wa.ai.emojimaker.utils.RemoteConfigKey
 import com.wa.ai.emojimaker.utils.ads.BannerUtils
 import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils
 import com.wa.ai.emojimaker.utils.extention.gone
+import com.wa.ai.emojimaker.utils.extention.invisible
 import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
+import com.wa.ai.emojimaker.utils.extention.visible
 import java.io.File
 
 
 class ShowStickersActivity :
     BaseBindingActivity<ActivityShowStickersBinding, ShowStickerViewModel>() {
 
-    private val keyAdsBanner =
-        FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_SHOW_STICKERS)
     private val bannerReload =
         FirebaseRemoteConfig.getInstance().getLong(RemoteConfigKey.BANNER_RELOAD)
 
@@ -45,8 +47,23 @@ class ShowStickersActivity :
         MadeStickerAdapter()
     }
 
-    private val madeStickerAdapter: MadeStickerAdapter by lazy {
-        MadeStickerAdapter()
+    private val madeStickerAdapter: CreateStickerAdapter by lazy {
+        CreateStickerAdapter {
+            deletePkgDialog.sticker = it
+            binding.btnDelete.visible()
+        }
+    }
+
+    private val deletePkgDialog: DeleteStickerDialog by lazy {
+        DeleteStickerDialog(getString(R.string.delete)).apply {
+            confirm = { sticker ->
+                sticker.path?.let {
+                    DeviceUtils.deleteSticker(it)
+                    viewModel.removeSticker(sticker)
+                    binding.btnDelete.invisible()
+                }
+            }
+        }
     }
 
     override val layoutId: Int
@@ -66,18 +83,15 @@ class ShowStickersActivity :
 
         binding.tvTitle.text = categoryName
         binding.btnAddToWhatsapp.setOnSafeClick {
-//            val intent = Intent().apply {
-//                action = "com.whatsapp.intent.action.ENABLE_STICKER_PACK"
-//                putExtra(EXTRA_STICKER_PACK_ID, "1")
-//                putExtra(EXTRA_STICKER_PACK_AUTHORITY, BuildConfig.CONTENT_PROVIDER_AUTHORITY)
-//                putExtra(EXTRA_STICKER_PACK_NAME, "Alpi Powers")
-//            }
-//            try {
-//                startActivityForResult(intent, 200)
-//            } catch (e: ActivityNotFoundException) {
-//                e.printStackTrace()
-//            }
+
         }
+
+        binding.btnDelete.setOnSafeClick {
+            if (!deletePkgDialog.isAdded) {
+                deletePkgDialog.show(supportFragmentManager, deletePkgDialog.tag)
+            }
+        }
+
         if (category != "") {
             if (!isCreative) {
                 viewModel.getStickers(this, category)
@@ -165,11 +179,9 @@ class ShowStickersActivity :
 
     private fun loadBanner() {
         viewModel.starTimeCountReloadBanner(bannerReload)
-        val keyAdBannerHigh = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_SHOW_STICKERS_HIGH)
-        val keyAdBannerMedium = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_SHOW_STICKERS_MEDIUM)
-        val keyAdBannerAllPrice = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_SHOW_STICKERS)
-        val listKeyAds = listOf(keyAdBannerHigh, keyAdBannerMedium, keyAdBannerAllPrice)
-        BannerUtils.instance?.loadCollapsibleBanner(this, listKeyAds)
+        val keyAdBannerAllPrice = FirebaseRemoteConfig.getInstance()
+            .getString(RemoteConfigKey.KEY_ADS_BANNER_SHOW_STICKERS)
+        BannerUtils.instance?.loadCollapsibleBanner(this, keyAdBannerAllPrice)
     }
 
     private fun performImageDownload(imageUrl: Uri?) {
@@ -304,14 +316,15 @@ class ShowStickersActivity :
     }
 
     private fun loadNativeAds(keyAds: String) {
-        if (!DeviceUtils.checkInternetConnection(applicationContext)) binding.rlNative.visibility =
-            View.GONE
+        if (!DeviceUtils.checkInternetConnection(this))
+            binding.rlNative.gone()
         this.let {
             NativeAdsUtils.instance.loadNativeAds(
                 applicationContext,
                 keyAds
             ) { nativeAds ->
                 if (nativeAds != null) {
+                    binding.rlNative.visible()
                     val adNativeVideoBinding = AdNativeContentBinding.inflate(layoutInflater)
                     NativeAdsUtils.instance.populateNativeAdVideoView(
                         nativeAds,

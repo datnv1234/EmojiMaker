@@ -15,6 +15,7 @@ import com.wa.ai.emojimaker.ui.component.main.MainActivity
 import com.wa.ai.emojimaker.ui.component.multilang.MultiLangActivity
 import com.wa.ai.emojimaker.utils.extention.gone
 import com.wa.ai.emojimaker.utils.extention.hideSystemUI
+import com.wa.ai.emojimaker.utils.extention.visible
 
 class SettingsFragment : BaseBindingFragment<FragmentSettingsBinding, SettingsViewModel>() {
 
@@ -95,6 +96,8 @@ class SettingsFragment : BaseBindingFragment<FragmentSettingsBinding, SettingsVi
     override fun onResume() {
         super.onResume()
         Adjust.onResume()
+        mMainActivity.binding.imgToolbar.gone()
+        mMainActivity.binding.titleToolbar.visible()
         mMainActivity.binding.titleToolbar.text = title
     }
 

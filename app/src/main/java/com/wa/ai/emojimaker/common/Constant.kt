@@ -92,4 +92,13 @@ object Constant {
     const val EXTRA_STICKER_PACK_AUTHORITY = "sticker_pack_authority"
     const val EXTRA_STICKER_PACK_NAME = "sticker_pack_name"
     const val EXTRA_STICKERPACK = "stickerpack"
+
+    //Local data base
+    const val KEY_EMOTE_1 = "KEY_EMOTE_1"
+    const val KEY_EMOTE_2 = "KEY_EMOTE_2"
+    const val KEY_DATE = "KEY_DATE"
+    const val KEY_PATH = "KEY_PATH"
+    const val KEY_PATH1 = "KEY_PATH1"
+    const val KEY_PATH2 = "KEY_PATH2"
+    const val KEY_LEVEL = "KEY_LEVEL"
 }

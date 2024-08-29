@@ -8,6 +8,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="transparent">#00FFFFFF</color>
+    <color name="dialog_background">#99000000</color>
 
     <color name="colorAds">#FFC907</color>
     <color name="color_2A699F">#2A699F</color>
@@ -17,6 +18,6 @@
     <color name="light_blue_A200">#FF40C4FF</color>
     <color name="light_blue_A400">#FF00B0FF</color>
     <color name="black_overlay">#66000000</color>
-    <color name="text_color">#26273C</color>
+    <color name="text_color">#252E40</color>
 
 </resources>

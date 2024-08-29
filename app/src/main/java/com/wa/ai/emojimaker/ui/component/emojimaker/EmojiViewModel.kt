@@ -20,6 +20,7 @@ import com.wa.ai.emojimaker.ui.component.emojimaker.EmojiMakerActivity.Companion
 import com.wa.ai.emojimaker.ui.component.emojimaker.EmojiMakerActivity.Companion.LOCK3
 import com.wa.ai.emojimaker.ui.component.splash.SplashActivity.Companion.isUseNativeMonet
 import com.wa.ai.emojimaker.utils.RemoteConfigKey
+import com.wa.ai.emojimaker.utils.RemoteConfigKey.IS_USE_NATIVE_MONET
 import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -189,7 +190,6 @@ class EmojiViewModel : BaseViewModel() {
                 )
             }
             _optionMutableLiveData.postValue(listOptionEntity)
-            //Log.d(Constant.TAG, "getCategoryList: " + _optionMutableLiveData.value?.size)
         }
     }
 
@@ -258,7 +258,7 @@ class EmojiViewModel : BaseViewModel() {
             val keyAdNativeMedium = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_HOME_MEDIUM)
             val keyAdNativeAllPrice = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_HOME)
             val listKeyAds = listOf(keyAdNativeHigh, keyAdNativeMedium, keyAdNativeAllPrice)
-            if (isUseNativeMonet) {
+            if (FirebaseRemoteConfig.getInstance().getBoolean(IS_USE_NATIVE_MONET)) {
                 loadNativeAdDialog(context = context, listKeyAds, _nativeAdSaveDialog)
             } else {
                 loadNativeAdDialog(context = context, keyAdNativeAllPrice, _nativeAdSaveDialog)
@@ -272,7 +272,7 @@ class EmojiViewModel : BaseViewModel() {
             val keyAdNativeMedium = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_HOME_MEDIUM)
             val keyAdNativeAllPrice = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_HOME)
             val listKeyAds = listOf(keyAdNativeHigh, keyAdNativeMedium, keyAdNativeAllPrice)
-            if (isUseNativeMonet) {
+            if (FirebaseRemoteConfig.getInstance().getBoolean(IS_USE_NATIVE_MONET)) {
                 loadNativeAdDialog(context = context, listKeyAds, _nativeAdAddToPackageDialog)
             } else {
                 loadNativeAdDialog(context = context, keyAdNativeAllPrice, _nativeAdAddToPackageDialog)
@@ -286,7 +286,7 @@ class EmojiViewModel : BaseViewModel() {
             val keyAdNativeMedium = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_HOME_MEDIUM)
             val keyAdNativeAllPrice = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_HOME)
             val listKeyAds = listOf(keyAdNativeHigh, keyAdNativeMedium, keyAdNativeAllPrice)
-            if (isUseNativeMonet) {
+            if (FirebaseRemoteConfig.getInstance().getBoolean(IS_USE_NATIVE_MONET)) {
                 loadNativeAdDialog(context = context, listKeyAds, _nativeAdSaveSuccessDialog)
             } else {
                 loadNativeAdDialog(context = context, keyAdNativeAllPrice, _nativeAdSaveSuccessDialog)

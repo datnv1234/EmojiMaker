@@ -9,6 +9,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.wa.ai.emojimaker.common.Constant
 import com.wa.ai.emojimaker.data.model.MadeStickerModel
+import com.wa.ai.emojimaker.data.model.PackageModel
 import com.wa.ai.emojimaker.ui.base.BaseViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -80,6 +81,15 @@ class ShowStickerViewModel : BaseViewModel() {
             }
             _stickersMutableLiveData.postValue(listEntry)
         }
+    }
+
+    fun removeSticker(sticker: MadeStickerModel) {
+        val listEntry = mutableListOf<MadeStickerModel>()
+        _localStickerMutableLiveData.value?.let {
+            listEntry.addAll(it)
+        }
+        listEntry.remove(sticker)
+        _localStickerMutableLiveData.postValue(listEntry)
     }
 
     private fun createCountDownTimerReloadBanner(time: Long): CountDownTimer {

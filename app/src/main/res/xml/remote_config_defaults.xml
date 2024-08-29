@@ -39,6 +39,10 @@
   </entry>
 
   <entry>
+    <key>key_ads_inter_merge_emoji</key>
+    <value>ca-app-pub-3621741958408545/2425898180</value>
+  </entry>
+  <entry>
     <key>key_ads_inter_splash</key>
     <value>ca-app-pub-3621741958408545/8029887771</value>
   </entry>
@@ -92,6 +96,10 @@
   </entry>
 
   <entry>
+    <key>key_ads_native_merge_emoji</key>
+    <value>ca-app-pub-3621741958408545/7910955311</value>
+  </entry>
+  <entry>
     <key>key_ads_native_intro</key>
     <value>ca-app-pub-3621741958408545/4887637544</value>
   </entry>
@@ -144,6 +152,10 @@
   </entry>
 
   <entry>
+    <key>key_ads_banner_merge_emoji</key>
+    <value>ca-app-pub-3621741958408545/5151198099</value>
+  </entry>
+  <entry>
     <key>key_ads_banner_main</key>
     <value>ca-app-pub-3621741958408545/3100994720</value>
   </entry>
@@ -188,6 +200,10 @@
   </entry>
 
   <entry>
+    <key>is_show_ads_inter_merge_emoji</key>
+    <value>true</value>
+  </entry>
+  <entry>
     <key>is_show_ads_inter_splash</key>
     <value>true</value>
   </entry>
@@ -214,6 +230,10 @@
 
 
   <entry>
+    <key>is_show_ads_native_merge_emoji</key>
+    <value>true</value>
+  </entry>
+  <entry>
     <key>is_show_ads_native_intro</key>
     <value>true</value>
   </entry>
@@ -238,6 +258,10 @@
     <value>true</value>
   </entry>
 
+  <entry>
+    <key>is_show_ads_banner_merge_emoji</key>
+    <value>true</value>
+  </entry>
   <entry>
     <key>is_show_ads_banner_main</key>
     <value>true</value>

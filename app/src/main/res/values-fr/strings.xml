@@ -22,7 +22,7 @@
     <string name="dummy_button">Bouton Factice</string>
     <string name="dummy_content">CONTENU\nFACTICE</string>
     <string name="recent">Récent</string>
-    <string name="Create_Emoji">Créer un Emoji</string>
+    <string name="create_Emoji">Créer un Emoji</string>
     <string name="back">Retour</string>
     <string name="todo">À faire</string>
     <string name="option_preview">Aperçu des options</string>

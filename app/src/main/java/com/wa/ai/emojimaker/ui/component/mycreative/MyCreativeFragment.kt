@@ -3,12 +3,13 @@ package com.wa.ai.emojimaker.ui.component.mycreative
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.adjust.sdk.Adjust
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.common.Constant
 import com.wa.ai.emojimaker.data.local.SharedPreferenceHelper
+import com.wa.ai.emojimaker.databinding.AdNativeContentBinding
 import com.wa.ai.emojimaker.databinding.FragmentMyCreativeBinding
 import com.wa.ai.emojimaker.ui.adapter.CreativeAdapter
 import com.wa.ai.emojimaker.ui.adapter.MadeStickerAdapter
@@ -17,26 +18,33 @@ import com.wa.ai.emojimaker.ui.dialog.ConfirmDialog
 import com.wa.ai.emojimaker.ui.component.main.MainActivity
 import com.wa.ai.emojimaker.ui.component.main.MainViewModel
 import com.wa.ai.emojimaker.ui.component.showstickers.ShowStickersActivity
-import com.wa.ai.emojimaker.ui.component.splash.SplashActivity
 import com.wa.ai.emojimaker.ui.dialog.CreatePackageDialog
 import com.wa.ai.emojimaker.utils.DeviceUtils
+import com.wa.ai.emojimaker.utils.RemoteConfigKey
+import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils
 import com.wa.ai.emojimaker.utils.extention.gone
 import com.wa.ai.emojimaker.utils.extention.invisible
 import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 import com.wa.ai.emojimaker.utils.extention.visible
-
 
 class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCreativeViewModel>() {
 
     private lateinit var mMainActivity: MainActivity
     private lateinit var mMainViewModel: MainViewModel
 
+    private val keyNative =
+        FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_HOME)
+
+    private val stickerAdapter: MadeStickerAdapter by lazy {
+        MadeStickerAdapter()
+    }
+
     private val creativeAdapter: CreativeAdapter by lazy {
-        CreativeAdapter(requireContext(), itemClick = {
+        CreativeAdapter(itemClick = {
             val intent = Intent(requireContext(), ShowStickersActivity::class.java)
             intent.putExtra("local", true)
             intent.putExtra("category", it.id)
-            intent.putExtra("category_name", it.name)
+            intent.putExtra("category_name", it.getName())
             intent.putExtra("category_size", it.itemSize)
 
             startActivity(intent)
@@ -47,42 +55,22 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
             deletePkgDialog.pkg = it
             if (!deletePkgDialog.isAdded)
                 deletePkgDialog.show(parentFragmentManager, deletePkgDialog.tag)
+        }, rename = {
+            if (!renamePackageDialog.isAdded) {
+                renamePackageDialog.oldName = it.getName()
+                renamePackageDialog.createNew = false
+                renamePackageDialog.show(parentFragmentManager, createPackageDialog.tag)
+            }
         })
     }
 
-    private val stickerAdapter: MadeStickerAdapter by lazy {
-        MadeStickerAdapter()
-    }
-
-    /*private val sharePackageDialog : SharePackageDialog by lazy {
-        SharePackageDialog().apply {
-            addToWhatsapp = {
-                toast(getString(R.string.coming_soon))
-            }
-
-            addToTelegram = {
-                toast(getString(R.string.this_function_is_not_supported_yet))
-                *//*if (viewModel.stickerUri.size != 0) {
-                    AppUtils.importToTelegram(requireContext(), viewModel.stickerUri.toList())
-                } else {
-                    toast("Please wait..!")
-                }*//*
-            }
-
-            share = {
-                toast(getString(R.string.this_function_is_not_supported_yet))
-                *//*if (viewModel.stickerUri.size != 0) {
-                    AppUtils.shareMultipleImages(requireContext(), viewModel.stickerUri.toList())
-                } else {
-                    toast("Please wait..!")
-                }*//*
-            }
-
-            download = {
-                toast("Cannot download this category")
+    private val renamePackageDialog: CreatePackageDialog by lazy {
+        CreatePackageDialog().apply {
+            confirm = {
+                creativeAdapter.updateFolderName(it.getName())
             }
         }
-    }*/
+    }
 
     private val createPackageDialog: CreatePackageDialog by lazy {
         CreatePackageDialog().apply {
@@ -133,9 +121,8 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
                 binding.rlNative.gone()
                 binding.llEmpty.visible()
                 binding.rvSticker.gone()
-            }
-            else {
-                addNativeAd()
+            } else {
+                loadNativeAd()
                 creativeAdapter.submitList(it.toMutableList())
                 binding.rvSticker.visible()
                 binding.llEmpty.gone()
@@ -159,6 +146,8 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
     override fun onResume() {
         super.onResume()
         Adjust.onResume()
+        mMainActivity.binding.titleToolbar.visible()
+        mMainActivity.binding.imgToolbar.gone()
         mMainActivity.binding.titleToolbar.text = title
     }
 
@@ -172,14 +161,34 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
 
     }
 
-    private fun addNativeAd() {
-        SplashActivity.adNativeDialog?.let {
-            binding.rlNative.visible()
-            if (it.parent != null) {
-                (it.parent as ViewGroup).removeView(it)
-            }
-            binding.frNativeAds.removeAllViews()
-            binding.frNativeAds.addView(it)
+    private fun loadNativeAd() {
+        if (FirebaseRemoteConfig.getInstance()
+                .getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_HOME)
+        ) {
+            loadNativeAds(keyNative)
+        } else {
+            binding.rlNative.visibility = View.GONE
         }
+    }
+
+    private fun loadNativeAds(keyAds: String) {
+        this.let {
+            NativeAdsUtils.instance.loadNativeAds(
+                requireContext(),
+                keyAds
+            ) { nativeAds ->
+                if (nativeAds != null && isAdded && isVisible) {
+                    binding.rlNative.visible()
+                    val adNativeVideoBinding = AdNativeContentBinding.inflate(layoutInflater)
+                    NativeAdsUtils.instance.populateNativeAdVideoView(
+                        nativeAds,
+                        adNativeVideoBinding.root
+                    )
+                    binding.frNativeAds.removeAllViews()
+                    binding.frNativeAds.addView(adNativeVideoBinding.root)
+                }
+            }
+        }
+
     }
 }

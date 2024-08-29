@@ -54,7 +54,7 @@
                     android:paddingStart="24dp"
                     android:paddingEnd="50dp"
                     tools:ignore="HardcodedText" />
-                <!--android:digits="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz "-->
+
                 <ImageButton
                     android:id="@+id/btnClearText"
                     android:layout_width="wrap_content"
@@ -65,6 +65,23 @@
                     android:contentDescription="@string/delete"
                     android:paddingHorizontal="12dp"
                     android:src="@drawable/ic_close" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_native"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_2sdp"
+                android:layout_marginBottom="@dimen/_8sdp"
+                android:visibility="gone">
+
+                <FrameLayout
+                    android:id="@+id/fr_native_ads"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <include layout="@layout/ad_native_content" />
+                </FrameLayout>
             </RelativeLayout>
 
             <LinearLayout
@@ -90,30 +107,15 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@drawable/bg_button_enabled"
+                    android:background="@drawable/bg_button_disable"
                     android:foreground="?android:attr/selectableItemBackground"
                     android:gravity="center"
                     android:paddingVertical="12dp"
                     android:text="@string/confirm"
-                    android:textColor="@color/white" />
+                    android:textColor="@color/text_color" />
             </LinearLayout>
 
-            <RelativeLayout
-                android:id="@+id/rl_native"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_2sdp"
-                android:layout_marginBottom="@dimen/_8sdp"
-                android:visibility="gone">
 
-                <FrameLayout
-                    android:id="@+id/fr_native_ads"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <include layout="@layout/ad_native_content" />
-                </FrameLayout>
-            </RelativeLayout>
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -9,7 +9,7 @@ import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 
 class PackageAdapter : BaseBindingAdapterDiff<PackageModel, ItemPackageBinding>(object : DiffUtil.ItemCallback<PackageModel>() {
     override fun areItemsTheSame(oldItem: PackageModel, newItem: PackageModel): Boolean {
-        return oldItem.name == newItem.name
+        return oldItem.getName() == newItem.getName()
     }
 
     override fun areContentsTheSame(oldItem: PackageModel, newItem: PackageModel): Boolean {
@@ -18,13 +18,13 @@ class PackageAdapter : BaseBindingAdapterDiff<PackageModel, ItemPackageBinding>(
 
 }) {
 
-    private var oldPosition: Int = -1
+    private var oldPosition: Int = 0
         set(value) {
             field = value
             notifyItemChanged(value)
         }
 
-    private var newPosition: Int = -1
+    private var newPosition: Int = 0
         set(value) {
             oldPosition = field
             field = value
@@ -39,7 +39,7 @@ class PackageAdapter : BaseBindingAdapterDiff<PackageModel, ItemPackageBinding>(
             if (this.avatar != null) {
                 holder.binding.imgAvatar.setImageBitmap(this.avatar)
             }
-            holder.binding.tvPackageName.text = this.name
+            holder.binding.tvPackageName.text = this.getName()
             holder.binding.apply {
 
             rdSelectPackage.isChecked = holder.adapterPosition == newPosition

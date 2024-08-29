@@ -42,12 +42,12 @@ import com.wa.ai.emojimaker.common.Constant
 import com.wa.ai.emojimaker.data.local.SharedPreferenceHelper
 import com.wa.ai.emojimaker.databinding.ActivityMainBinding
 import com.wa.ai.emojimaker.ui.base.BaseBindingActivity
-import com.wa.ai.emojimaker.ui.component.splash.SplashActivity.Companion.isUseBannerMonet
 import com.wa.ai.emojimaker.utils.DeviceUtils
 import com.wa.ai.emojimaker.utils.RemoteConfigKey
 import com.wa.ai.emojimaker.utils.ads.AdsConsentManager
 import com.wa.ai.emojimaker.utils.ads.BannerUtils
 import com.wa.ai.emojimaker.utils.extention.gone
+import com.wa.ai.emojimaker.utils.extention.setFullScreen
 import com.wa.ai.emojimaker.utils.notification.NotificationWorker
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -59,7 +59,7 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
 
     private var adsConsentManager: AdsConsentManager? = null
     private val isAdsInitializeCalled = AtomicBoolean(false)
-    private var mFirebaseAnalytics: FirebaseAnalytics? = null
+    private val mFirebaseAnalytics: FirebaseAnalytics = FirebaseAnalytics.getInstance(this)
     private var mInterstitialAd: InterstitialAd? = null
 
     private var retryAttempt = 0.0
@@ -89,6 +89,7 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
     override fun setupView(savedInstanceState: Bundle?) {
         initNotificationWorker()
         setUpDialogPermission()
+        setFullScreen()
         val toolbar: Toolbar = binding.toolbar
         toolbar.title = ""
         setSupportActionBar(toolbar)
@@ -149,10 +150,10 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
         val keyAdBannerMedium = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_MAIN_MEDIUM)
         val keyAdBannerAllPrice = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_MAIN)
         val listKeyAds = listOf(keyAdBannerHigh, keyAdBannerMedium, keyAdBannerAllPrice)
-        if (isUseBannerMonet) {
-            BannerUtils.instance?.loadCollapsibleBanner(mContext, keyAdBannerAllPrice)
-        } else {
+        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_USE_BANNER_MONET)) {
             BannerUtils.instance?.loadCollapsibleBanner(mContext, listKeyAds)
+        } else {
+            BannerUtils.instance?.loadCollapsibleBanner(mContext, keyAdBannerAllPrice)
         }
     }
 
@@ -272,14 +273,14 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
             AdRequest.Builder().build(),
             object : InterstitialAdLoadCallback() {
                 override fun onAdFailedToLoad(adError: LoadAdError) {
-                    mFirebaseAnalytics?.logEvent("e_load_inter_splash", null)
+                    mFirebaseAnalytics.logEvent("e_load_inter_splash", null)
                     mInterstitialAd = null
 
                     Handler(Looper.getMainLooper()).postDelayed({ loadInterAdsMain(keyAdInter) }, 2000)
                 }
 
                 override fun onAdLoaded(ad: InterstitialAd) {
-                    mFirebaseAnalytics?.logEvent("d_load_inter_splash", null)
+                    mFirebaseAnalytics.logEvent("d_load_inter_splash", null)
                     mInterstitialAd = ad
                     retryAttempt = 0.0
                     mInterstitialAd?.onPaidEventListener =
@@ -323,13 +324,13 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
                 AdRequest.Builder().build(),
                 object : InterstitialAdLoadCallback() {
                     override fun onAdFailedToLoad(adError: LoadAdError) {
-                        mFirebaseAnalytics?.logEvent("e_load_inter_splash", null)
+                        mFirebaseAnalytics.logEvent("e_load_inter_splash", null)
                         mInterstitialAd = null
                         loadInterAds(adIndex + 1)
                     }
 
                     override fun onAdLoaded(ad: InterstitialAd) {
-                        mFirebaseAnalytics?.logEvent("d_load_inter_splash", null)
+                        mFirebaseAnalytics.logEvent("d_load_inter_splash", null)
                         mInterstitialAd = ad
                         mInterstitialAd?.onPaidEventListener =
                             OnPaidEventListener { adValue ->

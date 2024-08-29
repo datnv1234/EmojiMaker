@@ -10,6 +10,7 @@
         android:layout_height="match_parent"
         android:background="@drawable/bg_main"
         android:orientation="vertical"
+        android:paddingHorizontal="@dimen/_12sdp"
         android:gravity="center_horizontal"
         tools:context=".ui.dialog.SaveSuccessDialog">
         <androidx.cardview.widget.CardView
@@ -37,16 +38,31 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_16sdp"
             android:gravity="center"
-            android:text="@string/your_emoji_has_been_saved_to"
+            android:text="@string/your_emoji_has_been_saved_to_my_creative"
             android:fontFamily="@font/poppins_regular"/>
         <View
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"/>
+        <RelativeLayout
+            android:id="@+id/rl_native"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_4sdp"
+            android:visibility="gone"
+            android:layout_gravity="bottom">
+            <FrameLayout
+                android:id="@+id/fr_native_ads"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <include layout="@layout/ads_native_shimmer" />
+            </FrameLayout>
+        </RelativeLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="@dimen/_12sdp"
+            android:layout_marginVertical="@dimen/_12sdp"
             android:orientation="horizontal">
             <TextView
                 android:id="@+id/btnHome"
@@ -72,21 +88,6 @@
                 android:textColor="@color/white"
                 android:foreground="?android:attr/selectableItemBackground"/>
         </LinearLayout>
-        <RelativeLayout
-            android:id="@+id/rl_native"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/_160sdp"
-            android:layout_marginTop="@dimen/_4sdp"
-            android:visibility="gone"
-            android:layout_gravity="bottom">
-            <FrameLayout
-                android:id="@+id/fr_native_ads"
-                android:layout_width="match_parent"
-                android:layout_alignParentBottom="true"
-                android:layout_height="match_parent">
 
-                <include layout="@layout/ads_native_shimmer" />
-            </FrameLayout>
-        </RelativeLayout>
     </LinearLayout>
 </layout>

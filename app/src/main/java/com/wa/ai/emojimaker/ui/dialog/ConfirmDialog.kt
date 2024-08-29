@@ -21,7 +21,7 @@ class ConfirmDialog(val title: String, val action: String) : BaseBindingDialogFr
     }
 
     private fun setUp() {
-        val text = title + " " + pkg?.name
+        val text = title + " " + pkg?.getName()
         binding.tvTitle.text = text
         binding.btnOK.text = action
         binding.btnOK.setOnSafeClick {
@@ -30,6 +30,9 @@ class ConfirmDialog(val title: String, val action: String) : BaseBindingDialogFr
             dismiss()
         }
         binding.btnCancel.setOnSafeClick {
+            dismiss()
+        }
+        binding.btnClose.setOnSafeClick {
             dismiss()
         }
         binding.tvDes.text = getString(R.string.are_you_sure)
