@@ -1,5 +1,7 @@
 package com.wa.ai.emojimaker.ui.component.mycreative
 
+import android.content.Context
+import android.content.ContextWrapper
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -11,21 +13,27 @@ import com.wa.ai.emojimaker.common.Constant
 import com.wa.ai.emojimaker.data.local.SharedPreferenceHelper
 import com.wa.ai.emojimaker.databinding.AdNativeContentBinding
 import com.wa.ai.emojimaker.databinding.FragmentMyCreativeBinding
+import com.wa.ai.emojimaker.functions.Utils
 import com.wa.ai.emojimaker.ui.adapter.CreativeAdapter
-import com.wa.ai.emojimaker.ui.adapter.MadeStickerAdapter
+import com.wa.ai.emojimaker.ui.adapter.MadeStickerHorizontalAdapter
 import com.wa.ai.emojimaker.ui.base.BaseBindingFragment
 import com.wa.ai.emojimaker.ui.dialog.ConfirmDialog
 import com.wa.ai.emojimaker.ui.component.main.MainActivity
 import com.wa.ai.emojimaker.ui.component.main.MainViewModel
 import com.wa.ai.emojimaker.ui.component.showstickers.ShowStickersActivity
 import com.wa.ai.emojimaker.ui.dialog.CreatePackageDialog
+import com.wa.ai.emojimaker.utils.AppUtils
 import com.wa.ai.emojimaker.utils.DeviceUtils
+import com.wa.ai.emojimaker.utils.FileUtils
+import com.wa.ai.emojimaker.utils.FileUtils.copyFileToCache
+import com.wa.ai.emojimaker.utils.FileUtils.getUriForFile
 import com.wa.ai.emojimaker.utils.RemoteConfigKey
 import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils
 import com.wa.ai.emojimaker.utils.extention.gone
 import com.wa.ai.emojimaker.utils.extention.invisible
 import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 import com.wa.ai.emojimaker.utils.extention.visible
+import java.io.File
 
 class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCreativeViewModel>() {
 
@@ -35,8 +43,8 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
     private val keyNative =
         FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_MY_CREATIVE)
 
-    private val stickerAdapter: MadeStickerAdapter by lazy {
-        MadeStickerAdapter()
+    private val stickerAdapter: MadeStickerHorizontalAdapter by lazy {
+        MadeStickerHorizontalAdapter()
     }
 
     private val creativeAdapter: CreativeAdapter by lazy {
@@ -61,6 +69,8 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
                 renamePackageDialog.createNew = false
                 renamePackageDialog.show(parentFragmentManager, createPackageDialog.tag)
             }
+        }, share = { cate ->
+            shareCreativeSticker(cate)
         })
     }
 
@@ -161,6 +171,35 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
     override fun registerOnBackPress() {
 
     }
+
+    private fun shareCreativeSticker(category: String) {
+        getCreativeStickerUri(category)
+        if (viewModel.stickerUri.size != 0)
+            AppUtils.shareMultipleImages(requireContext(), viewModel.stickerUri.toList())
+    }
+
+    private fun getCreativeStickerUri(category: String) {
+        viewModel.stickerUri.clear()
+        val cw = ContextWrapper(requireContext())
+        val directory: File = cw.getDir(Constant.INTERNAL_MY_CREATIVE_DIR, Context.MODE_PRIVATE)
+        val files = directory.listFiles()      // Get packages
+        if (files != null) {                    //package's size > 0
+            for (file in files) {
+                if (file.isDirectory && file.name.equals(category)) {
+                    val stickers = file.listFiles()
+                    if (stickers != null) {
+                        for (sticker in stickers) {
+                            viewModel.stickerUri.add(
+                                FileUtils.getUriForFile(requireContext(), copyFileToCache(requireContext(), sticker))
+                            )
+                        }
+                    }
+                    break
+                }
+            }
+        }
+    }
+
 
     private fun loadNativeAd() {
         if (FirebaseRemoteConfig.getInstance()

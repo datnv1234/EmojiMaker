@@ -169,9 +169,6 @@ public class Utils {
             Bitmap bm = Bitmap.createScaledBitmap(bitmap, width, height, false);
 
             bm.compress(Bitmap.CompressFormat.PNG, 100, output);
-            output.close();
-
-            Toast.makeText(context, R.string.saved, Toast.LENGTH_SHORT).show();
 
         } catch (IOException e) {
             Toast.makeText(context, R.string.failed_to_save, Toast.LENGTH_SHORT).show();
@@ -248,8 +245,7 @@ public class Utils {
     public static Bitmap drawableToBitmap (Drawable drawable) {
         Bitmap bitmap;
 
-        if (drawable instanceof BitmapDrawable) {
-            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
+        if (drawable instanceof BitmapDrawable bitmapDrawable) {
             if(bitmapDrawable.getBitmap() != null) {
                 return bitmapDrawable.getBitmap();
             }

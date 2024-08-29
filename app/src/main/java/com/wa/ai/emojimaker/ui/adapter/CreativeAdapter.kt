@@ -16,7 +16,8 @@ class CreativeAdapter (
     val itemClick:(pkg: PackageModel)->Unit,
     val optionClick: (binding: ItemCreativeBinding) -> Unit,
     val delete:(pkg: PackageModel) -> Unit,
-    val rename:(pkg: PackageModel) -> Unit
+    val rename:(pkg: PackageModel) -> Unit,
+    val share:(id: String) -> Unit
 ) : BaseBindingAdapterDiff<PackageModel, ItemCreativeBinding>(
     object : DiffUtil.ItemCallback<PackageModel>() {
     override fun areItemsTheSame(oldItem: PackageModel, newItem: PackageModel): Boolean {
@@ -41,9 +42,7 @@ class CreativeAdapter (
             field = value
             notifyItemChanged(value)
         }
-    var callBack: (Int, PackageModel) -> Unit = { _, _ -> }
 
-    fun getCurrentPackage(): PackageModel? = currentList[newPosition]
     private var positionRename = -1
 
     override fun onBindViewHolderBase(holder: BaseHolder<ItemCreativeBinding>, position: Int) {
@@ -75,6 +74,10 @@ class CreativeAdapter (
                     view.btnRename.setOnSafeClick {
                         rename(this@with)
                         positionRename = position
+                        popupWindow.dismiss()
+                    }
+                    view.btnShare.setOnSafeClick {
+                        share(this@with.id)
                         popupWindow.dismiss()
                     }
 

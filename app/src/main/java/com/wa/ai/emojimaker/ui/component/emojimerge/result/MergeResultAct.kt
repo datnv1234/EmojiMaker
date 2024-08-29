@@ -91,7 +91,7 @@ class MergeResultAct : BaseBindingActivity<ActivityMergeResultBinding, MergeResu
                     }
                     if (!mSaveSuccessDialog.isAdded)
                         mSaveSuccessDialog.show(supportFragmentManager, mSaveSuccessDialog.tag)
-                    showInterstitial{}
+                    showInterstitial {}
                 }
             }
 
@@ -117,7 +117,7 @@ class MergeResultAct : BaseBindingActivity<ActivityMergeResultBinding, MergeResu
                 }
                 if (!mSaveSuccessDialog.isAdded)
                     mSaveSuccessDialog.show(supportFragmentManager, mSaveSuccessDialog.tag)
-                showInterstitial{}
+                showInterstitial {}
             }
         }
     }
