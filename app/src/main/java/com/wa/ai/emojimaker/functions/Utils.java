@@ -109,6 +109,75 @@ public class Utils {
         }
     }
 
+    public static void saveImage(ImageView imageView, Context context) {
+        String fileName = System.currentTimeMillis() + ".png";
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.DISPLAY_NAME, fileName);
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/png");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            values.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DCIM);
+        } else {
+            File directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
+            File file = new File(directory, fileName);
+            values.put(MediaStore.MediaColumns.DATA, file.getAbsolutePath());
+        }
+        Uri uri = context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+
+        int width = 512;
+        int height = 512;
+
+        float aspectRatio = imageView.getWidth() / (float) imageView.getHeight();
+
+        if (imageView.getWidth() > width || imageView.getHeight() > height) {
+            if (aspectRatio > 1) {
+                width = (int) (height * aspectRatio);
+            } else {
+                height = (int) (width / aspectRatio);
+            }
+        }
+
+        try (OutputStream output = context.getContentResolver().openOutputStream(uri)) {
+            Drawable drawable = imageView.getDrawable();
+            Bitmap bitmap = drawableToBitmap(drawable);
+            Bitmap bm = Bitmap.createScaledBitmap(bitmap, width, height, false);
+
+            bm.compress(Bitmap.CompressFormat.PNG, 100, output);
+
+        } catch (IOException e) {
+            Toast.makeText(context, R.string.failed_to_save, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public static void saveImage(Bitmap bitmap, Context context) {
+        String fileName = System.currentTimeMillis() + ".png";
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.DISPLAY_NAME, fileName);
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/png");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            values.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DCIM);
+        } else {
+            File directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
+            File file = new File(directory, fileName);
+            values.put(MediaStore.MediaColumns.DATA, file.getAbsolutePath());
+        }
+        Uri uri = context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+
+        int width = 512;
+        int height = 512;
+
+        try (OutputStream output = context.getContentResolver().openOutputStream(uri)) {
+            Bitmap bm = Bitmap.createScaledBitmap(bitmap, width, height, false);
+
+            bm.compress(Bitmap.CompressFormat.PNG, 100, output);
+            output.close();
+
+            Toast.makeText(context, R.string.saved, Toast.LENGTH_SHORT).show();
+
+        } catch (IOException e) {
+            Toast.makeText(context, R.string.failed_to_save, Toast.LENGTH_SHORT).show();
+        }
+    }
+
     public static void saveAndShareImage(ImageView imageView, Context context, String unicodeRep, boolean exportTelegram) {
         String fileName = System.currentTimeMillis() + ".png";
         ContentValues values = new ContentValues();

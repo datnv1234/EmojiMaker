@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.adjust.sdk.Adjust
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.databinding.FragmentHomeBinding
+import com.wa.ai.emojimaker.functions.Utils
 import com.wa.ai.emojimaker.ui.adapter.HomeAdapter
 import com.wa.ai.emojimaker.ui.base.BaseBindingFragment
 import com.wa.ai.emojimaker.ui.dialog.SharePackageDialog
@@ -158,25 +159,19 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
     private fun download(context: Context, category: String) {
         val assetManager = context.assets
         val listFile = assetManager.list("categories/$category")
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            if (AppUtils.checkPermission(context)) {
-                AppUtils.requestPermissionAndContinue(requireActivity())
-                return
-            }
-        }
 
         if (listFile != null) {                    //package's size > 0
             for (file in listFile) {
                 val inputStream1 = assetManager.open("categories/$category/$file")
 
-                AppUtils.saveSticker(
-                    context, AppUtils.convertFileToBitmap(
+                Utils.saveImage(
+                    AppUtils.convertFileToBitmap(
                         FileUtils.copyAssetFileToCache(
-                            context,
+                            requireContext(),
                             inputStream1,
                             file
                         )
-                    ), category
+                    ), requireContext()
                 )
                 inputStream1.close()
             }

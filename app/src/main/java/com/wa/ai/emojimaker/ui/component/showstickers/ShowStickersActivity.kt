@@ -15,6 +15,7 @@ import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.common.Constant
 import com.wa.ai.emojimaker.databinding.ActivityShowStickersBinding
 import com.wa.ai.emojimaker.databinding.AdNativeContentBinding
+import com.wa.ai.emojimaker.functions.Utils
 import com.wa.ai.emojimaker.ui.adapter.CreateStickerAdapter
 import com.wa.ai.emojimaker.ui.adapter.MadeStickerAdapter
 import com.wa.ai.emojimaker.ui.base.BaseBindingActivity
@@ -105,12 +106,12 @@ class ShowStickersActivity :
                     addStickerInCategoryToTele(category)
                 }
                 binding.btnDownload.setOnSafeClick {
-                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                        if (AppUtils.checkPermission(this)) {
-                            AppUtils.requestPermissionAndContinue(this)
-                            return@setOnSafeClick
-                        }
-                    }
+//                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+//                        if (AppUtils.checkPermission(this)) {
+//                            AppUtils.requestPermissionAndContinue(this)
+//                            return@setOnSafeClick
+//                        }
+//                    }
                     downloadStickerInCategory(category)
                 }
                 binding.btnShare.setOnSafeClick {
@@ -129,10 +130,10 @@ class ShowStickersActivity :
                 }
 
                 binding.btnDownload.setOnSafeClick {
-                    if (AppUtils.checkPermission(this)) {
-                        AppUtils.requestPermissionAndContinue(this)
-                        return@setOnSafeClick
-                    }
+//                    if (AppUtils.checkPermission(this)) {
+//                        AppUtils.requestPermissionAndContinue(this)
+//                        return@setOnSafeClick
+//                    }
                     downloadCreativeSticker(category)
                 }
                 binding.btnShare.setOnSafeClick {
@@ -219,19 +220,18 @@ class ShowStickersActivity :
         if (listFile != null) {                    //package's size > 0
             for (file in listFile) {
                 val inputStream1 = assetManager.open("categories/$category/$file")
-
-                saveSticker(
-                    this, AppUtils.convertFileToBitmap(
+                Utils.saveImage(
+                    AppUtils.convertFileToBitmap(
                         FileUtils.copyAssetFileToCache(
                             this,
                             inputStream1,
                             file
                         )
-                    ), category
+                    ), this
                 )
                 inputStream1.close()
             }
-            toast(getString(R.string.download_done))
+            toast(getString(R.string.saved))
         } else {
             toast(getString(R.string.download_failed))
         }
@@ -253,7 +253,7 @@ class ShowStickersActivity :
                     val stickers = file.listFiles()
                     if (stickers != null) {
                         for (sticker in stickers) {
-                            saveSticker(this, AppUtils.convertFileToBitmap(sticker), category)
+                            Utils.saveImage(AppUtils.convertFileToBitmap(sticker), this)
                         }
                     }
                     break

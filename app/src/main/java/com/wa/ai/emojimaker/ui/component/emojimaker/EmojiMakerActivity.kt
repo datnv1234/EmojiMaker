@@ -51,6 +51,7 @@ import com.wa.ai.emojimaker.common.Constant
 import com.wa.ai.emojimaker.common.Constant.INTERNAL_MY_CREATIVE_DIR
 import com.wa.ai.emojimaker.data.local.SharedPreferenceHelper
 import com.wa.ai.emojimaker.databinding.ActivityEmojiMakerBinding
+import com.wa.ai.emojimaker.functions.Utils
 import com.wa.ai.emojimaker.ui.adapter.OptionAdapter
 import com.wa.ai.emojimaker.ui.adapter.PagerIconAdapter
 import com.wa.ai.emojimaker.ui.base.BaseBindingActivity
@@ -128,6 +129,8 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
                         this@EmojiMakerActivity,
                         it1, "creative"
                     )
+
+
                     if (!mSaveSuccessDialog.isAdded)
                         mSaveSuccessDialog.show(supportFragmentManager, mSaveSuccessDialog.tag)
                 }

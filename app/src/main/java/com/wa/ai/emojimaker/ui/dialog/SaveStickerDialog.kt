@@ -2,12 +2,14 @@ package com.wa.ai.emojimaker.ui.dialog
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.adjust.sdk.Adjust
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.databinding.AdNativeContentBinding
 import com.wa.ai.emojimaker.databinding.DialogSaveBinding
+import com.wa.ai.emojimaker.functions.Utils
 import com.wa.ai.emojimaker.ui.base.BaseBindingDialogFragment
 import com.wa.ai.emojimaker.ui.component.emojimaker.EmojiViewModel
 import com.wa.ai.emojimaker.utils.RemoteConfigKey
@@ -44,6 +46,8 @@ class SaveStickerDialog : BaseBindingDialogFragment<DialogSaveBinding>() {
         }
         binding.btnDownload.setOnSafeClick {
             download?.invoke(binding)
+            Utils.saveImage(binding.imgPreview, requireContext())
+            Toast.makeText(context, R.string.saved, Toast.LENGTH_SHORT).show()
             dismiss()
         }
         binding.btnShare.setOnSafeClick {
