@@ -112,6 +112,27 @@
     <string name="unlock_items">Débloquer des articles</string>
     <string name="watch_ads_to_unlock_for_free">Regardez des annonces pour débloquer gratuitement</string>
     <string name="watch_video">Regarder la vidéo</string>
+    <string name="you_need_to">Vous devez</string>
+    <string name="exporting">Exportation</string>
+    <string name="saved">Enregistré</string>
+    <string name="failed_to_save">Échec de l\'enregistrement</string>
+    <string name="error">Erreur</string>
+    <string name="image">image</string>
+    <string name="emoji_merge">Fusion d\'émojis</string>
+    <string name="warning">Avertissement</string>
+    <string name="lost_internet_connection">Connexion Internet perdue</string>
+    <string name="go_to_setting">Aller aux paramètres</string>
+    <string name="merge_emoji">Fusionner Emoji</string>
+    <string name="merge">Fusionner</string>
+    <string name="done">Terminé</string>
+    <string name="merging">Fusion en cours…</string>
+    <string name="oops_something_went_wrong">Oups, quelque chose s\'est mal passé.\nVeuillez réessayer.</string>
+    <string name="try_again">Réessayer</string>
+    <string name="check_result">Vérifier le résultat</string>
+    <string name="Rename">Renommer</string>
+    <string name="your_emoji_has_been_saved_to_my_creative">Votre émoji a été enregistré dans \n <b> "Mon Créatif" </b></string>
+    <string name="merge_successfully">Fusion réussie</string>
+    <string name="delete_this_sticker">Supprimer cet autocollant !</string>
 
 
 </resources>

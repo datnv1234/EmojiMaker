@@ -113,5 +113,26 @@
     <string name="unlock_items">Mở khóa các mục</string>
     <string name="watch_ads_to_unlock_for_free">Xem quảng cáo để mở khóa miễn phí</string>
     <string name="watch_video">Xem video</string>
+    <string name="you_need_to">Bạn cần</string>
+    <string name="exporting">Đang xuất</string>
+    <string name="saved">Đã lưu</string>
+    <string name="failed_to_save">Lưu thất bại</string>
+    <string name="error">Lỗi</string>
+    <string name="image">hình ảnh</string>
+    <string name="emoji_merge">Gộp emoji</string>
+    <string name="warning">Cảnh báo</string>
+    <string name="lost_internet_connection">Mất kết nối internet</string>
+    <string name="go_to_setting">Đi tới cài đặt</string>
+    <string name="merge_emoji">Gộp Emoji</string>
+    <string name="merge">Gộp</string>
+    <string name="done">Hoàn thành</string>
+    <string name="merging">Đang gộp…</string>
+    <string name="oops_something_went_wrong">Rất tiếc, có gì đó không ổn.\nVui lòng thử lại.</string>
+    <string name="try_again">Thử lại</string>
+    <string name="check_result">Kiểm tra kết quả</string>
+    <string name="Rename">Đổi tên</string>
+    <string name="your_emoji_has_been_saved_to_my_creative">Emoji của bạn đã được lưu vào \n <b> "Sáng tạo của tôi" </b></string>
+    <string name="merge_successfully">Gộp thành công</string>
+    <string name="delete_this_sticker">Xóa sticker này!</string>
 
 </resources>

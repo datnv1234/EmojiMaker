@@ -113,6 +113,27 @@
     <string name="unlock_items">आइटम्स को अनलॉक करें</string>
     <string name="watch_ads_to_unlock_for_free">मुफ़्त में अनलॉक करने के लिए विज्ञापन देखें</string>
     <string name="watch_video">वीडियो देखें</string>
+    <string name="you_need_to">आपको करना होगा</string>
+    <string name="exporting">निर्यात हो रहा है</string>
+    <string name="saved">सहेजा गया</string>
+    <string name="failed_to_save">सहेजने में विफल</string>
+    <string name="error">त्रुटि</string>
+    <string name="image">छवि</string>
+    <string name="emoji_merge">इमोजी मर्ज</string>
+    <string name="warning">चेतावनी</string>
+    <string name="lost_internet_connection">इंटरनेट कनेक्शन खो गया</string>
+    <string name="go_to_setting">सेटिंग में जाएं</string>
+    <string name="merge_emoji">इमोजी मर्ज करें</string>
+    <string name="merge">मर्ज करें</string>
+    <string name="done">पूर्ण</string>
+    <string name="merging">मर्ज किया जा रहा है…</string>
+    <string name="oops_something_went_wrong">ओह, कुछ गलत हो गया।\nकृपया पुनः प्रयास करें।</string>
+    <string name="try_again">पुनः प्रयास करें</string>
+    <string name="check_result">परिणाम जांचें</string>
+    <string name="Rename">नाम बदलें</string>
+    <string name="your_emoji_has_been_saved_to_my_creative">आपका इमोजी \n <b> "माई क्रिएटिव" </b> में सहेजा गया है</string>
+    <string name="merge_successfully">सफलतापूर्वक मर्ज हो गया</string>
+    <string name="delete_this_sticker">इस स्टिकर को हटाएं!</string>
 
 
 </resources>

@@ -113,5 +113,26 @@
     <string name="unlock_items">Desbloquear itens</string>
     <string name="watch_ads_to_unlock_for_free">Assista a anúncios para desbloquear gratuitamente</string>
     <string name="watch_video">Assistir vídeo</string>
+    <string name="you_need_to">Você precisa</string>
+    <string name="exporting">Exportando</string>
+    <string name="saved">Salvo</string>
+    <string name="failed_to_save">Falha ao salvar</string>
+    <string name="error">Erro</string>
+    <string name="image">imagem</string>
+    <string name="emoji_merge">Mesclar Emoji</string>
+    <string name="warning">Aviso</string>
+    <string name="lost_internet_connection">Conexão com a internet perdida</string>
+    <string name="go_to_setting">Ir para configurações</string>
+    <string name="merge_emoji">Mesclar Emoji</string>
+    <string name="merge">Mesclar</string>
+    <string name="done">Concluído</string>
+    <string name="merging">Mesclando…</string>
+    <string name="oops_something_went_wrong">Ops, algo deu errado.\nPor favor, tente novamente.</string>
+    <string name="try_again">Tente novamente</string>
+    <string name="check_result">Verificar resultado</string>
+    <string name="Rename">Renomear</string>
+    <string name="your_emoji_has_been_saved_to_my_creative">Seu emoji foi salvo em \n <b> "Meu Criativo" </b></string>
+    <string name="merge_successfully">Mesclado com sucesso</string>
+    <string name="delete_this_sticker">Excluir este adesivo!</string>
 
 </resources>

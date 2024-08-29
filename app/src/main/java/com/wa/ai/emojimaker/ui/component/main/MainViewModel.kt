@@ -31,14 +31,23 @@ class MainViewModel : BaseViewModel() {
     private val listCategory = listOf(
         "brainy_endeavors",
         "cat_chic",
+        "cute_seal",
         "couple_emoji",
+        "yellow_bow_moments",
+        "blonde_expressions",
+        "grim_reaper",
         "cute_girl",
         "dog_diversity",
         "axolotl_emotions",
+        "animated_reaction",
+        "koala_Chronicles",
+        "cup_of_joy",
         "emoji",
         "funny_cat",
+        "cuddly_cat_chronicles",
         "meow_tions",
         "pug_adventures",
+        "axolotl_vibes",
         "funny_rat",
         "lazy_day_vibes",
         "anime_emotions",
@@ -50,6 +59,7 @@ class MainViewModel : BaseViewModel() {
         "sly_spirits",
         "character_moods",
         "pink_personality",
+        "happy_vibes",
         "xiximi")
 
     private val _stickerMutableLiveData: MutableLiveData<List<MadeStickerModel>> = MutableLiveData()
@@ -76,8 +86,12 @@ class MainViewModel : BaseViewModel() {
             listEntity.add(getCategory(context, "pink_personality", "Pink Personality"))
             listEntity.add(getCategory(context, "anime_emotions", "Anime Emotions"))
             listEntity.add(getCategory(context, "meow_tions", "Meow_tions"))
+            listEntity.add(getCategory(context, "happy_vibes", "Happy Vibes"))
             listEntity.add(getCategory(context, "cat_chic", "Cat Chic"))
             listEntity.add(getCategory(context, "happy_hijabi", "Happy Hijabi"))
+            listEntity.add(getCategory(context, "koala_chronicles", "Koala Chronicles"))
+            listEntity.add(getCategory(context, "cute_seal", "Cute Seal"))
+            listEntity.add(getCategory(context, "yellow_bow_moments", "Yellow Bow"))
             listEntity.add(getCategory(context, "emo_teens", "Emo Teens"))
             listEntity.add(getCategory(context, "orange_orchard", "Orange Orchard"))
             listEntity.add(getCategory(context, "funny_rat", "Funny rat"))
@@ -95,6 +109,12 @@ class MainViewModel : BaseViewModel() {
             listEntity.add(getCategory(context, "brainy_endeavors", "Brainy Endeavors"))
             listEntity.add(getCategory(context, "couple_emoji", "Couple emoji"))
             listEntity.add(getCategory(context, "character_moods", "Character Moods"))
+            listEntity.add(getCategory(context, "cup_of_joy", "Cup Of Joy"))
+            listEntity.add(getCategory(context, "cuddly_cat_chronicles", "Cuddly Cat Chronicles"))
+            listEntity.add(getCategory(context, "axolotl_vibes", "Axolotl Vibes"))
+            listEntity.add(getCategory(context, "grim_reaper", "Grim Reaper"))
+            listEntity.add(getCategory(context, "blonde_expressions", "Blonde Expressions"))
+            listEntity.add(getCategory(context, "animated_reaction", "Animated Reaction"))
 
             _categoriesMutableLiveData.postValue(listEntity)
         }
