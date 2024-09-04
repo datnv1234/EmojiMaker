@@ -11,8 +11,17 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginHorizontal="20dp"
-            android:background="@drawable/img_bg_ad"
+            android:background="@drawable/bg_category"
             android:padding="16dp">
+
+            <ImageView
+                android:id="@+id/imgNoInternet"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_no_internet"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
 
             <TextView
                 android:id="@+id/tvTitle"
@@ -22,12 +31,12 @@
                 android:fontFamily="@font/poppins_bold"
                 android:gravity="center"
                 android:includeFontPadding="false"
-                android:text="@string/warning"
+                android:text="@string/internet_error"
                 android:textColor="#000000"
                 android:textSize="@dimen/_16ssp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@id/imgNoInternet"/>
 
 
             <TextView
@@ -39,7 +48,7 @@
                 android:fontFamily="@font/poppins_medium"
                 android:gravity="center"
                 android:includeFontPadding="false"
-                android:text="@string/lost_internet_connection"
+                android:text="@string/please_connect_with_your_internet"
                 android:textColor="#475467"
                 android:textSize="@dimen/_14ssp"
                 app:layout_constraintTop_toBottomOf="@id/tvTitle" />
@@ -48,10 +57,10 @@
             <TextView
                 android:id="@+id/tvGoToSetting"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/_50sdp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="9dp"
                 android:layout_marginTop="24dp"
-                android:background="@drawable/img_bg_button"
+                android:background="@drawable/bg_button_enabled"
                 android:ellipsize="end"
                 android:fontFamily="@font/poppins_semibold"
                 android:gravity="center"
@@ -60,12 +69,12 @@
                 android:paddingVertical="@dimen/_12sdp"
                 android:text="@string/go_to_setting"
                 android:textColor="#FFFFFF"
-                android:textSize="@dimen/_14ssp"
+                android:textSize="@dimen/_11ssp"
                 app:layout_constraintLeft_toRightOf="@id/tvCancel"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tvContent" />
 
-            <com.wa.ai.emojimaker.utils.customview.RippleCornerTextView
+            <TextView
                 android:id="@+id/tvCancel"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -78,10 +87,9 @@
                 android:maxLines="1"
                 android:paddingVertical="@dimen/_12sdp"
                 android:text="@string/cancel"
-                android:textColor="#344054"
-                android:textSize="@dimen/_14ssp"
-                app:backgroundColorView="#00196263"
-                app:cornerRadius="12dp"
+                android:textColor="@color/text_color"
+                android:textSize="@dimen/_11ssp"
+                android:background="@drawable/bg_button_disable"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toLeftOf="@+id/tvGoToSetting"
                 app:layout_constraintTop_toBottomOf="@id/tvContent" />

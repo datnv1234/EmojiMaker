@@ -64,6 +64,7 @@ import com.wa.ai.emojimaker.utils.DeviceUtils
 import com.wa.ai.emojimaker.utils.RemoteConfigKey
 import com.wa.ai.emojimaker.utils.ads.AdsConsentManager
 import com.wa.ai.emojimaker.utils.ads.BannerUtils
+import com.wa.ai.emojimaker.utils.extention.checkInternetConnection
 import com.wa.ai.emojimaker.utils.extention.gone
 import com.wa.ai.emojimaker.utils.extention.isNetworkAvailable
 import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
@@ -991,7 +992,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     }
 
     private fun showInterstitial(isReload: Boolean = true) {
-        if (!isNetworkAvailable()) {
+        if (!checkInternetConnection()) {
             return
         }
         val timeLoad = FirebaseRemoteConfig.getInstance()
@@ -1035,7 +1036,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     }
 
     private fun forceShowInterstitial(isReload: Boolean = true) {
-        if (!isNetworkAvailable()) {
+        if (!checkInternetConnection()) {
             return
         }
 
@@ -1072,7 +1073,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     }
 
     private fun showInterstitialItemClick(isReload: Boolean = true) {
-        if (!isNetworkAvailable()) {
+        if (!checkInternetConnection()) {
             return
         }
         val timeLoad = FirebaseRemoteConfig.getInstance()

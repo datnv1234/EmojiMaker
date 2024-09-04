@@ -138,5 +138,7 @@
     <string name="your_emoji_has_been_saved_to_my_creative">Your emoji has been saved to \n <b> \"My Creative\" </b></string>
     <string name="merge_successfully">Merge Successfully</string>
     <string name="delete_this_sticker">Delete this sticker!</string>
+    <string name="internet_error">Internet Error</string>
+    <string name="please_connect_with_your_internet">Please connect with your Internet</string>
 
 </resources>

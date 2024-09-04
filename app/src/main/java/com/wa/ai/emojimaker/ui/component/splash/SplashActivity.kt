@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.util.Log
 import com.adjust.sdk.Adjust
 import com.adjust.sdk.AdjustAdRevenue
 import com.adjust.sdk.AdjustConfig
@@ -27,6 +28,7 @@ import com.wa.ai.emojimaker.ui.component.multilang.MultiLangActivity
 import com.wa.ai.emojimaker.utils.DeviceUtils
 import com.wa.ai.emojimaker.utils.RemoteConfigKey
 import com.wa.ai.emojimaker.utils.ads.AdsConsentManager
+import com.wa.ai.emojimaker.utils.extention.checkInternetConnection
 import com.wa.ai.emojimaker.utils.extention.isNetworkAvailable
 import com.wa.ai.emojimaker.utils.extention.setStatusBarColor
 import java.util.Date
@@ -50,7 +52,7 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
         super.onCreate(savedInstanceState)
         initAdsManager()
         init()
-        if (!isNetworkAvailable()) {
+        if (!checkInternetConnection()) {
             viewModel.starTimeCount(5000)
         }
     }

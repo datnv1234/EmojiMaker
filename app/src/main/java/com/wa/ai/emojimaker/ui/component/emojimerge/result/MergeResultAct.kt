@@ -45,6 +45,7 @@ import com.wa.ai.emojimaker.utils.DeviceUtils
 import com.wa.ai.emojimaker.utils.RemoteConfigKey
 import com.wa.ai.emojimaker.utils.ads.AdsConsentManager
 import com.wa.ai.emojimaker.utils.ads.NativeAdsUtils
+import com.wa.ai.emojimaker.utils.extention.checkInternetConnection
 import com.wa.ai.emojimaker.utils.extention.gone
 import com.wa.ai.emojimaker.utils.extention.invisible
 import com.wa.ai.emojimaker.utils.extention.isNetworkAvailable
@@ -384,7 +385,7 @@ class MergeResultAct : BaseBindingActivity<ActivityMergeResultBinding, MergeResu
     }
 
     private fun showInterstitial(onAdDismissedAction: () -> Unit) {
-        if (!isNetworkAvailable()) {
+        if (!checkInternetConnection()) {
             onAdDismissedAction.invoke()
             return
         }

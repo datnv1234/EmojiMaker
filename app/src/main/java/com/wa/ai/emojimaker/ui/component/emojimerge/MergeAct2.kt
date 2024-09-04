@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
+import android.util.Log
 import android.view.View
 import com.adjust.sdk.Adjust
 import com.adjust.sdk.AdjustAdRevenue
@@ -40,6 +41,7 @@ import com.wa.ai.emojimaker.ui.component.emojimerge.result.MergeResultAct
 import com.wa.ai.emojimaker.ui.dialog.DialogInternetConnection
 import com.wa.ai.emojimaker.ui.dialog.DialogLoading
 import com.wa.ai.emojimaker.utils.ads.BannerUtils
+import com.wa.ai.emojimaker.utils.extention.checkInternetConnection
 import com.wa.ai.emojimaker.utils.extention.gone
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -145,6 +147,19 @@ class MergeAct2 : BaseBindingActivity<ActivityMerge2Binding, MergeVM>() {
         animator2 = getAnimator(binding.viewUnselected2)
         initView()
         initAction()
+        kotlin.runCatching {
+            if (!checkInternetConnection()) {
+                if (!dialogInternetConnection.isAdded) {
+                    dialogInternetConnection.show(supportFragmentManager, null)
+                }
+            } else {
+                if (dialogInternetConnection.isAdded) {
+                    dialogInternetConnection.dismiss()
+                }
+            }
+        }.onFailure {
+            it.printStackTrace()
+        }
     }
 
     override fun setupData() {
@@ -265,7 +280,7 @@ class MergeAct2 : BaseBindingActivity<ActivityMerge2Binding, MergeVM>() {
             when (messageEvent.typeEvent) {
                 Constant.EVENT_NET_WORK_CHANGE -> {
                     kotlin.runCatching {
-                        if (!isNetworkAvailable()) {
+                        if (!checkInternetConnection()) {
                             if (!dialogInternetConnection.isAdded) {
                                 dialogInternetConnection.show(supportFragmentManager, null)
                             }
@@ -330,7 +345,7 @@ class MergeAct2 : BaseBindingActivity<ActivityMerge2Binding, MergeVM>() {
     }
 
     private fun showInterstitial(reload: Boolean = true, onAdDismissedAction: () -> Unit) {
-        if (!isNetworkAvailable()) {
+        if (!checkInternetConnection()) {
             onAdDismissedAction.invoke()
             return
         }

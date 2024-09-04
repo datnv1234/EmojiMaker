@@ -21,6 +21,7 @@ import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.OnPaidEventListener
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.wa.ai.emojimaker.R
+import com.wa.ai.emojimaker.utils.extention.checkInternetConnection
 import com.wa.ai.emojimaker.utils.extention.gone
 import com.wa.ai.emojimaker.utils.extention.isNetworkAvailable
 import com.wa.ai.emojimaker.utils.extention.visible
@@ -70,7 +71,7 @@ class BannerUtils {
         val adContainer = mActivity.findViewById<FrameLayout>(R.id.banner_container)
         val containerShimmer =
             mActivity.findViewById<ShimmerFrameLayout>(R.id.shimmer_container_banner)
-        if (!mActivity.isNetworkAvailable()) {
+        if (!mActivity.checkInternetConnection()) {
             adContainer.gone()
             containerShimmer.gone()
             adsLoadCallBack(false)
@@ -164,7 +165,7 @@ class BannerUtils {
         val adContainer = mActivity.findViewById<FrameLayout>(R.id.banner_container)
         val containerShimmer =
             mActivity.findViewById<ShimmerFrameLayout>(R.id.shimmer_container_banner)
-        if (!mActivity.isNetworkAvailable()) {
+        if (!mActivity.checkInternetConnection()) {
             adContainer.gone()
             containerShimmer.gone()
         } else {
@@ -183,7 +184,7 @@ class BannerUtils {
         val adContainer = mActivity.findViewById<FrameLayout>(R.id.banner_container)
         val containerShimmer =
             mActivity.findViewById<ShimmerFrameLayout>(R.id.shimmer_container_banner)
-        if (!mActivity.isNetworkAvailable()) {
+        if (!mActivity.checkInternetConnection()) {
             adContainer.gone()
             containerShimmer.gone()
         } else {
