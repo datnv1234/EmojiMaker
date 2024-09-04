@@ -19,11 +19,11 @@ class CategoryAdapter(val context: Context, val watchMoreClick: (category: Categ
 
 }) {
     override fun onBindViewHolderBase(holder: BaseHolder<ItemCategoryBinding>, position: Int) {
-        with(getItem(holder.adapterPosition)) {
+        with(getItem(position)) {
 
             if (this.itemSize == 0)    return
             holder.binding.btnOption.setOnSafeClick {
-                optionClick(this.category.toString())
+                optionClick(this.category)
             }
             val text = "+" + (this.itemSize - 3).toString()
             holder.binding.tvRemainingNumber.text = text

@@ -4,7 +4,6 @@ import androidx.recyclerview.widget.DiffUtil
 import com.bumptech.glide.Glide
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.data.model.MadeStickerModel
-import com.wa.ai.emojimaker.databinding.ItemStickerBinding
 import com.wa.ai.emojimaker.databinding.ItemStickerHorizontalBinding
 import com.wa.ai.emojimaker.ui.base.BaseBindingAdapterDiff
 import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
@@ -26,14 +25,14 @@ class MadeStickerHorizontalAdapter : BaseBindingAdapterDiff<MadeStickerModel, It
         get() = R.layout.item_sticker_horizontal
 
     override fun onBindViewHolderBase(holder: BaseHolder<ItemStickerHorizontalBinding>, position: Int) {
-        with(getItem(holder.adapterPosition)) {
+        with(getItem(position)) {
             val context = holder.itemView.context
             holder.binding.apply {
                 Glide.with(context).load(path).into(imgSticker)
             }
 
             holder.binding.imgSticker.setOnSafeClick {
-                onItemFocus(holder.adapterPosition)
+                onItemFocus(position)
             }
 
             holder.binding.imgSticker.isSelected = position == focusedItemPosition

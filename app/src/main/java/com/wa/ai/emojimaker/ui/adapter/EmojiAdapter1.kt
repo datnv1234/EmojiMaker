@@ -32,7 +32,7 @@ class EmojiAdapter1 : BaseBindingAdapterDiff<EmojiUI, EmojisSliderItemBinding>(
     var callBack: (Int, EmojiUI) -> Unit = { _, _ -> }
     override fun onBindViewHolderBase(holder: BaseHolder<EmojisSliderItemBinding>, position: Int) {
         val context = holder.itemView.context
-        with(getItem(holder.adapterPosition)) {
+        with(getItem(position)) {
             val emojiURL =
                 "https://ilyassesalama.github.io/EmojiMixer/emojis/supported_emojis_png/$emojiUnicode.png"
             holder.binding.apply {
@@ -52,8 +52,6 @@ class EmojiAdapter1 : BaseBindingAdapterDiff<EmojiUI, EmojisSliderItemBinding>(
     ) {
         Glide.with(context)
             .load(url)
-//            .fitCenter()
-//            .transition(DrawableTransitionOptions.withCrossFade())
             .listener(
                 object : RequestListener<Drawable?> {
                     override fun onLoadFailed(

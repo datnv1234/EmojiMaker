@@ -8,7 +8,7 @@ import com.wa.ai.emojimaker.databinding.ItemStickerBinding
 import com.wa.ai.emojimaker.ui.base.BaseBindingAdapterDiff
 import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 
-class CreateStickerAdapter(val itemClick:(sticker: MadeStickerModel)->Unit) : BaseBindingAdapterDiff<MadeStickerModel, ItemStickerBinding>(object : DiffUtil.ItemCallback<MadeStickerModel>() {
+class CreateStickerAdapter(private val itemClick:(sticker: MadeStickerModel)->Unit) : BaseBindingAdapterDiff<MadeStickerModel, ItemStickerBinding>(object : DiffUtil.ItemCallback<MadeStickerModel>() {
     override fun areItemsTheSame(oldItem: MadeStickerModel, newItem: MadeStickerModel): Boolean {
         return oldItem.name == newItem.name
     }
@@ -19,13 +19,13 @@ class CreateStickerAdapter(val itemClick:(sticker: MadeStickerModel)->Unit) : Ba
 
 }) {
 
-    var focusedItemPosition: Int = -1
+    private var focusedItemPosition: Int = -1
 
     override val layoutIdItem: Int
         get() = R.layout.item_sticker
 
     override fun onBindViewHolderBase(holder: BaseHolder<ItemStickerBinding>, position: Int) {
-        with(getItem(holder.adapterPosition)) {
+        with(getItem(position)) {
             val context = holder.itemView.context
             holder.binding.apply {
                 Glide.with(context).load(path).into(imgSticker)
@@ -33,7 +33,7 @@ class CreateStickerAdapter(val itemClick:(sticker: MadeStickerModel)->Unit) : Ba
 
             holder.binding.imgSticker.setOnSafeClick {
                 itemClick.invoke(this)
-                onItemFocus(holder.adapterPosition)
+                onItemFocus(position)
             }
 
             holder.binding.imgSticker.isSelected = position == focusedItemPosition

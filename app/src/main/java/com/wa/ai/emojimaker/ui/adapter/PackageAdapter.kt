@@ -35,17 +35,17 @@ class PackageAdapter : BaseBindingAdapterDiff<PackageModel, ItemPackageBinding>(
     fun getCurrentPackage(): PackageModel? = currentList[newPosition]
 
     override fun onBindViewHolderBase(holder: BaseHolder<ItemPackageBinding>, position: Int) {
-        with(getItem(holder.adapterPosition)) {
+        with(getItem(position)) {
             if (this.avatar != null) {
                 holder.binding.imgAvatar.setImageBitmap(this.avatar)
             }
             holder.binding.tvPackageName.text = this.getName()
             holder.binding.apply {
 
-            rdSelectPackage.isChecked = holder.adapterPosition == newPosition
+            rdSelectPackage.isChecked = position == newPosition
             root.setOnSafeClick {
                 callBack(position, this@with)
-                newPosition = holder.adapterPosition
+                newPosition = position
             }
             }
         }

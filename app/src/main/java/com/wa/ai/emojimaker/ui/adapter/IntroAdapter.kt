@@ -20,7 +20,7 @@ class IntroAdapter : BaseBindingAdapterDiff<IntroUI, ItemIntroBinding>(
 	}
 ) {
 	override fun onBindViewHolderBase(holder: BaseHolder<ItemIntroBinding>, position: Int) {
-		with(getItem(holder.adapterPosition)) {
+		with(getItem(position)) {
 			Glide.with(holder.itemView).load(icon).into(holder.binding.imgIntro)
 			holder.binding.tvTitle.text = title ?: ""
 			holder.binding.tvContent.text = content ?: ""

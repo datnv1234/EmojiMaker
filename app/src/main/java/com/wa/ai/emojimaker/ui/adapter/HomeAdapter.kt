@@ -13,7 +13,6 @@ import com.bumptech.glide.Glide
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.data.model.Category
-import com.wa.ai.emojimaker.ui.component.main.MainActivity
 import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 
 internal class HomeAdapter(
@@ -78,7 +77,7 @@ internal class HomeAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val context = holder.itemView.context
-        when (getItemViewType(holder.adapterPosition)) {
+        when (getItemViewType(position)) {
             ITEM_VIEW_TYPE -> {
 
                 val itemHolder = holder as ItemViewHolder

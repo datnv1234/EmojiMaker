@@ -25,14 +25,14 @@ class MadeStickerAdapter : BaseBindingAdapterDiff<MadeStickerModel, ItemStickerB
         get() = R.layout.item_sticker
 
     override fun onBindViewHolderBase(holder: BaseHolder<ItemStickerBinding>, position: Int) {
-        with(getItem(holder.adapterPosition)) {
+        with(getItem(position)) {
             val context = holder.itemView.context
             holder.binding.apply {
                 Glide.with(context).load(path).into(imgSticker)
             }
 
             holder.binding.imgSticker.setOnSafeClick {
-                onItemFocus(holder.adapterPosition)
+                onItemFocus(position)
             }
 
             holder.binding.imgSticker.isSelected = position == focusedItemPosition

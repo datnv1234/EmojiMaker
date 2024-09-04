@@ -47,7 +47,7 @@ class CreativeAdapter (
 
     override fun onBindViewHolderBase(holder: BaseHolder<ItemCreativeBinding>, position: Int) {
         val context = holder.binding.root.context
-        with(getItem(holder.adapterPosition)) {
+        with(getItem(position)) {
             holder.binding.apply {
                 // Set View
                 if (this@with.avatar != null) {
@@ -90,7 +90,7 @@ class CreativeAdapter (
 
                     popupWindow.showAsDropDown(btnOption, (-popupWidth * 1.5f).toInt(), 0)
 
-                    newPosition = holder.adapterPosition
+                    newPosition = position
                 }
                 btnDelete.setOnSafeClick {
                     delete(this@with)

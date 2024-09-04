@@ -23,13 +23,13 @@ class StickerAdapter(val itemClick:(pos: Int)->Unit) : BaseBindingAdapterDiff<Pi
         holder.binding.apply {
             Glide.with(context).load(
                 "file:///android_asset/item_options/" +
-                        "${getItem(holder.adapterPosition).category}/" +
-                        getItem(holder.adapterPosition).name
+                        "${getItem(position).category}/" +
+                        getItem(position).name
             ).into(piece)
         }
 //        holder.binding.piece.setImageBitmap(getItem(holder.adapterPosition).bitmap)
         holder.binding.piece.setOnSafeClick {
-            itemClick(holder.adapterPosition)
+            itemClick(position)
         }
         //Log.d(Constant.TAG, "StickerAdapter: " + getItem(holder.adapterPosition).bitmap)
     }

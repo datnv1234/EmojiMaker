@@ -32,13 +32,12 @@ class MultiLangAdapter : BaseBindingAdapterDiff<LanguageUI, ItemMultiLangBinding
             notifyItemChanged(value)
         }
 
-    fun getCurrentLanguage() = currentList[newPosition]
     var callBack: (Int, LanguageUI) -> Unit = { _, _ -> }
     override fun onBindViewHolderBase(holder: BaseHolder<ItemMultiLangBinding>, position: Int) {
-        with(getItem(holder.adapterPosition)) {
+        with(getItem(position)) {
             holder.binding.apply {
                 tvLanguage.text = name
-                if (holder.adapterPosition == newPosition) {
+                if (position == newPosition) {
                     avatar?.let {
                         radioBtn.isChecked = true
                         imgLanguage.setImageResource(it)
@@ -52,10 +51,10 @@ class MultiLangAdapter : BaseBindingAdapterDiff<LanguageUI, ItemMultiLangBinding
                 }
                 root.setOnSafeClick {
                     callBack(position, this@with)
-                    newPosition = holder.adapterPosition
+                    newPosition = position
                 }
             }
-            setAnimation(holder.itemView, holder.adapterPosition, holder.itemView.context)
+            setAnimation(holder.itemView, position, holder.itemView.context)
 
         }
     }

@@ -20,7 +20,7 @@ class PagerIconAdapter(val itemClick:(bitmap: Bitmap) -> Unit): BaseBindingAdapt
 }) {
     override fun onBindViewHolderBase(holder: BaseHolder<ItemPaperIconBinding>, position: Int) {
         val context = holder.itemView.context
-        with(getItem(holder.adapterPosition)) {
+        with(getItem(position)) {
             val stickerAdapter = StickerAdapter(itemClick = {
                getBitmapFromAssets(
                    context,
