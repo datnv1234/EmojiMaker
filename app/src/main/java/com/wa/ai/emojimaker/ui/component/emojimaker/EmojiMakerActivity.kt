@@ -15,7 +15,6 @@ import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
-import android.os.Environment
 import android.os.Handler
 import android.os.Looper
 import android.os.Parcelable
@@ -66,7 +65,6 @@ import com.wa.ai.emojimaker.utils.ads.AdsConsentManager
 import com.wa.ai.emojimaker.utils.ads.BannerUtils
 import com.wa.ai.emojimaker.utils.extention.checkInternetConnection
 import com.wa.ai.emojimaker.utils.extention.gone
-import com.wa.ai.emojimaker.utils.extention.isNetworkAvailable
 import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 import com.wa.ai.emojimaker.utils.extention.visible
 import com.wa.ai.emojimaker.utils.sticker.BitmapStickerIcon
@@ -254,9 +252,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
             }
             emojiViewModel.setLock(emojiViewModel.pageSelected.value!!, false)
         }
-//        binding.llLocked.setOnTouchListener { _, _ ->
-//            return@setOnTouchListener true
-//        }
+
         binding.llLocked.setOnSafeClick {
 
         }
@@ -300,9 +296,14 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
                     emojiViewModel.setPageSelected(position)
                     kotlin.runCatching {
                         showInterstitialItemClick()
+                    }.onFailure { exception ->
+                        Timber.tag("ViewPagerCallback")
+                            .e("Error showing interstitial: %s", exception.message)
                     }
                     optionAdapter.onItemFocus(position)
-                    binding.rvOptions.scrollToPosition(position)
+                    if (position in 0 until optionAdapter.itemCount) {
+                        binding.rvOptions.scrollToPosition(position)
+                    }
                 }
             })
         }
@@ -458,15 +459,6 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
 
         builder.show()
     }
-
-    private fun getSaveDirectory() =
-        File(
-            listOf(
-                Environment.getExternalStorageDirectory().absolutePath,
-                Environment.DIRECTORY_PICTURES,
-                resources.getString(R.string.app_name)
-            ).joinToString(File.separator)
-        )
 
     private fun doSave(fileName: String) {
         val cw = ContextWrapper(this)

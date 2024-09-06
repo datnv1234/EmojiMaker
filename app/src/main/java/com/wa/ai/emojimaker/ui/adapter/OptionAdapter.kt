@@ -46,8 +46,9 @@ class OptionAdapter(
         val previousFocusedItem = focusedItemPosition
         focusedItemPosition = pos
 
-        // Cập nhật lại giao diện của item trước đó và item hiện tại
-        notifyItemChanged(previousFocusedItem)
+        if (previousFocusedItem >= 0) {
+            notifyItemChanged(previousFocusedItem)
+        }
         notifyItemChanged(focusedItemPosition)
     }
 }
