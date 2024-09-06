@@ -63,6 +63,18 @@
                 android:textSize="@dimen/_16ssp" />
         </RelativeLayout>
 
+        <FrameLayout
+            android:id="@+id/rl_banner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom">
+
+            <include
+                android:id="@+id/ads_banner"
+                layout="@layout/ads_banner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </FrameLayout>
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -88,7 +100,6 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/transparent_bg"
                 app:layout_constraintTop_toTopOf="parent">
-
                 <com.wa.ai.emojimaker.utils.sticker.StickerView
                     android:id="@+id/sticker_view"
                     android:layout_width="0dp"
@@ -436,19 +447,6 @@
             </RelativeLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <FrameLayout
-            android:id="@+id/rl_banner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            app:layout_constraintBottom_toBottomOf="parent">
-
-            <include
-                android:id="@+id/ads_banner"
-                layout="@layout/ads_banner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </FrameLayout>
     </LinearLayout>
 
 

@@ -166,7 +166,7 @@ class ShowStickersActivity :
         viewModel.starTimeCountReloadBanner(bannerReload)
         val keyAdBannerAllPrice = FirebaseRemoteConfig.getInstance()
             .getString(RemoteConfigKey.KEY_ADS_BANNER_SHOW_STICKERS)
-        BannerUtils.instance?.loadCollapsibleBanner(this, keyAdBannerAllPrice)
+        BannerUtils.instance?.loadCollapsibleBanner(this, keyAdBannerAllPrice) {}
     }
 
     private fun shareStickerInCategory(category: String) {

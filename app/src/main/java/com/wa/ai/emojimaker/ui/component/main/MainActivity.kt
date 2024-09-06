@@ -67,6 +67,7 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
     private val keyAdInterAllPrice =
         FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_INTER_HOME_SCREEN)
 
+    private val keyAdBannerHigh = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_MAIN_HIGH)
     private val keyAdBannerAllPrice = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_MAIN)
 
     private val bannerReload =
@@ -151,7 +152,15 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
 
     private fun loadBanner() {
         viewModel.starTimeCountReloadBanner(bannerReload)
-        BannerUtils.instance?.loadCollapsibleBanner(mContext, keyAdBannerAllPrice)
+        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_USE_BANNER_MONET)) {
+            BannerUtils.instance?.loadCollapsibleBanner(this, keyAdBannerHigh) { res2 ->
+                if (!res2) {
+                    BannerUtils.instance?.loadCollapsibleBanner(this, keyAdBannerAllPrice) { }
+                }
+            }
+        } else {
+            BannerUtils.instance?.loadCollapsibleBanner(this, keyAdBannerAllPrice) { }
+        }
     }
 
     private fun checkForAppUpdates() {

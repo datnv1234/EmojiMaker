@@ -314,7 +314,7 @@ class MergeAct2 : BaseBindingActivity<ActivityMerge2Binding, MergeVM>() {
 
     private fun loadBanner() {
         viewModel.starTimeCountReloadBanner(bannerReload)
-        BannerUtils.instance?.loadCollapsibleBanner(this, keyAdBannerAllPrice)
+        BannerUtils.instance?.loadCollapsibleBanner(this, keyAdBannerAllPrice) {}
 
     }
 

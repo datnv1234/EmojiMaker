@@ -161,7 +161,7 @@ class BannerUtils {
 
 
     //Load CollapsibleBanner in activity
-    fun loadCollapsibleBanner(mActivity: Activity, id: String) {
+    fun loadCollapsibleBanner(mActivity: Activity, id: String, adsLoadCallBack: (Boolean) -> Unit) {
         val adContainer = mActivity.findViewById<FrameLayout>(R.id.banner_container)
         val containerShimmer =
             mActivity.findViewById<ShimmerFrameLayout>(R.id.shimmer_container_banner)
@@ -175,6 +175,27 @@ class BannerUtils {
                 adContainer,
                 containerShimmer,
                 false, BANNER_INLINE_LARGE_STYLE,
+                adsLoadCallBack
+            )
+        }
+    }
+
+    fun loadCollapsibleBannerTop(mActivity: Activity, id: String, adsLoadCallBack: (Boolean) -> Unit) {
+        val adContainer = mActivity.findViewById<FrameLayout>(R.id.banner_container)
+        val containerShimmer =
+            mActivity.findViewById<ShimmerFrameLayout>(R.id.shimmer_container_banner)
+        if (!mActivity.checkInternetConnection()) {
+            adContainer.gone()
+            containerShimmer.gone()
+        } else {
+            loadCollapsibleBanner(
+                mActivity,
+                id,
+                adContainer,
+                containerShimmer,
+                false, BANNER_INLINE_LARGE_STYLE,
+                adsLoadCallBack,
+                top = true
             )
         }
     }
@@ -204,7 +225,9 @@ class BannerUtils {
         adContainer: FrameLayout,
         containerShimmer: ShimmerFrameLayout,
         useInlineAdaptive: Boolean,
-        inlineStyle: String
+        inlineStyle: String,
+        adsLoadCallBack: (Boolean) -> Unit,
+        top: Boolean = false
     ) {
         containerShimmer.visible()
         containerShimmer.startShimmer()
@@ -227,7 +250,11 @@ class BannerUtils {
             adView.setAdSize(adSize)
 
             val extras = Bundle()
-            extras.putString("collapsible", "bottom")
+            if (top)
+                extras.putString("collapsible", "top")
+            else
+                extras.putString("collapsible", "bottom")
+
 
             val adRequest = AdRequest.Builder()
                 .addNetworkExtrasBundle(AdMobAdapter::class.java, extras)
@@ -239,6 +266,7 @@ class BannerUtils {
                     containerShimmer.stopShimmer()
                     adContainer.gone()
                     containerShimmer.gone()
+                    adsLoadCallBack(false)
                 }
 
                 override fun onAdLoaded() {
@@ -247,6 +275,7 @@ class BannerUtils {
                     adContainer.visible()
                     adContainer.removeAllViews()
                     adContainer.addView(adView)
+                    adsLoadCallBack(true)
                     adView.onPaidEventListener = OnPaidEventListener { adValue: AdValue ->
                         val loadedAdapterResponseInfo: AdapterResponseInfo? =
                             adView.responseInfo?.loadedAdapterResponseInfo

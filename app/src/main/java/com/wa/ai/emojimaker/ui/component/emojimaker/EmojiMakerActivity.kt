@@ -100,6 +100,8 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         FirebaseRemoteConfig.getInstance().getLong(RemoteConfigKey.BANNER_RELOAD)
     private val keyAdBannerAllPrice = FirebaseRemoteConfig.getInstance()
         .getString(RemoteConfigKey.KEY_ADS_BANNER_CREATE_EMOJI)
+    private val keyAdBannerHigh = FirebaseRemoteConfig.getInstance()
+        .getString(RemoteConfigKey.KEY_ADS_BANNER_CREATE_EMOJI_HIGH)
 
     private var isFinishImmediately = false
 
@@ -336,9 +338,15 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
 
     private fun loadBanner() {
         emojiViewModel.starTimeCountReloadBanner(bannerReload)
-
-        BannerUtils.instance?.loadCollapsibleBanner(this, keyAdBannerAllPrice)
-
+        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_USE_BANNER_MONET)) {
+            BannerUtils.instance?.loadCollapsibleBannerTop(this, keyAdBannerHigh) { res2 ->
+                if (!res2) {
+                    BannerUtils.instance?.loadCollapsibleBannerTop(this, keyAdBannerAllPrice) { }
+                }
+            }
+        } else {
+            BannerUtils.instance?.loadCollapsibleBannerTop(this, keyAdBannerAllPrice) { }
+        }
     }
 
     override fun onNewIntent(intent: Intent?) {

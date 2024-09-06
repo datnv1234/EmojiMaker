@@ -8,6 +8,8 @@ object RemoteConfigKey {
 
     const val BANNER_RELOAD = "banner_reload"
 
+    const val IS_USE_BANNER_MONET = "is_use_banner_monet"
+
     const val IS_SHOW_ADS_INTER_MERGE_EMOJI= "is_show_ads_inter_merge_emoji"
     const val IS_SHOW_ADS_INTER_SPLASH= "is_show_ads_inter_splash"
     const val IS_SHOW_ADS_INTER_HOME_SCREEN= "is_show_ads_inter_home_screen"
@@ -42,6 +44,8 @@ object RemoteConfigKey {
     // Banner
     const val KEY_ADS_BANNER_MERGE_EMOJI = "key_ads_banner_merge_emoji"
     const val KEY_ADS_BANNER_MAIN = "key_ads_banner_main"
+    const val KEY_ADS_BANNER_MAIN_HIGH = "key_ads_banner_main_high"
     const val KEY_ADS_BANNER_CREATE_EMOJI = "key_ads_banner_create_emoji"
+    const val KEY_ADS_BANNER_CREATE_EMOJI_HIGH = "key_ads_banner_create_emoji_high"
     const val KEY_ADS_BANNER_SHOW_STICKERS = "key_ads_banner_show_stickers"
 }
