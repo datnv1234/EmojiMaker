@@ -59,9 +59,13 @@ class MergeAct2 : BaseBindingActivity<ActivityMerge2Binding, MergeVM>() {
     private var adsConsentManager: AdsConsentManager? = null
     private var analytics: FirebaseAnalytics? = null
 
+    private val keyAdInterAllPrice = FirebaseRemoteConfig.getInstance()
+        .getString(RemoteConfigKey.KEY_ADS_INTER_MERGE_EMOJI)
+
     private val bannerReload =
         FirebaseRemoteConfig.getInstance().getLong(RemoteConfigKey.BANNER_RELOAD)
-    private val keyAdBannerAllPrice = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_MERGE_EMOJI)
+    private val keyAdBannerAllPrice =
+        FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_MERGE_EMOJI)
 
     private var emote1 = ""
     private var emote2 = ""
@@ -215,7 +219,7 @@ class MergeAct2 : BaseBindingActivity<ActivityMerge2Binding, MergeVM>() {
         }
 
         binding.btnRefresh.setOnSafeClick {
-            showInterstitial{}
+            showInterstitial {}
             reset()
         }
     }
@@ -340,7 +344,11 @@ class MergeAct2 : BaseBindingActivity<ActivityMerge2Binding, MergeVM>() {
         if (isAdsInitializeCalled.getAndSet(true)) {
             return
         }
-        MobileAds.initialize(this) {}
+        try {
+            MobileAds.initialize(this) {}
+        } catch (e: Exception) {
+            Timber.e(e)
+        }
         loadAd()
     }
 
@@ -407,11 +415,7 @@ class MergeAct2 : BaseBindingActivity<ActivityMerge2Binding, MergeVM>() {
         if (FirebaseRemoteConfig.getInstance()
                 .getBoolean(RemoteConfigKey.IS_SHOW_ADS_INTER_MERGE_EMOJI)
         ) {
-            val keyAdInterAllPrice =
-                FirebaseRemoteConfig.getInstance()
-                    .getString(RemoteConfigKey.KEY_ADS_INTER_MERGE_EMOJI)
             loadAdInter(keyAdInterAllPrice)
-
         }
     }
 

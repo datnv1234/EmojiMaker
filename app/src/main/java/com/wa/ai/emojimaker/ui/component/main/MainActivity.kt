@@ -51,6 +51,7 @@ import com.wa.ai.emojimaker.utils.extention.setFullScreen
 import com.wa.ai.emojimaker.utils.notification.NotificationWorker
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.util.Date
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
@@ -234,8 +235,10 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
         if (isAdsInitializeCalled.getAndSet(true)) {
             return
         }
-        kotlin.runCatching {
-            MobileAds.initialize(mContext) {}
+        try {
+            MobileAds.initialize(this) {}
+        } catch (e: Exception) {
+            Timber.e(e)
         }
 
         loadInterAd()

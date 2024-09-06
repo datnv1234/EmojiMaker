@@ -380,7 +380,11 @@ class MergeResultAct : BaseBindingActivity<ActivityMergeResultBinding, MergeResu
         if (isAdsInitializeCalled.getAndSet(true)) {
             return
         }
-        MobileAds.initialize(this) {}
+        try {
+            MobileAds.initialize(this) {}
+        } catch (e: Exception) {
+            Timber.e(e)
+        }
         loadAd()
     }
 
@@ -440,6 +444,8 @@ class MergeResultAct : BaseBindingActivity<ActivityMergeResultBinding, MergeResu
         }
     }
 
+
+
     private fun loadAd() {
         if (FirebaseRemoteConfig.getInstance()
                 .getBoolean(RemoteConfigKey.IS_SHOW_ADS_INTER_MERGE_EMOJI)
@@ -463,10 +469,12 @@ class MergeResultAct : BaseBindingActivity<ActivityMergeResultBinding, MergeResu
                     Timber.e("datnv: domain: ${adError.domain}, code: ${adError.code},  + message: ${adError.message}")
                     interstitialAd = null
                     retryAttempt++
-                    val delayMillis = TimeUnit.SECONDS.toMillis(
-                        2.0.pow(6.0.coerceAtMost(retryAttempt)).toLong()
-                    )
-                    Handler(mainLooper).postDelayed({ loadAd() }, delayMillis)
+                    if (retryAttempt < 4) {
+                        val delayMillis = TimeUnit.SECONDS.toMillis(
+                            2.0.pow(6.0.coerceAtMost(retryAttempt)).toLong()
+                        )
+                        Handler(mainLooper).postDelayed({ loadAd() }, delayMillis)
+                    }
                 }
 
                 override fun onAdLoaded(ad: InterstitialAd) {

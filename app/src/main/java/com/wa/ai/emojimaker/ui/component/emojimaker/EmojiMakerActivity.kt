@@ -83,7 +83,9 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.math.pow
 
 class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, StickerViewModel>() {
 
@@ -103,6 +105,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     private val keyAdBannerHigh = FirebaseRemoteConfig.getInstance()
         .getString(RemoteConfigKey.KEY_ADS_BANNER_CREATE_EMOJI_HIGH)
 
+    private var retryAttempt = 0.0
     private var isFinishImmediately = false
 
     private lateinit var emojiViewModel: EmojiViewModel
@@ -199,11 +202,11 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         SaveSuccessDialog().apply {
             home = {
                 isFinishImmediately = true
-                finish()
                 startActivity(Intent(this@EmojiMakerActivity, MainActivity::class.java))
                 kotlin.runCatching {
-                    showInterstitial(false)
+                    forceShowInterstitial(false)
                 }
+                finish()
             }
             createMore = {
                 newBoard()
@@ -646,6 +649,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     private fun setupButtons() {
 
         binding.ivBack.setOnSafeClick {
+            forceShowInterstitial(false)
             finish()
         }
 
@@ -876,8 +880,10 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         if (isAdsInitializeCalled.getAndSet(true)) {
             return
         }
-        kotlin.runCatching {
-            MobileAds.initialize(mContext) {}
+        try {
+            MobileAds.initialize(this) {}
+        } catch (e: Exception) {
+            Timber.e(e)
         }
         loadInterAd()
     }
@@ -901,15 +907,22 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
                 override fun onAdFailedToLoad(adError: LoadAdError) {
                     mFirebaseAnalytics.logEvent("e_load_inter_splash", null)
                     mInterstitialAd = null
-                    Handler(Looper.getMainLooper()).postDelayed(
-                        { loadInterAdsMain(keyAdInter) },
-                        2000
-                    )
+                    retryAttempt++
+                    if (retryAttempt < 4) {
+                        val delayMillis = TimeUnit.SECONDS.toMillis(
+                            2.0.pow(6.0.coerceAtMost(retryAttempt)).toLong()
+                        )
+                        Handler(Looper.getMainLooper()).postDelayed(
+                            { loadInterAdsMain(keyAdInter) },
+                            delayMillis
+                        )
+                    }
                 }
 
                 override fun onAdLoaded(ad: InterstitialAd) {
                     mFirebaseAnalytics.logEvent("d_load_inter_splash", null)
                     mInterstitialAd = ad
+                    retryAttempt = 0.0
                     mInterstitialAd?.onPaidEventListener =
                         OnPaidEventListener { adValue ->
                             val loadedAdapterResponseInfo: AdapterResponseInfo? =

@@ -30,6 +30,7 @@ import com.wa.ai.emojimaker.utils.ads.AdsConsentManager
 import com.wa.ai.emojimaker.utils.extention.checkInternetConnection
 import com.wa.ai.emojimaker.utils.extention.isNetworkAvailable
 import com.wa.ai.emojimaker.utils.extention.setStatusBarColor
+import timber.log.Timber
 import java.util.Date
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -98,7 +99,11 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
         if (isAdsInitializeCalled.getAndSet(true)) {
             return
         }
-        MobileAds.initialize(this) {}
+        try {
+            MobileAds.initialize(this) {}
+        } catch (e: Exception) {
+            Timber.e(e)
+        }
         loadInterAd()
     }
 
