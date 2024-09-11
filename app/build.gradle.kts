@@ -33,7 +33,7 @@ android {
         minSdk = 24
         //noinspection EditedTargetSdkVersion
         targetSdk = 34
-        versionCode = 300
+        versionCode = 10105
         versionName = "1.91"
 
         val formattedDate = SimpleDateFormat("MM.dd.yyyy").format(Date())
