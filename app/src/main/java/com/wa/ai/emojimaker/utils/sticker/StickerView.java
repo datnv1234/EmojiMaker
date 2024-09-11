@@ -4,10 +4,8 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.*;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
-import android.view.View;
 import android.widget.FrameLayout;
 
 import androidx.annotation.ColorInt;
@@ -21,7 +19,6 @@ import com.wa.ai.emojimaker.R;
 import com.wa.ai.emojimaker.utils.sticker.iconEvents.CropIconEvent;
 import com.wa.ai.emojimaker.utils.sticker.iconEvents.DeleteIconEvent;
 import com.wa.ai.emojimaker.utils.sticker.iconEvents.DuplicateIconEvent;
-import com.wa.ai.emojimaker.utils.sticker.iconEvents.FlipHorizontallyEvent;
 import com.wa.ai.emojimaker.utils.sticker.iconEvents.ZoomIconEvent;
 
 import org.jetbrains.annotations.NotNull;
@@ -31,6 +28,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+
+import timber.log.Timber;
 
 /**
  * Sticker View
@@ -172,10 +172,7 @@ public class StickerView extends FrameLayout {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         if (changed) {
-            stickerRect.left = left;
-            stickerRect.top = top;
-            stickerRect.right = right;
-            stickerRect.bottom = bottom;
+            stickerRect.set(left, top, right, bottom);
         }
     }
 
@@ -203,10 +200,6 @@ public class StickerView extends FrameLayout {
             canvas.drawLine(x2, y2, x4, y4, borderPaint);
             canvas.drawLine(x4, y4, x3, y3, borderPaint);
         }
-
-        float rotation = StickerMath.calculateRotation(x4, y4, x3, y3);
-        float roundedRotation = roundOff(rotation);
-
         canvas.restore();
     }
 
@@ -245,20 +238,20 @@ public class StickerView extends FrameLayout {
 
                 float rotation = StickerMath.calculateRotation(x4, y4, x3, y3);
 
-                for (int i = 0; i < activeIcons.get().size(); i++) {
-                    BitmapStickerIcon icon = activeIcons.get().get(i);
-                    switch (icon.getPosition()) {
-                        case BitmapStickerIcon.LEFT_TOP ->
-                                configIconMatrix(icon, x1, y1, rotation);
-                        case BitmapStickerIcon.RIGHT_TOP ->
-                                configIconMatrix(icon, x2, y2, rotation);
-                        case BitmapStickerIcon.LEFT_BOTTOM ->
-                                configIconMatrix(icon, x3, y3, rotation);
-                        case BitmapStickerIcon.RIGHT_BOTTOM ->
-                                configIconMatrix(icon, x4, y4, rotation);
+                try {
+                    for (BitmapStickerIcon icon : Objects.requireNonNull(activeIcons.get())) {
+                        switch (icon.getPosition()) {
+                            case BitmapStickerIcon.LEFT_TOP -> configIconMatrix(icon, x1, y1, rotation);
+                            case BitmapStickerIcon.RIGHT_TOP -> configIconMatrix(icon, x2, y2, rotation);
+                            case BitmapStickerIcon.LEFT_BOTTOM -> configIconMatrix(icon, x3, y3, rotation);
+                            case BitmapStickerIcon.RIGHT_BOTTOM -> configIconMatrix(icon, x4, y4, rotation);
+                        }
+                        icon.draw(canvas, iconPaint);
                     }
-                    icon.draw(canvas, iconPaint);
+                } catch (Exception e) {
+                    Timber.e(e.toString());
                 }
+
             }
         }
     }
@@ -567,67 +560,38 @@ public class StickerView extends FrameLayout {
         return Bitmap.createScaledBitmap(originalBitmap, newWidth, newHeight, true);
     }
 
-   /* @NonNull public Bitmap createBitmap() throws OutOfMemoryError {
-        handlingSticker = null;
-        *//*this.measure(View.MeasureSpec.makeMeasureSpec(512, View.MeasureSpec.EXACTLY),
-                View.MeasureSpec.makeMeasureSpec(512, View.MeasureSpec.EXACTLY));*//*
-        //this.layout(0, 0, 512, 512);
-
-
-        Bitmap bitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
-        Log.d("datnv", "createBitmap: width(" + getWidth() + ") height(" + getHeight() + ")");
-        Bitmap bm = Bitmap.createScaledBitmap(bitmap, (int) (getWidth() * 0.5), (int) (getHeight() * 0.5), false);
-        Canvas canvas = new Canvas(bm);
-
-        this.draw(canvas);
-        return bm;
-    }*/
-
-    @NonNull
     public Bitmap createBitmap() throws OutOfMemoryError {
         handlingSticker = null;
-        // Measure the view
         int originalWidth = getWidth();
         int originalHeight = getHeight();
-        //Log.d("datnv", "originalWidth: " + originalWidth + "originalHeight: " + originalHeight);
-        // Create a Bitmap with the view's original size
+
         Bitmap originalBitmap = Bitmap.createBitmap(originalWidth, originalHeight, Bitmap.Config.ARGB_8888);
         Canvas originalCanvas = new Canvas(originalBitmap);
 
-        // Draw the view onto the original Bitmap
         this.draw(originalCanvas);
 
-        // Calculate the new width and height (half of the original dimensions)
-        int newWidth = 512;
-        int newHeight = 512;
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(originalBitmap, 512, 512, true);
 
-        // Create a new Bitmap with the desired size
-        Bitmap resizedBitmap = Bitmap.createBitmap(newWidth, newHeight, Bitmap.Config.ARGB_8888);
-        Canvas resizedCanvas = new Canvas(resizedBitmap);
-
-        // Set up the source and destination rectangles for drawing
-        Rect srcRect = new Rect(0, 0, originalWidth, originalHeight);
-        Rect dstRect = new Rect(0, 0, newWidth, newHeight);
-
-
-        // Draw the original Bitmap onto the new Bitmap
-        resizedCanvas.drawBitmap(originalBitmap, srcRect, dstRect, null);
-
-        // Clean up the original bitmap
         originalBitmap.recycle();
-
         return resizedBitmap;
     }
 
 
 
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        removeAllStickers();
+    }
+
     public void removeAllStickers() {
-        this.stickers.clear();
-        Sticker sticker = this.handlingSticker;
-        if (sticker != null) {
-            sticker.release();
-            this.handlingSticker = null;
+        for (Sticker sticker : stickers) {
+            if (sticker != null) {
+                sticker.release();
+            }
         }
+        stickers.clear();
+        handlingSticker = null;
         invalidate();
     }
 

@@ -113,8 +113,13 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
 
     private val pagerIconAdapter: PagerIconAdapter by lazy {
         PagerIconAdapter(itemClick = {
-            kotlin.runCatching {
+            try {
                 showInterstitialItemClick()
+            } catch (e: Exception) {
+                val params = Bundle().apply {
+                    putString("EmojiMakerActivity", e.message)
+                }
+                mFirebaseAnalytics.logEvent("crash", params)
             }
             doAddSticker(it)
         })
@@ -203,15 +208,25 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
             home = {
                 isFinishImmediately = true
                 startActivity(Intent(this@EmojiMakerActivity, MainActivity::class.java))
-                kotlin.runCatching {
+                try {
                     forceShowInterstitial(false)
+                } catch (e: Exception) {
+                    val params = Bundle().apply {
+                        putString("EmojiMakerActivity", e.message)
+                    }
+                    mFirebaseAnalytics.logEvent("crash", params)
                 }
                 finish()
             }
             createMore = {
                 newBoard()
-                kotlin.runCatching {
+                try {
                     showInterstitial(true)
+                } catch (e: Exception) {
+                    val params = Bundle().apply {
+                        putString("EmojiMakerActivity", e.message)
+                    }
+                    mFirebaseAnalytics.logEvent("crash", params)
                 }
             }
         }
@@ -242,18 +257,29 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         setUpViewPager()
 
         binding.btnSave.setOnSafeClick(1000) {
+            mFirebaseAnalytics.logEvent("EmojiMaker", null)
             val bitmap = binding.stickerView.createBitmap()
             emojiViewModel.setBitmap(bitmap)
             if (!mSaveDialog.isAdded) {
                 mSaveDialog.show(supportFragmentManager, mSaveDialog.tag)
             }
-            kotlin.runCatching {
+            try {
                 showInterstitial()
+            } catch (e: Exception) {
+                val params = Bundle().apply {
+                    putString("EmojiMakerActivity", e.message)
+                }
+                mFirebaseAnalytics.logEvent("crash", params)
             }
         }
         binding.btnWatchVideo.setOnSafeClick {
-            kotlin.runCatching {
+            try {
                 forceShowInterstitial()
+            } catch (e: Exception) {
+                val params = Bundle().apply {
+                    putString("EmojiMakerActivity", e.message)
+                }
+                mFirebaseAnalytics.logEvent("crash", params)
             }
             emojiViewModel.setLock(emojiViewModel.pageSelected.value!!, false)
         }
@@ -287,8 +313,13 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
             pagerIconAdapter.submitList(it.toMutableList())
         }
         val optionAdapter = OptionAdapter(this, emojiViewModel.optionList, itemClick = {
-            kotlin.runCatching {
+            try {
                 showInterstitialItemClick()
+            } catch (e: Exception) {
+                val params = Bundle().apply {
+                    putString("EmojiMakerActivity", e.message)
+                }
+                mFirebaseAnalytics.logEvent("crash", params)
             }
             binding.vpIcon.setCurrentItem(it, true)
         })
@@ -299,15 +330,24 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
                     super.onPageSelected(position)
 
                     emojiViewModel.setPageSelected(position)
-                    kotlin.runCatching {
+                    try {
                         showInterstitialItemClick()
-                    }.onFailure { exception ->
-                        Timber.tag("ViewPagerCallback")
-                            .e("Error showing interstitial: %s", exception.message)
+                    } catch (e: Exception) {
+                        val params = Bundle().apply {
+                            putString("EmojiMakerActivity", e.message)
+                        }
+                        mFirebaseAnalytics.logEvent("crash", params)
                     }
                     optionAdapter.onItemFocus(position)
                     if (position in 0 until optionAdapter.itemCount) {
-                        binding.rvOptions.scrollToPosition(position)
+                        try {
+                            binding.rvOptions.scrollToPosition(position)
+                        } catch (e: Exception) {
+                            val params = Bundle().apply {
+                                putString("EmojiMakerActivity", e.message)
+                            }
+                            mFirebaseAnalytics.logEvent("crash", params)
+                        }
                     }
                 }
             })
@@ -649,34 +689,61 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     private fun setupButtons() {
 
         binding.ivBack.setOnSafeClick {
-            forceShowInterstitial(false)
+            try {
+                forceShowInterstitial(false)
+            } catch (e: Exception) {
+                val params = Bundle().apply {
+                    putString("EmojiMakerActivity", e.message)
+                }
+                mFirebaseAnalytics.logEvent("crash", params)
+            }
             finish()
         }
 
         binding.buttonAdd.setOnClickListener {
-            kotlin.runCatching {
+            try {
                 showInterstitialItemClick()
+            } catch (e: Exception) {
+                val params = Bundle().apply {
+                    putString("EmojiMakerActivity", e.message)
+                }
+                mFirebaseAnalytics.logEvent("crash", params)
             }
             addSticker()
         }
 
         binding.buttonReset.setOnClickListener {
-            kotlin.runCatching {
+            try {
                 showInterstitialItemClick(true)
+            } catch (e: Exception) {
+                val params = Bundle().apply {
+                    putString("EmojiMakerActivity", e.message)
+                }
+                mFirebaseAnalytics.logEvent("crash", params)
             }
             viewModel.resetView()
         }
 
         binding.buttonLock.setOnCheckedChangeListener { _, isToggled ->
-            kotlin.runCatching {
+            try {
                 showInterstitialItemClick(true)
+            } catch (e: Exception) {
+                val params = Bundle().apply {
+                    putString("EmojiMakerActivity", e.message)
+                }
+                mFirebaseAnalytics.logEvent("crash", params)
             }
             viewModel.isLocked.value = isToggled
         }
 
         binding.buttonCrop.setOnCheckedChangeListener { _, isToggled ->
-            kotlin.runCatching {
+            try {
                 showInterstitialItemClick(true)
+            } catch (e: Exception) {
+                val params = Bundle().apply {
+                    putString("EmojiMakerActivity", e.message)
+                }
+                mFirebaseAnalytics.logEvent("crash", params)
             }
             viewModel.isCropActive.value = isToggled
         }
@@ -695,26 +762,46 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         }
 
         binding.btnFlipHorizontal.setOnSafeClick {
-            kotlin.runCatching {
+            try {
                 showInterstitialItemClick(true)
+            } catch (e: Exception) {
+                val params = Bundle().apply {
+                    putString("EmojiMakerActivity", e.message)
+                }
+                mFirebaseAnalytics.logEvent("crash", params)
             }
             viewModel.flipCurrentSticker(StickerView.FLIP_HORIZONTALLY)
         }
         binding.btnFlipVertical.setOnSafeClick {
-            kotlin.runCatching {
+            try {
                 showInterstitialItemClick(true)
+            } catch (e: Exception) {
+                val params = Bundle().apply {
+                    putString("EmojiMakerActivity", e.message)
+                }
+                mFirebaseAnalytics.logEvent("crash", params)
             }
             viewModel.flipCurrentSticker(StickerView.FLIP_VERTICALLY)
         }
         binding.btnUndo.setOnSafeClick {
-            kotlin.runCatching {
+            try {
                 showInterstitialItemClick(true)
+            } catch (e: Exception) {
+                val params = Bundle().apply {
+                    putString("EmojiMakerActivity", e.message)
+                }
+                mFirebaseAnalytics.logEvent("crash", params)
             }
             toast("This function is not available!")
         }
         binding.btnReUndo.setOnSafeClick {
-            kotlin.runCatching {
+            try {
                 showInterstitialItemClick(true)
+            } catch (e: Exception) {
+                val params = Bundle().apply {
+                    putString("EmojiMakerActivity", e.message)
+                }
+                mFirebaseAnalytics.logEvent("crash", params)
             }
             toast("This function is not available!")
         }
@@ -729,8 +816,13 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
                 .setTitle(getString(R.string.confirm))
                 .setMessage(getString(R.string.are_you_sure_want_to_quit))
                 .setPositiveButton(getString(R.string.ok)) { _, _ ->
-                    kotlin.runCatching {
+                    try {
                         showInterstitial(false)
+                    } catch (e: Exception) {
+                        val params = Bundle().apply {
+                            putString("EmojiMakerActivity", e.message)
+                        }
+                        mFirebaseAnalytics.logEvent("crash", params)
                     }
                     super.finish()
                 }
@@ -949,59 +1041,6 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
                 }
             }
         )
-    }
-
-    private fun loadInterAdsSplashSequence(listKeyAds: List<String>) {
-
-        fun loadInterAds(adIndex: Int) {
-            if (adIndex == listKeyAds.size - 1) {
-                loadInterAdsMain(listKeyAds.last())
-                return
-            }
-            InterstitialAd.load(
-                this,
-                listKeyAds[adIndex],
-                AdRequest.Builder().build(),
-                object : InterstitialAdLoadCallback() {
-                    override fun onAdFailedToLoad(adError: LoadAdError) {
-                        mFirebaseAnalytics.logEvent("e_load_inter_splash", null)
-                        mInterstitialAd = null
-                        loadInterAds(adIndex + 1)
-                    }
-
-                    override fun onAdLoaded(ad: InterstitialAd) {
-                        mFirebaseAnalytics.logEvent("d_load_inter_splash", null)
-                        mInterstitialAd = ad
-                        mInterstitialAd?.onPaidEventListener =
-                            OnPaidEventListener { adValue ->
-                                val loadedAdapterResponseInfo: AdapterResponseInfo? =
-                                    mInterstitialAd?.responseInfo?.loadedAdapterResponseInfo
-                                val adRevenue = AdjustAdRevenue(AdjustConfig.AD_REVENUE_ADMOB)
-                                val revenue = adValue.valueMicros.toDouble() / 1000000.0
-                                adRevenue.setRevenue(revenue, adValue.currencyCode)
-                                adRevenue.adRevenueNetwork = loadedAdapterResponseInfo?.adSourceName
-                                Adjust.trackAdRevenue(adRevenue)
-
-                                val analytics =
-                                    FirebaseAnalytics.getInstance(this@EmojiMakerActivity)
-                                val params = Bundle().apply {
-                                    putString(
-                                        FirebaseAnalytics.Param.AD_PLATFORM,
-                                        "admob mediation"
-                                    )
-                                    putString(FirebaseAnalytics.Param.AD_SOURCE, "AdMob")
-                                    putString(FirebaseAnalytics.Param.AD_FORMAT, "Interstitial")
-                                    putDouble(FirebaseAnalytics.Param.VALUE, revenue)
-                                    putString(FirebaseAnalytics.Param.CURRENCY, "USD")
-                                }
-                                analytics.logEvent("ad_impression_2", params)
-                            }
-                    }
-                }
-            )
-        }
-
-        loadInterAds(0)
     }
 
     private fun showInterstitial(isReload: Boolean = true) {
