@@ -650,28 +650,30 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     private fun doAddSticker(bitmap: Bitmap?) {
         if (bitmap == null) {
             Toast.makeText(this, "Could not decode image", Toast.LENGTH_SHORT).show()
-        } else {
-            // Resize absurdly large images
+            return
+        }
+
+        try {
+            // Kiểm tra kích thước của hình ảnh
             val totalSize = bitmap.width * bitmap.height
-            val newBitmap = if (totalSize > MAX_SIZE_PIXELS) {
+            val newBitmap: Bitmap = if (totalSize > MAX_SIZE_PIXELS) {
+                // Tính toán tỉ lệ nén để giữ nguyên tỉ lệ khung hình
                 val scaleFactor: Float = MAX_SIZE_PIXELS.toFloat() / totalSize.toFloat()
-                val scaled = Bitmap.createScaledBitmap(
-                    bitmap,
-                    (bitmap.width * scaleFactor).toInt(),
-                    (bitmap.height * scaleFactor).toInt(),
-                    false
-                )
-                Timber.w(
-                    "Scaled huge bitmap, memory savings: %dMB",
-                    (bitmap.allocationByteCount - scaled.allocationByteCount) / (1024 * 1024)
-                )
-                scaled
+                val newWidth = (bitmap.width * scaleFactor).toInt()
+                val newHeight = (bitmap.height * scaleFactor).toInt()
+
+                Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, false)
             } else {
                 bitmap
             }
 
+            // Tạo Drawable từ Bitmap mới (hoặc Bitmap gốc nếu không nén)
             val drawable = BitmapDrawable(resources, newBitmap)
             viewModel.addSticker(DrawableSticker(drawable))
+
+        } catch (e: OutOfMemoryError) {
+            Timber.e(e, "OutOfMemoryError when processing bitmap.")
+            Toast.makeText(this, "Failed to add sticker due to memory limitations", Toast.LENGTH_SHORT).show()
         }
     }
 
