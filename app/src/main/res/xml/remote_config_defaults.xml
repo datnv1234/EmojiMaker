@@ -17,7 +17,7 @@
 
   <entry>
     <key>banner_reload</key>
-    <value>20000</value>
+    <value>35000</value>
   </entry>
 
   <entry>
@@ -30,7 +30,7 @@
   </entry>
   <entry>
     <key>is_use_banner_monet</key>
-    <value>true</value>
+    <value>false</value>
   </entry>
 
   <entry>
@@ -157,40 +157,24 @@
   </entry>
   <entry>
     <key>key_ads_banner_main</key>
-    <value>ca-app-pub-3621741958408545/3100994720</value>
+    <value>ca-app-pub-3621741958408545/8239726985</value>
   </entry>
   <entry>
     <key>key_ads_banner_main_high</key>
     <value>ca-app-pub-3621741958408545/7565808135</value>
   </entry>
-  <entry>
-    <key>key_ads_banner_main_medium</key>
-    <value>ca-app-pub-3621741958408545/6252726462</value>
-  </entry>
 
   <entry>
     <key>key_ads_banner_create_emoji</key>
-    <value>ca-app-pub-3621741958408545/6125978859</value>
+    <value>ca-app-pub-3621741958408545/6926645315</value>
   </entry>
   <entry>
     <key>key_ads_banner_create_emoji_high</key>
-    <value>ca-app-pub-3621741958408545/6220270596</value>
-  </entry>
-  <entry>
-    <key>key_ads_banner_create_emoji_medium</key>
-    <value>ca-app-pub-3621741958408545/1674520924</value>
+    <value>ca-app-pub-3621741958408545/7528719468</value>
   </entry>
 
   <entry>
     <key>key_ads_banner_show_stickers</key>
-    <value>ca-app-pub-3621741958408545/6200719213</value>
-  </entry>
-  <entry>
-    <key>key_ads_banner_show_stickers_high</key>
-    <value>ca-app-pub-3621741958408545/6200719213</value>
-  </entry>
-  <entry>
-    <key>key_ads_banner_show_stickers_medium</key>
     <value>ca-app-pub-3621741958408545/6200719213</value>
   </entry>
 

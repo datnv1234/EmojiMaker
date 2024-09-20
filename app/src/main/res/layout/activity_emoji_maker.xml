@@ -15,7 +15,6 @@
         android:layout_height="match_parent"
         android:background="@drawable/bg"
         android:orientation="vertical"
-        android:tag="layout/activity_new_screen_emoji_0"
         tools:context=".ui.component.emojimaker.EmojiMakerActivity">
 
         <RelativeLayout
@@ -64,17 +63,17 @@
         </RelativeLayout>
 
         <FrameLayout
-            android:id="@+id/rl_banner"
+            android:id="@+id/rl_banner_top"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom">
+            android:layout_height="wrap_content">
 
             <include
-                android:id="@+id/ads_banner"
-                layout="@layout/ads_banner"
+                android:id="@+id/ads_banner_top"
+                layout="@layout/ads_banner_top"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </FrameLayout>
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -187,7 +186,7 @@
                 android:layout_height="0dp"
                 android:background="@color/transparent"
                 android:orientation="vertical"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/rl_banner"
                 app:layout_constraintTop_toBottomOf="@+id/rl_emoji">
 
                 <LinearLayout
@@ -445,6 +444,18 @@
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
                 </RelativeLayout>
             </RelativeLayout>
+            <FrameLayout
+                android:id="@+id/rl_banner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <include
+                    android:id="@+id/ads_banner"
+                    layout="@layout/ads_banner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </FrameLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>

@@ -153,15 +153,7 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
 
     private fun loadBanner() {
         viewModel.starTimeCountReloadBanner(bannerReload)
-        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_USE_BANNER_MONET)) {
-            BannerUtils.instance?.loadCollapsibleBanner(this, keyAdBannerHigh) { res2 ->
-                if (!res2) {
-                    BannerUtils.instance?.loadCollapsibleBanner(this, keyAdBannerAllPrice) { }
-                }
-            }
-        } else {
-            BannerUtils.instance?.loadCollapsibleBanner(this, keyAdBannerAllPrice) { }
-        }
+        BannerUtils.instance?.loadCollapsibleBanner(this, keyAdBannerAllPrice) { }
     }
 
     private fun checkForAppUpdates() {

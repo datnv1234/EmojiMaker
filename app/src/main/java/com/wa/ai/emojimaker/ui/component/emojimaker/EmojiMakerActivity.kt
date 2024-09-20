@@ -109,7 +109,6 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     private var isFinishImmediately = false
 
     private lateinit var emojiViewModel: EmojiViewModel
-    private val mContext: Context = this
 
     private val pagerIconAdapter: PagerIconAdapter by lazy {
         PagerIconAdapter(itemClick = {
@@ -196,7 +195,6 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
                         bitmapImage = it
                     )
                 }
-                //mDialogWaiting.show(supportFragmentManager, mDialogWaiting.tag)
                 if (!mSaveSuccessDialog.isAdded)
                     mSaveSuccessDialog.show(supportFragmentManager, mSaveSuccessDialog.tag)
             }
@@ -312,7 +310,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         emojiViewModel.optionMutableLiveData.observe(this) {
             pagerIconAdapter.submitList(it.toMutableList())
         }
-        val optionAdapter = OptionAdapter(this, emojiViewModel.optionList, itemClick = {
+        val optionAdapter = OptionAdapter(emojiViewModel.optionList, itemClick = {
             try {
                 showInterstitialItemClick()
             } catch (e: Exception) {
@@ -338,17 +336,6 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
                         }
                         mFirebaseAnalytics.logEvent("crash", params)
                     }
-                    optionAdapter.onItemFocus(position)
-                    if (position in 0 until optionAdapter.itemCount) {
-                        try {
-                            binding.rvOptions.scrollToPosition(position)
-                        } catch (e: Exception) {
-                            val params = Bundle().apply {
-                                putString("EmojiMakerActivity", e.message)
-                            }
-                            mFirebaseAnalytics.logEvent("crash", params)
-                        }
-                    }
                 }
             })
         }
@@ -370,25 +357,44 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         if (FirebaseRemoteConfig.getInstance()
                 .getBoolean(RemoteConfigKey.IS_SHOW_ADS_BANNER_CREATE_EMOJI)
         ) {
-            loadBanner()
+            loadBannerNoCollapse()
         } else {
             binding.rlBanner.gone()
         }
         emojiViewModel.loadBanner.observe(this) {
-            loadBanner()
+            loadBannerCollapse()
         }
     }
 
-    private fun loadBanner() {
+    private fun loadBannerNoCollapse() {
+        emojiViewModel.starTimeCountReloadBanner(bannerReload)
+        if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_USE_BANNER_MONET)) {
+            BannerUtils.instance?.loadBannerTop(this, keyAdBannerHigh) { res2 ->
+                if (!res2) {
+                    binding.rlBanner.visible()
+                    BannerUtils.instance?.loadBanner(this, keyAdBannerAllPrice) { }
+                } else {
+                    binding.rlBanner.gone()
+                }
+            }
+        } else {
+            BannerUtils.instance?.loadBanner(this, keyAdBannerAllPrice) { }
+        }
+    }
+
+    private fun loadBannerCollapse() {
         emojiViewModel.starTimeCountReloadBanner(bannerReload)
         if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_USE_BANNER_MONET)) {
             BannerUtils.instance?.loadCollapsibleBannerTop(this, keyAdBannerHigh) { res2 ->
                 if (!res2) {
-                    BannerUtils.instance?.loadCollapsibleBannerTop(this, keyAdBannerAllPrice) { }
+                    binding.rlBanner.visible()
+                    BannerUtils.instance?.loadCollapsibleBanner(this, keyAdBannerAllPrice) { }
+                } else {
+                    binding.rlBanner.gone()
                 }
             }
         } else {
-            BannerUtils.instance?.loadCollapsibleBannerTop(this, keyAdBannerAllPrice) { }
+            BannerUtils.instance?.loadCollapsibleBanner(this, keyAdBannerAllPrice) { }
         }
     }
 

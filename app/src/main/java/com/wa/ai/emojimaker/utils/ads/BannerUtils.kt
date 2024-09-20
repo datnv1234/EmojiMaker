@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.res.Resources
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import com.adjust.sdk.Adjust
@@ -23,7 +24,6 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.utils.extention.checkInternetConnection
 import com.wa.ai.emojimaker.utils.extention.gone
-import com.wa.ai.emojimaker.utils.extention.isNetworkAvailable
 import com.wa.ai.emojimaker.utils.extention.visible
 import timber.log.Timber
 
@@ -71,6 +71,25 @@ class BannerUtils {
         val adContainer = mActivity.findViewById<FrameLayout>(R.id.banner_container)
         val containerShimmer =
             mActivity.findViewById<ShimmerFrameLayout>(R.id.shimmer_container_banner)
+        if (!mActivity.checkInternetConnection()) {
+            adContainer.gone()
+            containerShimmer.gone()
+            adsLoadCallBack(false)
+        } else {
+            loadBanner(
+                mActivity,
+                id,
+                adContainer,
+                containerShimmer,
+                false, BANNER_INLINE_LARGE_STYLE, adsLoadCallBack
+            )
+        }
+    }
+
+    fun loadBannerTop(mActivity: Activity, id: String, adsLoadCallBack: (Boolean) -> Unit) {
+        val adContainer = mActivity.findViewById<FrameLayout>(R.id.banner_container_top)
+        val containerShimmer =
+            mActivity.findViewById<ShimmerFrameLayout>(R.id.shimmer_container_banner_top)
         if (!mActivity.checkInternetConnection()) {
             adContainer.gone()
             containerShimmer.gone()
@@ -181,9 +200,9 @@ class BannerUtils {
     }
 
     fun loadCollapsibleBannerTop(mActivity: Activity, id: String, adsLoadCallBack: (Boolean) -> Unit) {
-        val adContainer = mActivity.findViewById<FrameLayout>(R.id.banner_container)
+        val adContainer = mActivity.findViewById<FrameLayout>(R.id.banner_container_top)
         val containerShimmer =
-            mActivity.findViewById<ShimmerFrameLayout>(R.id.shimmer_container_banner)
+            mActivity.findViewById<ShimmerFrameLayout>(R.id.shimmer_container_banner_top)
         if (!mActivity.checkInternetConnection()) {
             adContainer.gone()
             containerShimmer.gone()
@@ -236,6 +255,7 @@ class BannerUtils {
             adView.adUnitId = id
             //adContainer.addView(adView)
             val adSize: AdSize = getAdSize(mActivity, useInlineAdaptive, inlineStyle)
+
             val adHeight: Int = if (useInlineAdaptive && inlineStyle.equals(
                     BANNER_INLINE_SMALL_STYLE,
                     ignoreCase = true
@@ -267,9 +287,11 @@ class BannerUtils {
                     adContainer.gone()
                     containerShimmer.gone()
                     adsLoadCallBack(false)
+                    Log.d("datnv", "onAdFailedToLoad: ${loadAdError.message} __ top: $top")
                 }
 
                 override fun onAdLoaded() {
+                    Log.d("datnv", "OK __ top: $top")
                     containerShimmer.stopShimmer()
                     containerShimmer.gone()
                     adContainer.visible()
