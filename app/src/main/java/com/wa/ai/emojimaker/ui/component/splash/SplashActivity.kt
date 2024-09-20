@@ -28,7 +28,6 @@ import com.wa.ai.emojimaker.utils.DeviceUtils
 import com.wa.ai.emojimaker.utils.RemoteConfigKey
 import com.wa.ai.emojimaker.utils.ads.AdsConsentManager
 import com.wa.ai.emojimaker.utils.extention.checkInternetConnection
-import com.wa.ai.emojimaker.utils.extention.isNetworkAvailable
 import com.wa.ai.emojimaker.utils.extention.setStatusBarColor
 import timber.log.Timber
 import java.util.Date
@@ -78,19 +77,16 @@ class SplashActivity : BaseBindingActivity<ActivitySplashBinding, SplashViewMode
     }
 
     private fun initAdsManager() {
+        var isInitializeMobileAdsSdk = false
         adsConsentManager = AdsConsentManager.getInstance(applicationContext)
         adsConsentManager?.gatherConsent(this) { consentError ->
-            if (consentError != null) {
-
+            if (consentError != null || adsConsentManager?.canRequestAds == true) {
                 initializeMobileAdsSdk()
-            }
-
-            if (adsConsentManager?.canRequestAds == true) {
-                initializeMobileAdsSdk()
+                isInitializeMobileAdsSdk = true
             }
         }
 
-        if (adsConsentManager?.canRequestAds == true) {
+        if (!isInitializeMobileAdsSdk && adsConsentManager?.canRequestAds == true) {
             initializeMobileAdsSdk()
         }
     }

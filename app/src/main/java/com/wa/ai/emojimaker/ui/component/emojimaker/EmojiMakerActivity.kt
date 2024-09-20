@@ -957,19 +957,16 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
 
 
     private fun initAdsManager() {
-        adsConsentManager = AdsConsentManager.getInstance(this)
+        var isInitializeMobileAdsSdk = false
+        adsConsentManager = AdsConsentManager.getInstance(applicationContext)
         adsConsentManager?.gatherConsent(this) { consentError ->
-            if (consentError != null) {
-
+            if (consentError != null || adsConsentManager?.canRequestAds == true) {
                 initializeMobileAdsSdk()
-            }
-
-            if (adsConsentManager?.canRequestAds == true) {
-                initializeMobileAdsSdk()
+                isInitializeMobileAdsSdk = true
             }
         }
 
-        if (adsConsentManager?.canRequestAds == true) {
+        if (!isInitializeMobileAdsSdk && adsConsentManager?.canRequestAds == true) {
             initializeMobileAdsSdk()
         }
     }

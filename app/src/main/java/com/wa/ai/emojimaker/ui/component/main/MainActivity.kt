@@ -206,19 +206,16 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
     }
 
     private fun initAdsManager() {
-        adsConsentManager = AdsConsentManager.getInstance(mContext)
-        adsConsentManager?.gatherConsent(mContext) { consentError ->
-            if (consentError != null) {
-
+        var isInitializeMobileAdsSdk = false
+        adsConsentManager = AdsConsentManager.getInstance(applicationContext)
+        adsConsentManager?.gatherConsent(this) { consentError ->
+            if (consentError != null || adsConsentManager?.canRequestAds == true) {
                 initializeMobileAdsSdk()
-            }
-
-            if (adsConsentManager?.canRequestAds == true) {
-                initializeMobileAdsSdk()
+                isInitializeMobileAdsSdk = true
             }
         }
 
-        if (adsConsentManager?.canRequestAds == true) {
+        if (!isInitializeMobileAdsSdk && adsConsentManager?.canRequestAds == true) {
             initializeMobileAdsSdk()
         }
     }

@@ -321,19 +321,16 @@ class MergeAct2 : BaseBindingActivity<ActivityMerge2Binding, MergeVM>() {
     }
 
     private fun initAdsManager() {
-        adsConsentManager = AdsConsentManager.getInstance(this)
+        var isInitializeMobileAdsSdk = false
+        adsConsentManager = AdsConsentManager.getInstance(applicationContext)
         adsConsentManager?.gatherConsent(this) { consentError ->
-            if (consentError != null) {
-                Timber.e("datnv: ${consentError.errorCode}: ${consentError.message}")
+            if (consentError != null || adsConsentManager?.canRequestAds == true) {
                 initializeMobileAdsSdk()
-            }
-
-            if (adsConsentManager?.canRequestAds == true) {
-                initializeMobileAdsSdk()
+                isInitializeMobileAdsSdk = true
             }
         }
 
-        if (adsConsentManager?.canRequestAds == true) {
+        if (!isInitializeMobileAdsSdk && adsConsentManager?.canRequestAds == true) {
             initializeMobileAdsSdk()
         }
     }
