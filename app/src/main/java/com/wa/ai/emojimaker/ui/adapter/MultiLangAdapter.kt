@@ -25,7 +25,7 @@ class MultiLangAdapter : BaseBindingAdapterDiff<LanguageUI, ItemMultiLangBinding
             notifyItemChanged(value)
         }
 
-    var newPosition: Int = -1
+    private var newPosition: Int = -1
         set(value) {
             oldPosition = field
             field = value

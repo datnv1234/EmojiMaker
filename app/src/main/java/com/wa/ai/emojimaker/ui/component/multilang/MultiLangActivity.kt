@@ -58,7 +58,7 @@ class MultiLangActivity : BaseBindingActivity<ActivityMultiLangBinding, MultiLan
     override fun setupData() {
         loadNativeAd()
         viewModel.getListLanguage()
-        viewModel.languageLiveData.observe(this) { it ->
+        viewModel.languageLiveData.observe(this) {
             multiLangAdapter.submitList(it)
         }
     }
@@ -133,19 +133,23 @@ class MultiLangActivity : BaseBindingActivity<ActivityMultiLangBinding, MultiLan
     private fun loadNativeAds(keyAds: String) {
         this.let {
             NativeAdsUtils.instance.loadNativeAds(
-                applicationContext,
-                keyAds
-            ) { nativeAds ->
-                if (nativeAds != null) {
-                    val adNativeVideoBinding = AdNativeVideoBinding.inflate(layoutInflater)
-                    NativeAdsUtils.instance.populateNativeAdVideoView(
-                        nativeAds,
-                        adNativeVideoBinding.root as NativeAdView
-                    )
-                    binding.frNativeAds.removeAllViews()
-                    binding.frNativeAds.addView(adNativeVideoBinding.root)
+                this,
+                keyAds,
+                { nativeAds ->
+                    if (nativeAds != null) {
+                        val adNativeVideoBinding = AdNativeVideoBinding.inflate(layoutInflater)
+                        NativeAdsUtils.instance.populateNativeAdVideoView(
+                            nativeAds,
+                            adNativeVideoBinding.root as NativeAdView
+                        )
+                        binding.frNativeAds.removeAllViews()
+                        binding.frNativeAds.addView(adNativeVideoBinding.root)
+                    }
+                },
+                {
+                    gotoIntroActivity()
                 }
-            }
+            )
         }
     }
 }

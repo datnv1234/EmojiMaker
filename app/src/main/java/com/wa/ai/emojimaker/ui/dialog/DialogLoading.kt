@@ -1,5 +1,6 @@
 package com.wa.ai.emojimaker.ui.dialog
 
+import android.app.Activity
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.View
@@ -15,7 +16,7 @@ import com.wa.ai.emojimaker.utils.extention.gone
 import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 import com.wa.ai.emojimaker.utils.extention.visible
 
-class DialogLoading : BaseBindingDialogFragment<DialogLoadingBinding>() {
+class DialogLoading(val activity: Activity) : BaseBindingDialogFragment<DialogLoadingBinding>() {
 
     private val keyNative =
         FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_HOME)
@@ -67,20 +68,24 @@ class DialogLoading : BaseBindingDialogFragment<DialogLoadingBinding>() {
     private fun loadNativeAds(keyAds: String) {
         this.let {
             NativeAdsUtils.instance.loadNativeAds(
-                requireContext(),
-                keyAds
-            ) { nativeAds ->
-                if (nativeAds != null && isAdded && isVisible) {
-                    binding.rlNative.visible()
-                    val adNativeVideoBinding = AdNativeContentBinding.inflate(layoutInflater)
-                    NativeAdsUtils.instance.populateNativeAdVideoView(
-                        nativeAds,
-                        adNativeVideoBinding.root
-                    )
-                    binding.frNativeAds.removeAllViews()
-                    binding.frNativeAds.addView(adNativeVideoBinding.root)
+                activity,
+                keyAds,
+                { nativeAds ->
+                    if (nativeAds != null && isAdded && isVisible) {
+                        binding.rlNative.visible()
+                        val adNativeVideoBinding = AdNativeContentBinding.inflate(layoutInflater)
+                        NativeAdsUtils.instance.populateNativeAdVideoView(
+                            nativeAds,
+                            adNativeVideoBinding.root
+                        )
+                        binding.frNativeAds.removeAllViews()
+                        binding.frNativeAds.addView(adNativeVideoBinding.root)
+                    }
+                },
+                {
+
                 }
-            }
+            )
         }
     }
 

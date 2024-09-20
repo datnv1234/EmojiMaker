@@ -4,23 +4,24 @@
 
     <com.google.android.gms.ads.nativead.NativeAdView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <RelativeLayout
             android:id="@+id/ad_unit_content"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/_145sdp"
-            android:background="@drawable/background_ads"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_ads_stroke"
             android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/_2sdp"
                 android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/_100sdp"
+                    android:layout_height="@dimen/_80sdp"
                     android:paddingHorizontal="@dimen/_4sdp">
 
                     <LinearLayout
@@ -92,7 +93,7 @@
                     <com.google.android.gms.ads.nativead.MediaView
                         android:id="@+id/ad_media"
                         android:layout_width="@dimen/_140sdp"
-                        android:layout_height="@dimen/_96sdp"
+                        android:layout_height="match_parent"
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="@dimen/_4sdp"
                         tools:ignore="InefficientWeight" />
@@ -102,8 +103,9 @@
                 <TextView
                     android:id="@+id/ad_call_to_action"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/_45sdp"
-                    android:layout_marginHorizontal="@dimen/_10sdp"
+                    android:layout_height="@dimen/_40sdp"
+                    android:layout_marginVertical="@dimen/_6sdp"
+                    android:layout_marginHorizontal="@dimen/_12sdp"
                     android:fontFamily="@font/poppins_bold"
                     android:background="@drawable/background_round_8"
                     android:gravity="center"

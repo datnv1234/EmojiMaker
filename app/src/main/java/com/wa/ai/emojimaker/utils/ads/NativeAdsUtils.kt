@@ -1,5 +1,6 @@
 package com.wa.ai.emojimaker.utils.ads
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
@@ -24,8 +25,6 @@ import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.utils.extention.gone
 import com.wa.ai.emojimaker.utils.extention.visible
 import timber.log.Timber
-import java.util.concurrent.TimeUnit
-import kotlin.math.pow
 
 class NativeAdsUtils {
     companion object {
@@ -33,10 +32,9 @@ class NativeAdsUtils {
     }
 
     private lateinit var analytics: FirebaseAnalytics
-    private var retryAttempt = 0.0
     var loadNativeCount = 0
 
-    private fun pushEvent(context: Context, nativeAd: NativeAd, adValue: AdValue) {
+    private fun pushEvent(activity: Activity, nativeAd: NativeAd, adValue: AdValue) {
         val loadedAdapterResponseInfo: AdapterResponseInfo? =
             nativeAd.responseInfo?.loadedAdapterResponseInfo
         val adRevenue = AdjustAdRevenue(AdjustConfig.AD_REVENUE_ADMOB)
@@ -47,7 +45,7 @@ class NativeAdsUtils {
         )
         adRevenue.adRevenueNetwork = loadedAdapterResponseInfo?.adSourceName
         Adjust.trackAdRevenue(adRevenue)
-        analytics = FirebaseAnalytics.getInstance(context)
+        analytics = FirebaseAnalytics.getInstance(activity)
         val params = Bundle()
         params.putString(FirebaseAnalytics.Param.AD_PLATFORM, "admob mediation")
         params.putString(FirebaseAnalytics.Param.AD_SOURCE, "AdMob")
@@ -57,21 +55,26 @@ class NativeAdsUtils {
         analytics.logEvent("ad_impression_2", params)
     }
 
-    fun loadNativeAds(context: Context, keyAds: String, adsLoadCallBack: (NativeAd?) -> Unit) {
-        val adLoader = AdLoader.Builder(context, keyAds)
+    fun loadNativeAds(
+        activity: Activity,
+        keyAds: String,
+        adsLoadCallBack: (NativeAd?) -> Unit,
+        adsClicked: () -> Unit
+    ) {
+        val adLoader = AdLoader.Builder(activity, keyAds)
             .forNativeAd { nativeAd ->
                 adsLoadCallBack(nativeAd)
                 nativeAd.setOnPaidEventListener { adValue ->
-                    pushEvent(context, nativeAd, adValue)
+                    pushEvent(activity, nativeAd, adValue)
                 }
             }.withAdListener(object : AdListener() {
                 override fun onAdFailedToLoad(p0: LoadAdError) {
                     super.onAdFailedToLoad(p0)
                     loadNativeCount++
-                    if (loadNativeCount <= 10) {
+                    if (loadNativeCount <= 5) {
                         Handler(Looper.getMainLooper()).postDelayed(
                             {
-                                loadNativeAds(context, keyAds, adsLoadCallBack)
+                                loadNativeAds(activity, keyAds, adsLoadCallBack, adsClicked)
                             },
                             2000
                         )
@@ -84,44 +87,13 @@ class NativeAdsUtils {
                     super.onAdLoaded()
                     loadNativeCount = 0
                 }
+
+                override fun onAdClicked() {
+                    super.onAdClicked()
+                    adsClicked()
+                }
             }).build()
         adLoader.loadAd(AdRequest.Builder().build())
-    }
-
-    fun loadNativeAdsSequence(
-        context: Context,
-        listKeyAds: List<String>,
-        adsLoadCallBack: (NativeAd?) -> Unit
-    ) {
-
-        fun loadNextAd(adIndex: Int) {
-            if (adIndex == (listKeyAds.size - 1)) {
-                loadNativeAds(context, listKeyAds.last(), adsLoadCallBack)
-                return
-            }
-
-            val adLoader = AdLoader.Builder(context, listKeyAds[adIndex])
-                .forNativeAd { nativeAd ->
-                    adsLoadCallBack(nativeAd)
-                    nativeAd.setOnPaidEventListener { adValue ->
-                        pushEvent(context, nativeAd, adValue)
-                    }
-                }.withAdListener(object : AdListener() {
-                    override fun onAdFailedToLoad(loadAdError: LoadAdError) {
-                        super.onAdFailedToLoad(loadAdError)
-                        loadNextAd(adIndex + 1)
-                    }
-
-                    override fun onAdLoaded() {
-                        super.onAdLoaded()
-                        Timber.tag("datnv").d("onAdLoaded: $adIndex")
-                    }
-                }).build()
-
-            adLoader.loadAd(AdRequest.Builder().build())
-
-        }
-        loadNextAd(0)
     }
 
     fun populateNativeAdVideoView(

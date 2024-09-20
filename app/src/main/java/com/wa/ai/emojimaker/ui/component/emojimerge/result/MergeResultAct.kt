@@ -75,7 +75,7 @@ class MergeResultAct : BaseBindingActivity<ActivityMergeResultBinding, MergeResu
     private var emotResult = ""
 
     private val mAddToPackageDialog: AddToPackageDialog by lazy {
-        AddToPackageDialog().apply {
+        AddToPackageDialog(this).apply {
             save = {
                 if (it == null) {
                     toast(getString(R.string.please_input_package_name))
@@ -104,7 +104,7 @@ class MergeResultAct : BaseBindingActivity<ActivityMergeResultBinding, MergeResu
     }
 
     private val mCreatePackageDialog: CreatePackageDialog by lazy {
-        CreatePackageDialog().apply {
+        CreatePackageDialog(this).apply {
             confirm = {
 
                 this@MergeResultAct.viewModel.bitmapMutableLiveData.value?.let { it1 ->
@@ -123,7 +123,7 @@ class MergeResultAct : BaseBindingActivity<ActivityMergeResultBinding, MergeResu
     }
 
     private val mSaveSuccessDialog: SaveSuccessDialog by lazy {
-        SaveSuccessDialog().apply {
+        SaveSuccessDialog(this).apply {
             home = {
                 this@MergeResultAct.finish()
                 startActivity(Intent(this@MergeResultAct, MainActivity::class.java))
@@ -521,19 +521,22 @@ class MergeResultAct : BaseBindingActivity<ActivityMergeResultBinding, MergeResu
         this.let {
             NativeAdsUtils.instance.loadNativeAds(
                 this,
-                keyAds
-            ) { nativeAds ->
-                if (nativeAds != null) {
-                    binding.rlNative.visible()
-                    val adNativeVideoBinding = AdNativeVideoBinding.inflate(layoutInflater)
-                    NativeAdsUtils.instance.populateNativeAdVideoView(
-                        nativeAds,
-                        adNativeVideoBinding.root as NativeAdView
-                    )
-                    binding.frNativeAds.removeAllViews()
-                    binding.frNativeAds.addView(adNativeVideoBinding.root)
+                keyAds, { nativeAds ->
+                    if (nativeAds != null) {
+                        binding.rlNative.visible()
+                        val adNativeVideoBinding = AdNativeVideoBinding.inflate(layoutInflater)
+                        NativeAdsUtils.instance.populateNativeAdVideoView(
+                            nativeAds,
+                            adNativeVideoBinding.root as NativeAdView
+                        )
+                        binding.frNativeAds.removeAllViews()
+                        binding.frNativeAds.addView(adNativeVideoBinding.root)
+                    }
+                },
+                {
+
                 }
-            }
+            )
         }
     }
 }

@@ -87,7 +87,7 @@ class MergeAct2 : BaseBindingActivity<ActivityMerge2Binding, MergeVM>() {
     }
 
     private val dialogLoading: DialogLoading by lazy {
-        DialogLoading().apply {
+        DialogLoading(this).apply {
             onClickDone = {
                 if (emote1.isNotEmpty() && emote2.isNotEmpty()) {
                     kotlin.runCatching {

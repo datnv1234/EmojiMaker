@@ -75,7 +75,7 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
     }
 
     private val renamePackageDialog: CreatePackageDialog by lazy {
-        CreatePackageDialog().apply {
+        CreatePackageDialog(requireActivity()).apply {
             confirm = {
                 creativeAdapter.updateFolderName(it.getName())
             }
@@ -83,7 +83,7 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
     }
 
     private val createPackageDialog: CreatePackageDialog by lazy {
-        CreatePackageDialog().apply {
+        CreatePackageDialog(requireActivity()).apply {
             confirm = {
                 mMainViewModel.addPackage(it)
             }
@@ -214,20 +214,24 @@ class MyCreativeFragment : BaseBindingFragment<FragmentMyCreativeBinding, MyCrea
     private fun loadNativeAds(keyAds: String) {
         this.let {
             NativeAdsUtils.instance.loadNativeAds(
-                requireContext(),
-                keyAds
-            ) { nativeAds ->
-                if (nativeAds != null && isAdded && isVisible) {
-                    binding.rlNative.visible()
-                    val adNativeVideoBinding = AdNativeContentBinding.inflate(layoutInflater)
-                    NativeAdsUtils.instance.populateNativeAdVideoView(
-                        nativeAds,
-                        adNativeVideoBinding.root
-                    )
-                    binding.frNativeAds.removeAllViews()
-                    binding.frNativeAds.addView(adNativeVideoBinding.root)
+                requireActivity(),
+                keyAds,
+                { nativeAds ->
+                    if (nativeAds != null && isAdded && isVisible) {
+                        binding.rlNative.visible()
+                        val adNativeVideoBinding = AdNativeContentBinding.inflate(layoutInflater)
+                        NativeAdsUtils.instance.populateNativeAdVideoView(
+                            nativeAds,
+                            adNativeVideoBinding.root
+                        )
+                        binding.frNativeAds.removeAllViews()
+                        binding.frNativeAds.addView(adNativeVideoBinding.root)
+                    }
+                },
+                {
+
                 }
-            }
+            )
         }
 
     }

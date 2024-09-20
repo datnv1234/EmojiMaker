@@ -1,5 +1,6 @@
 package com.wa.ai.emojimaker.ui.dialog
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.View
 import com.adjust.sdk.Adjust
@@ -17,7 +18,7 @@ import com.wa.ai.emojimaker.utils.extention.setOnSafeClick
 import com.wa.ai.emojimaker.utils.extention.visible
 import java.io.File
 
-class CreatePackageDialog : BaseBindingDialogFragment<DialogCreatePackageBinding>() {
+class CreatePackageDialog(val activity: Activity) : BaseBindingDialogFragment<DialogCreatePackageBinding>() {
 
     var confirm: ((pkg : PackageModel) -> Unit)? = null
     var oldName: String = ""
@@ -94,20 +95,24 @@ class CreatePackageDialog : BaseBindingDialogFragment<DialogCreatePackageBinding
     private fun loadNativeAds(keyAds: String) {
         this.let {
             NativeAdsUtils.instance.loadNativeAds(
-                requireContext(),
-                keyAds
-            ) { nativeAds ->
-                if (nativeAds != null && isAdded && isVisible) {
-                    binding.rlNative.visible()
-                    val adNativeVideoBinding = AdNativeContentBinding.inflate(layoutInflater)
-                    NativeAdsUtils.instance.populateNativeAdVideoView(
-                        nativeAds,
-                        adNativeVideoBinding.root
-                    )
-                    binding.frNativeAds.removeAllViews()
-                    binding.frNativeAds.addView(adNativeVideoBinding.root)
+                activity,
+                keyAds,
+                { nativeAds ->
+                    if (nativeAds != null && isAdded && isVisible) {
+                        binding.rlNative.visible()
+                        val adNativeVideoBinding = AdNativeContentBinding.inflate(layoutInflater)
+                        NativeAdsUtils.instance.populateNativeAdVideoView(
+                            nativeAds,
+                            adNativeVideoBinding.root
+                        )
+                        binding.frNativeAds.removeAllViews()
+                        binding.frNativeAds.addView(adNativeVideoBinding.root)
+                    }
+                },
+                {
+
                 }
-            }
+            )
         }
 
     }

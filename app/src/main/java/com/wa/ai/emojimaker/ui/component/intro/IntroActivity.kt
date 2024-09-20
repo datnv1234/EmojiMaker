@@ -83,7 +83,6 @@ class IntroActivity : BaseBindingActivity<ActivityIntroBinding, IntroViewModel>(
 
                             withContext(Dispatchers.Main) {
                                 startMainActivity()
-                                finish()
                             }
                         }
 
@@ -127,20 +126,24 @@ class IntroActivity : BaseBindingActivity<ActivityIntroBinding, IntroViewModel>(
     private fun loadNativeAds(keyAds: String) {
         this.let {
             NativeAdsUtils.instance.loadNativeAds(
-                applicationContext,
-                keyAds
-            ) { nativeAds ->
-                if (nativeAds != null) {
-                    binding.rlNative.visible()
-                    val adNativeVideoBinding = AdNativeVideoBinding.inflate(layoutInflater)
-                    NativeAdsUtils.instance.populateNativeAdVideoView(
-                        nativeAds,
-                        adNativeVideoBinding.root as NativeAdView
-                    )
-                    binding.frNativeAds.removeAllViews()
-                    binding.frNativeAds.addView(adNativeVideoBinding.root)
+                this,
+                keyAds,
+                { nativeAds ->
+                    if (nativeAds != null) {
+                        binding.rlNative.visible()
+                        val adNativeVideoBinding = AdNativeVideoBinding.inflate(layoutInflater)
+                        NativeAdsUtils.instance.populateNativeAdVideoView(
+                            nativeAds,
+                            adNativeVideoBinding.root as NativeAdView
+                        )
+                        binding.frNativeAds.removeAllViews()
+                        binding.frNativeAds.addView(adNativeVideoBinding.root)
+                    }
+                },
+                {
+                    startMainActivity()
                 }
-            }
+            )
         }
 
     }

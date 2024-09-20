@@ -129,7 +129,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     * Declare dialog variable
     * */
     private val mSaveDialog: SaveStickerDialog by lazy {
-        SaveStickerDialog().apply {
+        SaveStickerDialog(this).apply {
             addToPackage = {
                 if (!mAddToPackageDialog.isAdded)
                     mAddToPackageDialog.show(supportFragmentManager, mAddToPackageDialog.tag)
@@ -158,7 +158,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     }
 
     private val mAddToPackageDialog: AddToPackageDialog by lazy {
-        AddToPackageDialog().apply {
+        AddToPackageDialog(this).apply {
             save = {
                 if (it == null) {
                     toast(getString(R.string.please_input_package_name))
@@ -185,7 +185,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     }
 
     private val mCreatePackageDialog: CreatePackageDialog by lazy {
-        CreatePackageDialog().apply {
+        CreatePackageDialog(this).apply {
             confirm = { pkg ->
                 emojiViewModel.bitmapMutableLiveData.value?.let {
                     DeviceUtils.saveToPackage(
@@ -202,7 +202,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     }
 
     private val mSaveSuccessDialog: SaveSuccessDialog by lazy {
-        SaveSuccessDialog().apply {
+        SaveSuccessDialog(this).apply {
             home = {
                 isFinishImmediately = true
                 startActivity(Intent(this@EmojiMakerActivity, MainActivity::class.java))
