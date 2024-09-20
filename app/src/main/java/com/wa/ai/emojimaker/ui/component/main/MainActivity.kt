@@ -55,6 +55,7 @@ import timber.log.Timber
 import java.util.Date
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.math.pow
 
 class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
 
@@ -265,8 +266,16 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
                 override fun onAdFailedToLoad(adError: LoadAdError) {
                     mFirebaseAnalytics.logEvent("e_load_inter_splash", null)
                     mInterstitialAd = null
-
-                    Handler(Looper.getMainLooper()).postDelayed({ loadInterAdsMain(keyAdInter) }, 2000)
+                    retryAttempt++
+                    if (retryAttempt < 5) {
+                        val delayMillis = TimeUnit.SECONDS.toMillis(
+                            2.0.pow(6.0.coerceAtMost(retryAttempt)).toLong()
+                        )
+                        Handler(Looper.getMainLooper()).postDelayed(
+                            { loadInterAdsMain(keyAdInter) },
+                            delayMillis
+                        )
+                    }
                 }
 
                 override fun onAdLoaded(ad: InterstitialAd) {

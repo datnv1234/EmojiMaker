@@ -440,8 +440,6 @@ class MergeResultAct : BaseBindingActivity<ActivityMergeResultBinding, MergeResu
         }
     }
 
-
-
     private fun loadAd() {
         if (FirebaseRemoteConfig.getInstance()
                 .getBoolean(RemoteConfigKey.IS_SHOW_ADS_INTER_MERGE_EMOJI)
