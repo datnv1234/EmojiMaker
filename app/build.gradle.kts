@@ -33,8 +33,8 @@ android {
         minSdk = 24
         //noinspection EditedTargetSdkVersion
         targetSdk = 34
-        versionCode = 10106
-        versionName = "1.92"
+        versionCode = 10188
+        versionName = "1.95"
 
         val formattedDate = SimpleDateFormat("MM.dd.yyyy").format(Date())
         base.archivesName  = "AI_Emoji_Maker_v${versionName}(${versionCode})_${formattedDate}"
