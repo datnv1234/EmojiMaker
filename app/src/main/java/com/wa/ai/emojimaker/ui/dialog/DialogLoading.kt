@@ -19,7 +19,7 @@ import com.wa.ai.emojimaker.utils.extention.visible
 class DialogLoading(val activity: Activity) : BaseBindingDialogFragment<DialogLoadingBinding>() {
 
     private val keyNative =
-        FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_HOME)
+        FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_MERGE_EMOJI)
 
     var onClickDone: (() -> Unit) = {}
 
@@ -52,12 +52,11 @@ class DialogLoading(val activity: Activity) : BaseBindingDialogFragment<DialogLo
         binding.animLoading.gone()
         binding.btnDone.visible()
         binding.tvMerging.text = getString(R.string.merge_successfully)
-
     }
 
     private fun loadNativeAd() {
         if (FirebaseRemoteConfig.getInstance()
-                .getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_HOME)
+                .getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_MERGE_EMOJI)
         ) {
             loadNativeAds(keyNative)
         } else {
@@ -83,7 +82,8 @@ class DialogLoading(val activity: Activity) : BaseBindingDialogFragment<DialogLo
                     }
                 },
                 {
-
+                    dismiss()
+                    onClickDone.invoke()
                 }
             )
         }

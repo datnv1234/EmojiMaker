@@ -143,13 +143,17 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
         if (FirebaseRemoteConfig.getInstance()
                 .getBoolean(RemoteConfigKey.IS_SHOW_ADS_BANNER_MAIN)
         ) {
-            loadBanner()
+            loadBannerNoCollapse()
         } else {
             binding.rlBanner.gone()
         }
         viewModel.loadBanner.observe(mContext) {
             loadBanner()
         }
+    }
+    private fun loadBannerNoCollapse() {
+        viewModel.starTimeCountReloadBanner(bannerReload)
+        BannerUtils.instance?.loadBanner(this, keyAdBannerAllPrice) { }
     }
 
     private fun loadBanner() {
@@ -323,13 +327,13 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
                 AdRequest.Builder().build(),
                 object : InterstitialAdLoadCallback() {
                     override fun onAdFailedToLoad(adError: LoadAdError) {
-                        mFirebaseAnalytics.logEvent("e_load_inter_splash", null)
+                        mFirebaseAnalytics.logEvent("e_load_inter_main", null)
                         mInterstitialAd = null
                         loadInterAds(adIndex + 1)
                     }
 
                     override fun onAdLoaded(ad: InterstitialAd) {
-                        mFirebaseAnalytics.logEvent("d_load_inter_splash", null)
+                        mFirebaseAnalytics.logEvent("d_load_inter_main", null)
                         mInterstitialAd = ad
                         mInterstitialAd?.onPaidEventListener =
                             OnPaidEventListener { adValue ->
@@ -415,55 +419,5 @@ class MainActivity : BaseBindingActivity<ActivityMainBinding, MainViewModel>() {
                 }
             }
         }
-    }
-
-    fun forceShowInterstitial(onAdDismissedAction: () -> Unit) {
-        if (!DeviceUtils.checkInternetConnection(mContext)) {
-            onAdDismissedAction.invoke()
-            return
-        }
-
-        if (mInterstitialAd == null) {
-            if (adsConsentManager?.canRequestAds == false) {
-                onAdDismissedAction.invoke()
-                return
-            }
-            onAdDismissedAction.invoke()
-            loadInterAd()
-            return
-        }
-        mInterstitialAd?.show(mContext)
-
-        mInterstitialAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
-            override fun onAdDismissedFullScreenContent() {
-                mInterstitialAd = null
-                loadInterAd()
-                SharedPreferenceHelper.storeLong(
-                    Constant.TIME_LOAD_NEW_INTER_ADS,
-                    Date().time
-                )
-            }
-
-            override fun onAdFailedToShowFullScreenContent(adError: AdError) {
-                mInterstitialAd = null
-                kotlin.runCatching {
-                    onAdDismissedAction.invoke()
-                }.onFailure {
-                    it.printStackTrace()
-                }
-            }
-
-            override fun onAdShowedFullScreenContent() {
-                kotlin.runCatching {
-                    onAdDismissedAction.invoke()
-                }.onFailure {
-                    it.printStackTrace()
-                }
-            }
-        }
-    }
-
-    companion object {
-        const val ITEMS_PER_AD = 5
     }
 }

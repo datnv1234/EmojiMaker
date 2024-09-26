@@ -6,6 +6,7 @@
     <data>
 
     </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -19,7 +20,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="spread_inside"/>
+            app:layout_constraintVertical_chainStyle="spread_inside" />
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/mainView"
             android:layout_width="match_parent"
@@ -33,88 +35,96 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_20sdp"
                 android:layout_marginEnd="@dimen/_16sdp"
-                android:src="@drawable/ic_close"
                 android:background="@color/transparent"
-                android:elevation="@dimen/_20sdp"
                 android:backgroundTint="@color/black"
+                android:contentDescription="@string/icon_button"
+                android:elevation="@dimen/_20sdp"
+                android:src="@drawable/ic_close"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:contentDescription="@string/icon_button" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="24dp"
                 android:background="@drawable/bg_dialog"
-                android:paddingHorizontal="@dimen/_12sdp"
                 android:orientation="vertical"
+                android:paddingHorizontal="@dimen/_12sdp"
+                android:paddingTop="24dp"
                 app:layout_constraintBottom_toBottomOf="parent">
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginBottom="@dimen/_16sdp"
-                    android:text="@string/add_to_package"
                     android:fontFamily="@font/poppins_semibold"
-                    android:textSize="@dimen/_16ssp"
-                    android:gravity="center"/>
+                    android:gravity="center"
+                    android:text="@string/add_to_package"
+                    android:textSize="@dimen/_16ssp" />
+
                 <LinearLayout
                     android:id="@+id/btnCreateNewPackage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/_12sdp"
+                    android:foreground="?android:attr/selectableItemBackground"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:foreground="?android:attr/selectableItemBackground">
+                    android:orientation="horizontal">
+
                     <ImageButton
                         android:layout_width="56dp"
                         android:layout_height="56dp"
                         android:layout_marginEnd="@dimen/_16sdp"
                         android:background="@color/transparent"
-                        android:scaleType="fitXY"
                         android:clickable="false"
-                        android:src="@drawable/ic_add_package"
-                        android:contentDescription="@string/icon_button" />
+                        android:contentDescription="@string/icon_button"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/ic_add_package" />
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/create_new_package"/>
+                        android:text="@string/create_new_package" />
                 </LinearLayout>
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvPackage"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_150sdp"
                     android:maxLength="@dimen/_80sdp"
-                    app:layout_constraintHeight_max="@dimen/_200sdp"
                     android:orientation="vertical"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintHeight_max="@dimen/_200sdp"
                     app:spanCount="3"
-                    tools:itemCount="4"/>
+                    tools:itemCount="4" />
 
                 <RelativeLayout
                     android:id="@+id/rl_native"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    android:layout_marginVertical="@dimen/_6sdp">
+                    android:layout_marginVertical="@dimen/_6sdp"
+                    android:visibility="gone">
+
                     <FrameLayout
                         android:id="@+id/fr_native_ads"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
+
                         <include layout="@layout/ad_native_content" />
                     </FrameLayout>
                 </RelativeLayout>
 
                 <TextView
                     android:id="@+id/btnSave"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/_12sdp"
                     android:background="@drawable/bg_button_default"
                     android:enabled="false"
+                    android:layout_gravity="center"
                     android:foreground="?android:attr/selectableItemBackground"
                     android:gravity="center"
-                    android:paddingHorizontal="@dimen/_12sdp"
-                    android:paddingVertical="16dp"
+                    android:paddingHorizontal="@dimen/_24sdp"
+                    android:paddingVertical="@dimen/_8sdp"
                     android:text="@string/save"
                     android:textColor="@color/white" />
             </LinearLayout>

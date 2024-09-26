@@ -25,20 +25,18 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:largeHeap="true"
         android:theme="@style/Theme.AIEmojiMaker"
         android:usesCleartextTraffic="true"
         tools:replace="android:supportsRtl">
 
         <activity
             android:name=".ui.component.showstickers.ShowStickersActivity"
-            android:exported="false"
+            android:exported="true"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.component.emojimaker.EmojiMakerActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:exported="false"
-            android:label="@string/title_activity_emoji_maker"
-            android:largeHeap="true"
+            android:exported="true"
             android:screenOrientation="portrait" />
 
         <activity
@@ -87,6 +85,13 @@
         <meta-data
             android:name="com.google.android.gms.ads.flag.OPTIMIZE_AD_LOADING"
             android:value="true" />
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_launcher" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorAds" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

@@ -20,6 +20,7 @@ object RemoteConfigKey {
     const val IS_SHOW_ADS_NATIVE_LANGUAGE = "is_show_ads_native_language"
     const val IS_SHOW_ADS_NATIVE_HOME = "is_show_ads_native_home"
     const val IS_SHOW_ADS_NATIVE_SHOW_STICKERS = "is_show_ads_native_show_stickers"
+    const val IS_SHOW_ADS_NATIVE_CREATE_EMOJI = "is_show_ads_native_create_emoji"
     const val IS_SHOW_ADS_NATIVE_MY_CREATIVE = "is_show_ads_native_my_creative"
 
     const val IS_SHOW_ADS_BANNER_MAIN = "is_show_ads_banner_main"
@@ -31,6 +32,7 @@ object RemoteConfigKey {
     const val KEY_ADS_INTER_SPLASH= "key_ads_inter_splash"
     const val KEY_ADS_INTER_HOME_SCREEN= "key_ads_inter_home_screen"
     const val KEY_ADS_INTER_CREATE_EMOJI= "key_ads_inter_create_emoji"
+    const val KEY_ADS_INTER_CREATE_EMOJI_HIGH= "key_ads_inter_create_emoji_high"
     const val KEY_ADS_INTER_MERGE_EMOJI= "key_ads_inter_merge_emoji"
 
     // Native
@@ -38,6 +40,7 @@ object RemoteConfigKey {
     const val KEY_ADS_NATIVE_LANGUAGE = "key_ads_native_language"
     const val KEY_ADS_NATIVE_HOME = "key_ads_native_home"
     const val KEY_ADS_NATIVE_SHOW_STICKERS = "key_ads_native_show_stickers"
+    const val KEY_ADS_NATIVE_CREATE_EMOJI = "key_ads_native_create_emoji"
     const val KEY_ADS_NATIVE_MY_CREATIVE = "key_ads_native_my_creative"
     const val KEY_ADS_NATIVE_MERGE_EMOJI = "key_ads_native_merge_emoji"
 

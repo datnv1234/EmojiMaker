@@ -37,7 +37,7 @@ android {
         versionName = "1.92"
 
         val formattedDate = SimpleDateFormat("MM.dd.yyyy").format(Date())
-        base.archivesBaseName = "AI_Emoji_Maker_v${versionName}(${versionCode})_${formattedDate}"
+        base.archivesName  = "AI_Emoji_Maker_v${versionName}(${versionCode})_${formattedDate}"
 
         multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -88,7 +88,7 @@ android {
         correctErrorTypes = true
     }
 
-    packagingOptions {
+    packaging {
         resources.excludes.add("META-INF/*")
     }
 }
@@ -119,7 +119,8 @@ dependencies {
     //noinspection LifecycleAnnotationProcessorWithJava8
     kapt("androidx.lifecycle:lifecycle-compiler:2.7.0")
 
-    implementation("com.tbuonomo:dotsindicator:5.0")
+    //noinspection GradleDependency
+    implementation("com.tbuonomo:dotsindicator:4.3")
 
     //Nav
 

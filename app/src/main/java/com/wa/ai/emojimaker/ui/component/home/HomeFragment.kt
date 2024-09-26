@@ -7,6 +7,7 @@ import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.adjust.sdk.Adjust
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.wa.ai.emojimaker.R
 import com.wa.ai.emojimaker.databinding.FragmentHomeBinding
 import com.wa.ai.emojimaker.functions.Utils
@@ -111,6 +112,10 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
                     intent.putExtra("category_name", cate.categoryName)
                     intent.putExtra("category_size", cate.itemSize)
                     startActivity(intent)
+                    val params = Bundle().apply {
+                        putString("cate", cate.categoryName)
+                    }
+                    FirebaseAnalytics.getInstance(mMainActivity).logEvent("cate_show", params)
                     kotlin.runCatching {
                         mMainActivity.showInterstitial {}
                     }
@@ -126,7 +131,7 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
         binding.btnCreateSticker.setOnSafeClick {
             startActivity(Intent(context, EmojiMakerActivity::class.java))
             kotlin.runCatching {
-                mMainActivity.forceShowInterstitial {}
+                mMainActivity.showInterstitial {}
             }.onFailure {
                 it.printStackTrace()
             }
@@ -135,7 +140,7 @@ class HomeFragment : BaseBindingFragment<FragmentHomeBinding, HomeViewModel>() {
         binding.btnMergeEmoji.setOnSafeClick {
             kotlin.runCatching {
                 startActivity(Intent(context, MergeAct2::class.java))
-                mMainActivity.forceShowInterstitial {}
+                mMainActivity.showInterstitial {}
             }.onFailure {
                 it.printStackTrace()
             }

@@ -6,24 +6,24 @@
     </data>
 
     <RelativeLayout
-        android:id="@+id/ll_ads_top"
+        android:id="@+id/ll_ads_high"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <FrameLayout
-            android:id="@+id/banner_container_top"
+            android:id="@+id/banner_container_high"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:visibility="gone" />
 
         <FrameLayout
-            android:id="@+id/fl_shimmer_top"
+            android:id="@+id/fl_shimmer_high"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <include layout="@layout/load_fb_banner_top" />
+            <include layout="@layout/load_fb_banner_high" />
         </FrameLayout>
     </RelativeLayout>
 </layout>

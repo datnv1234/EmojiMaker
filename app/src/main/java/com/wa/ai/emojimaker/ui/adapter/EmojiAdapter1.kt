@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.google.android.material.progressindicator.CircularProgressIndicator
@@ -52,6 +53,8 @@ class EmojiAdapter1 : BaseBindingAdapterDiff<EmojiUI, EmojisSliderItemBinding>(
     ) {
         Glide.with(context)
             .load(url)
+            .fitCenter()
+            .transition(DrawableTransitionOptions.withCrossFade())
             .listener(
                 object : RequestListener<Drawable?> {
                     override fun onLoadFailed(

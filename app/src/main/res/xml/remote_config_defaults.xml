@@ -74,7 +74,7 @@
   </entry>
   <entry>
     <key>key_ads_inter_create_emoji_high</key>
-    <value>ca-app-pub-3621741958408545/7250077007</value>
+    <value>ca-app-pub-3621741958408545/1939359168</value>
   </entry>
   <entry>
     <key>key_ads_inter_create_emoji_medium</key>
@@ -93,6 +93,10 @@
   <entry>
     <key>key_ads_inter_show_stickers</key>
     <value>ca-app-pub-3621741958408545/8044283926</value>
+  </entry>
+  <entry>
+    <key>key_ads_native_create_emoji</key>
+    <value>ca-app-pub-3621741958408545/7269312121</value>
   </entry>
 
   <entry>
@@ -231,6 +235,10 @@
   </entry>
   <entry>
     <key>is_show_ads_native_my_creative</key>
+    <value>true</value>
+  </entry>
+  <entry>
+    <key>is_show_ads_native_create_emoji</key>
     <value>true</value>
   </entry>
   <entry>

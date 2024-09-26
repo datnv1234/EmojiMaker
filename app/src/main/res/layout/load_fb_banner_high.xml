@@ -8,7 +8,7 @@
     </data>
 
     <com.facebook.shimmer.ShimmerFrameLayout
-        android:id="@+id/shimmer_container_banner_top"
+        android:id="@+id/shimmer_container_banner_high"
         android:background="@drawable/bg_card_ads"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

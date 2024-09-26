@@ -20,7 +20,7 @@ import com.wa.ai.emojimaker.utils.extention.visible
 class AddToPackageDialog(val activity: Activity) : BaseBindingDialogFragment<DialogAddToPackageBinding>() {
 
     private val keyNative =
-        FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_HOME)
+        FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_CREATE_EMOJI)
 
     lateinit var save: ((pkg: PackageModel?) -> Unit)
     lateinit var createNewPackage: ((binding: DialogAddToPackageBinding) -> Unit)
@@ -87,7 +87,7 @@ class AddToPackageDialog(val activity: Activity) : BaseBindingDialogFragment<Dia
 
     private fun loadNativeAd() {
         if (FirebaseRemoteConfig.getInstance()
-                .getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_HOME)
+                .getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_CREATE_EMOJI)
         ) {
             loadNativeAds(keyNative)
         } else {

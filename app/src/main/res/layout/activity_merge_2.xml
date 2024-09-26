@@ -9,7 +9,7 @@
         android:background="@drawable/bg">
 
         <ImageButton
-            android:id="@+id/imBack"
+            android:id="@+id/btnBack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_7sdp"
@@ -17,9 +17,9 @@
             android:contentDescription="@string/back"
             android:padding="@dimen/_5sdp"
             android:src="@drawable/ic_back_round"
-            app:layout_constraintBottom_toBottomOf="@id/imMerge"
+            app:layout_constraintBottom_toBottomOf="@id/tvMerge"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/imMerge" />
+            app:layout_constraintTop_toTopOf="@id/tvMerge" />
 
         <ImageButton
             android:id="@+id/btnRefresh"
@@ -30,12 +30,12 @@
             android:contentDescription="@string/back"
             android:padding="@dimen/_5sdp"
             android:src="@drawable/ic_reload"
-            app:layout_constraintBottom_toBottomOf="@id/imMerge"
+            app:layout_constraintBottom_toBottomOf="@id/tvMerge"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/imMerge" />
+            app:layout_constraintTop_toTopOf="@id/tvMerge" />
 
         <TextView
-            android:id="@+id/imMerge"
+            android:id="@+id/tvMerge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_28sdp"
@@ -45,20 +45,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-        <FrameLayout
-            android:id="@+id/rl_banner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_6sdp"
-            android:layout_gravity="bottom"
-            app:layout_constraintTop_toBottomOf="@id/imMerge">
-
-            <include
-                android:id="@+id/include"
-                layout="@layout/ads_banner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </FrameLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/viewUnselected1"
@@ -67,7 +53,7 @@
             android:layout_marginStart="@dimen/_24sdp"
             app:layout_constraintBottom_toTopOf="@id/viewEmoji"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/rl_banner">
+            app:layout_constraintTop_toBottomOf="@id/btnBack">
 
             <ImageView
                 android:id="@+id/bgUnselected1"
@@ -135,7 +121,7 @@
             android:background="#FFFFFF"
             android:paddingTop="@dimen/_8sdp"
             android:paddingHorizontal="@dimen/_12sdp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/rl_banner"
             app:layout_constraintDimensionRatio="1:1">
 
             <TextView
@@ -168,8 +154,31 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:spanCount="6"
                 tools:listitem="@layout/emojis_slider_item" />
-
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/animLoading"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_80sdp"
+                app:lottie_rawRes="@raw/anim_merging"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/btnMergeEmoji"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
+        <FrameLayout
+            android:id="@+id/rl_banner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_6sdp"
+            android:layout_gravity="bottom"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <include
+                android:id="@+id/include"
+                layout="@layout/ads_banner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </FrameLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

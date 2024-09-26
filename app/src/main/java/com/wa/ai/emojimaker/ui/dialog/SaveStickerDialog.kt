@@ -25,7 +25,7 @@ class SaveStickerDialog(val activity: Activity) : BaseBindingDialogFragment<Dial
     var share: ((binding : DialogSaveBinding) -> Unit)? = null
 
     private val keyNative =
-        FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_HOME)
+        FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_CREATE_EMOJI)
 
     override val layoutId: Int
         get() = R.layout.dialog_save
@@ -49,7 +49,7 @@ class SaveStickerDialog(val activity: Activity) : BaseBindingDialogFragment<Dial
             download?.invoke(binding)
             Utils.saveImage(binding.imgPreview, requireContext())
             Toast.makeText(context, R.string.saved, Toast.LENGTH_SHORT).show()
-            dismiss()
+            //dismiss()
         }
         binding.btnShare.setOnSafeClick {
             share?.invoke(binding)
@@ -75,7 +75,7 @@ class SaveStickerDialog(val activity: Activity) : BaseBindingDialogFragment<Dial
 
     private fun loadNativeAd() {
         if (FirebaseRemoteConfig.getInstance()
-                .getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_HOME)
+                .getBoolean(RemoteConfigKey.IS_SHOW_ADS_NATIVE_CREATE_EMOJI)
         ) {
             loadNativeAds(keyNative)
         } else {

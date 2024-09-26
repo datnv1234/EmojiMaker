@@ -97,6 +97,9 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     private val keyAdInterAllPrice =
         FirebaseRemoteConfig.getInstance()
             .getString(RemoteConfigKey.KEY_ADS_INTER_CREATE_EMOJI)
+    private val keyAdInterHigh =
+        FirebaseRemoteConfig.getInstance()
+            .getString(RemoteConfigKey.KEY_ADS_INTER_CREATE_EMOJI_HIGH)
 
     private val bannerReload =
         FirebaseRemoteConfig.getInstance().getLong(RemoteConfigKey.BANNER_RELOAD)
@@ -136,17 +139,8 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
             }
 
             download = {
-                emojiViewModel.bitmapMutableLiveData.value?.let { it1 ->
-                    AppUtils.saveSticker(
-                        this@EmojiMakerActivity,
-                        it1, "creative"
-                    )
-
-
-                    if (!mSaveSuccessDialog.isAdded)
-                        mSaveSuccessDialog.show(supportFragmentManager, mSaveSuccessDialog.tag)
+                emojiViewModel.bitmapMutableLiveData.value?.let {
                 }
-                toast("Downloaded!")
             }
 
             share = {
@@ -359,7 +353,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         ) {
             loadBannerNoCollapse()
         } else {
-            binding.rlBanner.gone()
+            binding.bannerContainer.gone()
         }
         emojiViewModel.loadBanner.observe(this) {
             loadBannerCollapse()
@@ -367,9 +361,9 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     }
 
     private fun loadBannerNoCollapse() {
-        emojiViewModel.starTimeCountReloadBanner(bannerReload)
+        emojiViewModel.starTimeCountReloadBanner(bannerReload + 5000L)
         if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_USE_BANNER_MONET)) {
-            BannerUtils.instance?.loadBannerTop(this, keyAdBannerHigh) { res2 ->
+            BannerUtils.instance?.loadBannerHigh(this, keyAdBannerHigh) { res2 ->
                 if (!res2) {
                     binding.rlBanner.visible()
                     BannerUtils.instance?.loadBanner(this, keyAdBannerAllPrice) { }
@@ -385,7 +379,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     private fun loadBannerCollapse() {
         emojiViewModel.starTimeCountReloadBanner(bannerReload)
         if (FirebaseRemoteConfig.getInstance().getBoolean(RemoteConfigKey.IS_USE_BANNER_MONET)) {
-            BannerUtils.instance?.loadCollapsibleBannerTop(this, keyAdBannerHigh) { res2 ->
+            BannerUtils.instance?.loadCollapsibleBannerHigh(this, keyAdBannerHigh) { res2 ->
                 if (!res2) {
                     binding.rlBanner.visible()
                     BannerUtils.instance?.loadCollapsibleBanner(this, keyAdBannerAllPrice) { }
@@ -654,10 +648,8 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         }
 
         try {
-            // Kiểm tra kích thước của hình ảnh
             val totalSize = bitmap.width * bitmap.height
             val newBitmap: Bitmap = if (totalSize > MAX_SIZE_PIXELS) {
-                // Tính toán tỉ lệ nén để giữ nguyên tỉ lệ khung hình
                 val scaleFactor: Float = MAX_SIZE_PIXELS.toFloat() / totalSize.toFloat()
                 val newWidth = (bitmap.width * scaleFactor).toInt()
                 val newHeight = (bitmap.height * scaleFactor).toInt()
@@ -667,7 +659,6 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
                 bitmap
             }
 
-            // Tạo Drawable từ Bitmap mới (hoặc Bitmap gốc nếu không nén)
             val drawable = BitmapDrawable(resources, newBitmap)
             viewModel.addSticker(DrawableSticker(drawable))
 
@@ -870,7 +861,6 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
                         if (!contentType.any { it.startsWith("image/") }) {
                             Toast.makeText(context, "Link is not an image", Toast.LENGTH_LONG)
                                 .show()
-                            //context.binding.progressBarHolder.visibility = View.GONE
                             return@response
                         }
 
@@ -957,7 +947,6 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         }
     }
 
-
     private fun initAdsManager() {
         var isInitializeMobileAdsSdk = false
         adsConsentManager = AdsConsentManager.getInstance(applicationContext)
@@ -982,23 +971,22 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
         } catch (e: Exception) {
             Timber.e(e)
         }
-        loadInterAd()
+        loadInterAds()
     }
 
 
-    private fun loadInterAd() {
+    private fun loadInterAds() {
         if (FirebaseRemoteConfig.getInstance()
                 .getBoolean(RemoteConfigKey.IS_SHOW_ADS_INTER_CREATE_EMOJI)
         ) {
-            loadInterAdsMain(keyAdInterAllPrice)
-
+            loadInterAdHigh()
         }
     }
 
-    private fun loadInterAdsMain(keyAdInter: String) {
+    private fun loadInterAdAllPrice() {
         InterstitialAd.load(
             this,
-            keyAdInter,
+            keyAdInterAllPrice,
             AdRequest.Builder().build(),
             object : InterstitialAdLoadCallback() {
                 override fun onAdFailedToLoad(adError: LoadAdError) {
@@ -1010,7 +998,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
                             2.0.pow(6.0.coerceAtMost(retryAttempt)).toLong()
                         )
                         Handler(Looper.getMainLooper()).postDelayed(
-                            { loadInterAdsMain(keyAdInter) },
+                            { loadInterAdAllPrice() },
                             delayMillis
                         )
                     }
@@ -1020,6 +1008,49 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
                     mFirebaseAnalytics.logEvent("d_load_inter_splash", null)
                     mInterstitialAd = ad
                     retryAttempt = 0.0
+                    mInterstitialAd?.onPaidEventListener =
+                        OnPaidEventListener { adValue ->
+                            val loadedAdapterResponseInfo: AdapterResponseInfo? =
+                                mInterstitialAd?.responseInfo?.loadedAdapterResponseInfo
+                            val adRevenue = AdjustAdRevenue(AdjustConfig.AD_REVENUE_ADMOB)
+                            val revenue = adValue.valueMicros.toDouble() / 1000000.0
+                            adRevenue.setRevenue(revenue, adValue.currencyCode)
+                            adRevenue.adRevenueNetwork = loadedAdapterResponseInfo?.adSourceName
+                            Adjust.trackAdRevenue(adRevenue)
+
+                            val analytics = FirebaseAnalytics.getInstance(this@EmojiMakerActivity)
+                            val params = Bundle().apply {
+                                putString(
+                                    FirebaseAnalytics.Param.AD_PLATFORM,
+                                    "admob mediation"
+                                )
+                                putString(FirebaseAnalytics.Param.AD_SOURCE, "AdMob")
+                                putString(FirebaseAnalytics.Param.AD_FORMAT, "Interstitial")
+                                putDouble(FirebaseAnalytics.Param.VALUE, revenue)
+                                putString(FirebaseAnalytics.Param.CURRENCY, "USD")
+                            }
+                            analytics.logEvent("ad_impression_2", params)
+                        }
+                }
+            }
+        )
+    }
+
+    private fun loadInterAdHigh() {
+        InterstitialAd.load(
+            this,
+            keyAdInterHigh,
+            AdRequest.Builder().build(),
+            object : InterstitialAdLoadCallback() {
+                override fun onAdFailedToLoad(adError: LoadAdError) {
+                    mFirebaseAnalytics.logEvent("e_load_inter_create_emoji", null)
+                    mInterstitialAd = null
+                    loadInterAdAllPrice()
+                }
+
+                override fun onAdLoaded(ad: InterstitialAd) {
+                    mFirebaseAnalytics.logEvent("d_load_inter_create_emoji", null)
+                    mInterstitialAd = ad
                     mInterstitialAd?.onPaidEventListener =
                         OnPaidEventListener { adValue ->
                             val loadedAdapterResponseInfo: AdapterResponseInfo? =
@@ -1066,7 +1097,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
                 return
             }
             if (isReload)
-                loadInterAd()
+                loadInterAds()
             return
         }
         mInterstitialAd?.show(this)
@@ -1075,7 +1106,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
             override fun onAdDismissedFullScreenContent() {
                 mInterstitialAd = null
                 if (isReload) {
-                    loadInterAd()
+                    loadInterAds()
                 }
                 SharedPreferenceHelper.storeLong(
                     Constant.TIME_LOAD_NEW_INTER_ADS,
@@ -1102,7 +1133,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
                 return
             }
             if (isReload)
-                loadInterAd()
+                loadInterAds()
             return
         }
         mInterstitialAd?.show(this)
@@ -1111,7 +1142,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
             override fun onAdDismissedFullScreenContent() {
                 mInterstitialAd = null
                 if (isReload) {
-                    loadInterAd()
+                    loadInterAds()
                 }
                 SharedPreferenceHelper.storeLong(
                     Constant.TIME_LOAD_NEW_INTER_ADS,
@@ -1147,7 +1178,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
                 return
             }
             if (isReload)
-                loadInterAd()
+                loadInterAds()
             return
         }
         mInterstitialAd?.show(this)
@@ -1156,7 +1187,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
             override fun onAdDismissedFullScreenContent() {
                 mInterstitialAd = null
                 if (isReload) {
-                    loadInterAd()
+                    loadInterAds()
                 }
                 SharedPreferenceHelper.storeLong(
                     Constant.TIME_LOAD_NEW_INTER_ADS,

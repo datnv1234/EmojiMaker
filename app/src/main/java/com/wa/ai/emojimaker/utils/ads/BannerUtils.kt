@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.res.Resources
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import com.adjust.sdk.Adjust
@@ -86,10 +85,10 @@ class BannerUtils {
         }
     }
 
-    fun loadBannerTop(mActivity: Activity, id: String, adsLoadCallBack: (Boolean) -> Unit) {
-        val adContainer = mActivity.findViewById<FrameLayout>(R.id.banner_container_top)
+    fun loadBannerHigh(mActivity: Activity, id: String, adsLoadCallBack: (Boolean) -> Unit) {
+        val adContainer = mActivity.findViewById<FrameLayout>(R.id.banner_container_high)
         val containerShimmer =
-            mActivity.findViewById<ShimmerFrameLayout>(R.id.shimmer_container_banner_top)
+            mActivity.findViewById<ShimmerFrameLayout>(R.id.shimmer_container_banner_high)
         if (!mActivity.checkInternetConnection()) {
             adContainer.gone()
             containerShimmer.gone()
@@ -199,10 +198,10 @@ class BannerUtils {
         }
     }
 
-    fun loadCollapsibleBannerTop(mActivity: Activity, id: String, adsLoadCallBack: (Boolean) -> Unit) {
-        val adContainer = mActivity.findViewById<FrameLayout>(R.id.banner_container_top)
+    fun loadCollapsibleBannerHigh(mActivity: Activity, id: String, adsLoadCallBack: (Boolean) -> Unit) {
+        val adContainer = mActivity.findViewById<FrameLayout>(R.id.banner_container_high)
         val containerShimmer =
-            mActivity.findViewById<ShimmerFrameLayout>(R.id.shimmer_container_banner_top)
+            mActivity.findViewById<ShimmerFrameLayout>(R.id.shimmer_container_banner_high)
         if (!mActivity.checkInternetConnection()) {
             adContainer.gone()
             containerShimmer.gone()
@@ -213,8 +212,7 @@ class BannerUtils {
                 adContainer,
                 containerShimmer,
                 false, BANNER_INLINE_LARGE_STYLE,
-                adsLoadCallBack,
-                top = true
+                adsLoadCallBack
             )
         }
     }
@@ -287,11 +285,9 @@ class BannerUtils {
                     adContainer.gone()
                     containerShimmer.gone()
                     adsLoadCallBack(false)
-                    Log.d("datnv", "onAdFailedToLoad: ${loadAdError.message} __ top: $top")
                 }
 
                 override fun onAdLoaded() {
-                    Log.d("datnv", "OK __ top: $top")
                     containerShimmer.stopShimmer()
                     containerShimmer.gone()
                     adContainer.visible()

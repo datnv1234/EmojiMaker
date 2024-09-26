@@ -101,11 +101,15 @@ open class StickerViewModel : BaseViewModel() {
     }
 
     private fun addSticker(sticker: Sticker, position: Int) {
-        sticker.setCanvasMatrix(canvasMatrix.value!!.getMatrix())
-        sticker.recalcFinalMatrix()
-        stickers.value!!.add(sticker)
-        handlingSticker.value = sticker
-        stickerOperationListener.onStickerAdded(sticker, position)
+        try {
+            sticker.setCanvasMatrix(canvasMatrix.value!!.getMatrix())
+            sticker.recalcFinalMatrix()
+            stickers.value!!.add(sticker)
+            handlingSticker.value = sticker
+            stickerOperationListener.onStickerAdded(sticker, position)
+        } catch (e: Exception) {
+            Timber.e(e, "OutOfMemoryError when processing bitmap.")
+        }
     }
 
     fun resetView() {

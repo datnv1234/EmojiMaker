@@ -100,7 +100,6 @@ class MergeAct2 : BaseBindingActivity<ActivityMerge2Binding, MergeVM>() {
                         handler.postDelayed({
                             reset()
                         }, 1000)
-                        showInterstitial { }
                     }.onFailure {
                         it.printStackTrace()
                     }
@@ -169,6 +168,7 @@ class MergeAct2 : BaseBindingActivity<ActivityMerge2Binding, MergeVM>() {
         viewModel.getAllListEmoji(this)
         viewModel.emojiLiveData.observeWithCatch(this) {
             emojiAdapter1.submitList(it)
+            binding.animLoading.gone()
         }
     }
 
@@ -196,7 +196,7 @@ class MergeAct2 : BaseBindingActivity<ActivityMerge2Binding, MergeVM>() {
     }
 
     private fun initAction() {
-        binding.imBack.setOnSafeClick {
+        binding.btnBack.setOnSafeClick {
             kotlin.runCatching {
                 showInterstitial(false) {
                     finish()
@@ -211,9 +211,11 @@ class MergeAct2 : BaseBindingActivity<ActivityMerge2Binding, MergeVM>() {
                 if (!dialogLoading.isAdded) {
                     dialogLoading.show(supportFragmentManager, dialogLoading.tag)
                 }
+                showInterstitial {}
             }.onFailure {
                 it.printStackTrace()
             }
+            FirebaseAnalytics.getInstance(this).logEvent("merge_emoji", null)
         }
 
         binding.btnRefresh.setOnSafeClick {
@@ -302,10 +304,10 @@ class MergeAct2 : BaseBindingActivity<ActivityMerge2Binding, MergeVM>() {
     }
 
     private fun loadAds() {
-        if (FirebaseRemoteConfig.getInstance()
+        if (!FirebaseRemoteConfig.getInstance()
                 .getBoolean(RemoteConfigKey.IS_SHOW_ADS_BANNER_MERGE_EMOJI)
         ) {
-            loadBanner()
+            loadBannerNoCollapse()
         } else {
             binding.rlBanner.gone()
         }
@@ -314,10 +316,14 @@ class MergeAct2 : BaseBindingActivity<ActivityMerge2Binding, MergeVM>() {
         }
     }
 
+    private fun loadBannerNoCollapse() {
+        viewModel.starTimeCountReloadBanner(bannerReload)
+        BannerUtils.instance?.loadBanner(this, keyAdBannerAllPrice) {}
+    }
+
     private fun loadBanner() {
         viewModel.starTimeCountReloadBanner(bannerReload)
-        BannerUtils.instance?.loadCollapsibleBannerTop(this, keyAdBannerAllPrice) {}
-
+        BannerUtils.instance?.loadCollapsibleBanner(this, keyAdBannerAllPrice) {}
     }
 
     private fun initAdsManager() {
@@ -434,7 +440,7 @@ class MergeAct2 : BaseBindingActivity<ActivityMerge2Binding, MergeVM>() {
                 }
 
                 override fun onAdLoaded(ad: InterstitialAd) {
-                    Timber.e("datnv: Ad was loaded.")
+                    Timber.d("datnv: Ad was loaded.")
                     interstitialAd = ad
                     retryAttempt = 0.0
                     interstitialAd?.onPaidEventListener =

@@ -35,6 +35,8 @@ class ShowStickersActivity :
     private val bannerReload =
         FirebaseRemoteConfig.getInstance().getLong(RemoteConfigKey.BANNER_RELOAD)
 
+    val keyBanner = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_BANNER_SHOW_STICKERS)
+
     private val keyNative =
         FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.KEY_ADS_NATIVE_SHOW_STICKERS)
 
@@ -153,7 +155,7 @@ class ShowStickersActivity :
         if (FirebaseRemoteConfig.getInstance()
                 .getBoolean(RemoteConfigKey.IS_SHOW_ADS_BANNER_SHOW_STICKERS)
         ) {
-            loadBanner()
+            loadBannerNoCollapse()
         } else {
             binding.rlBanner.gone()
         }
@@ -162,11 +164,14 @@ class ShowStickersActivity :
         }
     }
 
+    private fun loadBannerNoCollapse() {
+        viewModel.starTimeCountReloadBanner(bannerReload)
+        BannerUtils.instance?.loadCollapsibleBanner(this, keyBanner) {}
+    }
+
     private fun loadBanner() {
         viewModel.starTimeCountReloadBanner(bannerReload)
-        val keyAdBannerAllPrice = FirebaseRemoteConfig.getInstance()
-            .getString(RemoteConfigKey.KEY_ADS_BANNER_SHOW_STICKERS)
-        BannerUtils.instance?.loadCollapsibleBanner(this, keyAdBannerAllPrice) {}
+        BannerUtils.instance?.loadCollapsibleBanner(this, keyBanner) {}
     }
 
     private fun shareStickerInCategory(category: String) {
