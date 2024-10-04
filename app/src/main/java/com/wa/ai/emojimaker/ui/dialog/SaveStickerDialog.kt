@@ -1,6 +1,7 @@
 package com.wa.ai.emojimaker.ui.dialog
 
 import android.app.Activity
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -36,6 +37,10 @@ class SaveStickerDialog(val activity: Activity) : BaseBindingDialogFragment<Dial
         emojiViewModel.bitmapMutableLiveData.observe(this) {
             binding.imgPreview.setImageBitmap(it)
         }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
         loadNativeAd()
     }
 
@@ -89,7 +94,7 @@ class SaveStickerDialog(val activity: Activity) : BaseBindingDialogFragment<Dial
                 activity,
                 keyAds,
                 { nativeAds ->
-                    if (nativeAds != null && isAdded && isVisible) {
+                    if (nativeAds != null && isAdded) {
                         binding.rlNative.visible()
                         val adNativeVideoBinding = AdNativeContentBinding.inflate(layoutInflater)
                         NativeAdsUtils.instance.populateNativeAdVideoView(

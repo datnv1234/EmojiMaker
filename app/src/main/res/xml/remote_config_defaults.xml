@@ -19,6 +19,10 @@
     <key>banner_reload</key>
     <value>35000</value>
   </entry>
+  <entry>
+    <key>banner_monet_reload_delay</key>
+    <value>1000</value>
+  </entry>
 
   <entry>
     <key>is_use_native_monet</key>

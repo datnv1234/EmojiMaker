@@ -1,6 +1,7 @@
 package com.wa.ai.emojimaker.ui.dialog
 
 import android.app.Activity
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
@@ -49,6 +50,10 @@ class AddToPackageDialog(val activity: Activity) : BaseBindingDialogFragment<Dia
         }
         binding.rvPackage.adapter = packageAdapter
         setup()
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
         loadNativeAd()
     }
 
@@ -101,7 +106,7 @@ class AddToPackageDialog(val activity: Activity) : BaseBindingDialogFragment<Dia
                 activity = this.activity,
                 keyAds,
                 { nativeAds ->
-                    if (nativeAds != null && isAdded && isVisible) {
+                    if (nativeAds != null && isAdded) {
                         binding.rlNative.visible()
                         val adNativeVideoBinding = AdNativeContentBinding.inflate(layoutInflater)
                         NativeAdsUtils.instance.populateNativeAdVideoView(

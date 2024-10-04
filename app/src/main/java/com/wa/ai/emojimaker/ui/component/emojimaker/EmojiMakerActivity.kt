@@ -103,6 +103,9 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
 
     private val bannerReload =
         FirebaseRemoteConfig.getInstance().getLong(RemoteConfigKey.BANNER_RELOAD)
+    private val bannerMonetDelay =
+        FirebaseRemoteConfig.getInstance().getLong(RemoteConfigKey.BANNER_MONET_RELOAD_DELAY)
+
     private val keyAdBannerAllPrice = FirebaseRemoteConfig.getInstance()
         .getString(RemoteConfigKey.KEY_ADS_BANNER_CREATE_EMOJI)
     private val keyAdBannerHigh = FirebaseRemoteConfig.getInstance()
@@ -366,12 +369,21 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
             BannerUtils.instance?.loadBannerHigh(this, keyAdBannerHigh) { res2 ->
                 if (!res2) {
                     binding.rlBanner.visible()
-                    BannerUtils.instance?.loadBanner(this, keyAdBannerAllPrice) { }
+                    Handler(Looper.getMainLooper()).postDelayed(
+                        {
+                            BannerUtils.instance?.loadBanner(
+                                this,
+                                keyAdBannerAllPrice
+                            ) { }
+                        },
+                        bannerMonetDelay
+                    )
                 } else {
                     binding.rlBanner.gone()
                 }
             }
         } else {
+            binding.rlBannerHigh.gone()
             BannerUtils.instance?.loadBanner(this, keyAdBannerAllPrice) { }
         }
     }
@@ -382,14 +394,24 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
             BannerUtils.instance?.loadCollapsibleBannerHigh(this, keyAdBannerHigh) { res2 ->
                 if (!res2) {
                     binding.rlBanner.visible()
-                    BannerUtils.instance?.loadCollapsibleBanner(this, keyAdBannerAllPrice) { }
+                    Handler(Looper.getMainLooper()).postDelayed(
+                        {
+                            BannerUtils.instance?.loadCollapsibleBanner(
+                                this,
+                                keyAdBannerAllPrice
+                            ) { }
+                        },
+                        bannerMonetDelay
+                    )
                 } else {
                     binding.rlBanner.gone()
                 }
             }
         } else {
+            binding.rlBannerHigh.gone()
             BannerUtils.instance?.loadCollapsibleBanner(this, keyAdBannerAllPrice) { }
         }
+
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -664,7 +686,11 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
 
         } catch (e: OutOfMemoryError) {
             Timber.e(e, "OutOfMemoryError when processing bitmap.")
-            Toast.makeText(this, "Failed to add sticker due to memory limitations", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                this,
+                "Failed to add sticker due to memory limitations",
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
@@ -1182,7 +1208,6 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
             return
         }
         mInterstitialAd?.show(this)
-
         mInterstitialAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
             override fun onAdDismissedFullScreenContent() {
                 mInterstitialAd = null
