@@ -104,7 +104,7 @@ class EmojiMakerActivity : BaseBindingActivity<ActivityEmojiMakerBinding, Sticke
     private val bannerReload =
         FirebaseRemoteConfig.getInstance().getLong(RemoteConfigKey.BANNER_RELOAD)
     private val bannerMonetDelay =
-        FirebaseRemoteConfig.getInstance().getLong(RemoteConfigKey.BANNER_MONET_RELOAD_DELAY)
+        FirebaseRemoteConfig.getInstance().getLong(RemoteConfigKey.BANNER_MONET_DELAY)
 
     private val keyAdBannerAllPrice = FirebaseRemoteConfig.getInstance()
         .getString(RemoteConfigKey.KEY_ADS_BANNER_CREATE_EMOJI)

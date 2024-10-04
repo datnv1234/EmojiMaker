@@ -33,11 +33,11 @@ android {
         minSdk = 24
         //noinspection EditedTargetSdkVersion
         targetSdk = 34
-        versionCode = 10188
-        versionName = "1.95"
+        versionCode = 181886
+        versionName = "1.96"
 
         val formattedDate = SimpleDateFormat("MM.dd.yyyy").format(Date())
-        base.archivesName  = "AI_Emoji_Maker_v${versionName}(${versionCode})_${formattedDate}"
+        base.archivesBaseName = "AI_Emoji_Maker_v${versionName}(${versionCode})_${formattedDate}"
 
         multiDexEnabled = true
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -88,7 +88,7 @@ android {
         correctErrorTypes = true
     }
 
-    packaging {
+    packagingOptions  {
         resources.excludes.add("META-INF/*")
     }
 }
